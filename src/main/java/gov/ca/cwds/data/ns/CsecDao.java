@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.ns.CsecEntity;
 import gov.ca.cwds.inject.NsSessionFactory;
+import java.util.List;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 /**
  * CWDS API Team
@@ -21,4 +23,10 @@ public class CsecDao extends BaseDaoImpl<CsecEntity> {
     super(sessionFactory);
   }
 
+  public List<CsecEntity> findByParticipantId(String participantId) {
+    final Query<CsecEntity> query = this.getSessionFactory().getCurrentSession()
+        .getNamedQuery(constructNamedQueryName("findByParticipantId"))
+        .setParameter("participantId", participantId);
+    return query.getResultList();
+  }
 }

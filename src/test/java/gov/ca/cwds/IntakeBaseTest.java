@@ -99,6 +99,12 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
 
+  protected String doDeleteCall(String pathInfo) throws IOException {
+    WebTarget target = clientTestRule.target(pathInfo);
+    Response response = target.request().delete();
+    return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
+  }
+
   /*
    * methods for testing DB usage
    */

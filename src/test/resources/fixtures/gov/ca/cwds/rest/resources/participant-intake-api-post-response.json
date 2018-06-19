@@ -7,11 +7,14 @@
   "gender": "male",
   "ssn": "123456789",
   "date_of_birth": "1999-11-15",
-  "roles": [],
+  "roles": [
+    "Reporter",
+    "Victim"
+  ],
   "addresses": [
     {
       "messages": [],
-      "id": "${address_id}",
+      "id": "${address_id_1}",
       "legacy_id": "0ByMpj00CN",
       "legacy_source_table": "ADDRS_T",
       "type": "Home",
@@ -26,23 +29,50 @@
         "legacy_table_name": "ADDRS_T",
         "legacy_table_description": "Address"
       }
+    },
+    {
+      "messages": [],
+      "id": "${address_id_2}",
+      "type": "Day Care",
+      "street_address": "123 Main",
+      "city": "Sacramento",
+      "state": "CA",
+      "zip": "95757"
     }
   ],
   "races": [
     {
       "race": "White"
+    },
+    {
+      "race": "Hispanic"
     }
   ],
   "ethnicity": {
     "hispanic_latino_origin": "Unknown",
-    "ethnicity_detail": []
+    "ethnicity_detail": [
+      "detail1",
+      "detail2"
+    ]
   },
   "middle_name": "T",
   "name_suffix": "Jr",
   "languages": [
-    "English"
+    "English",
+    "Spanish"
   ],
-  "phone_numbers": [],
+  "phone_numbers": [
+    {
+      "id": ${phone_number_id_1},
+    "number": "1234567890",
+    "type": "Cell"
+    },
+    {
+      "id": ${phone_number_id_2},
+      "number": "2345678901",
+      "type": "Home"
+    }
+  ],
   "sealed": false,
   "sensitive": false,
   "legacy_descriptor": {
@@ -54,20 +84,26 @@
   },
   "csec": [
     {
-      "id": "${csec_id}",
+      "id": "${csec_id_1}",
       "csec_code_id": "At Risk",
       "start_date": "2001-01-01",
       "end_date": "2002-02-02"
+    },
+    {
+      "id": "${csec_id_2}",
+      "csec_code_id": "Victim Before Foster Care",
+      "start_date": "2001-01-02",
+      "end_date": "2002-02-03"
     }
   ],
-      "safelySurenderedBabies": {
-      "surrendered_by": "Unknown",
-      "relation_to_child": "Parents",
-      "bracelet_id": "1234",
-      "parent_guardian_given_bracelet_id": "U",
-      "parent_guardian_provided_med_questionaire": "U",
-      "med_questionaire_return_date": "1992-05-18",
-      "comments": "Mother surrendered the baby",
-      "participant_child": "${participant_id}"
-      }
+  "safelySurenderedBabies": {
+    "surrendered_by": "Unknown",
+    "relation_to_child": "Parents",
+    "bracelet_id": "1234",
+    "parent_guardian_given_bracelet_id": "U",
+    "parent_guardian_provided_med_questionaire": "U",
+    "med_questionaire_return_date": "1992-05-18",
+    "comments": "Mother surrendered the baby",
+    "participant_child": "${participant_id}"
+  }
 }

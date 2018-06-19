@@ -94,7 +94,8 @@ public class ParticipantIntakeApiService implements TypedCrudsService<
     }
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApi(participantEntity);
 
-    participantIntakeApi.setCsecs(csecMapper.toDomain(participantEntity.getCsecs()));
+    List<CsecEntity> csecEntities = csecDao.findByParticipantId(resourceParameters.getParticipantId());
+    participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
     participantIntakeApi.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntity.getSafelySurrenderedBabies()));
 
@@ -186,7 +187,7 @@ public class ParticipantIntakeApiService implements TypedCrudsService<
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
     participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
-    participantIntakeApiPosted.setCsecs(csecMapper.toDomain(participantEntityManaged.getCsecs()));
+    participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
     SafelySurenderedBabiesIntakeApi createdSsb =
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies());
@@ -239,7 +240,7 @@ public class ParticipantIntakeApiService implements TypedCrudsService<
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
     participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
-    participantIntakeApiPosted.setCsecs(csecMapper.toDomain(participantEntityManaged.getCsecs()));
+    participantIntakeApiPosted.setCsecs(participant.getCsecs());
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
     return participantIntakeApiPosted;
@@ -293,26 +294,68 @@ public class ParticipantIntakeApiService implements TypedCrudsService<
 
   private void createOrUpdateCsecs(ParticipantIntakeApi participantIntakeApi,
       ParticipantEntity participantEntityManaged) {
-    List<CsecEntity> csecEnities = new ArrayList<>(participantIntakeApi.getCsecs().size());
-    for (Csec csec : participantIntakeApi.getCsecs()) {
-      String participantId = participantEntityManaged.getId();
-      CsecEntity csecEntity = csecMapper.map(csec);
-      csecEntity.setParticipantId(participantId);
-      if (csecEntity.getId() == null) {
-        CsecEntity createdCsecEntity = csecDao.create(csecEntity);
-        csec.setId(String.valueOf(createdCsecEntity.getId()));
-        csecEnities.add(createdCsecEntity);
-      } else {
-        CsecEntity managedCsecEntity = csecDao.find(csecEntity.getId());
-        if (managedCsecEntity == null) {
-          throw new ServiceException(
-              "Cannot update CSEC that doesn't exist. id = " + csecEntity.getId());
+
+    String participantId = participantEntityManaged.getId();
+    List<CsecEntity> managedCsecEntities = csecDao.findByParticipantId(participantId);
+
+    List<CsecEntity> toDeleteList = new ArrayList<>();
+    List<CsecEntity> toUpdateList = new ArrayList<>();
+    List<CsecEntity> toCreateList = new ArrayList<>();
+    List<Csec> csecs = new ArrayList<>(participantIntakeApi.getCsecs());
+
+    for (CsecEntity managedCsecEntity : managedCsecEntities) {
+      if (!csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId())).findFirst().isPresent()) {
+        toDeleteList.add(managedCsecEntity);
+      }
+      csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
+          .findFirst().ifPresent(c -> toUpdateList.add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
+    }
+
+    toCreateList.addAll(csecMapper.toPersistence(csecs.stream().filter(c -> c.getId() == null).collect(Collectors.toList())));
+
+/*
+    if (managedCsecEntities.isEmpty()) {
+      toCreateList.addAll(csecMapper.toPersistence(csecs));
+    } else {
+      for (CsecEntity managedCsecEntity : managedCsecEntities) {
+        boolean isFound = false;
+        ListIterator<Csec> iterator = csecs.listIterator();
+        while (iterator.hasNext()) {
+          Csec csec = iterator.next();
+          if (csec.getId() == null) {
+            toCreateList.add(csecMapper.map(csec));
+            iterator.remove();
+            break;
+          } else if (String.valueOf(managedCsecEntity.getId()).equals(csec.getId())) {
+            csecMapper.update(managedCsecEntity, csec);
+            toUpdateList.add(managedCsecEntity);
+            isFound = true;
+            iterator.remove();
+            break;
+          }
         }
-        csecDao.getSessionFactory().getCurrentSession().detach(managedCsecEntity);
-        csecEnities.add(csecDao.update(csecEntity));
+        if (!isFound) {
+          toDeleteList.add(managedCsecEntity);
+        }
       }
     }
-    participantEntityManaged.setCsecs(csecEnities);
+*/
+
+
+    for (CsecEntity csecEntity : toDeleteList) {
+      csecDao.delete(csecEntity.getId());
+    }
+    for (CsecEntity csecEntity : toUpdateList) {
+      csecEntity.setParticipantId(participantId);
+      csecDao.update(csecEntity);
+    }
+    for (CsecEntity csecEntity : toCreateList) {
+      csecEntity.setParticipantId(participantId);
+      csecDao.create(csecEntity);
+    }
+
+    List<CsecEntity> csecEntities = csecDao.findByParticipantId(participantId);
+    participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
   }
 
   private void createOrUpdateSafelySurrenderedBabies(ParticipantIntakeApi participantIntakeApi,
