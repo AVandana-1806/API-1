@@ -47,7 +47,8 @@ import gov.ca.cwds.data.cms.ReferralAssignmentDao;
 import gov.ca.cwds.data.cms.ReferralClientDao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.cms.ReporterDao;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.cms.StaffPersonDao;
 import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
@@ -207,8 +208,8 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.IndividualDeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.class,
-          gov.ca.cwds.data.persistence.cms.SpecialProject.class,
-          gov.ca.cwds.data.persistence.cms.SpecialProjectReferral.class,
+          gov.ca.cwds.data.legacy.cms.entity.SpecialProject.class,
+          gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral.class,
           gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies.class,
           gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class)
       .build();
@@ -388,6 +389,7 @@ public class DataAccessModule extends AbstractModule {
     bind(GovernmentOrganizationCrossReportDao.class);
     bind(XaCmsAddressDao.class);
     bind(SpecialProjectDao.class);
+    bind(SpecialProjectReferralDao.class);
 
     // NS:
     bind(AddressDao.class);

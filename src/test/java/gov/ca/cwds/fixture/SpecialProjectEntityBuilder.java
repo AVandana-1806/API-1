@@ -1,12 +1,11 @@
 package gov.ca.cwds.fixture;
 
 import java.time.LocalDate;
-import java.util.Date;
-import gov.ca.cwds.data.persistence.cms.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
 
 public class SpecialProjectEntityBuilder {
 
-  private String archiveAssociationIndicator = "N";
+  private Boolean archiveAssociationIndicator = Boolean.FALSE;
   private String projectDescription = "special project description";
   private LocalDate endDate = null;
   private Short governmentEntityType = 1084;
@@ -15,11 +14,20 @@ public class SpecialProjectEntityBuilder {
   private LocalDate startDate = LocalDate.now();
   
   public SpecialProject build() {
-    return new SpecialProject(archiveAssociationIndicator, projectDescription,
-        endDate, governmentEntityType, id, name, startDate);
+    SpecialProject sp = new SpecialProject();
+    sp.setArcassIndicator(archiveAssociationIndicator);
+    sp.setProjectDescription(projectDescription);
+    sp.setEndDate(endDate);
+    sp.setGovernmentEntityType(governmentEntityType);
+    sp.setId(id);
+    sp.setName(name);
+    sp.setStartDate(startDate);
+    
+    return sp;
+    
   }
   
-  public SpecialProjectEntityBuilder setArchiveAssociationIndicator(String archiveAssociationIndicator) {
+  public SpecialProjectEntityBuilder setArchiveAssociationIndicator(Boolean archiveAssociationIndicator) {
     this.archiveAssociationIndicator = archiveAssociationIndicator;
     return this;
   }

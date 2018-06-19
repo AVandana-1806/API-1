@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -24,9 +22,6 @@ public class SpecialProject implements Request, Response{
   
   private static final long serialVersionUID = 1L;
       
-  private static final String DATE_FORMAT = "yyyy-MM-dd";
-  private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-
   @NotNull
   @ApiModelProperty(required = false, readOnly = false)
   private Boolean archiveAssociationIndicator;
@@ -88,13 +83,13 @@ public class SpecialProject implements Request, Response{
    * @param specialProject - persisted CWS Special Project
    * 
    */
-  public SpecialProject(gov.ca.cwds.data.persistence.cms.SpecialProject specialProject) {
-    this.archiveAssociationIndicator = DomainChef.uncookBooleanString(specialProject.getArchiveAssociationIndicator());
+  public SpecialProject(gov.ca.cwds.data.legacy.cms.entity.SpecialProject specialProject) {
+    this.archiveAssociationIndicator = specialProject.getArrchiveAssociationIndicator();
     this.description = specialProject.getProjectDescription();
-    this.endDate = cookLocalDate(specialProject.getEndDate());
+    this.endDate = DomainChef.cookLocalDate(specialProject.getEndDate());
     this.governmentEntityType = specialProject.getGovernmentEntityType();
     this.name = specialProject.getName();
-    this.startDate = cookLocalDate(specialProject.getStartDate());    
+    this.startDate = DomainChef.cookLocalDate(specialProject.getStartDate());
   }
   
   /**
@@ -164,12 +159,4 @@ public class SpecialProject implements Request, Response{
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
-
-  private String cookLocalDate(LocalDate date) {
-    if (date != null) {
-      return date.format(formatter);
-    }
-    return null;
-  }
-
 }

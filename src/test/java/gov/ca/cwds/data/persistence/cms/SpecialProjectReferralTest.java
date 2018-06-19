@@ -5,23 +5,20 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.junit.Test;
-import gov.ca.cwds.fixture.SpecialProjectReferralResourceBuilder;
-import gov.ca.cwds.rest.api.domain.DomainChef;
-import gov.ca.cwds.rest.api.domain.cms.PostedSpecialProjectReferral;
-import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 
 public class SpecialProjectReferralTest {
   private String lastUpdatedId = "0X5";
-  private Date lastUpdatedTime = new Date();
+  private LocalDateTime lastUpdatedTime = LocalDateTime.now();
 
   private String countySpecificCode = "17";
   private String referralId = "1234567ABC";
   private String specialProjectId = "2345678ABC";
   private LocalDate participationEndDate = null;
   private LocalDate participationStartDate = LocalDate.now();
-  private String safelySurrenderedBabiesIndicator = "N";
+  private Boolean safelySurrenderedBabiesIndicator = Boolean.FALSE;
   private String id = "3456789ABC";
   
   @Test
@@ -37,23 +34,10 @@ public class SpecialProjectReferralTest {
     assertThat(spr.getCountySpecificCode(), is(equalTo(countySpecificCode)));
     assertThat(spr.getReferralId(), is(equalTo(referralId)));
     assertThat(spr.getSpecialProjectId(), is(equalTo(specialProjectId)));
-    assertThat(spr.getParticipationEndDate(), is(equalTo(participationEndDate)));
-    assertThat(spr.getParticipationStartDate(), is(equalTo(participationStartDate)));
-    assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
+    assertThat(spr.getPartEndDate(), is(equalTo(participationEndDate)));
+    assertThat(spr.getPartStartDate(), is(equalTo(participationStartDate)));
+    assertThat(spr.getSsbIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
     assertThat(spr.getId(), is(equalTo(id)));
-  }
-  
-  @Test
-  public void testConstructorUsingDomainObject() throws Exception {
-    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral domain = new SpecialProjectReferralResourceBuilder().build();
-    SpecialProjectReferral spr = new SpecialProjectReferral(id, domain, lastUpdatedId, lastUpdatedTime);
-    assertThat(spr.getId(), is(equalTo(id)));
-    assertThat(spr.getCountySpecificCode(), is(equalTo(domain.getCountySpecificCode())));
-    assertThat(spr.getReferralId(), is(equalTo(domain.getReferralId())));
-    assertThat(spr.getSpecialProjectId(), is(equalTo(domain.getSpecialProjectId())));
-//    assertThat(spr.getParticipationEndDate().toString(), is(equalTo(domain.getParticipationEndDate())));
-    assertThat(spr.getParticipationStartDate().toString(), is(equalTo(domain.getParticipationStartDate())));
-    assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(DomainChef.cookBoolean(domain.getSafelySurrenderedBabiesIndicator()))));
   }
   
   @Test
@@ -65,35 +49,20 @@ public class SpecialProjectReferralTest {
     spr.setId(id);
     assertThat(spr.getId(), is(equalTo(id)));
     assertThat(spr.getPrimaryKey(), is(equalTo(id)));
-    spr.setLastUpdatedId(lastUpdatedId);
-    assertThat(spr.getLastUpdatedId(), is(equalTo(lastUpdatedId)));
-    spr.setLastUpdatedTime(lastUpdatedTime);
-    assertThat(spr.getLastUpdatedTime(), is(equalTo(lastUpdatedTime)));
-    spr.setParticipationEndDate(newDate);
-    assertThat(spr.getParticipationEndDate(), is(equalTo(newDate)));
-    spr.setParticipationStartDate(newDate);
-    assertThat(spr.getParticipationStartDate(), is(equalTo(newDate)));
+    spr.setLastUpdateId(lastUpdatedId);
+    assertThat(spr.getLastUpdateId(), is(equalTo(lastUpdatedId)));
+    spr.setLastUpdateTime(lastUpdatedTime);;
+    assertThat(spr.getLastUpdateTime(), is(equalTo(lastUpdatedTime)));
+    spr.setPartEndDate(newDate);
+    assertThat(spr.getPartEndDate(), is(equalTo(newDate)));
+    spr.setPartStartDate(newDate);
+    assertThat(spr.getPartStartDate(), is(equalTo(newDate)));
     spr.setReferralId(referralId);
     assertThat(spr.getReferralId(), is(equalTo(referralId)));
-    spr.setSafelySurrenderedBabiesIndicator(safelySurrenderedBabiesIndicator);
-    assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
+    spr.setSsbIndicator(safelySurrenderedBabiesIndicator);
+    assertThat(spr.getSsbIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
     spr.setSpecialProjectId(specialProjectId);
     assertThat(spr.getSpecialProjectId(), is(equalTo(specialProjectId)));
-  }
-  
-  @Test
-  public void shouldThrowExceptionWhenPostedSpecialProjectReferralIdIsBlank() throws Exception {
-    
-    SpecialProjectReferral spr = new SpecialProjectReferral(countySpecificCode, referralId, 
-        specialProjectId, participationEndDate, participationStartDate, 
-        safelySurrenderedBabiesIndicator, id);
-    spr.setId("");
-    try {
-      PostedSpecialProjectReferral psp = new PostedSpecialProjectReferral(spr);
-      
-    } catch (ServiceException e) {
-      
-    }
   }
   
 }

@@ -25,6 +25,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.util.CmsRecordUtils;
 import gov.ca.cwds.rest.validation.Date;
 import io.dropwizard.jackson.JsonSnakeCase;
+import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -34,7 +35,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "date_of_birth", "first_name", "middle_name", "last_name", "name_suffix",
-    "sensitive", "sealed", "legacy_descriptor", "relationship_to"})
+    "gender", "date_of_death", "sensitive", "sealed", "legacy_descriptor", "relationship_to"})
 public final class Relationship extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
@@ -75,6 +76,20 @@ public final class Relationship extends ReportingDomain implements Request, Resp
       example = "")
   private String suffixName;
 
+  @JsonProperty("gender")
+  @NotNull
+  @Size(max = 1)
+  @ApiModelProperty(required = true, readOnly = false, value = "Gender Code", example = "M")
+  @OneOf(value = {"M", "F", "I", "U"}, ignoreCase = false, ignoreWhitespace = true)
+  private String gender;
+
+  @JsonProperty("date_of_death")
+  @gov.ca.cwds.rest.validation.Date(format = gov.ca.cwds.rest.api.domain.DomainObject.DATE_FORMAT,
+      required = false)
+  @ApiModelProperty(required = false, readOnly = false, value = "date of death",
+      example = "2010-10-01")
+  private String dateOfDeath;
+
   @JsonProperty("sensitive")
   @NotNull
   @ApiModelProperty(required = true, readOnly = false, value = "sensitive", example = "false")
@@ -105,13 +120,16 @@ public final class Relationship extends ReportingDomain implements Request, Resp
    * @param middleName - middle name
    * @param lastName - last name
    * @param suffixName - suffix
+   * @param gender - gender code
+   * @param dateOfDeath - date of death
    * @param sensitive - sensitive data
    * @param sealed - sealed data
    * @param cmsRecordDescriptor - CMS record description
    * @param relatedTo - people related to this person
    */
   public Relationship(String id, @Date(format = "yyyy-MM-dd", required = false) String dateOfBirth,
-      String firstName, String middleName, String lastName, String suffixName, Boolean sensitive,
+      String firstName, String middleName, String lastName, String suffixName, String gender,
+      @Date(format = "yyyy-MM-dd", required = false) String dateOfDeath, Boolean sensitive,
       Boolean sealed, CmsRecordDescriptor cmsRecordDescriptor, Set<RelationshipTo> relatedTo) {
     super();
     this.id = id;
@@ -120,6 +138,8 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.middleName = middleName;
     this.lastName = lastName;
     this.suffixName = suffixName;
+    this.gender = gender;
+    this.dateOfDeath = dateOfDeath;
     this.sensitive = sensitive;
     this.sealed = sealed;
     this.cmsRecordDescriptor = cmsRecordDescriptor;
@@ -140,6 +160,8 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.middleName = client.getMiddleName();
     this.lastName = client.getLastName();
     this.suffixName = client.getNameSuffix();
+    this.gender = client.getGender();
+    this.dateOfDeath = DomainChef.cookDate(client.getDeathDate());
     this.sealed =
         StringUtils.equalsAnyIgnoreCase(client.getSensitivityIndicator(), "R") ? Boolean.TRUE
             : Boolean.FALSE;
@@ -191,6 +213,20 @@ public final class Relationship extends ReportingDomain implements Request, Resp
    */
   public String getSuffixName() {
     return suffixName;
+  }
+
+  /**
+   * @return the gender
+   */
+  public String getGender() {
+    return gender;
+  }
+
+  /**
+   * @return the dateOfDeath
+   */
+  public String getDateOfDeath() {
+    return dateOfDeath;
   }
 
   /**

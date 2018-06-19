@@ -4,6 +4,8 @@
   "first_name" : "Jackson",
   "middle_name" : "R",
   "last_name" : "Greene",
+  "gender" : "M",
+  "date_of_death" : "2001-10-01",
   "name_suffix" : "",
   "sensitive" : false,
   "sealed" : false,

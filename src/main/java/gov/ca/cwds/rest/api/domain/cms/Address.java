@@ -99,10 +99,12 @@ public class Address extends ReportingDomain implements Request, Response {
   @ApiModelProperty(example = "1828")
   private Short state;
 
+  @NotNull
   @ApiModelProperty(example = "Evergreen Terrace")
   @Size(max = 40)
   private String streetName;
 
+  @NotNull
   @ApiModelProperty(example = "450A")
   @Size(max = CmsPersistentObject.CMS_ID_LEN)
   private String streetNumber;
@@ -260,7 +262,7 @@ public class Address extends ReportingDomain implements Request, Response {
     if ((index = address.getStreetAddress().indexOf(' ')) > 0) {
       streetNumber = address.getStreetAddress().substring(0, index);
       if (!streetNumber.chars().allMatch(Character::isDigit)) {
-        streetNumber = null;
+        streetNumber = "";
         streetName = address.getStreetAddress();
       } else {
         streetName =

@@ -14,21 +14,22 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
-import gov.ca.cwds.data.cms.SpecialProjectReferralDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
-import gov.ca.cwds.data.persistence.cms.SpecialProject;
-import gov.ca.cwds.data.persistence.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.fixture.CsecBuilder;
 import gov.ca.cwds.fixture.SpecialProjectEntityBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.Csec;
-import gov.ca.cwds.rest.api.domain.cms.PostedSpecialProjectReferral;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
@@ -64,23 +65,29 @@ public class SpecialProjectReferralServiceTest {
   }
   
   @Test
-  public void shouldReturnPostedSpecialProjectReferralObjectWhenCreate() throws Exception {
+  public void shouldReturnSpecialProjectReferralObjectWhenCreate() throws Exception {
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
     
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService.create(sprDomain);
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService.create(sprDomain);
     
-    assertThat(sprPosted.getClass(), is(PostedSpecialProjectReferral.class));
+    assertThat(sprPosted.getClass(), is(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral.class));
   }
 
   @Test
   public void shouldReturnPostedSpecialProjectReferralWhenSaveCsecSpecialProjectReferral() throws Exception {
-    List<Csec> csecs = new ArrayList();
+    List<Csec> csecs = new ArrayList<Csec>();
     Csec csec = new CsecBuilder().createCsec();
     csec.setId("S-CSEC Referral");
     csecs.add(csec);
@@ -95,24 +102,30 @@ public class SpecialProjectReferralServiceTest {
     List<SpecialProject> specialProjects = new ArrayList();
     specialProjects.add(specialProject);
     
-    when(specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
-    assertThat(sprPosted.getClass(), is(PostedSpecialProjectReferral.class));    
+    assertThat(sprPosted.getClass(), is(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral.class));    
   }
   
   @Test 
   public void shouldReturnNullWhenSpecialProjectDoesNotExistsOnSave() throws Exception {
-    List<Csec> csecs = new ArrayList();
+    List<Csec> csecs = new ArrayList<Csec>();
     Csec csec = new CsecBuilder().createCsec();
     csec.setId("S-CSEC Referral");
     csecs.add(csec);
@@ -128,18 +141,24 @@ public class SpecialProjectReferralServiceTest {
         .build();        
     List<SpecialProject> specialProjects = new ArrayList();
     specialProjects.add(specialProject);    
-    when(specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
     
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
     // specialProjectReferralDao.create should not be called
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted, is(nullValue()));    
  }
@@ -163,7 +182,7 @@ public class SpecialProjectReferralServiceTest {
         .build();
     List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);
-    when(specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
 
     // mock the special project referral dao (findSpecialProjectByReferralIdAndSpecialProjectId)
@@ -172,10 +191,18 @@ public class SpecialProjectReferralServiceTest {
         .setSpecialProjectId(specialProjectId)
         .setReferralId(referralId)
         .build();
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
+    when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
+
     List<SpecialProjectReferral> specialProjectReferrals = new ArrayList();
     specialProjectReferrals.add(sprEntity);    
     when(specialProjectReferralDao
@@ -183,7 +210,7 @@ public class SpecialProjectReferralServiceTest {
         .thenReturn(specialProjectReferrals);
 
     // specialProjectReferralDao.create should not be called
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted, is(nullValue()));    
 
@@ -205,17 +232,24 @@ public class SpecialProjectReferralServiceTest {
         .build();
     List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);    
-    when(specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
+    when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted, is(nullValue()));    
     
@@ -235,17 +269,23 @@ public class SpecialProjectReferralServiceTest {
     List<SpecialProject> specialProjects = new ArrayList();
     specialProjects.add(specialProject);
     
-    when(specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
-    SpecialProjectReferral sprEntity = new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral("9876543ABC",
-        sprDomain,
-        "aab",
-        new Date());
+    SpecialProjectReferral sprEntity = new SpecialProjectReferral();
+    sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    sprEntity.setId("9876543ABC");
+    sprEntity.setLastUpdateId("aab");
+    sprEntity.setLastUpdateTime(LocalDateTime.now());
+    sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    sprEntity.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    sprEntity.setReferralId(sprDomain.getReferralId());
+    sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
-    PostedSpecialProjectReferral sprPosted = specialProjectReferralService
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted, is(nullValue()));    
     

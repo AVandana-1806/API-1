@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -88,7 +89,7 @@ public class ReporterTest {
   private Validator validator;
 
   @Before
-  public void setup() throws Exception {   
+  public void setup() throws Exception {
     messageBuilder = new MessageBuilder();
   }
 
@@ -422,7 +423,7 @@ public class ReporterTest {
   }
 
   @Test
-  public void testForStreetAddressContainOnlyWordWhereStreetNumberisNull() {
+  public void testForStreetAddressContainOnlyWordWhereStreetNumberisMissing() {
     String streetAddress = "Main St";
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
 
@@ -431,7 +432,7 @@ public class ReporterTest {
             "city", 1828, "12345", 32, legacyDescriptor);
 
     Address address = Address.createWithDefaults(nsAddress);
-    assertThat(address.getStreetNumber(), is(equalTo(null)));
+    assertThat(address.getStreetNumber(), is(equalTo("")));
   }
 
   @Test
@@ -441,16 +442,17 @@ public class ReporterTest {
 
   @Test
   public void serializesToJSON() throws Exception {
-    final String expected = MAPPER.writeValueAsString(MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class));
+    final String expected = MAPPER.writeValueAsString(
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class));
 
     assertThat(MAPPER.writeValueAsString(validReporter()), is(equalTo(expected)));
   }
 
   @Test
   public void deserializesFromJSON() throws Exception {
-    assertThat(MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"),
-        Reporter.class), is(equalTo(validReporter())));
+    assertThat(
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class),
+        is(equalTo(validReporter())));
   }
 
   /*
@@ -471,14 +473,15 @@ public class ReporterTest {
    */
   @Test
   public void testStreetNameNotCityNameFails() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetName("test street").setCityName(null).build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setStreetName("test street").setCityName(null).build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("cityName is required since streetName is set")) {
         theErrorDetected = true;
       }
@@ -488,7 +491,8 @@ public class ReporterTest {
 
   @Test
   public void testStreetNameAndCityNameSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetName("test street").setCityName("test city").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setStreetName("test street").setCityName("test city").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -519,24 +523,26 @@ public class ReporterTest {
    */
   @Test
   public void testStreetNumberNotStreetNameFails() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetNumber("test street").setStreetName(null).build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setStreetNumber("test street").setStreetName(null).build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("streetName is required since streetNumber is set")) {
         theErrorDetected = true;
       }
     }
     assertThat(theErrorDetected, is(true));
-   }
+  }
 
   @Test
   public void testStreetNumberAndStreetNameSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetNumber("number").setStreetName("test street name").build();
+    Reporter reporter = new ReporterResourceBuilder().setStreetNumber("number")
+        .setStreetName("test street name").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -544,7 +550,8 @@ public class ReporterTest {
 
   @Test
   public void testNotStreetNumberNotStreetNameSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetNumber("").setStreetName("test street name").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setStreetNumber("").setStreetName("test street name").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -552,7 +559,8 @@ public class ReporterTest {
 
   @Test
   public void testStreetNameNotStreetNumberSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetNumber("").setStreetName("test street name").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setStreetNumber("").setStreetName("test street name").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -568,15 +576,17 @@ public class ReporterTest {
    */
   @Test
   public void testLawEnforcementIdAndEmployerNameFails() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setLawEnforcementId("Y").setEmployerName("test name").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setLawEnforcementId("Y").setEmployerName("test name").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
-      if (message.getMessage().equals("Properties [employerName, lawEnforcementId] are mutually exclusive but multiple values are set")) {
+      // System.out.println(message.getMessage());
+      if (message.getMessage().equals(
+          "Properties [employerName, lawEnforcementId] are mutually exclusive but multiple values are set")) {
         theErrorDetected = true;
       }
     }
@@ -585,7 +595,8 @@ public class ReporterTest {
 
   @Test
   public void testLawEnforcementIdNotEmployerNameNotSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setLawEnforcementId("Y").setEmployerName("").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setLawEnforcementId("Y").setEmployerName("").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -608,7 +619,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("badgeNumber size must be less than or equal to 6")) {
         theErrorDetected = true;
       }
@@ -618,7 +629,8 @@ public class ReporterTest {
 
   @Test
   public void testBadgeNumberEmptyLawEnforcementIdSuccess() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setBadgeNumber("").setLawEnforcementId("12345").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setBadgeNumber("").setLawEnforcementId("12345").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
@@ -652,13 +664,14 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("cityName may not be null")) {
         theErrorDetected = true;
       }
     }
     assertThat(theErrorDetected, is(true));
   }
+
   @Test
   public void failsWhenCityNameTooLong() throws Exception {
     Reporter reporter = new ReporterResourceBuilder().setCityName("123456789012345678901").build();
@@ -668,7 +681,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("cityName size must be less than or equal to 20")) {
         theErrorDetected = true;
       }
@@ -688,7 +701,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("colltrClientRptrReltnshpType may not be null")) {
         theErrorDetected = true;
       }
@@ -708,7 +721,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("communicationMethodType may not be null")) {
         theErrorDetected = true;
       }
@@ -728,7 +741,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("confidentialWaiverIndicator may not be null")) {
         theErrorDetected = true;
       }
@@ -757,14 +770,15 @@ public class ReporterTest {
 
   @Test
   public void failsWhenDrmsMandatedRprtrFeedbackTooLong() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setDrmsMandatedRprtrFeedback("12345678901").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setDrmsMandatedRprtrFeedback("12345678901").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("drmsMandatedRprtrFeedback size must be between 0 and 10")) {
         theErrorDetected = true;
       }
@@ -784,7 +798,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("employerName may not be null")) {
         theErrorDetected = true;
       }
@@ -794,14 +808,15 @@ public class ReporterTest {
 
   @Test
   public void failsWhenEmployerNameTooLong() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setEmployerName("1234567890123456789012345678901234567890").build();
+    Reporter reporter = new ReporterResourceBuilder()
+        .setEmployerName("1234567890123456789012345678901234567890").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("employerName size must be less than or equal to 35")) {
         theErrorDetected = true;
       }
@@ -818,7 +833,7 @@ public class ReporterTest {
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     assertThat(messageBuilder.getMessages().isEmpty(), is(true));
- }
+  }
 
   @Test
   public void failsWhenFeedbackDateWrongFormat() throws Exception {
@@ -829,7 +844,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("feedbackDate must be in the format of yyyy-MM-dd")) {
         theErrorDetected = true;
       }
@@ -849,7 +864,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("feedbackRequiredIndicator may not be null")) {
         theErrorDetected = true;
       }
@@ -870,7 +885,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("firstName may not be empty")) {
         theErrorDetected = true;
       }
@@ -887,7 +902,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("firstName may not be empty")) {
         theErrorDetected = true;
       }
@@ -904,7 +919,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("firstName size must be between 1 and 20")) {
         theErrorDetected = true;
       }
@@ -924,7 +939,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("lastName may not be empty")) {
         theErrorDetected = true;
       }
@@ -941,7 +956,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("lastName may not be empty")) {
         theErrorDetected = true;
       }
@@ -951,14 +966,15 @@ public class ReporterTest {
 
   @Test
   public void failsWhenLastNameTooLong() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setLastName("12345678901234567890123456").build();
+    Reporter reporter =
+        new ReporterResourceBuilder().setLastName("12345678901234567890123456").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("lastName size must be between 1 and 25")) {
         theErrorDetected = true;
       }
@@ -978,7 +994,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("mandatedReporterIndicator may not be null")) {
         theErrorDetected = true;
       }
@@ -991,19 +1007,19 @@ public class ReporterTest {
    */
   @Test
   public void failsWhenMessagePhoneExtensionNumberNull() throws Exception {
-  Reporter reporter = new ReporterResourceBuilder().setMessagePhoneExtensionNumber(null).build();
-  validator = Validation.buildDefaultValidatorFactory().getValidator();
-  messageBuilder.addDomainValidationError(validator.validate(reporter));
-  Boolean theErrorDetected = false;
+    Reporter reporter = new ReporterResourceBuilder().setMessagePhoneExtensionNumber(null).build();
+    validator = Validation.buildDefaultValidatorFactory().getValidator();
+    messageBuilder.addDomainValidationError(validator.validate(reporter));
+    Boolean theErrorDetected = false;
 
-  List<ErrorMessage> validationErrors = messageBuilder.getMessages();
-  for (ErrorMessage message : validationErrors) {
-    System.out.println(message.getMessage());
-    if (message.getMessage().equals("messagePhoneExtensionNumber may not be null")) {
-      theErrorDetected = true;
+    List<ErrorMessage> validationErrors = messageBuilder.getMessages();
+    for (ErrorMessage message : validationErrors) {
+      System.out.println(message.getMessage());
+      if (message.getMessage().equals("messagePhoneExtensionNumber may not be null")) {
+        theErrorDetected = true;
+      }
     }
-  }
-  assertThat(theErrorDetected, is(true));
+    assertThat(theErrorDetected, is(true));
   }
 
   /*
@@ -1018,7 +1034,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("messagePhoneNumber may not be null")) {
         theErrorDetected = true;
       }
@@ -1046,7 +1062,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("middleInitialName size must be between 0 and 1")) {
         theErrorDetected = true;
       }
@@ -1074,7 +1090,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("namePrefixDescription may not be null")) {
         theErrorDetected = true;
       }
@@ -1099,13 +1115,13 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("namePrefixDescription size must be between 0 and 6")) {
         theErrorDetected = true;
       }
     }
     assertThat(theErrorDetected, is(true));
-   }
+  }
 
   /*
    * primaryPhoneNumber Tests
@@ -1119,7 +1135,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("primaryPhoneNumber may not be null")) {
         theErrorDetected = true;
       }
@@ -1139,7 +1155,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("primaryPhoneExtensionNumber may not be null")) {
         theErrorDetected = true;
       }
@@ -1179,7 +1195,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("streetName may not be null")) {
         theErrorDetected = true;
       }
@@ -1197,14 +1213,15 @@ public class ReporterTest {
 
   @Test
   public void failsWhenStreetNameTooLong() throws Exception {
-    Reporter reporter = new ReporterResourceBuilder().setStreetName("12345678901234567890123456789012345678901").build();
+    Reporter reporter = new ReporterResourceBuilder()
+        .setStreetName("12345678901234567890123456789012345678901").build();
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(reporter));
     Boolean theErrorDetected = false;
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("streetName size must be less than or equal to 40")) {
         theErrorDetected = true;
       }
@@ -1224,7 +1241,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("streetNumber may not be null")) {
         theErrorDetected = true;
       }
@@ -1249,7 +1266,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("streetNumber size must be less than or equal to 10")) {
         theErrorDetected = true;
       }
@@ -1269,7 +1286,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("suffixTitleDescription may not be null")) {
         theErrorDetected = true;
       }
@@ -1289,7 +1306,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("zipcode may not be null")) {
         theErrorDetected = true;
       }
@@ -1310,7 +1327,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("referralId may not be empty")) {
         theErrorDetected = true;
       }
@@ -1327,7 +1344,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("referralId may not be empty")) {
         theErrorDetected = true;
       }
@@ -1344,7 +1361,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("referralId size must be between 10 and 10")) {
         theErrorDetected = true;
       }
@@ -1372,7 +1389,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("lawEnforcementId size must be 10")) {
         theErrorDetected = true;
       }
@@ -1392,7 +1409,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("zipSuffixNumber may not be null")) {
         theErrorDetected = true;
       }
@@ -1412,7 +1429,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("countySpecificCode may not be empty")) {
         theErrorDetected = true;
       }
@@ -1429,7 +1446,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("countySpecificCode may not be empty")) {
         theErrorDetected = true;
       }
@@ -1446,7 +1463,7 @@ public class ReporterTest {
 
     List<ErrorMessage> validationErrors = messageBuilder.getMessages();
     for (ErrorMessage message : validationErrors) {
-//      System.out.println(message.getMessage());
+      // System.out.println(message.getMessage());
       if (message.getMessage().equals("countySpecificCode size must be between 1 and 2")) {
         theErrorDetected = true;
       }
@@ -1459,8 +1476,8 @@ public class ReporterTest {
    */
   private Reporter validReporter() throws JsonParseException, JsonMappingException, IOException {
 
-    Reporter validReporter = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter validReporter =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
     return validReporter;
 
   }

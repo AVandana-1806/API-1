@@ -48,7 +48,7 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
-import gov.ca.cwds.data.persistence.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
@@ -70,8 +70,8 @@ import gov.ca.cwds.rest.api.domain.cms.ClientAddress;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.PostedReporter;
-import gov.ca.cwds.rest.api.domain.cms.PostedSpecialProjectReferral;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
+import gov.ca.cwds.rest.api.domain.cms.SpecialProject;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.business.rules.LACountyTrigger;
 import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
@@ -205,9 +205,9 @@ public class ParticipantServiceTest {
     specialProjectReferralService = mock(SpecialProjectReferralService.class);
 
     specialProjectReferralService = mock(SpecialProjectReferralService.class);
-    SpecialProjectReferral specialProjectReferral = new SpecialProjectReferralEntityBuilder().build();
-    PostedSpecialProjectReferral postedSpecialProjectReferral = 
-        new PostedSpecialProjectReferral(specialProjectReferral);
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral specialProjectReferral = new SpecialProjectReferralEntityBuilder().build();
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral postedSpecialProjectReferral = 
+        new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(specialProjectReferral);
     when(specialProjectReferralService.saveCsecSpecialProjectReferral(any(), any(), any(), any()))
       .thenReturn(postedSpecialProjectReferral);   
     
