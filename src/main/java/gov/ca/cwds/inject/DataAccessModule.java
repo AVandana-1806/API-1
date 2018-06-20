@@ -518,7 +518,6 @@ public class DataAccessModule extends AbstractModule {
   @Singleton
   public FerbHibernateBundle getXaCmsRsHibernateBundle() {
     LOGGER.info("DataAccessModule.getXaCmsRsHibernateBundle()");
-    // xaCmsRsHibernateBundle.run(configuration, environment);
     return xaCmsRsHibernateBundle;
   }
 

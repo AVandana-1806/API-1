@@ -200,6 +200,10 @@ testConfig:
 triggertables:
   laCountySpecificCode: 19
  
+# systemCodeCache: 
+#   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
+#   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+ 
 webSecurity:
   httpResponseSecurityHeaders:
     # Prevent MIMI sniffing
