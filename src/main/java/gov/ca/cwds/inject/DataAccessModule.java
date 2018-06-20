@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import gov.ca.cwds.data.ns.ContactDao;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
@@ -219,6 +220,7 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.Addresses.class,
       gov.ca.cwds.data.persistence.ns.Allegation.class,
       gov.ca.cwds.data.persistence.ns.AllegationEntity.class,
+      gov.ca.cwds.data.persistence.ns.ContactEntity.class,
       gov.ca.cwds.data.persistence.ns.CsecEntity.class,
       gov.ca.cwds.data.persistence.ns.CrossReportEntity.class,
       gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity.class,
@@ -417,6 +419,7 @@ public class DataAccessModule extends AbstractModule {
     bind(IntakeLovDao.class);
     bind(PaperTrailDao.class);
     bind(PaperTrailInterceptor.class);
+    bind(ContactDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);

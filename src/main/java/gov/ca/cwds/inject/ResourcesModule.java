@@ -45,6 +45,7 @@ import gov.ca.cwds.rest.api.domain.investigation.Investigation;
 import gov.ca.cwds.rest.api.domain.investigation.People;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipList;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
+import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntakeRequest;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactReferralRequest;
 import gov.ca.cwds.rest.resources.AddressResource;
 import gov.ca.cwds.rest.resources.ApplicationResource;
@@ -67,6 +68,7 @@ import gov.ca.cwds.rest.resources.cms.CmsDocReferralClientResource;
 import gov.ca.cwds.rest.resources.cms.CmsDocumentResource;
 import gov.ca.cwds.rest.resources.cms.CmsNSReferralResource;
 import gov.ca.cwds.rest.resources.cms.GovernmentOrganizationResource;
+import gov.ca.cwds.rest.resources.contact.ContactIntakeResource;
 import gov.ca.cwds.rest.resources.contact.DeliveredServiceResource;
 import gov.ca.cwds.rest.resources.hoi.HoiCaseResource;
 import gov.ca.cwds.rest.resources.hoi.HoiReferralResource;
@@ -81,6 +83,7 @@ import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
+import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ParticipantService;
@@ -178,6 +181,7 @@ public class ResourcesModule extends AbstractModule {
     bind(AuthorizationResource.class);
     bind(HoiUsingClientIdResource.class);
     bind(ScreeningParticipantResource.class);
+    bind(ContactIntakeResource.class);
   }
 
   @Provides
@@ -541,5 +545,12 @@ public class ResourcesModule extends AbstractModule {
   public SimpleResourceDelegate<String, AuthorizationRequest, AuthorizationResponse, AuthorizationService> authorizationServiceBackedResource(
       Injector injector) {
     return new SimpleResourceDelegate<>(injector.getInstance(AuthorizationService.class));
+  }
+
+  @Provides
+  @ContactIntakeApiServiceBackedResource
+  public TypedResourceDelegate<String, ContactIntakeRequest> contactIntakeApiServiceBackedResource(
+          Injector injector) {
+    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ContactIntakeApiService.class));
   }
 }

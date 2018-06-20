@@ -8,6 +8,7 @@ import gov.ca.cwds.rest.services.mapper.AddressMapper;
 import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationTypeMapper;
+import gov.ca.cwds.rest.services.mapper.ContactIntakeMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.LegacyDescriptorMapper;
@@ -37,5 +38,7 @@ public class MappingModule extends AbstractModule {
     bind(SafelySurrenderedBabiesMapper.class).to(SafelySurrenderedBabiesMapper.INSTANCE.getClass())
         .asEagerSingleton();
     bind(ScreeningMapper.class).to(ScreeningMapper.INSTANCE.getClass()).asEagerSingleton();
+    bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass())
+        .asEagerSingleton();
   }
 }
