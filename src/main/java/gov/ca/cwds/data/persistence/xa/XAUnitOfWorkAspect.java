@@ -71,8 +71,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   public void beforeStart(Method method, XAUnitOfWork xaUnitOfWork) throws CaresXAException {
+    LOGGER.info("XA beforeStart.beforeStart(): BEGIN");
     if (xaUnitOfWork == null) {
-      LOGGER.error("XA beforeStart: no annotation");
+      LOGGER.error("XA beforeStart.beforeStart(): no annotation");
       return;
     }
 

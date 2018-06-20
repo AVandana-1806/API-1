@@ -85,6 +85,7 @@ rsDataSourceFactory:
       hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
+      hibernate.connection.provider_disables_autocommit: true
 
 xaCmsDataSourceFactory:
   autoCommitByDefault: false

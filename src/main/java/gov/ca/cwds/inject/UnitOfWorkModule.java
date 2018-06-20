@@ -29,10 +29,6 @@ public class UnitOfWorkModule {
       HibernateBundle<ApiConfiguration>... bundles) {
     if (proxyFactory == null) {
       proxyFactory = new UnitOfWorkAwareProxyFactory(bundles);
-
-      // TODO: alternate ctor.
-      // public UnitOfWorkAwareProxyFactory(String name, SessionFactory sessionFactory)
-
     }
     return proxyFactory;
   }

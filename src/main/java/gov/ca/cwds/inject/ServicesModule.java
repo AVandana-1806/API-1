@@ -265,7 +265,7 @@ public class ServicesModule extends AbstractModule {
     requestInjection(xaInterceptor);
 
     final Properties p = new Properties();
-    p.setProperty("something", "Some String");
+    p.setProperty("managed", "N");
     Names.bindProperties(binder(), p);
 
     // @Singleton does not work with DropWizard Guice.
