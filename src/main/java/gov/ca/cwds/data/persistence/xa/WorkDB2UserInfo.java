@@ -29,7 +29,7 @@ public class WorkDB2UserInfo implements Work {
   @Override
   public void execute(Connection connection) throws SQLException {
     if (connection instanceof DB2Connection) {
-      LOGGER.info("DB2 connection! Set user info ...");
+      LOGGER.info("DB2 connection, set user info");
       final DB2Connection db2conn = (DB2Connection) connection;
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
       final String staffId = ctx.getStaffId();

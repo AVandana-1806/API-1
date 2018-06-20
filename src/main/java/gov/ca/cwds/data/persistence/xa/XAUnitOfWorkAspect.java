@@ -169,6 +169,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
           LOGGER.trace("No current session. Open a new one. {}", e.getMessage(), e);
         }
         session = sessionFactory.openSession();
+      } finally {
+        LOGGER.info("XaUnitOfWorkAspect.grabSession(): finally block");
       }
 
       configureSession(session);
