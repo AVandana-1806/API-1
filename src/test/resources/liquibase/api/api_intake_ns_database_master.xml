@@ -28,6 +28,7 @@
   <include file="liquibase/data/201806011524_add_status_column_to_screenings.sql"/>
   <include file="liquibase/data/201806061051_increase_char_limit_of_curr_child_loc.sql"/>
   <include file="liquibase/data/201806111202_drop_foreign_key_constatint_on_allegationsTable_ofPerpetrator.xml"/>
+  <include file="liquibase/data/201806201052_add_screening_contact_reference_column_to_screenings.sql"/>
 
   <include file="data/screening_data.xml" relativeToChangelogFile="true"/>
   <include file="data/addresses_data.xml" relativeToChangelogFile="true"/>

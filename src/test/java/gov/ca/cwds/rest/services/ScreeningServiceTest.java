@@ -6,10 +6,8 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
@@ -20,7 +18,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.ns.ScreeningWrapper;
@@ -101,7 +98,8 @@ public class ScreeningServiceTest {
   @Test
   public void testCreate() {
     when(indexResponse.status()).thenReturn(RestStatus.CREATED);
-    Screening screening = new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open");
+    Screening screening =
+        new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
     Screening actual = screeningService.create(screening);
     assertThat(actual, is(screening));
   }
@@ -109,14 +107,16 @@ public class ScreeningServiceTest {
   @Test
   public void testUpdate() {
     when(indexResponse.status()).thenReturn(RestStatus.OK);
-    Screening screening = new Screening("abc", null, null, null, null, null, null, null, "0X5", "ssb", "Open");
+    Screening screening =
+        new Screening("abc", null, null, null, null, null, null, null, "0X5", "ssb", "Open", null);
     Screening actual = screeningService.update("abc", screening);
     assertThat(actual, is(screening));
   }
 
   @Test
   public void testUpdatePrimaryKeyValueMismatch() {
-    Screening screening = new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open");
+    Screening screening =
+        new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
     try {
       screeningService.update("abcd", screening);
       fail("Expected exception");
