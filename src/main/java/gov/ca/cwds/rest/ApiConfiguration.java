@@ -23,6 +23,7 @@ public class ApiConfiguration extends BaseApiConfiguration {
   @JsonProperty(value = "systemCodeCache")
   private SystemCodeCacheConfiguration systemCodeCacheConfiguration;
 
+  @JsonProperty
   public void setRsDataSourceFactory(DataSourceFactory rsDataSourceFactory) {
     this.rsDataSourceFactory = rsDataSourceFactory;
   }
@@ -51,7 +52,6 @@ public class ApiConfiguration extends BaseApiConfiguration {
     this.upgradeDbOnStart = upgradeDbOnStart;
   }
 
-<<<<<<< HEAD
   @JsonProperty
   public XADataSourceFactory getXaCmsRsDataSourceFactory() {
     return xaCmsRsDataSourceFactory;
@@ -62,7 +62,6 @@ public class ApiConfiguration extends BaseApiConfiguration {
     this.xaCmsRsDataSourceFactory = xaCmsRsDataSourceFactory;
   }
 
-=======
   public SystemCodeCacheConfiguration getSystemCodeCacheConfiguration() {
     return systemCodeCacheConfiguration;
   }
@@ -70,5 +69,5 @@ public class ApiConfiguration extends BaseApiConfiguration {
   public void setSystemCodeCacheConfiguration(SystemCodeCacheConfiguration systemCodeCacheConfig) {
     this.systemCodeCacheConfiguration = systemCodeCacheConfig;
   }
->>>>>>> 703e73def2586d8586b56fb8c4d9b2405e3893bd
+
 }
