@@ -28,7 +28,7 @@ public class SafetyAlerts extends ReportingDomain implements Request, Response {
 
   @JsonProperty("alerts")
   @ApiModelProperty(required = false, readOnly = false, value = "Safety Alert Type")
-  private Set<String> alerts;
+  private Set<Short> alerts;
 
   @JsonProperty("alert_information")
   @ApiModelProperty(required = false, readOnly = false, value = "Alert Information")
@@ -46,7 +46,7 @@ public class SafetyAlerts extends ReportingDomain implements Request, Response {
    * @param alerts - set of safety alert types
    * @param alertInformation - alert information
    */
-  public SafetyAlerts(Set<String> alerts, String alertInformation) {
+  public SafetyAlerts(Set<Short> alerts, String alertInformation) {
     this.alerts = alerts;
     this.alertInformation = alertInformation;
   }
@@ -54,14 +54,14 @@ public class SafetyAlerts extends ReportingDomain implements Request, Response {
   /**
    * @return - set of safety alert types
    */
-  public Set<String> getAlerts() {
+  public Set<Short> getAlerts() {
     return alerts;
   }
 
   /**
    * @param alerts - set of safety alert types
    */
-  public void setAlerts(Set<String> alerts) {
+  public void setAlerts(Set<Short> alerts) {
     this.alerts = alerts;
   }
 
