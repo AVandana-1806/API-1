@@ -66,6 +66,10 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
         && "At Risk".contains(intakeCode)) {
       return 6867;
     }
+    if (SystemCodeCategoryId.SAFETY_ALERTS.contains(metaId)
+        && "Dangerous Animal on Premises".contains(intakeCode)) {
+      return 6401;
+    }
     return null;
   }
 

@@ -129,6 +129,11 @@ public final class SystemCodeCategoryId {
    */
   public static final String NON_CWS_ID_TYPE = "OTH_ID_C";
 
+  /**
+   * Satefy Alerts
+   */
+  public static final String SAFETY_ALERTS = "ACTV_RNC";
+
 
   /**
    * Private constructor

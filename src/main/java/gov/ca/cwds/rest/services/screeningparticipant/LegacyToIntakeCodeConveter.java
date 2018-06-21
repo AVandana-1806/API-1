@@ -75,7 +75,7 @@ public class LegacyToIntakeCodeConveter {
 
     WHITE_ROMANIAN("White - Romanian*", Constants.WHITE, "Romanian"),
 
-    WHITE("White*", "", Constants.WHITE);
+    WHITE("White*", Constants.WHITE, "");
 
     private static final Map<String, IntakeRaceCode> mapper = new HashMap<>();
 
