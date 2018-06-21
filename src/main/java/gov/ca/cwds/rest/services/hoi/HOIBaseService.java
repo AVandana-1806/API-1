@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
@@ -53,7 +54,7 @@ public interface HOIBaseService extends SensitiveClientOverride {
       try {
         authorizeClient(clientId);
         ret.add(clientId);
-      } catch (Exception e) {
+      } catch (AuthorizationException e) {
         final String msg = String.format("NOT AUTHORIZED TO VIEW CLIENT ID \"%s\"!", clientId);
         RequestExecutionContext.instance().getMessageBuilder().addMessageAndLog(msg, e, getLogger(),
             ErrorType.CLIENT_AUTHORIZATION_WARNING);
