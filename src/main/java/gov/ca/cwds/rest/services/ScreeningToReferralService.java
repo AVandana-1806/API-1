@@ -89,7 +89,7 @@ public class ScreeningToReferralService implements CrudsService {
    * @param reminders reminders
    * @param governmentOrganizationCrossReportService governmentOrganizationCrossReportService
    * @param clientRelationshipDao clientRelationshipDao
-   * @param screeningSatefyAlertsService screeningSatefyAlertsService
+   * @param referralSatefyAlertsService referralSatefyAlertsService
    */
   @Inject
   public ScreeningToReferralService(ReferralService referralService,
