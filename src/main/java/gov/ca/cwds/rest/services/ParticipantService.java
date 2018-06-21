@@ -200,14 +200,13 @@ public class ParticipantService implements CrudsService {
     boolean newClient = clientLegacyDesc == null || StringUtils.isBlank(clientLegacyDesc.getId())
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
 
-
+    clientId = incomingParticipant.getLegacyId();
     if (newClient) {
       clientId = createNewClient(screeningToReferral, dateStarted, messageBuilder,
           incomingParticipant, sexAtBirth);
-    } else {
-      // legacy Id passed - check for existence in CWS/CMS - no update yet
-      clientId = incomingParticipant.getLegacyId();
-      updateClient(screeningToReferral, messageBuilder, incomingParticipant, clientId);
+    } else if (!isErrorMessagesExist(messageBuilder)) {
+      updateClientIfItExistsInLegacy(screeningToReferral, messageBuilder, incomingParticipant,
+          clientId);
     }
 
     processReferralClient(screeningToReferral, referralId, messageBuilder, incomingParticipant,
@@ -241,6 +240,10 @@ public class ParticipantService implements CrudsService {
       messageBuilder.addMessageAndLog(message, e, LOGGER);
       // next role
     }
+  }
+
+  private boolean isErrorMessagesExist(MessageBuilder messageBuilder) {
+    return (!messageBuilder.getMessages().isEmpty());
   }
 
   private boolean saveReporter(ScreeningToReferral screeningToReferral, String referralId,
@@ -295,7 +298,7 @@ public class ParticipantService implements CrudsService {
     return referralClient;
   }
 
-  private boolean updateClient(ScreeningToReferral screeningToReferral,
+  private void updateClientIfItExistsInLegacy(ScreeningToReferral screeningToReferral,
       MessageBuilder messageBuilder, Participant incomingParticipant, String clientId) {
     Client foundClient = this.clientService.find(clientId);
     if (foundClient != null) {
@@ -310,10 +313,7 @@ public class ParticipantService implements CrudsService {
       String message =
           " Legacy Id of Participant does not correspond to an existing CWS/CMS Client ";
       messageBuilder.addMessageAndLog(message, LOGGER);
-      // next role
-      return true;
     }
-    return false;
   }
 
   private void updateClient(ScreeningToReferral screeningToReferral, MessageBuilder messageBuilder,
