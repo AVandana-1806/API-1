@@ -45,7 +45,7 @@ import gov.ca.cwds.rest.api.domain.investigation.Investigation;
 import gov.ca.cwds.rest.api.domain.investigation.People;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipList;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
-import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntakeRequest;
+import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntake;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactReferralRequest;
 import gov.ca.cwds.rest.resources.AddressResource;
 import gov.ca.cwds.rest.resources.ApplicationResource;
@@ -549,7 +549,7 @@ public class ResourcesModule extends AbstractModule {
 
   @Provides
   @ContactIntakeApiServiceBackedResource
-  public TypedResourceDelegate<String, ContactIntakeRequest> contactIntakeApiServiceBackedResource(
+  public TypedResourceDelegate<String, ContactIntake> contactIntakeApiServiceBackedResource(
           Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ContactIntakeApiService.class));
   }

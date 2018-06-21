@@ -3,7 +3,7 @@ package gov.ca.cwds.rest.services.contact;
 import gov.ca.cwds.data.ns.ContactDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.persistence.ns.ContactEntity;
-import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntakeRequest;
+import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntake;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class ContactIntakeApiServiceTest {
   private ContactIntakeApiService service;
   private ContactDao contactDao;
   private ContactEntity entity;
-  private ContactIntakeRequest contactRequest;
+  private ContactIntake contactRequest;
   private ParticipantDao participantDao;
 
   @Before
@@ -41,7 +41,7 @@ public class ContactIntakeApiServiceTest {
             1,
             "Location",
             "Note");
-    contactRequest = new ContactIntakeRequest(
+    contactRequest = new ContactIntake(
             "1",
             LocalDateTime.now(),
             LocalDateTime.now(),

@@ -2,8 +2,8 @@ package gov.ca.cwds.rest.resources.contact;
 
 import com.google.inject.Inject;
 import gov.ca.cwds.rest.api.domain.investigation.contact.Contact;
+import gov.ca.cwds.rest.api.domain.investigation.contact.PostedContactIntake;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntake;
-import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntakeRequest;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -53,9 +53,9 @@ public class ContactIntakeResource {
           @ApiResponse(code = 422, message = "Unable to validate Screening")})
   @Consumes(value = MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Creates a new contact", code = HttpStatus.SC_CREATED,
-          response = ContactIntake.class)
+          response = PostedContactIntake.class)
   public Response create(@Valid @ApiParam(hidden = false, required = true,
-          value = "The contact request") ContactIntakeRequest request) {
+          value = "The contact request") ContactIntake request) {
     return new ResponseConverter().withCreatedResponse(contactIntakeApiService.create(request));
   }
 }
