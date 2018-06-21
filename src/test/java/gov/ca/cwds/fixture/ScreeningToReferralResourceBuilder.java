@@ -1,5 +1,6 @@
 package gov.ca.cwds.fixture;
 
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ public class ScreeningToReferralResourceBuilder {
   private Date limitedAccessDate = null;
   private gov.ca.cwds.rest.api.domain.Address address;
   private Set<Participant> participants;
+  private Set<ScreeningRelationship> relationships;
   private Set<gov.ca.cwds.rest.api.domain.CrossReport> crossReports;
   private Set<gov.ca.cwds.rest.api.domain.Allegation> allegations;
   private SafetyAlerts safetyAlerts;
@@ -72,6 +74,7 @@ public class ScreeningToReferralResourceBuilder {
         .setGender("F")
         .createReporterParticipant();
     this.participants = new HashSet<>(Arrays.asList(victim, perp, reporter));
+    this.relationships = new HashSet<ScreeningRelationship>();
     gov.ca.cwds.rest.api.domain.CrossReport crossReport =
         new CrossReportResourceBuilder().createCrossReport();
     this.crossReports = new HashSet<>(Arrays.asList(crossReport));
@@ -398,6 +401,11 @@ public class ScreeningToReferralResourceBuilder {
     return this;
   }
 
+  public ScreeningToReferralResourceBuilder setRelationships(Set<ScreeningRelationship> relationships) {
+    this.relationships = relationships;
+    return this;
+  }
+
   public ScreeningToReferralResourceBuilder setCrossReports(
       Set<gov.ca.cwds.rest.api.domain.CrossReport> crossReports) {
     this.crossReports = crossReports;
@@ -423,7 +431,7 @@ public class ScreeningToReferralResourceBuilder {
         familyAwareness, filedWithLawEnforcement, responsibleAgency, limitedAccessCode,
         limitedAccessDescription, limitedAccessAgency, limitedAccessDate, safetyAlerts.getAlerts(), 
         safetyAlerts.getAlertInformation(),
-        address, participants,
+        address, participants, relationships,
         crossReports, allegations, reportType);
   }
 }

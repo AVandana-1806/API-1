@@ -1,15 +1,14 @@
 package gov.ca.cwds.fixture;
 
-import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
-import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import gov.ca.cwds.data.persistence.ns.Address;
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 
 @SuppressWarnings("javadoc")
 public class ScreeningEntityBuilder {
@@ -33,11 +32,13 @@ public class ScreeningEntityBuilder {
   private Set<ParticipantEntity> participants = new HashSet<>();
   private String reportType = "ssb";
   private String screeningStatus = "Open";
+  private String screeningContactReference = "1234-5678-9ABC-DEFGHIJ";
 
   public ScreeningEntity build() {
     return new ScreeningEntity(id, reference, startedAt, endedAt, incidentCounty, incidentDate,
-        locationType, communicationMethod, name, responseTime, screeningDecision, screeningDecisionDetail,
-        narrative, contactAddress, assigneeStaffId, participants, reportType, screeningStatus);
+        locationType, communicationMethod, name, responseTime, screeningDecision,
+        screeningDecisionDetail, narrative, contactAddress, assigneeStaffId, participants,
+        reportType, screeningStatus, screeningContactReference);
   }
 
   public ScreeningEntityBuilder setId(String id) {

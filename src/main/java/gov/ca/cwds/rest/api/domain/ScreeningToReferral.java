@@ -44,7 +44,7 @@ import io.swagger.annotations.ApiModelProperty;
     "screening_decision_detail", "approval_status", "family_awareness",
     "filed_with_law_enforcement", "responsible_agency", "limited_access_code",
     "limited_access_description", "limited_access_agency", "limited_access_date", "alerts",
-    "alert_information", "address", "participants", "cross_reports", "allegations", "report_type"})
+    "alert_information", "address", "participants", "screeningRelationships", "cross_reports", "allegations", "report_type"})
 @VictimAgeRestriction
 @ValidVictimBirth
 public class ScreeningToReferral extends ReportingDomain implements Request {
@@ -236,6 +236,10 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
   @ValidParticipantRoles
   private Set<Participant> participants;
 
+  @ApiModelProperty(required = false, readOnly = false)
+  @Valid
+  private Set<ScreeningRelationship> relationships;
+
   @JsonProperty("cross_reports")
   @ApiModelProperty(required = false, readOnly = false)
   @Valid
@@ -289,6 +293,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
    * @param alertInformation - alertInformation
    * @param address - address associated with participants
    * @param participants - participants associated with this screening
+   * @param relationships - relationships associated with participants
    * @param crossReports - Cross Report
    * @param allegations - Allegations
    * @param reportType - reportType
@@ -304,7 +309,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
       boolean familyAwareness, boolean filedWithLawEnforcement, String responsibleAgency,
       String limitedAccessCode, String limitedAccessDescription, String limitedAccessAgency,
       java.util.Date limitedAccessDate, Set<String> alerts, String alertInformation,
-      Address address, Set<Participant> participants, Set<CrossReport> crossReports,
+      Address address, Set<Participant> participants, Set<ScreeningRelationship> relationships, Set<CrossReport> crossReports,
       Set<Allegation> allegations, String reportType) {
     super();
     this.id = id;
@@ -338,6 +343,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
     this.alertInformation = alertInformation;
     this.address = address;
     this.participants = participants;
+    this.relationships = relationships;
     this.crossReports = crossReports;
     this.allegations = allegations;
     this.reportType = reportType;
@@ -577,6 +583,11 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
   @SuppressWarnings("javadoc")
   public Set<Participant> getParticipants() {
     return participants;
+  }
+
+  @SuppressWarnings("javadoc")
+  public Set<ScreeningRelationship> getRelationships() {
+    return relationships;
   }
 
   @SuppressWarnings("javadoc")

@@ -5,16 +5,13 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
 import java.time.LocalDateTime;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.resources.cms.JerseyGuiceRule;
 import io.dropwizard.testing.junit.ResourceTestRule;
@@ -22,7 +19,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 /**
  * NOTE : The CWDS API Team has taken the pattern of delegating Resource functions to
  * {@link ServiceBackedResourceDelegate}. As such the tests in here reflect that assumption.
- * 
+ *
  * @author CWDS API Team
  */
 public class ScreeningResourceTest {
@@ -49,7 +46,8 @@ public class ScreeningResourceTest {
   @Test
   public void testCreate() throws Exception {
     Screening screening = new Screening("abc", "screening", "reference", "screeningDecision",
-        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "", "Open");
+        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "", "Open",
+        "1234-5678-9ABC-DEFGHIJ");
     int actualStatus =
         inMemoryResource.client().target(ROOT_RESOURCE).request().accept(MediaType.APPLICATION_JSON)
             .post(Entity.entity(screening, MediaType.APPLICATION_JSON)).getStatus();
@@ -63,7 +61,8 @@ public class ScreeningResourceTest {
    */
   @Test
   public void testCreateInvalid() throws Exception {
-    Screening screening = new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open");
+    Screening screening =
+        new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open", null);
     int actualStatus =
         inMemoryResource.client().target(ROOT_RESOURCE).request().accept(MediaType.APPLICATION_JSON)
             .post(Entity.entity(screening, MediaType.APPLICATION_JSON)).getStatus();
@@ -77,7 +76,8 @@ public class ScreeningResourceTest {
   @Test
   public void testUpdate() throws Exception {
     Screening screening = new Screening("abc", "screening", "reference", "screeningDecision",
-        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "ssb", "Open");
+        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "ssb", "Open",
+        "1234-5678-9ABC-DEFGHIJ");
 
     int actualStatus = inMemoryResource.client().target(ROOT_RESOURCE + "abc").request()
         .accept(MediaType.APPLICATION_JSON)
@@ -93,7 +93,8 @@ public class ScreeningResourceTest {
    */
   @Test
   public void testUpdateInvalid() throws Exception {
-    Screening screening = new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open");
+    Screening screening =
+        new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open", null);
 
     int actualStatus = inMemoryResource.client().target(ROOT_RESOURCE + "abc").request()
         .accept(MediaType.APPLICATION_JSON)

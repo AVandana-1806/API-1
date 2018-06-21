@@ -1,5 +1,13 @@
 package gov.ca.cwds.rest.services;
 
+import gov.ca.cwds.cms.data.access.dto.ClientRelationshipDTO;
+import gov.ca.cwds.cms.data.access.service.DataAccessServicesException;
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
+import gov.ca.cwds.data.access.dto.ClientRelationshipDtoBuilder;
+import gov.ca.cwds.data.persistence.cms.BaseClient;
+import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.data.persistence.cms.ClientRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,6 +70,7 @@ public class ScreeningToReferralService implements CrudsService {
   private AllegationPerpetratorHistoryService allegationPerpetratorHistoryService;
   private CrossReportService crossReportService;
   private ParticipantService participantService;
+  private ClientRelationshipCoreService clientRelationshipService;
   private Reminders reminders;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
 
@@ -86,8 +95,8 @@ public class ScreeningToReferralService implements CrudsService {
   @Inject
   public ScreeningToReferralService(ReferralService referralService,
       AllegationService allegationService, CrossReportService crossReportService,
-      ParticipantService participantService, Validator validator, ReferralDao referralDao,
-      MessageBuilder messageBuilder,
+      ParticipantService participantService, ClientRelationshipCoreService clientRelationshipService,
+      Validator validator, ReferralDao referralDao, MessageBuilder messageBuilder,
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
       GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService,
       ClientRelationshipDao clientRelationshipDao) {
@@ -98,6 +107,7 @@ public class ScreeningToReferralService implements CrudsService {
     this.allegationService = allegationService;
     this.crossReportService = crossReportService;
     this.participantService = participantService;
+    this.clientRelationshipService = clientRelationshipService;
     this.validator = validator;
     this.referralDao = referralDao;
     this.messageBuilder = messageBuilder;
@@ -131,6 +141,8 @@ public class ScreeningToReferralService implements CrudsService {
 
     ClientParticipants clientParticipants = processParticipants(screeningToReferral, dateStarted,
         timeStarted, referralId, messageBuilder);
+
+    saveRelationships(screeningToReferral);
 
     Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
 
@@ -186,6 +198,21 @@ public class ScreeningToReferralService implements CrudsService {
 
     return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
+  }
+
+  private void saveRelationships(ScreeningToReferral screeningToReferral){
+    for (ScreeningRelationship relationship : screeningToReferral.getRelationships()){
+      if(relationship.getId() == null || relationship.getId().isEmpty()){
+        try {
+          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
+          gov.ca.cwds.data.legacy.cms.entity.ClientRelationship savedRelationship = clientRelationshipService.createRelationship(builder.build());
+          relationship.setId(savedRelationship.getIdentifier());
+        } catch (DataAccessServicesException e) {
+          String message = e.getMessage();
+          logError(message, e);
+        }
+      }
+    }
   }
 
   private String createCmsReferral(ScreeningToReferral screeningToReferral, String dateStarted,
