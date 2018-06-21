@@ -30,7 +30,7 @@ public class ScreeningToReferralResourceBuilder {
   private long id = 1L;
   private String referralId = "";
   private String legacySourceTable = "";
-  private String endedAt = "2016-08-03T01:00:00.000";
+  private String endedAt = "2016-08-03T01:00:00.000Z";
   private String incidentCounty = "34";
   private String incidentDate = "2016-08-02";
   private String locationType = "Foster Home";
@@ -40,7 +40,7 @@ public class ScreeningToReferralResourceBuilder {
   private String reportNarrative = "Narrative 123 test";
   private String reference = "123ABC";
   private Short responseTime = 1520;
-  private String startedAt = "2016-08-03T01:00:00.000";
+  private String startedAt = "2016-08-03T01:00:00.000Z";
   private String assignee = "Michael Bastow";
   private String assigneeStaffId = "0X5";
   private String additionalInformation = "addtional information";

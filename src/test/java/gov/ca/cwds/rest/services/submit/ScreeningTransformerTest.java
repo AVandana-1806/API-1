@@ -57,7 +57,7 @@ public class ScreeningTransformerTest {
     Set<Allegation> allegations = new HashSet<>();
     Set<String> safetyAlerts = new HashSet<>();
     ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T03:10:09").setStartedAt("2017-01-02T02:09:08")
+        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime((short) 1519)
         .setScreeningDecisionDetail("evaluate_out").setLimitedAccessAgency("34")
@@ -78,7 +78,7 @@ public class ScreeningTransformerTest {
     Set<Allegation> allegations = new HashSet<>();
     Set<String> safetyAlerts = new HashSet<>();
     ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T03:10:09").setStartedAt("2017-01-02T02:09:08")
+        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime((short) 1519)
         .setScreeningDecisionDetail("evaluate_out").setLimitedAccessAgency("34")
@@ -100,7 +100,7 @@ public class ScreeningTransformerTest {
     Set<Allegation> allegations = new HashSet<>();
     Set<String> safetyAlerts = new HashSet<>();
     ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T03:10:09").setStartedAt("2017-01-02T02:09:08")
+        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime(null)
         .setScreeningDecisionDetail("evaluate_out").setLimitedAccessAgency("34")
@@ -129,7 +129,7 @@ public class ScreeningTransformerTest {
     Set<Allegation> allegations = new HashSet<>();
     Set<String> safetyAlerts = new HashSet<>();
     ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T03:10:09").setStartedAt("2017-01-02T02:09:08")
+        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime((short) 1519)
         .setScreeningDecisionDetail("evaluate_out").setLimitedAccessAgency("34")

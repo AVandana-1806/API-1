@@ -1,5 +1,9 @@
 package gov.ca.cwds.fixture;
 
+import static gov.ca.cwds.rest.api.domain.DomainChef.uncookISO8601Timestamp;
+
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,8 +28,8 @@ public class ScreeningEntityBuilder {
   private String responseTime = "2 day";
   private String screeningDecision = "screening decision";
   private String screeningDecisionDetail = null;
-  private LocalDateTime startedAt;
-  private LocalDateTime endedAt;
+  private Date startedAt;
+  private Date endedAt;
   private String narrative = "screening narrative";
   private Address contactAddress;
   private String assigneeStaffId = DEFAULT_ASSIGNEE_STAFF_ID;
@@ -52,12 +56,12 @@ public class ScreeningEntityBuilder {
   }
 
   public ScreeningEntityBuilder setEndedAt(Date endedAt) {
-    this.endedAt = new Timestamp(endedAt.getTime()).toLocalDateTime();
+    this.endedAt = endedAt;
     return this;
   }
 
   public ScreeningEntityBuilder setEndedAt(String endedAt) {
-    this.endedAt = LocalDateTime.parse(endedAt);
+    this.endedAt = uncookISO8601Timestamp(endedAt);
     return this;
   }
 
@@ -93,12 +97,12 @@ public class ScreeningEntityBuilder {
   }
 
   public ScreeningEntityBuilder setStartedAt(Date startedAt) {
-    this.startedAt = new Timestamp(startedAt.getTime()).toLocalDateTime();
+    this.startedAt = startedAt;
     return this;
   }
 
   public ScreeningEntityBuilder setStartedAt(String startedAt) {
-    this.startedAt = LocalDateTime.parse(startedAt);
+    this.startedAt = uncookISO8601Timestamp(startedAt);
     return this;
   }
 

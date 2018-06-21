@@ -2,7 +2,6 @@ package gov.ca.cwds.data.persistence.ns;
 
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,7 +49,7 @@ public class ScreeningEntity implements PersistentObject {
   private String reference;
 
   @Column(name = "ended_at")
-  private LocalDateTime endedAt;
+  private Date endedAt;
 
   @Column(name = "incident_county")
   private String incidentCounty;
@@ -71,7 +70,7 @@ public class ScreeningEntity implements PersistentObject {
   private String screeningDecision;
 
   @Column(name = "started_at")
-  private LocalDateTime startedAt;
+  private Date startedAt;
 
   @Column(name = "report_narrative")
   private String narrative;
@@ -175,11 +174,11 @@ public class ScreeningEntity implements PersistentObject {
    * @param screeningStatus screening status
    * @param screeningContactReference The case or referral that this screening contact references
    */
-  public ScreeningEntity(String id, String reference, LocalDateTime startedAt,
-      LocalDateTime endedAt, String incidentCounty, LocalDate incidentDate, String locationType,
-      String communicationMethod, String name, String responseTime, String screeningDecision,
-      String screeningDecisionDetail, String narrative, Address contactAddress,
-      String assigneeStaffId, Set<ParticipantEntity> participants, String reportType,
+  public ScreeningEntity(String id, String reference, Date startedAt, Date endedAt,
+      String incidentCounty, LocalDate incidentDate, String locationType, String communicationMethod,
+      String name, String responseTime, String screeningDecision, String screeningDecisionDetail,
+      String narrative, Address contactAddress, String assigneeStaffId,
+      Set<ParticipantEntity> participants, String reportType,
       String screeningStatus, String screeningContactReference) {
     super();
     this.id = id;
@@ -227,7 +226,7 @@ public class ScreeningEntity implements PersistentObject {
     this.reference = reference;
   }
 
-  public void setEndedAt(LocalDateTime endedAt) {
+  public void setEndedAt(Date endedAt) {
     this.endedAt = endedAt;
   }
 
@@ -255,7 +254,7 @@ public class ScreeningEntity implements PersistentObject {
     this.screeningDecision = screeningDecision;
   }
 
-  public void setStartedAt(LocalDateTime startedAt) {
+  public void setStartedAt(Date startedAt) {
     this.startedAt = startedAt;
   }
 
@@ -340,7 +339,7 @@ public class ScreeningEntity implements PersistentObject {
   /**
    * @return the endedAt
    */
-  public LocalDateTime getEndedAt() {
+  public Date getEndedAt() {
     return endedAt;
   }
 
@@ -390,7 +389,7 @@ public class ScreeningEntity implements PersistentObject {
   /**
    * @return the startedAt
    */
-  public LocalDateTime getStartedAt() {
+  public Date getStartedAt() {
     return startedAt;
   }
 
