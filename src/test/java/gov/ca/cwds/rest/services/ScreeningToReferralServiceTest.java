@@ -753,7 +753,7 @@ public class ScreeningToReferralServiceTest {
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
     ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType);
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
@@ -792,7 +792,7 @@ public class ScreeningToReferralServiceTest {
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
     ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType);
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
