@@ -26,6 +26,10 @@ public class ContactIntakeApiService implements TypedCrudsService<String, Contac
     this.participantDao = participantDao;
   }
 
+  public ContactIntakeApiService() {
+    super();
+  }
+
   @Override
   public Response create(ContactIntake request) {
     ContactEntity entity = ContactIntakeMapper.INSTANCE.map(request);
