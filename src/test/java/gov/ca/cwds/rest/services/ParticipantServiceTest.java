@@ -910,6 +910,25 @@ public class ParticipantServiceTest {
   }
 
   @Test
+  public void shouldNotUpdateClientWhenErrorMessageExists() throws Exception {
+    String victimClientLegacyId = "ABC123DSAF";
+
+    LegacyDescriptor descriptor =
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
+    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
+        .setLegacyDescriptor(descriptor).createParticipant();
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).createScreeningToReferral();
+    messageBuilder.addError("this is a test error");
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+    verify(clientService, never()).update(any(), any());
+  }
+
+  @Test
   public void shouldReturnNullWhenFind() {
     Response response = participantService.find("abc");
     assertThat(response, is(nullValue()));
