@@ -4,14 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import io.dropwizard.jackson.JsonSnakeCase;
@@ -20,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * {@link DomainObject} representing a screening.
- * 
+ *
  * @author CWDS API Team
  */
 @JsonSnakeCase
@@ -146,6 +142,9 @@ public class Screening extends ReportingDomain implements Request, Response {
   @JsonProperty("screening_status")
   private String screeningStatus;
 
+  @JsonProperty("screening_contact_reference")
+  private String screeningContactReference;
+
   /**
    * default constructor
    */
@@ -165,11 +164,13 @@ public class Screening extends ReportingDomain implements Request, Response {
    * @param assigneeStaffId - assignee Id
    * @param reportType - report type
    * @param screeningStatus - screening status
+   * @param screeningContactReference - screening contact reference
    */
   @SuppressWarnings("squid:S00107")
   public Screening(String id, String name, String reference, String screeningDecision,
       String screeningDecisionDetail, String assignee, LocalDateTime startedAt, String referralId,
-      String assigneeStaffId, String reportType, String screeningStatus) {
+      String assigneeStaffId, String reportType, String screeningStatus,
+      String screeningContactReference) {
     super();
     this.id = id;
     this.name = name;
@@ -182,6 +183,7 @@ public class Screening extends ReportingDomain implements Request, Response {
     this.assigneeStaffId = assigneeStaffId;
     this.reportType = reportType;
     this.screeningStatus = screeningStatus;
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**
@@ -425,6 +427,14 @@ public class Screening extends ReportingDomain implements Request, Response {
 
   public void setScreeningStatus(String screeningStatus) {
     this.screeningStatus = screeningStatus;
+  }
+
+  public String getScreeningContactReference() {
+    return screeningContactReference;
+  }
+
+  public void setScreeningContactReference(String screeningContactReference) {
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**

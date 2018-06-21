@@ -1,14 +1,12 @@
 package gov.ca.cwds.data.persistence.ns;
 
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,14 +15,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
@@ -135,6 +131,9 @@ public class ScreeningEntity implements PersistentObject {
   @Column(name = "screening_status")
   private String screeningStatus;
 
+  @Column(name = "screening_contact_reference")
+  private String screeningContactReference;
+
   /**
    * Default constructor
    *
@@ -174,12 +173,14 @@ public class ScreeningEntity implements PersistentObject {
    * @param assigneeStaffId The staffId of assignee
    * @param reportType report type
    * @param screeningStatus screening status
+   * @param screeningContactReference The case or referral that this screening contact references
    */
-  public ScreeningEntity(String id, String reference, LocalDateTime startedAt, LocalDateTime endedAt,
-      String incidentCounty, LocalDate incidentDate, String locationType, String communicationMethod,
-      String name, String responseTime, String screeningDecision, String screeningDecisionDetail,
-      String narrative, Address contactAddress, String assigneeStaffId,
-      Set<ParticipantEntity> participants, String reportType, String screeningStatus) {
+  public ScreeningEntity(String id, String reference, LocalDateTime startedAt,
+      LocalDateTime endedAt, String incidentCounty, LocalDate incidentDate, String locationType,
+      String communicationMethod, String name, String responseTime, String screeningDecision,
+      String screeningDecisionDetail, String narrative, Address contactAddress,
+      String assigneeStaffId, Set<ParticipantEntity> participants, String reportType,
+      String screeningStatus, String screeningContactReference) {
     super();
     this.id = id;
     this.reference = reference;
@@ -198,6 +199,7 @@ public class ScreeningEntity implements PersistentObject {
     this.participants = participants;
     this.reportType = reportType;
     this.screeningStatus = screeningStatus;
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**
@@ -460,7 +462,7 @@ public class ScreeningEntity implements PersistentObject {
 
   /**
    * Sets access restriction
-   * 
+   *
    * @param accessRestrictions The access restriction
    */
   public void setAccessRestrictions(String accessRestrictions) {
@@ -524,6 +526,14 @@ public class ScreeningEntity implements PersistentObject {
 
   public void setScreeningStatus(String screeningStatus) {
     this.screeningStatus = screeningStatus;
+  }
+
+  public String getScreeningContactReference() {
+    return screeningContactReference;
+  }
+
+  public void setScreeningContactReference(String screeningContactReference) {
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**

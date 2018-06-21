@@ -116,7 +116,7 @@ public class ServicesModuleTest {
 
   @Test
   public void provideSystemCodeService_A$SystemCodeDao$SystemMetaDao() throws Exception {
-    SystemCodeService actual = target.provideSystemCodeService(systemCodeDao, systemMetaDao);
+    SystemCodeService actual = target.provideSystemCodeService(systemCodeDao, systemMetaDao, null);
     assertThat(actual, is(notNullValue()));
   }
 

@@ -2,7 +2,9 @@ package gov.ca.cwds.rest.services.submit;
 
 import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.time.format.DateTimeFormatter;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +86,7 @@ public class ScreeningTransformer {
         FILED_WITH_LAW_ENFORCEMENT, RESPONSIBLE_AGENCY, limitedAccessCode,
         screening.getRestrictionsRationale(), loggedInStaffCounty, limitedAccessDate,
         screening.getSafetyAlerts(), screening.getSafetyInformation(), address, participants,
-        crossReports, allegations, screening.getReportType());
+        new HashSet<ScreeningRelationship>(), crossReports, allegations, screening.getReportType());
   }
 
   private Short setReferralResponse(Screening screening) {

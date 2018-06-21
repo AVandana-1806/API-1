@@ -75,7 +75,7 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
       boolean familyAwareness, boolean filedWithLawEnforcement, String responsibleAgency,
       String limitedAccessCode, String limitedAccessDescription, String limitedAccessAgency,
       java.util.Date limitedAccessDate, Set<String> alerts, String alertInformation,
-      Address address, Set<Participant> participants, Set<CrossReport> crossReports,
+      Address address, Set<Participant> participants, Set<ScreeningRelationship> relationships, Set<CrossReport> crossReports,
       Set<Allegation> allegations, String reportType) {
     super(id, legacySourceTable, referralId, endedAt, incidentCounty, incidentDate, locationType,
         communicationMethod, currentLocationOfChildren, name, reportNarrative, reference,
@@ -83,7 +83,7 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
         screeningDecision, screeningDecisionDetail, approvalStatus, familyAwareness,
         filedWithLawEnforcement, responsibleAgency, limitedAccessCode, limitedAccessDescription,
         limitedAccessAgency, limitedAccessDate, alerts, alertInformation, address, participants,
-        crossReports, allegations, reportType);
+        relationships, crossReports, allegations, reportType);
   }
 
   /**
@@ -110,6 +110,7 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
         referral.getLimitedAccessCode(), referral.getLimitedAccessDescription(),
         referral.getLimitedAccessAgency(), referral.getLimitedAccessDate(), referral.getAlerts(),
         referral.getAlertInformation(), referral.getAddress(), resultParticipants,
-        resultCrossReports, resultAllegations, referral.getReportType());
+        referral.getRelationships(), resultCrossReports, resultAllegations,
+        referral.getReportType());
   }
 }

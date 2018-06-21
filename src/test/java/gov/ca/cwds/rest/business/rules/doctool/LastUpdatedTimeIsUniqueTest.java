@@ -8,6 +8,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -122,6 +123,7 @@ public class LastUpdatedTimeIsUniqueTest {
   private LongTextService longTextService;
   private AssignmentService assignmentService;
   private ParticipantService participantService;
+  private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
   private RIClientAddress riClientAddress;
@@ -282,6 +284,8 @@ public class LastUpdatedTimeIsUniqueTest {
         reporterService, childClientService, clientAddressService, validator,
         clientScpEthnicityService, caseDao, referralClientDao);
 
+    clientRelationshipService = mock(ClientRelationshipCoreService.class);
+
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
             staffpersonDao, assignmentService, validator, cmsDocumentService, drmsDocumentService,
@@ -289,7 +293,7 @@ public class LastUpdatedTimeIsUniqueTest {
 
     screeningToReferralService =
         new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, Validation.buildDefaultValidatorFactory().getValidator(),
+            participantService, clientRelationshipService, Validation.buildDefaultValidatorFactory().getValidator(),
             referralDao, new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
             governmentOrganizationCrossReportService, clientRelationshipDao);
   }

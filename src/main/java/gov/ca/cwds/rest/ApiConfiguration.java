@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest;
 
+import javax.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.data.persistence.XADataSourceFactory;
@@ -16,6 +18,10 @@ public class ApiConfiguration extends BaseApiConfiguration {
   private DataSourceFactory rsDataSourceFactory;
   private TestingConfiguration testConfig;
   private boolean upgradeDbOnStart = false;
+
+  @Nullable
+  @JsonProperty(value = "systemCodeCache")
+  private SystemCodeCacheConfiguration systemCodeCacheConfiguration;
 
   public void setRsDataSourceFactory(DataSourceFactory rsDataSourceFactory) {
     this.rsDataSourceFactory = rsDataSourceFactory;
@@ -45,6 +51,7 @@ public class ApiConfiguration extends BaseApiConfiguration {
     this.upgradeDbOnStart = upgradeDbOnStart;
   }
 
+<<<<<<< HEAD
   @JsonProperty
   public XADataSourceFactory getXaCmsRsDataSourceFactory() {
     return xaCmsRsDataSourceFactory;
@@ -55,4 +62,13 @@ public class ApiConfiguration extends BaseApiConfiguration {
     this.xaCmsRsDataSourceFactory = xaCmsRsDataSourceFactory;
   }
 
+=======
+  public SystemCodeCacheConfiguration getSystemCodeCacheConfiguration() {
+    return systemCodeCacheConfiguration;
+  }
+
+  public void setSystemCodeCacheConfiguration(SystemCodeCacheConfiguration systemCodeCacheConfig) {
+    this.systemCodeCacheConfiguration = systemCodeCacheConfig;
+  }
+>>>>>>> 703e73def2586d8586b56fb8c4d9b2405e3893bd
 }

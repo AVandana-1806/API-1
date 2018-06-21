@@ -86,6 +86,8 @@
     "approximate_age" : "12",
     "approximate_age_units" : "Y"
   }],
+  "relationships": [
+  ],
   "cross_reports" : [ {
     "id" : "",
     "legacy_source_table" : "",

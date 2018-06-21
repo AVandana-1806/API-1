@@ -62,9 +62,10 @@ public class ScreeningToReferralTest {
 
   private Integer method = 2095; // "electronic report";
   private String informDate = "2017-03-15";
-  private Set<Participant> participants = new HashSet<>();
-  private Set<CrossReport> crossReports = new HashSet<>();
-  private Set<Allegation> allegations = new HashSet<>();
+  private Set<Participant> participants = new HashSet<Participant>();
+  private Set<ScreeningRelationship> relationships = new HashSet<ScreeningRelationship>();
+  private Set<CrossReport> crossReports = new HashSet<CrossReport>();
+  private Set<Allegation> allegations = new HashSet<Allegation>();
   private long id = 2;
   private boolean filedOutOfState = false;
   private String countyId = "1101";
@@ -144,9 +145,9 @@ public class ScreeningToReferralTest {
         communicationMethod, currentLocationOfChildren, "The Rocky Horror Show",
         "Narrative 123 test", "123ABC", responseTime, "2016-08-03T01:00:00.000", "Michael Bastow",
         "0X5", "addtional information", "Screening Descision", "Detail", approvalStatus,
-        familyAwarness, filedWithLawEnforcement, responsibleAgency, "S", "", "23", null,
-        safetyAlerts.getAlerts(), safetyAlerts.getAlertInformation(), address, participants,
-        crossReports, allegations, reportType));
+        familyAwarness, filedWithLawEnforcement, responsibleAgency, "S", "", "23", null, safetyAlerts.getAlerts(),
+        safetyAlerts.getAlertInformation(), address,
+        participants, relationships, crossReports, allegations, reportType));
 
     String serialized = MAPPER.writeValueAsString(
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/valid/validstr.json"),
@@ -191,9 +192,8 @@ public class ScreeningToReferralTest {
         currentLocationOfChildren, "The Rocky Horror Show", "Narrative 123 test", "123ABC",
         responseTime, "2016-08-03T01:00:00.000", "Michael Bastow", "0X5", "addtional information",
         "Screening Descision", "Detail", approvalStatus, familyAwarness, filedWithLawEnforcement,
-        responsibleAgency, "S", "", "23", null, safetyAlerts.getAlerts(),
-        safetyAlerts.getAlertInformation(), address, participants, crossReports, allegations,
-        reportType);
+        responsibleAgency, "S", "", "23", null, safetyAlerts.getAlerts(), safetyAlerts.getAlertInformation(),
+        address, participants, relationships, crossReports, allegations, reportType);
 
     ScreeningToReferral deserialized =
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/valid/validstr.json"),
