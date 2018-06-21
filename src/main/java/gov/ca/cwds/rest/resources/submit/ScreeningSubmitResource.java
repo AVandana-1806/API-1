@@ -55,7 +55,6 @@ public class ScreeningSubmitResource {
     this.resourceDelegate = resourceDelegate;
   }
 
-
   /**
    * Promotes a Screening To A Referral. Creates a Referral From the Screening and Updates the
    * Screening with the Referral Legacy Id
