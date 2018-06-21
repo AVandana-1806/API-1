@@ -47,7 +47,8 @@ public class RelationshipDaoIT implements DaoTestTemplate {
   public void setup() {
     session = sessionFactory.getCurrentSession();
     session.beginTransaction();
-    Relationship existingRelationship = new Relationship(null, "ClientId", "RelationId", 190, new Date(), new Date());
+    Relationship existingRelationship = new Relationship(null, "ClientId", "RelationId", 190,
+        new Date(), new Date(), true, false);
   }
 
   @Override
@@ -58,12 +59,14 @@ public class RelationshipDaoIT implements DaoTestTemplate {
 
   @Override
   public void testFindAllNamedQueryExist() throws Exception {
-    throw new NotImplementedException("Test not implemented until Entity implements find all method");
+    throw new NotImplementedException(
+        "Test not implemented until Entity implements find all method");
   }
 
   @Override
   public void testFindAllReturnsCorrectList() throws Exception {
-    throw new NotImplementedException("Test not implemented until Entity implements find all method");
+    throw new NotImplementedException(
+        "Test not implemented until Entity implements find all method");
   }
 
   @Override
@@ -79,7 +82,8 @@ public class RelationshipDaoIT implements DaoTestTemplate {
   @Test
   @Override
   public void testCreate() throws Exception {
-    Relationship relationship = new Relationship(null, "ClientId", "RelationId", 190, new Date(), new Date());
+    Relationship relationship = new Relationship(null, "ClientId", "RelationId", 190, new Date(),
+        new Date(), true, false);
     Relationship created = relationshipDao.create(relationship);
     assertThat(created, is(relationship));
     assertNotNull(created.getId());
