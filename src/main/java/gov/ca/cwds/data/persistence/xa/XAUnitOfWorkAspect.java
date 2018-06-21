@@ -8,7 +8,6 @@ import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.FlushMode;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -103,9 +102,10 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     }
 
     try {
-      LOGGER.info("XA afterEnd: commit");
+      LOGGER.info("XaUnitOfWorkAspect.afterEnd(): commit");
       commit();
     } catch (Exception e) {
+      LOGGER.error("XaUnitOfWorkAspect.afterEnd(): ERROR ON COMMIT!", e);
       rollback();
       throw e;
     }
@@ -126,6 +126,10 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     LOGGER.warn("XA onError: rollback");
     try {
       rollback();
+    } catch (Exception e) {
+      LOGGER.error("XaUnitOfWorkAspect.onError(): ERROR ON ROLLBACK!", e);
+      rollback();
+      throw e;
     } finally {
       // nix
     }
@@ -160,10 +164,10 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     if (sessions.containsKey(key)) {
       session = sessions.get(key);
     } else {
-      LOGGER.info("XA grabSession()!");
+      LOGGER.info("XA grab a session");
       try {
         session = sessionFactory.getCurrentSession();
-      } catch (HibernateException e) {
+      } catch (Exception e) {
         LOGGER.info("No current session. Open a new one. {}", e.getMessage());
         if (LOGGER.isTraceEnabled()) {
           LOGGER.trace("No current session. Open a new one. {}", e.getMessage(), e);
@@ -189,6 +193,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @return true = any unit is transactional
    */
   protected boolean hasTransactionalFlag() {
+    LOGGER.info("XaUnitOfWorkAspect.hasTransactionalFlag()");
     return this.units.values().stream().anyMatch(XAUnitOfWork::transactional);
   }
 
@@ -253,7 +258,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   protected void beginXaTransaction() throws CaresXAException {
     LOGGER.info("XaUnitOfWorkAspect.beginXaTransaction()");
     if (!hasTransactionalFlag()) {
-      LOGGER.trace("XA BEGIN TRANSACTION: unit of work is not transactional");
+      LOGGER.debug("XA BEGIN TRANSACTION: unit of work is not transactional");
       return;
     } else if (transactionStarted) {
       LOGGER.info("XA: transaction already started");

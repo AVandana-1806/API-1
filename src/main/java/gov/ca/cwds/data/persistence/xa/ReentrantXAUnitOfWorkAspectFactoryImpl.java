@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
@@ -25,6 +27,9 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
 
   private static final long serialVersionUID = 1L;
 
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(ReentrantXAUnitOfWorkAspectFactoryImpl.class);
+
   private final Map<String, SessionFactory> sessionFactories;
 
   private transient ThreadLocal<XAUnitOfWorkAspect> local = new ThreadLocal<>();
@@ -43,11 +48,13 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
+    LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.startRequest");
     local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
+    LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.endRequest");
     local.set(null); // clear the current thread
   }
 

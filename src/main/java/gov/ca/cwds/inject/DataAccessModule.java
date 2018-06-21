@@ -359,6 +359,7 @@ public class DataAccessModule extends AbstractModule {
     bootstrap.addBundle(cmsHibernateBundle);
     bootstrap.addBundle(nsHibernateBundle);
     bootstrap.addBundle(rsHibernateBundle);
+
     bootstrap.addBundle(xaCmsHibernateBundle);
     bootstrap.addBundle(xaNsHibernateBundle);
     bootstrap.addBundle(xaCmsRsHibernateBundle);
