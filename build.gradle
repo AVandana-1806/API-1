@@ -395,9 +395,9 @@ task pushGitTag(type:Exec, dependsOn: createGitTag) {
     doFirst{
         environment "GIT_SSH_COMMAND", 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
     }
-    
+
     commandLine "git", "push", "origin", "$dockerTag"
-    
+
     doLast {
         println "Pushed tagged to Git origin"
     }

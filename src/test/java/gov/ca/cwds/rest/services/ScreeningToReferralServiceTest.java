@@ -127,7 +127,6 @@ import gov.ca.cwds.rest.services.referentialintegrity.RICrossReport;
 import io.dropwizard.jackson.Jackson;
 
 /**
- * 
  * @author CWDS API Team
  */
 @SuppressWarnings("unused")
@@ -305,7 +304,8 @@ public class ScreeningToReferralServiceTest {
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
     screeningToReferralService =
         new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, clientRelationshipService, Validation.buildDefaultValidatorFactory().getValidator(),
+            participantService, clientRelationshipService,
+            Validation.buildDefaultValidatorFactory().getValidator(),
             referralDao, messageBuilder, allegationPerpetratorHistoryService, reminders,
             governmentOrganizationCrossReportService, clientRelationshipDao);
 
@@ -750,7 +750,8 @@ public class ScreeningToReferralServiceTest {
     int relationshipType = 123;
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId, relationshipType);
+    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId,
+        relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
@@ -767,7 +768,8 @@ public class ScreeningToReferralServiceTest {
 
     Response response = screeningToReferralService.create(referral);
 
-    ArgumentCaptor<ClientRelationshipDTO> argument = ArgumentCaptor.forClass(ClientRelationshipDTO.class);
+    ArgumentCaptor<ClientRelationshipDTO> argument = ArgumentCaptor
+        .forClass(ClientRelationshipDTO.class);
 
     ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
 
@@ -779,14 +781,16 @@ public class ScreeningToReferralServiceTest {
   }
 
   @Test
-  public void shouldNotCreateRelationshipWhenRelationshipExists() throws DataAccessServicesException {
+  public void shouldNotCreateRelationshipWhenRelationshipExists()
+      throws DataAccessServicesException {
     String id = "ASDF";
     String personId = "QWER";
     String relationId = "ZXCV";
     int relationshipType = 123;
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId, relationshipType);
+    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId,
+        relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
@@ -1119,7 +1123,6 @@ public class ScreeningToReferralServiceTest {
 
     mockParticipantService(screeningToReferral);
 
-
     try {
       Response response = screeningToReferralService.create(screeningToReferral);
       assertFalse("expected exception to have been thrown", true);
@@ -1218,7 +1221,8 @@ public class ScreeningToReferralServiceTest {
 
     screeningToReferralService =
         new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, clientRelationshipService, Validation.buildDefaultValidatorFactory().getValidator(),
+            participantService, clientRelationshipService,
+            Validation.buildDefaultValidatorFactory().getValidator(),
             referralDao, new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
             governmentOrganizationCrossReportService, clientRelationshipDao);
 

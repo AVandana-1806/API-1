@@ -13,7 +13,7 @@ public class ScreeningRelationshipTest {
   @Test
   public void shouldHaveAllFieldsWhenCreatingWithSimpleConstructor(){
     relationship = new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId",
-        RELATIONSHIP_TYPE);
+        RELATIONSHIP_TYPE, true, "U");
     assertEquals(relationship.getId(), "123");
     assertEquals(relationship.getClientId(), "PersonLegacyId");
     assertEquals(relationship.getRelativeId(), "RelationLegacydId");
@@ -23,7 +23,7 @@ public class ScreeningRelationshipTest {
   @Test
   public void shouldHaveAllFieldsWhenCreatingFullSimpleConstructor(){
     relationship = new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId",
-        RELATIONSHIP_TYPE);
+        RELATIONSHIP_TYPE, true, "N");
     assertEquals(relationship.getId(), "123");
     assertEquals(relationship.getClientId(), "PersonLegacyId");
     assertEquals(relationship.getRelativeId(), "RelationLegacydId");
@@ -33,9 +33,9 @@ public class ScreeningRelationshipTest {
   @Test
   public void shouldBeEqual() {
     relationship =
-        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE);
+        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE, true, "Y");
     ScreeningRelationship relationshipEqual =
-        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE);
+        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE, true, "Y");
     assertEquals(relationship, relationshipEqual);
     assertEquals(relationship, relationship);
   }
@@ -43,9 +43,9 @@ public class ScreeningRelationshipTest {
   @Test
   public void shouldNotBeEqual() {
     relationship =
-        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE);
+        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId", RELATIONSHIP_TYPE, true, "N");
     ScreeningRelationship relationshipNotEqual =
-        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId2", RELATIONSHIP_TYPE);
+        new ScreeningRelationship("123", "PersonLegacyId", "RelationLegacydId2", RELATIONSHIP_TYPE, true, "N");
     assertNotEquals(relationship, relationshipNotEqual);
     assertNotEquals(relationship, "Not Equal");
   }

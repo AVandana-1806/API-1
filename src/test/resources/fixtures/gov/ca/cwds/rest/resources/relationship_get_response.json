@@ -2,5 +2,7 @@
   "id": "1",
   "client_id": "9C7kKgc0CN",
   "relative_id": "6YtTyyc0ND",
-  "relationship_type": 190
+  "relationship_type": 190,
+  "same_home_status": "U",
+  "absent_parent_indicator": true
 }
