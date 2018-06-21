@@ -32,8 +32,8 @@ public class ClientRelationshipDtoBuilder {
   }
 
   private BaseClient createClient(String clientId){
-    BaseClient client = new Client();
-    client.setId(clientId);
-    return client;
+    BaseClient baseClient = new Client();
+    baseClient.setId(clientId);
+    return baseClient;
   }
 }

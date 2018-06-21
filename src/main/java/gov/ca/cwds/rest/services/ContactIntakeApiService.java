@@ -35,10 +35,6 @@ public class ContactIntakeApiService implements TypedCrudsService<String, Contac
     return response;
   }
 
-  public ContactIntakeApiService() {
-    super();
-  }
-
   @Override
   public Response find(String s) {
     throw new NotImplementedException("Find is not implemented");
