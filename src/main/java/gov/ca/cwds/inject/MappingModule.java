@@ -8,6 +8,7 @@ import gov.ca.cwds.rest.services.mapper.AddressMapper;
 import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationTypeMapper;
+import gov.ca.cwds.rest.services.mapper.ContactIntakeMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.LegacyDescriptorMapper;
@@ -28,6 +29,8 @@ public class MappingModule extends AbstractModule {
     bind(AllegationTypeMapper.class).to(AllegationTypeMapper.INSTANCE.getClass())
         .asEagerSingleton();
     bind(ClientMapper.class).to(ClientMapperImpl.INSTANCE.getClass()).asEagerSingleton();
+    bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass())
+            .asEagerSingleton();
     bind(CsecMapper.class).to(CsecMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CrossReportMapper.class).to(CrossReportMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(LegacyDescriptorMapper.class).to(LegacyDescriptorMapper.INSTANCE.getClass())

@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Intake Team" id="contact_data">
+        <insert tableName="contacts">
+            <column name="id" value="1"/>
+            <column name="started_at" value="2018-03-30 16:11:37.279"/>
+            <column name="ended_at" value="2018-03-30 16:11:37.279"/>
+            <column name="purpose" value="purpose"/>
+            <column name="communication_method" value="comMeth"/>
+            <column name="status" value="Status"/>
+            <column name="service" value="1"/>
+            <column name="location" value="Location"/>
+            <column name="note" value="Note"/>
+        </insert>
+        <insert tableName="contacts">
+            <column name="id" value="2"/>
+            <column name="started_at" value="2018-03-30 16:11:37.279"/>
+            <column name="ended_at" value="2018-03-30 16:11:37.279"/>
+            <column name="purpose" value="purpose"/>
+            <column name="communication_method" value="comMeth"/>
+            <column name="status" value="Status"/>
+            <column name="service" value="1"/>
+            <column name="location" value="Location"/>
+            <column name="note" value="Note"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

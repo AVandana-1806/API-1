@@ -63,6 +63,11 @@ public final class Api {
   public static final String RESOURCE_DELIVERY_SERVICE = "contacts";
 
   /**
+   * A {@code String} constant representing {@value #RESOURCE_INTAKE_CONTACTS} API..
+   */
+  public static final String RESOURCE_INTAKE_CONTACTS = "intake/contacts";
+
+  /**
    * A {@code String} constant representing {@value #RESOURCE_GOVERNMENT_ORG} API.
    */
   public static final String RESOURCE_GOVERNMENT_ORG = "cross_report_agency";
