@@ -184,7 +184,7 @@ public class ScreeningToReferralServiceTest {
   private Validator validator;
   private ExternalInterfaceTables externalInterfaceTables;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ScreeningSatefyAlertService screeningSatefyAlertsService;
+  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
 
   private Participant defaultVictim;
   private Participant defaultReporter;
@@ -300,7 +300,7 @@ public class ScreeningToReferralServiceTest {
     defaultPerpetrator = new ParticipantResourceBuilder().createPerpParticipant();
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertService.class);
+    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
 
     messageBuilder = new MessageBuilder();
 

@@ -72,7 +72,7 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ReferralDao referralDao;
   private ClientRelationshipDao clientRelationshipDao;
-  private ScreeningSatefyAlertService screeningSatefyAlertsService;
+  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
 
   /**
    * Constructor
@@ -100,7 +100,7 @@ public class ScreeningToReferralService implements CrudsService {
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
       GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService,
       ClientRelationshipDao clientRelationshipDao,
-      ScreeningSatefyAlertService screeningSatefyAlertsService) {
+      ScreeningSatefyAlertsService screeningSatefyAlertsService) {
 
     super();
     this.clientRelationshipDao = clientRelationshipDao;

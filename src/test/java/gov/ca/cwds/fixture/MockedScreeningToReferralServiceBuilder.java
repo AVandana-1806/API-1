@@ -30,7 +30,7 @@ import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ScreeningSatefyAlertService;
+import gov.ca.cwds.rest.services.ScreeningSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -68,7 +68,7 @@ public class MockedScreeningToReferralServiceBuilder {
   private ClientRelationshipDao clientRelationshipDao;
   private ReferralDao referralDao;
   private MessageBuilder messageBuilder;
-  private ScreeningSatefyAlertService screeningSatefyAlertsService;
+  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
 
   /**
    * @return the referralService
@@ -285,7 +285,7 @@ public class MockedScreeningToReferralServiceBuilder {
   /**
    * @return the screeningSatefyAlertsService
    */
-  public ScreeningSatefyAlertService getScreeningSatefyAlertsService() {
+  public ScreeningSatefyAlertsService getScreeningSatefyAlertsService() {
     if (screeningSatefyAlertsService == null) {
       buildDefaultMockForScreeningSafetAlertsService();
     }
@@ -293,7 +293,7 @@ public class MockedScreeningToReferralServiceBuilder {
   }
 
   private void buildDefaultMockForScreeningSafetAlertsService() {
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertService.class);
+    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
   }
 
   /**
