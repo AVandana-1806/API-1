@@ -3,6 +3,7 @@ package gov.ca.cwds.api;
 import static com.jayway.restassured.RestAssured.given;
 
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.enums.SameHomeStatus;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.RestAssured;
 import org.junit.Before;
@@ -17,7 +18,8 @@ public class ScreeningRelationshipTest extends FunctionalTest{
   @Before
   public void setup() {
     resourcePath = getResourceUrlFor("/" + Api.SCREENING_RELATIONSHIPS);
-    relationship = new ScreeningRelationship("id", "Client1", "Client2", RELATIONSHIP_TYPE);
+    relationship = new ScreeningRelationship("id", "Client1", "Client2", RELATIONSHIP_TYPE, true,
+        SameHomeStatus.U.getCode());
   }
 
   @Test

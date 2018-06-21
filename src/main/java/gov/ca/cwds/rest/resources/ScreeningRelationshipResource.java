@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -69,6 +70,28 @@ public class ScreeningRelationshipResource {
   public Response create( @Valid @ApiParam(hidden = false, required = true)
       ScreeningRelationship screeningRelationship) {
     return resourceDelegate.create(screeningRelationship);
+  }
+
+  /**
+   * Update an {@link ScreeningRelationship}.
+   *
+   * @param screeningRelationship The {@link ScreeningRelationship}
+   *
+   * @return The {@link Response}
+   */
+  @UnitOfWork(value = "ns")
+  @PUT
+  @Path("/{id}")
+  @Consumes(value = MediaType.APPLICATION_JSON)
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
+      @ApiResponse(code = 406, message = "Accept Header not supported"),
+      @ApiResponse(code = 422, message = "Unable to validate ScreeningToReferral")})
+  @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
+      response = ScreeningRelationship.class)
+  public Response update( @Valid @ApiParam(hidden = false, required = true)
+      ScreeningRelationship screeningRelationship, @PathParam("id") @ApiParam(required = true,
+      value = "The id of the Relationship to find") String id) {
+    return resourceDelegate.update(id, screeningRelationship);
   }
 
   @UnitOfWork(value = "ns")
