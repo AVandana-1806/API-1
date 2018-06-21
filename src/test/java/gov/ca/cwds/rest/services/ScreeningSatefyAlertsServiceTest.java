@@ -71,8 +71,8 @@ public class ScreeningSatefyAlertsServiceTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testSaveSafetyAlertsSuccessfully() {
-    SafetyAlerts safetyAlerts = new SafetyAlerts(
-        new HashSet<>(Arrays.asList("Dangerous Animal on Premises")), "Some Danger Fellow");
+    SafetyAlerts safetyAlerts =
+        new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Danger Fellow");
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setSafetyAlerts(safetyAlerts.getAlerts())
         .setSafetyAlertInformationn(safetyAlerts.getAlertInformation()).createScreeningToReferral();

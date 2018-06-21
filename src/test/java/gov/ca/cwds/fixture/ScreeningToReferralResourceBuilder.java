@@ -193,7 +193,7 @@ public class ScreeningToReferralResourceBuilder {
     return safetyAlerts.getAlertInformation();
   }
 
-  public Set<String> getAlerts() {
+  public Set<Short> getAlerts() {
     return safetyAlerts.getAlerts();
   }
 
@@ -384,7 +384,7 @@ public class ScreeningToReferralResourceBuilder {
     return this;
   }
 
-  public ScreeningToReferralResourceBuilder setSafetyAlerts(Set<String> safetyAlerts) {
+  public ScreeningToReferralResourceBuilder setSafetyAlerts(Set<Short> safetyAlerts) {
     this.safetyAlerts.setAlerts(safetyAlerts);
     return this;
   }

@@ -13,10 +13,8 @@ import gov.ca.cwds.data.legacy.cms.dao.SafetyAlertActivationReasonTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.LongText;
 import gov.ca.cwds.data.legacy.cms.entity.SafetyAlert;
 import gov.ca.cwds.data.persistence.cms.Referral;
-import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
-import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.util.ParticipantUtils;
@@ -54,9 +52,9 @@ public class ScreeningSatefyAlertsService {
     List<SafetyAlert> safetyAlerts = new ArrayList<>();
     if (screeningToReferral.getAlerts() != null && !screeningToReferral.getAlerts().isEmpty()
         && victimParticipant != null) {
-      for (String intakeCode : screeningToReferral.getAlerts()) {
+      for (Short safetyAlertReasonType : screeningToReferral.getAlerts()) {
         SafetyAlert alert = new SafetyAlert();
-        setSafetAlertFields(referrral, victimParticipant, intakeCode, alert);
+        setSafetAlertFields(referrral, victimParticipant, safetyAlertReasonType, alert);
         safetyAlerts.add(alert);
       }
       safetyAlertService.updateSafetyAlertsByClientId(
@@ -66,7 +64,7 @@ public class ScreeningSatefyAlertsService {
   }
 
   private void setSafetAlertFields(Referral referrral, Participant victimParticipant,
-      String intakeCode, SafetyAlert alert) {
+      Short safetyAlertReasonType, SafetyAlert alert) {
     alert.setFkClientId(victimParticipant.getLegacyDescriptor().getId());
     alert.setActivationDate(LocalDate.now());
     SystemCode systemCode = SystemCodeCache.global().getSystemCode(referrral.getGovtEntityType());
@@ -74,9 +72,8 @@ public class ScreeningSatefyAlertsService {
     LongText longText = new LongText();
     longText.setIdentifier(referrral.getScreenerNoteText());
     alert.setActivationExplanationText(longText);
-    Short reasonType = IntakeCodeCache.global()
-        .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.SAFETY_ALERTS, intakeCode);
-    alert.setActivationReasonType(safetyAlertActivationReasonTypeDao.findBySystemId(reasonType));
+    alert.setActivationReasonType(
+        safetyAlertActivationReasonTypeDao.findBySystemId(safetyAlertReasonType));
   }
 
   private Participant getValidVictim(ClientParticipants clientParticipants) {
