@@ -95,7 +95,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
     String deleteResponse = doDeleteCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + postedParticipant.getId());
     assertEquals("", deleteResponse);
 
-    String s = doGetCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + postedParticipant.getId());
-
+    String getResponse = doGetCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + postedParticipant.getId());
+    assertEquals("", getResponse);
   }
 }

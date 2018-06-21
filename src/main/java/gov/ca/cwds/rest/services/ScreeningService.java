@@ -32,7 +32,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningDashboard;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboardList;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
-import gov.ca.cwds.rest.resources.parameter.ScreeningParticipantResourceParameters;
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.services.mapper.AddressMapper;
 import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
@@ -259,7 +259,7 @@ public class ScreeningService implements CrudsService {
 
     for (ParticipantEntity participantEntity : participantEntities) {
       ParticipantIntakeApi participantIntakeApi =
-          participantIntakeApiService.find(new ScreeningParticipantResourceParameters(id, participantEntity.getId()));
+          participantIntakeApiService.find(new ParticipantResourceParameters(id, participantEntity.getId()));
       screening.getParticipantIntakeApis().add(participantIntakeApi);
     }
 
@@ -433,14 +433,14 @@ public class ScreeningService implements CrudsService {
       } else {
         ParticipantIntakeApi updatedParticipantIntakeApi =
             participantIntakeApiService.update(
-                new ScreeningParticipantResourceParameters(screening.getId(), participantIntakeApiId), participantIntakeApi);
+                new ParticipantResourceParameters(screening.getId(), participantIntakeApiId), participantIntakeApi);
         participantIntakeApis.add(updatedParticipantIntakeApi);
         participantIdsOld.remove(participantIntakeApiId);
       }
     }
     // Delete old ones that are not in the new.
     participantIdsOld.forEach(participantId ->
-        participantIntakeApiService.delete(new ScreeningParticipantResourceParameters(screening.getId(), participantId)));
+        participantIntakeApiService.delete(new ParticipantResourceParameters(screening.getId(), participantId)));
 
     screening.setParticipantIntakeApis(participantIntakeApis);
   }

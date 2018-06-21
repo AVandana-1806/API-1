@@ -78,7 +78,7 @@ import gov.ca.cwds.rest.resources.investigation.HistoryOfInvolvementResource;
 import gov.ca.cwds.rest.resources.investigation.PeopleResource;
 import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
-import gov.ca.cwds.rest.resources.parameter.ScreeningParticipantResourceParameters;
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
@@ -124,7 +124,6 @@ import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
-
 
 /**
  * Identifies all CWDS API domain resource classes available for dependency injection by Guice.
@@ -391,7 +390,7 @@ public class ResourcesModule extends AbstractModule {
 
   @Provides
   @ParticipantServiceBackedResource
-  public TypedResourceDelegate<ScreeningParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(Injector injector) {
+  public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ParticipantIntakeApiService.class));
   }
 

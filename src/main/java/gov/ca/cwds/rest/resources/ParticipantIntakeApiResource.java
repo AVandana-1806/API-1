@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import gov.ca.cwds.inject.ParticipantServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.core.Api.ResponseMessage;
-import gov.ca.cwds.rest.resources.parameter.ScreeningParticipantResourceParameters;
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -45,7 +45,7 @@ public class ParticipantIntakeApiResource {
 
   @Inject
   @ParticipantServiceBackedResource
-  private TypedResourceDelegate<ScreeningParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate;
+  private TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate;
 
   /**
    * Constructor
@@ -73,7 +73,7 @@ public class ParticipantIntakeApiResource {
   public Response get(
       @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "The id of the Screening") String screeningId,
       @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "The id of the Participant") String participantId) {
-    return resourceDelegate.get(new ScreeningParticipantResourceParameters(screeningId, participantId));
+    return resourceDelegate.get(new ParticipantResourceParameters(screeningId, participantId));
   }
 
   /**
@@ -92,7 +92,7 @@ public class ParticipantIntakeApiResource {
   public Response delete(
       @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "The id of the Screening") String screeningId,
       @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "The id of the Participant") String participantId) {
-    return resourceDelegate.delete(new ScreeningParticipantResourceParameters(screeningId, participantId));
+    return resourceDelegate.delete(new ParticipantResourceParameters(screeningId, participantId));
   }
 
   /**
@@ -142,7 +142,7 @@ public class ParticipantIntakeApiResource {
       @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "Screening id") String screeningId,
       @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "Participant id") String participantId,
       @Valid @ApiParam(required = true, value = "Participant JSON object") ParticipantIntakeApi participant) {
-    return resourceDelegate.update(new ScreeningParticipantResourceParameters(screeningId, participantId), participant);
+    return resourceDelegate.update(new ParticipantResourceParameters(screeningId, participantId), participant);
   }
 
 }

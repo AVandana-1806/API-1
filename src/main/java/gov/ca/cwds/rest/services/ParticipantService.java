@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services;
 
+import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -436,14 +437,14 @@ public class ParticipantService implements CrudsService {
       exsistingChild = this.childClientService.create(childClient);
     }
 
-    if (csecReportType && validateCsec(csecs, messageBuilder)) {
+    if (csecReportType && isValidCsecs(csecs, messageBuilder)) {
       saveOrUpdateCsec(clientId, csecs, messageBuilder);
       // create a special project for this referral
       specialProjectReferralService.saveCsecSpecialProjectReferral(csecs, referralId, 
           screeningToReferral.getIncidentCounty(), messageBuilder);
     }
 
-    if (ssbReportType && validateSafelySurrenderedBabies(ssb, messageBuilder)) {
+    if (ssbReportType && isValidSafelySurrenderedBabies(ssb, messageBuilder)) {
       specialProjectReferralService.processSafelySurrenderedBabies(clientId, referralId,
           java.time.LocalDate.parse(dateStarted), java.time.LocalTime.parse(timeStarted), ssb);
     }
@@ -451,7 +452,7 @@ public class ParticipantService implements CrudsService {
     return exsistingChild;
   }
 
-  private boolean validateCsec(List<Csec> csecs, MessageBuilder messageBuilder) {
+  private boolean isValidCsecs(List<Csec> csecs, MessageBuilder messageBuilder) {
     if (csecs == null || csecs.isEmpty()) {
       messageBuilder.addError("CSEC data is empty", ErrorMessage.ErrorType.VALIDATION);
       return false;
@@ -463,10 +464,21 @@ public class ParticipantService implements CrudsService {
         return false;
       }
     }
+
+    List<IntakeLov> intakeLovs = IntakeCodeCache.global()
+        .getAllLegacySystemCodesForMeta(SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
+    for (IntakeLov intakeLov : intakeLovs) {
+      if (csecs.stream().filter(c -> intakeLov.getIntakeCode().equals(c.getCsecCodeId())).count() > 1) {
+        messageBuilder.addError("CSEC duplication for code: " + intakeLov.getIntakeCode(),
+            ErrorMessage.ErrorType.VALIDATION);
+        return false;
+      }
+    }
+
     return true;
   }
 
-  private boolean validateSafelySurrenderedBabies(SafelySurrenderedBabies ssb,
+  private boolean isValidSafelySurrenderedBabies(SafelySurrenderedBabies ssb,
       MessageBuilder messageBuilder) {
     if (ssb == null) {
       messageBuilder.addError("SafelySurrenderedBabies info must be provided.",

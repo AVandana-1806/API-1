@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -16,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.fixture.CsecBuilder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -48,16 +48,13 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
-import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReporterResourceBuilder;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
-import gov.ca.cwds.fixture.ScreeningResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralEntityBuilder;
-import gov.ca.cwds.fixture.SpecialProjectReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Role;
@@ -71,7 +68,6 @@ import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.PostedReporter;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
-import gov.ca.cwds.rest.api.domain.cms.SpecialProject;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.business.rules.LACountyTrigger;
 import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
@@ -309,6 +305,24 @@ public class ParticipantServiceTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList()).contains("CSEC start date is not found for code: At Risk"));
+  }
+
+  @Test
+  public void testCsecDuplication() {
+    Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
+    victimParticipant.getCsecs().add(new CsecBuilder().createCsec());
+
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
+            .setParticipants(participants).createScreeningToReferral();
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+
+    assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
+        .collect(Collectors.toList()).contains("CSEC duplication for code: At Risk"));
   }
 
   @Test

@@ -5,13 +5,13 @@ import java.io.Serializable;
 /**
  * CWDS API Team
  */
-public class ScreeningParticipantResourceParameters implements Serializable {
+public class ParticipantResourceParameters implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private String screeningId;
   private String participantId;
 
-  public ScreeningParticipantResourceParameters(String screeningId, String participantId) {
+  public ParticipantResourceParameters(String screeningId, String participantId) {
     this.screeningId = screeningId;
     this.participantId = participantId;
   }
