@@ -16,6 +16,7 @@ import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningToReferralServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
@@ -77,13 +78,13 @@ public class ScreeningToReferralResource {
   }
 
   /**
-   * Create an {@link ScreeningToReferral}.
+   * Create a {@link ScreeningToReferral}.
    * 
    * @param screeningToReferral The {@link ScreeningToReferral}
    * 
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @XAUnitOfWork
   @POST
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
       @ApiResponse(code = 406, message = "Accept Header not supported"),

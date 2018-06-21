@@ -193,7 +193,6 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-
     return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
   }
@@ -207,8 +206,7 @@ public class ScreeningToReferralService implements CrudsService {
               clientRelationshipService.createRelationship(builder.build());
           relationship.setId(savedRelationship.getIdentifier());
         } catch (DataAccessServicesException e) {
-          String message = e.getMessage();
-          logError(message, e);
+          logError(e.getMessage(), e);
         }
       }
     }
@@ -223,8 +221,7 @@ public class ScreeningToReferralService implements CrudsService {
   private void verifyReferralHasValidParticipants(ScreeningToReferral screeningToReferral) {
     try {
       if (!ParticipantValidator.hasValidParticipants(screeningToReferral)) {
-        String message = " Incompatiable participants included in request";
-        logError(message);
+        logError("Incompatiable participants included in request");
       }
     } catch (Exception e) {
       String message = e.getMessage();
@@ -245,24 +242,27 @@ public class ScreeningToReferralService implements CrudsService {
   /**
    * {@inheritDoc}
    * 
+   * <blockquote>
+   * 
+   * <pre>
+     * DocTool Rule R - 00796 
+     * 
+     * If the user had originally indicated that the call should be treated as a referral,
+     * and that referral had been committed to the database, that referral must be deleted from the
+     * system. Also deleted would be any referral clients associated with the referral, any clients
+     * associated to the referral if that referral had been their only interaction with the system,
+     * and all allegations associated with the referral. Do NOT delete the client if the client
+     * already exists on the Host and associated to other Case or Referral.
+     * 
+     * This rule involves deleting a referral and associated referral clients, clients and
+     * allegations. Since there is no business requirement at this time to delete a referral we will
+     * not be implementing this rule. A NO-OP delete method is provided that gives a Not
+     * Implemented Exception.
+   * </pre>
+   * 
+   * </blockquote>
+   * 
    * @see gov.ca.cwds.rest.services.CrudsService#delete(java.io.Serializable)
-   * 
-   *      <pre>
-   * 
-   * DocTool Rule R - 00796 
-   * 
-   * If the user had originally indicated that the call should be treated as a referral,
-   * and that referral had been committed to the database, that referral must be deleted from the
-   * system. Also deleted would be any referral clients associated with the referral, any clients
-   * associated to the referral if that referral had been their only interaction with the system,
-   * and all allegations associated with the referral. Do NOT delete the client if the client
-   * already exists on the Host and associated to other Case or Referral.
-   * 
-   * This rule involves deleting a referral and associated referral clients, clients and
-   * allegations. Since there is no business requirement at this time to delete a referral we will
-   * not be implementing this rule. A NO-OP delete method is provided that gives a Not
-   * Implemented Exception.
-   *      </pre>
    */
   @Override
   public Response delete(Serializable primaryKey) {
@@ -304,9 +304,7 @@ public class ScreeningToReferralService implements CrudsService {
     crossReports = scr.getCrossReports();
 
     if (crossReports != null) {
-
       for (CrossReport crossReport : crossReports) {
-
         Boolean outStateLawEnforcementIndicator = Boolean.FALSE;
         String outStateLawEnforcementAddr = "";
 
@@ -337,7 +335,6 @@ public class ScreeningToReferralService implements CrudsService {
             " Legacy Id on Cross Report does not correspond to an existing CMS/CWS Cross Report ";
         ServiceException se = new ServiceException(message);
         logError(message, se);
-
       }
     }
   }
@@ -497,8 +494,7 @@ public class ScreeningToReferralService implements CrudsService {
     if (allegationHasPerpPersonId && isNotPerpetrator) {
       String message =
           "Allegation/Perpetrator Person Id does not contain a Participant with a role of Perpetrator";
-      ServiceException exception = new ServiceException(message);
-      logError(message, exception);
+      logError(message, new ServiceException(message));
     }
   }
 
@@ -561,9 +557,7 @@ public class ScreeningToReferralService implements CrudsService {
             DomainChef.cookDate(RequestExecutionContext.instance().getRequestStartTime()));
 
     messageBuilder.addDomainValidationError(validator.validate(cmsPerpHistory));
-
     this.allegationPerpetratorHistoryService.create(cmsPerpHistory);
   }
-
 
 }
