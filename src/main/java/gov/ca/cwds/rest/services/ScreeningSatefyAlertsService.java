@@ -26,7 +26,7 @@ import gov.ca.cwds.rest.util.ParticipantUtils;
  * @author CWDS API Team
  *
  */
-public class ScreeningSatefyAlertService {
+public class ScreeningSatefyAlertsService {
 
   @Inject
   private ReferralDao referralDao;
