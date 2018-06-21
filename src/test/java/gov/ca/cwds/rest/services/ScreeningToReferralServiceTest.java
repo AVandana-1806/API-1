@@ -15,10 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.cms.data.access.dto.ClientRelationshipDTO;
-import gov.ca.cwds.cms.data.access.service.DataAccessServicesException;
-import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -40,6 +36,9 @@ import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.ca.cwds.cms.data.access.dto.ClientRelationshipDTO;
+import gov.ca.cwds.cms.data.access.service.DataAccessServicesException;
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import gov.ca.cwds.data.cms.AddressDao;
 import gov.ca.cwds.data.cms.AllegationDao;
 import gov.ca.cwds.data.cms.AllegationPerpetratorHistoryDao;
@@ -78,6 +77,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.Allegation;
@@ -127,6 +127,7 @@ import gov.ca.cwds.rest.services.referentialintegrity.RICrossReport;
 import io.dropwizard.jackson.Jackson;
 
 /**
+ * 
  * @author CWDS API Team
  */
 @SuppressWarnings("unused")
@@ -183,6 +184,7 @@ public class ScreeningToReferralServiceTest {
   private Validator validator;
   private ExternalInterfaceTables externalInterfaceTables;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
+  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private Participant defaultVictim;
   private Participant defaultReporter;
@@ -298,16 +300,16 @@ public class ScreeningToReferralServiceTest {
     defaultPerpetrator = new ParticipantResourceBuilder().createPerpParticipant();
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
+    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     messageBuilder = new MessageBuilder();
 
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    screeningToReferralService =
-        new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, clientRelationshipService,
-            Validation.buildDefaultValidatorFactory().getValidator(),
-            referralDao, messageBuilder, allegationPerpetratorHistoryService, reminders,
-            governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
+        crossReportService, participantService, clientRelationshipService,
+        Validation.buildDefaultValidatorFactory().getValidator(), referralDao, messageBuilder,
+        allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
+        clientRelationshipDao, referralSatefyAlertsService);
 
   }
 
@@ -750,8 +752,8 @@ public class ScreeningToReferralServiceTest {
     int relationshipType = 123;
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId,
-        relationshipType, true, "N");
+    ScreeningRelationship relationship =
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
@@ -768,8 +770,8 @@ public class ScreeningToReferralServiceTest {
 
     Response response = screeningToReferralService.create(referral);
 
-    ArgumentCaptor<ClientRelationshipDTO> argument = ArgumentCaptor
-        .forClass(ClientRelationshipDTO.class);
+    ArgumentCaptor<ClientRelationshipDTO> argument =
+        ArgumentCaptor.forClass(ClientRelationshipDTO.class);
 
     ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
 
@@ -789,8 +791,8 @@ public class ScreeningToReferralServiceTest {
     int relationshipType = 123;
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship = new ScreeningRelationship(id, personId, relationId,
-        relationshipType, true, "N");
+    ScreeningRelationship relationship =
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
@@ -1123,6 +1125,7 @@ public class ScreeningToReferralServiceTest {
 
     mockParticipantService(screeningToReferral);
 
+
     try {
       Response response = screeningToReferralService.create(screeningToReferral);
       assertFalse("expected exception to have been thrown", true);
@@ -1219,12 +1222,11 @@ public class ScreeningToReferralServiceTest {
     when(clientAddressService.findByAddressAndClient(eq(victimAddress), any())).thenReturn(null);
     when(clientAddressService.findByAddressAndClient(eq(perpAddress), any())).thenReturn(null);
 
-    screeningToReferralService =
-        new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, clientRelationshipService,
-            Validation.buildDefaultValidatorFactory().getValidator(),
-            referralDao, new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
-            governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
+        crossReportService, participantService, clientRelationshipService,
+        Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
+        allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
+        clientRelationshipDao, referralSatefyAlertsService);
 
     mockParticipantService(screeningToReferral);
 
