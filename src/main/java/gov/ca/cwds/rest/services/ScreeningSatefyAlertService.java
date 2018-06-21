@@ -85,4 +85,33 @@ public class ScreeningSatefyAlertService {
     return participants.isEmpty() ? null : participants.get(0);
   }
 
+  /**
+   * @param referralDao - referralDao
+   */
+  public void setReferralDao(ReferralDao referralDao) {
+    this.referralDao = referralDao;
+  }
+
+  /**
+   * @param countiesDao - countiesDao
+   */
+  public void setCountiesDao(CountiesDao countiesDao) {
+    this.countiesDao = countiesDao;
+  }
+
+  /**
+   * @param safetyAlertActivationReasonTypeDao - safetyAlertActivationReasonTypeDao
+   */
+  public void setSafetyAlertActivationReasonTypeDao(
+      SafetyAlertActivationReasonTypeDao safetyAlertActivationReasonTypeDao) {
+    this.safetyAlertActivationReasonTypeDao = safetyAlertActivationReasonTypeDao;
+  }
+
+  /**
+   * @param safetyAlertService - safetyAlertService
+   */
+  public void setSafetyAlertService(SafetyAlertService safetyAlertService) {
+    this.safetyAlertService = safetyAlertService;
+  }
+
 }
