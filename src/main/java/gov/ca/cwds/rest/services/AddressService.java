@@ -46,6 +46,7 @@ public class AddressService implements CrudsService {
       gov.ca.cwds.data.cms.AddressDao xaCmsAddressDao) {
     this.addressDao = addressDao;
     this.nsAddressDao = xaNsAddressDao;
+    this.cmsAddressDao = xaCmsAddressDao;
   }
 
   /**

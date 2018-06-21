@@ -11,13 +11,14 @@ import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.context.internal.ManagedSessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 
 import gov.ca.cwds.data.std.ApiMarker;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 
 /**
  * AOP aspect supports annotation {@link XAUnitOfWork}.
@@ -82,6 +83,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       this.firstXaUnitOfWork = xaUnitOfWork;
     }
 
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, true);
+
     openSessions();
     beginXaTransaction();
   }
@@ -140,8 +143,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    */
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
-    this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
-        .forEach(ManagedSessionContext::unbind);
+    // this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
+    // .forEach(ManagedSessionContext::unbind);
 
     closeSessions();
   }
@@ -247,7 +250,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     session.setHibernateFlushMode(
         firstXaUnitOfWork.readOnly() ? FlushMode.MANUAL : firstXaUnitOfWork.flushMode());
 
-    ManagedSessionContext.bind(session);
+    // ManagedSessionContext.bind(session);
   }
 
   /**
