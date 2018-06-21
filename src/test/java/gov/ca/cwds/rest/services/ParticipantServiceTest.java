@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.PersistenceException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -37,7 +38,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
-import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.data.cms.CaseDao;
 import gov.ca.cwds.data.cms.ClientAddressDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
@@ -55,6 +55,7 @@ import gov.ca.cwds.fixture.ReporterResourceBuilder;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralEntityBuilder;
+import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Role;
@@ -201,12 +202,13 @@ public class ParticipantServiceTest {
     specialProjectReferralService = mock(SpecialProjectReferralService.class);
 
     specialProjectReferralService = mock(SpecialProjectReferralService.class);
-    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral specialProjectReferral = new SpecialProjectReferralEntityBuilder().build();
-    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral postedSpecialProjectReferral = 
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral specialProjectReferral =
+        new SpecialProjectReferralEntityBuilder().build();
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral postedSpecialProjectReferral =
         new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(specialProjectReferral);
     when(specialProjectReferralService.saveCsecSpecialProjectReferral(any(), any(), any(), any()))
-      .thenReturn(postedSpecialProjectReferral);   
-    
+        .thenReturn(postedSpecialProjectReferral);
+
     participantService = new ParticipantService(clientService, referralClientService,
         reporterService, childClientService, clientAddressService, validator,
         clientScpEthnicityService, caseDao, referralClientDao);
@@ -817,12 +819,12 @@ public class ParticipantServiceTest {
         defaultVictim.getSensitivityIndicator(),
         clientArgCaptor.getValue().getSensitivityIndicator());
   }
-  
+
   @Test
   public void shouldReturnNullWhenDelete() {
     Response response = participantService.delete("abc");
     assertThat(response, is(nullValue()));
-   }
+  }
 
   @Test
   public void testSSBIsNotUpdatedForNotSupportedReportType() {
@@ -896,11 +898,61 @@ public class ParticipantServiceTest {
         }));
   }
 
+  @SuppressWarnings("javadoc")
+  @Test(expected = ServiceException.class)
+  public void shouldThrowServiceExceptionWhenUpdateClientThrowsPersistenceException()
+      throws Exception {
+    String victimClientLegacyId = "ABC123DSAF";
+
+    LegacyDescriptor descriptor =
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
+    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
+        .setLegacyDescriptor(descriptor).createParticipant();
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).createScreeningToReferral();
+
+    Client foundClient = mock(Client.class);
+    when(foundClient.getLastUpdatedTime()).thenReturn(modifiedLastUpdateDate);
+
+    PostedClient createdClient = mock(PostedClient.class);
+
+    when(createdClient.getId()).thenReturn("LEGACYIDXX");
+    when(clientService.find(eq(victimClientLegacyId))).thenReturn(foundClient);
+    when(clientService.create(any())).thenReturn(createdClient);
+    when(clientService.update(eq(victimClientLegacyId), any()))
+        .thenThrow(new PersistenceException());
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+  }
+
+  @Test
+  public void shouldNotUpdateClientWhenErrorMessageExists() throws Exception {
+    String victimClientLegacyId = "ABC123DSAF";
+
+    LegacyDescriptor descriptor =
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
+    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
+        .setLegacyDescriptor(descriptor).createParticipant();
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).createScreeningToReferral();
+    messageBuilder.addError("this is a test error");
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+    verify(clientService, never()).update(any(), any());
+  }
+
+  @Test
   public void shouldReturnNullWhenFind() {
     Response response = participantService.find("abc");
     assertThat(response, is(nullValue()));
-   }
-  
+  }
+
   @Test
   public void shouldReturnNullWhenUpdate() {
     Response response = participantService.update("abc", null);

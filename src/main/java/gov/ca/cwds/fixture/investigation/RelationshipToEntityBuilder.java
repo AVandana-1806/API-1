@@ -10,15 +10,22 @@ public class RelationshipToEntityBuilder {
   protected String relatedFirstName = "Steve";
   protected String relatedLastName = "Briggs";
   protected String relatedNameSuffix = "Jr";
+  protected String relatedGenderCode = "I";
   protected String relationship = "Brother";
   protected String relationshipToPerson = "Sister";
   protected String relationshipContext = "step";
+  protected String relatedDateOfBirth = "2000-10-01";
+  protected String relatedDateOfDeath = "2001-10-01";
+  protected String absentParentCode = "N";
+  protected String sameHomeCode = "U";
 
-  private CmsRecordDescriptor cmsRecordDescriptor = new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
+  private CmsRecordDescriptor cmsRecordDescriptor =
+      new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
 
   public RelationshipTo build() {
-    return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix, relationship, relationshipContext,
-        relationshipToPerson, cmsRecordDescriptor);
+    return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
+        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, absentParentCode, sameHomeCode,
+        relationship, relationshipContext, relationshipToPerson, cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {
@@ -46,6 +53,12 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
+
+  public RelationshipToEntityBuilder setRelatedGenderCode(String relatedGenderCode) {
+    this.relatedGenderCode = relatedGenderCode;
+    return this;
+  }
+
   public RelationshipToEntityBuilder setRelationship(String relationship) {
     this.relationship = relationship;
     return this;
@@ -60,6 +73,7 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
+
   public void setCmsRecordDescriptor(CmsRecordDescriptor cmsRecordDescriptor) {
     this.cmsRecordDescriptor = cmsRecordDescriptor;
   }
@@ -68,4 +82,26 @@ public class RelationshipToEntityBuilder {
     this.relationshipContext = relationshipContext;
     return this;
   }
+
+  public RelationshipToEntityBuilder setrelatedDateOfBirth(String relatedDateOfBirth) {
+    this.relatedDateOfBirth = relatedDateOfBirth;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setrelatedDateOfDeath(String relatedDateOfDeath) {
+    this.relatedDateOfDeath = relatedDateOfDeath;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setAbsentParentCode(String absentParentCode) {
+    this.absentParentCode = absentParentCode;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setSameHomeCode(String sameHomeCode) {
+    this.sameHomeCode = sameHomeCode;
+    return this;
+  }
+
+
 }

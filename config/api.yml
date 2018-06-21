@@ -3,14 +3,14 @@ version: ${APP_VERSION:-local}
 
 shiro:
   iniConfigs: ["file:${SHIRO_CONFIG_PATH:-config/shiro.ini}"]
-  
+
 swagger:
   templateName: swagger.mustache
   assetsPath: /static
   resourcePackage: gov.ca.cwds.rest.resources
   title: CWDS API
   description: RESTful API definitions for the CWS New System.
-  logo: images/CWDS-API-Logo-Horizontal.png  
+  logo: images/CWDS-API-Logo-Horizontal.png
   showSwagger: ${SHOW_SWAGGER:-true}
   jsonUrl: ${SWAGGER_JSON_URL:-http://localhost:8080/swagger.json}
   loginUrl: ${LOGIN_URL:-http://localhost:8090/authn/login}
@@ -63,6 +63,7 @@ cmsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
       hibernate.connection.provider_disables_autocommit: true
+      # hibernate.current_session_context_class: thread
 
 rsDataSourceFactory:
   autoCommitByDefault: false
@@ -164,32 +165,35 @@ elasticsearch:
 
 testConfig:
   path: ${TEST_FILE_PATH:-config/testConfig.yml}
-    
+
 triggertables:
   laCountySpecificCode: 19
  
+systemCodeCache: 
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
+  refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
 webSecurity:
   httpResponseSecurityHeaders:
     # Prevent MIMI sniffing
     X-Content-Type-Options: nosniff
-    
+
     # Prevent click-jacking
     X-Frame-Options: deny
-    
+
     # Prevent cross site scripting
     X-XSS-Protection: 1; mode=block
-    
+
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
-     
+
 server:
   applicationConnectors:
-  - type: http 
+  - type: http
     port: ${APP_STD_PORT:-8080}
   adminConnectors:
   - type: http
     port: ${APP_ADMIN_PORT:-8081}
-    
+
   requestLog:
     appenders:
       - type: console
@@ -218,4 +222,3 @@ logging:
       timeZone: UTC
       target: stdout
       logFormat: '[%X{REMOTE_ADDRESS}] [%date{ISO8601}] [%level] [%thread] [%X{UNIQUE_ID}] [%logger] [%X{USER_ID}] [%X{REQUEST_START_TIME}]: [%message]%n'
- 

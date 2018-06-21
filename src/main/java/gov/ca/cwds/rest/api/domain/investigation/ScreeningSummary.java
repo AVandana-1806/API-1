@@ -132,8 +132,7 @@ public class ScreeningSummary extends ReportingDomain implements Response {
     this.decisionDetail = screeningEntity.getScreeningDecisionDetail();
     this.id = screeningEntity.getId();
     this.safetyInformation = screeningEntity.getSafetyInformation();
-    this.startedAt = screeningEntity.getStartedAt() == null ?
-        null : java.sql.Timestamp.valueOf(screeningEntity.getStartedAt());
+    this.startedAt = screeningEntity.getStartedAt();
     this.allegations = allegations;
   }
 
