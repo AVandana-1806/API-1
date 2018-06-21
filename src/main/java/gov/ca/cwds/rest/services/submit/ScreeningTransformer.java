@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.submit;
 
-import gov.ca.cwds.rest.util.FerbDateUtils;
-import java.time.format.DateTimeFormatter;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import java.util.Date;
 import java.util.HashSet;
@@ -12,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import gov.ca.cwds.rest.api.domain.Address;
 import gov.ca.cwds.rest.api.domain.Allegation;
 import gov.ca.cwds.rest.api.domain.CrossReport;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Screening;
@@ -70,10 +69,12 @@ public class ScreeningTransformer {
 
     String screeningIncidentDate =
         screening.getIncidentDate() == null ? null : screening.getIncidentDate().toString();
-    String screeningStartDate = screening.getStartedAt() == null ?
-        null : FerbDateUtils.utcToSystemTime(screening.getStartedAt().withNano(0)).format(DateTimeFormatter.ISO_DATE_TIME);
-    String screeningEndDate = screening.getEndedAt() == null ?
-        null : FerbDateUtils.utcToSystemTime(screening.getEndedAt()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+    String screeningEndDate = screening.getEndedAt() == null ? null
+        : DomainChef.cookISO8601Timestamp(screening.getEndedAt());
+
+    String screeningStartDate = screening.getStartedAt() == null ? null
+        : DomainChef.cookISO8601Timestamp(screening.getStartedAt());
 
     return new ScreeningToReferral(Integer.parseInt(screening.getId()),
         LegacyTable.REFERRAL.getName(), screening.getReferralId(), screeningEndDate,

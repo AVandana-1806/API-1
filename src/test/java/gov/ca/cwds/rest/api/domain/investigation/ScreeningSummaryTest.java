@@ -84,7 +84,7 @@ public class ScreeningSummaryTest {
       throws JsonParseException, JsonMappingException, IOException {
 
     String referrence = "screeing referrence";
-    LocalDateTime endedAt = LocalDateTime.now();
+    Date endedAt = new Date();
     String incidentCounty = "20";
     LocalDate incidentDate = LocalDate.now();
     String locationType = "";
@@ -92,7 +92,7 @@ public class ScreeningSummaryTest {
     String name = "screening name";
     String responseTime = "2345";
     String screeningDecision = "3456";
-    LocalDateTime startedAt = LocalDateTime.now();
+    Date startedAt = new Date();
     String narrative = "screening narrative";
     Address screeningAddress = new Address();
     Set<ParticipantEntity> participantEntities = new HashSet<>();
@@ -113,8 +113,7 @@ public class ScreeningSummaryTest {
     assertThat(screeningSummary.getId(), is(equalTo(screeningEntity.getId())));
     assertThat(screeningSummary.getSafetyInformation(),
         is(equalTo(screeningEntity.getSafetyInformation())));
-    assertThat(new java.sql.Timestamp(screeningSummary.getStartedAt().getTime()).toLocalDateTime(),
-        is(equalTo(screeningEntity.getStartedAt())));
+    assertThat(screeningSummary.getStartedAt(), is(equalTo(screeningEntity.getStartedAt())));
     assertThat(screeningSummary.getAllegations(), is(equalTo(simpleAllegations)));
   }
 

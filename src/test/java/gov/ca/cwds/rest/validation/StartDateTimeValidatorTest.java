@@ -48,7 +48,7 @@ public class StartDateTimeValidatorTest {
         .setRoles(new HashSet(Arrays.asList("Victim", null))).createParticipant();
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(new HashSet(Arrays.asList(participants)))
-        .setStartedAt("2017-08-01T08:30:00.000").createScreeningToReferral();
+        .setStartedAt("2017-08-01T08:30:00.000Z").createScreeningToReferral();
     assertThat(
         StartDateTimeValidator.extractStartTime(screeningToReferral.getStartedAt(), messageBuilder),
         equalTo("08:30:00"));
@@ -60,7 +60,7 @@ public class StartDateTimeValidatorTest {
         .setRoles(new HashSet(Arrays.asList("Victim", null))).createParticipant();
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(new HashSet(Arrays.asList(participants)))
-        .setStartedAt("2017-08-01T14:20:00.000").createScreeningToReferral();
+        .setStartedAt("2017-08-01T14:20:00.000Z").createScreeningToReferral();
     assertThat(
         StartDateTimeValidator.extractStartTime(screeningToReferral.getStartedAt(), messageBuilder),
         not(equalTo("14:10:00")));
@@ -73,7 +73,7 @@ public class StartDateTimeValidatorTest {
         .setRoles(new HashSet(Arrays.asList("Victim", null))).createParticipant();
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(new HashSet(Arrays.asList(participants)))
-        .setStartedAt("2017-08-01T08:30:00.000").createScreeningToReferral();
+        .setStartedAt("2017-08-01T08:30:00.000Z").createScreeningToReferral();
     assertThat(
         StartDateTimeValidator.extractStartDate(screeningToReferral.getStartedAt(), messageBuilder),
         equalTo("2017-08-01"));
@@ -86,7 +86,7 @@ public class StartDateTimeValidatorTest {
         .setRoles(new HashSet(Arrays.asList("Victim", null))).createParticipant();
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(new HashSet(Arrays.asList(participants)))
-        .setStartedAt("2017-08-01T14:20:00.000").createScreeningToReferral();
+        .setStartedAt("2017-08-01T14:20:00.000Z").createScreeningToReferral();
     assertThat(
         StartDateTimeValidator.extractStartTime(screeningToReferral.getStartedAt(), messageBuilder),
         not(equalTo("2017-08-02")));

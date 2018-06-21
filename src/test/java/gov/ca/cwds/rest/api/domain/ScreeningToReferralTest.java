@@ -160,15 +160,15 @@ public class ScreeningToReferralTest {
     Participant participant = new ParticipantResourceBuilder().createParticipant();
     participants.add(participant);
     SafetyAlerts safetyAlerts = new SafetyAlertsEntityBuilder().build();
-    String expected = MAPPER.writeValueAsString(
+    String actual = MAPPER.writeValueAsString(
         new ScreeningToReferralResourceBuilder().setSafetyAlerts(safetyAlerts.getAlerts())
             .setSafetyAlertInformationn(safetyAlerts.getAlertInformation())
             .setParticipants(participants).createScreeningToReferral());
 
-    String serialized = MAPPER.writeValueAsString(
+    String expected = MAPPER.writeValueAsString(
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/validWithSafetyAlert.json"),
             ScreeningToReferral.class));
-    assertThat(serialized, is(expected));
+    assertThat(expected, is(actual));
   }
 
   @Test
