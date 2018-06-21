@@ -78,7 +78,7 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ScreeningSatefyAlertsService;
+import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -168,7 +168,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
-  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
+  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private gov.ca.cwds.data.persistence.cms.Referral referral;
   private Validator validator;
@@ -265,7 +265,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
 
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
+    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
@@ -273,9 +273,10 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
             drmsDocumentTemplateService, addressService, longTextService, riReferral);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantService, clientRelationshipService, validator, referralDao, new MessageBuilder(),
-        allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, screeningSatefyAlertsService);
+        crossReportService, participantService, clientRelationshipService, validator, referralDao,
+        new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
+        governmentOrganizationCrossReportService, clientRelationshipDao,
+        referralSatefyAlertsService);
   }
 
   /**

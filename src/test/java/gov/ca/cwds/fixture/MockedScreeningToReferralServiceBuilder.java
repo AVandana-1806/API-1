@@ -4,9 +4,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import javax.validation.Validation;
 
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.rest.api.domain.cms.Address;
@@ -30,7 +30,7 @@ import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ScreeningSatefyAlertsService;
+import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -68,7 +68,7 @@ public class MockedScreeningToReferralServiceBuilder {
   private ClientRelationshipDao clientRelationshipDao;
   private ReferralDao referralDao;
   private MessageBuilder messageBuilder;
-  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
+  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   /**
    * @return the referralService
@@ -283,17 +283,17 @@ public class MockedScreeningToReferralServiceBuilder {
   }
 
   /**
-   * @return the screeningSatefyAlertsService
+   * @return the referralSatefyAlertsService
    */
-  public ScreeningSatefyAlertsService getScreeningSatefyAlertsService() {
-    if (screeningSatefyAlertsService == null) {
-      buildDefaultMockForScreeningSafetAlertsService();
+  public ReferralSatefyAlertsService getScreeningSatefyAlertsService() {
+    if (referralSatefyAlertsService == null) {
+      buildDefaultMockForReferralSafetyAlertsService();
     }
-    return screeningSatefyAlertsService;
+    return referralSatefyAlertsService;
   }
 
-  private void buildDefaultMockForScreeningSafetAlertsService() {
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
+  private void buildDefaultMockForReferralSafetyAlertsService() {
+    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
   }
 
   /**
@@ -458,6 +458,7 @@ public class MockedScreeningToReferralServiceBuilder {
     this.clientRelationshipService = clientRelationshipService;
     return this;
   }
+
   /**
    * @param referralDao - referralDao
    * @return the referralDao

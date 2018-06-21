@@ -3,7 +3,6 @@ package gov.ca.cwds.rest.business.rules.doctool;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -13,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import gov.ca.cwds.data.cms.AddressDao;
 import gov.ca.cwds.data.cms.AllegationDao;
 import gov.ca.cwds.data.cms.AllegationPerpetratorHistoryDao;
@@ -40,7 +40,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ScreeningSatefyAlertsService;
+import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -101,7 +101,7 @@ public class R00796ScreeningToReferralDeleteTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
+  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -224,14 +224,14 @@ public class R00796ScreeningToReferralDeleteTest {
     participantService = mock(ParticipantService.class);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
+    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
     reminders = mock(Reminders.class);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, screeningSatefyAlertsService);
+        clientRelationshipDao, referralSatefyAlertsService);
   }
 
   /**

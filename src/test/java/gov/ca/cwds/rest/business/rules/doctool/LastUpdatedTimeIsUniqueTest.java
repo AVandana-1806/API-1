@@ -73,7 +73,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ScreeningSatefyAlertsService;
+import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -134,7 +134,7 @@ public class LastUpdatedTimeIsUniqueTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ScreeningSatefyAlertsService screeningSatefyAlertsService;
+  private ReferralSatefyAlertsService screeningSatefyAlertsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -285,7 +285,7 @@ public class LastUpdatedTimeIsUniqueTest {
     participantService = new ParticipantService(clientService, referralClientService,
         reporterService, childClientService, clientAddressService, validator,
         clientScpEthnicityService, caseDao, referralClientDao);
-    screeningSatefyAlertsService = mock(ScreeningSatefyAlertsService.class);
+    screeningSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
 
     referralService =
