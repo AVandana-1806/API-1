@@ -1,13 +1,17 @@
 package gov.ca.cwds.rest.api.domain.investigation.contact;
 
-import com.fasterxml.jackson.annotation.*;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gov.ca.cwds.rest.api.Response;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import java.time.LocalDateTime;
-import java.util.Set;
 
 
 @JsonSnakeCase
@@ -26,6 +30,8 @@ public class PostedContactIntake extends ContactIntake implements Response {
   private Set<String> peopleIds;
 
   /**
+   * @param id primary key
+   * @param screeningId screening id
    * @param startedAt started at
    * @param endedAt ended at
    * @param purpose purpose
@@ -36,26 +42,14 @@ public class PostedContactIntake extends ContactIntake implements Response {
    * @param note note
    */
   @JsonCreator
-  public PostedContactIntake(
-      @JsonProperty("id") Integer id,
+  public PostedContactIntake(@JsonProperty("id") Integer id,
       @JsonProperty("screening_id") String screeningId,
       @JsonProperty("started_at") LocalDateTime startedAt,
-      @JsonProperty("ended_at") LocalDateTime endedAt,
-      @JsonProperty("purpose") String purpose,
+      @JsonProperty("ended_at") LocalDateTime endedAt, @JsonProperty("purpose") String purpose,
       @JsonProperty("communication_method") String communicationMethod,
-      @JsonProperty("status") String status,
-      @JsonProperty("service") Integer service,
-      @JsonProperty("location") String location,
-      @JsonProperty("note") String note) {
-    super(
-        screeningId,
-        startedAt,
-        endedAt,
-        purpose,
-        communicationMethod,
-        status,
-        service,
-        location,
+      @JsonProperty("status") String status, @JsonProperty("service") Integer service,
+      @JsonProperty("location") String location, @JsonProperty("note") String note) {
+    super(screeningId, startedAt, endedAt, purpose, communicationMethod, status, service, location,
         note);
     this.id = id;
   }
