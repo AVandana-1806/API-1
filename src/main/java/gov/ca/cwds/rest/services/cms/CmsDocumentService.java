@@ -12,7 +12,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.data.Dao;
 import gov.ca.cwds.data.cms.CmsDocumentDao;
 import gov.ca.cwds.data.persistence.cms.CmsDocumentBlobSegment;
+import gov.ca.cwds.data.persistence.xa.CaresWorkConnectionStealer;
 import gov.ca.cwds.rest.api.domain.cms.CmsDocument;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
@@ -213,7 +213,6 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // There is no sql injection here
   private void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
     try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete())) {
-
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
 
@@ -228,7 +227,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
     try (final Connection con = getConnection()) {
       deleteBlobsJdbc(con, docId);
     } catch (SQLException e) {
-      throw new ServiceException("FAILED TO DELETE DOCUMENT SEGMENTS", e);
+      throw new ServiceException("FAILED TO DELETE DOCUMENT SEGMENTS!", e);
     }
   }
 
@@ -237,7 +236,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
     try (final Connection con = getConnection()) {
       insertBlobsJdbc(con, doc, blobs);
     } catch (SQLException e) {
-      throw new ServiceException("FAILED TO INSERT DOCUMENT SEGMENTS", e);
+      throw new ServiceException("FAILED TO INSERT DOCUMENT SEGMENTS!", e);
     }
   }
 
@@ -253,8 +252,9 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    * @throws SQLException on database error
    */
   protected synchronized Connection getConnection() throws SQLException {
-    return dao.getSessionFactory().getSessionFactoryOptions().getServiceRegistry()
-        .getService(ConnectionProvider.class).getConnection();
+    final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
+    dao.grabSession().doWork(work);
+    return work.getConnection();
   }
 
   /**
@@ -281,4 +281,5 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
     return retval;
   }
+
 }
