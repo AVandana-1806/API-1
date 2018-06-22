@@ -22,7 +22,6 @@ public class ParticipantDaoFactoryImpl implements ParticipantDaoFactory {
   @Inject
   private Injector injector;
 
-
   @Override
   public CrudsDao<CmsPersistentObject> create(String tableName) {
     CrudsDao<CmsPersistentObject> crudsDao;
@@ -45,7 +44,5 @@ public class ParticipantDaoFactoryImpl implements ParticipantDaoFactory {
   public void setInjector(Injector injector) {
     this.injector = injector;
   }
-
-
 
 }
