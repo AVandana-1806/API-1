@@ -14,9 +14,10 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
  * CWDS API Team
  */
 public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
+
   @Test
   public void testGet() throws Exception {
-    String actualJson = doGetCall(RESOURCE_PARTICIPANTS_INTAKE_API + "/25");
+    String actualJson = getStringResponse(doGetCall(RESOURCE_PARTICIPANTS_INTAKE_API + "/25"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-get-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -26,7 +27,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   public void testPost() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json");
-    String actualJson = doPostCall(RESOURCE_PARTICIPANTS_INTAKE_API, request);
+    String actualJson = getStringResponse(doPostCall(RESOURCE_PARTICIPANTS_INTAKE_API, request));
     ParticipantIntakeApi participant =
         objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
     String expectedResponse =
@@ -45,7 +46,8 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   public void testPut() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-put-request.json");
-    String actualJson = doPutCall(RESOURCE_PARTICIPANTS_INTAKE_API + "/25", request);
+    String actualJson = getStringResponse(
+        doPutCall(RESOURCE_PARTICIPANTS_INTAKE_API + "/25", request));
     ParticipantIntakeApi participant =
         objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
     String expectedResponse =

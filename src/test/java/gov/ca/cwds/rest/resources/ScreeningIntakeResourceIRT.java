@@ -28,7 +28,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
 
   @Test
   public void testGet() throws Exception {
-    String actualJson = doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52");
+    String actualJson = getStringResponse(doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-get-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -37,7 +37,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPost() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-post-request.json");
-    String actualJson = doPostCall(RESOURCE_INTAKE_SCREENINGS, request);
+    String actualJson = getStringResponse(doPostCall(RESOURCE_INTAKE_SCREENINGS, request));
     Screening screening = objectMapper.readValue(actualJson.getBytes(), Screening.class);
 
     String expectedResponse =
@@ -76,7 +76,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPut() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-request.json");
-    String actualJson = doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request);
+    String actualJson = getStringResponse(doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -94,7 +94,8 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
     csecs.add(csec);
     participant.setCsecs(csecs);
     String csecsDuplicationRequest = objectMapper.writeValueAsString(screening);
-    String response = doPostCall(RESOURCE_INTAKE_SCREENINGS, csecsDuplicationRequest);
+    String response = getStringResponse(
+        doPostCall(RESOURCE_INTAKE_SCREENINGS, csecsDuplicationRequest));
     Assert.assertTrue(response.contains("UNIQUE_CSEC_CODE_PER_PARTICIPANT"));
   }
 

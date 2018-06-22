@@ -72,10 +72,9 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
         .runScript("liquibase/api/api_cwsrs_database_master.xml");
   }
 
-  protected String doGetCall(String pathInfo) throws IOException {
+  protected Response doGetCall(String pathInfo) throws IOException {
     WebTarget target = clientTestRule.target(pathInfo);
-    Response response = target.request(MediaType.APPLICATION_JSON).get();
-    return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
+    return target.request(MediaType.APPLICATION_JSON).get();
   }
 
   protected int doAuthorizedGetCallStatus(String tokenFilePath, String pathInfo)
@@ -85,17 +84,19 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
     return response.getStatus();
   }
 
-  protected String doPostCall(String pathInfo, String request) throws IOException {
+  protected Response doPostCall(String pathInfo, String request) throws IOException {
     WebTarget target = clientTestRule.target(pathInfo);
-    Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(request,
+    return target.request(MediaType.APPLICATION_JSON).post(Entity.entity(request,
         MediaType.APPLICATION_JSON_TYPE));
-    return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
 
-  protected String doPutCall(String pathInfo, String request) throws IOException {
+  protected Response doPutCall(String pathInfo, String request) throws IOException {
     WebTarget target = clientTestRule.target(pathInfo);
-    Response response = target.request(MediaType.APPLICATION_JSON).put(Entity.entity(request,
+    return target.request(MediaType.APPLICATION_JSON).put(Entity.entity(request,
         MediaType.APPLICATION_JSON_TYPE));
+  }
+
+  protected String getStringResponse(Response response) throws IOException {
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
 
