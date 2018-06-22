@@ -63,6 +63,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
    * @throws Exception if startup fails
    */
   public static void main(final String[] args) throws Exception {
+    LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n\n");
     new ApiApplication().run(args);
   }
 
@@ -129,9 +130,9 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     LOGGER.info("PaperTrailInterceptor: {}",
         applicationModule.getDataAccessModule().getPaperTrailInterceptor());
 
-    Map<String, String> env = System.getenv();
+    final Map<String, String> env = System.getenv();
+    LOGGER.info("******************* environment variables ***********************************");
     for (Map.Entry<String, String> entry : env.entrySet()) {
-      LOGGER.info("******************* environment variables ***********************************");
       LOGGER.info("{}={}", entry.getKey(), entry.getValue());
     }
   }
