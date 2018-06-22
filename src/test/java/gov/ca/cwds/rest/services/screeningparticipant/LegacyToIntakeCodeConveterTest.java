@@ -7,7 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
-import gov.ca.cwds.rest.services.screeningparticipant.LegacyToIntakeCodeConveter.IntakeRaceCode;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter.IntakeRaceCode;
 
 /**
  * @author CWDS API Team

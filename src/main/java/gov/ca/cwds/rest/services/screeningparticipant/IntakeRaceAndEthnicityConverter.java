@@ -54,9 +54,9 @@ public class IntakeRaceAndEthnicityConverter {
           && (!CARIBBEAN_RACE_CODE.equals(id)))) {
         String shortDescrption = systemCode.getShortDescription();
         if (StringUtils.isNotBlank(shortDescrption)) {
-          String race = LegacyToIntakeCodeConveter.IntakeRaceCode.findByLegacyValue(shortDescrption)
+          String race = IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption)
               .getRace();
-          String raceDetail = LegacyToIntakeCodeConveter.IntakeRaceCode
+          String raceDetail = IntakeCodeConverter.IntakeRaceCode
               .findByLegacyValue(shortDescrption).getRaceDetail();
           intakeRaceList.add(new IntakeRaceAndEthnicity.IntakeRace(race, raceDetail));
         }
