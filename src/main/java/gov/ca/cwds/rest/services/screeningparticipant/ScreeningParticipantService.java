@@ -11,8 +11,10 @@ import com.google.inject.Inject;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
@@ -38,7 +40,7 @@ public class ScreeningParticipantService
   private ParticipantDaoFactoryImpl participantDaoFactory;
 
   @Inject
-  private ParticipantMapperFactoryImpl participantMapperFactoryImpl;
+  private ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl;
 
   @Override
   @UnitOfWork(value = "cms")
@@ -48,7 +50,7 @@ public class ScreeningParticipantService
           incomingParticipantIntakeApi.getScreeningId());
       throw new ServiceException("Screening is required to create the particpant");
     }
-    ensureScreeningExists(incomingParticipantIntakeApi);
+    ensureScreeningExistsAndOpen(incomingParticipantIntakeApi);
     ParticipantIntakeApi participantIntakeApi = null;
     LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
 
@@ -65,7 +67,7 @@ public class ScreeningParticipantService
 
   private ParticipantIntakeApi createParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
-    ParticipantMapper participantMapper;
+    ParticipantMapper<CmsPersistentObject> participantMapper;
     CrudsDao<CmsPersistentObject> crudsDaoObject = participantDaoFactory.create(tableName);
     if ((persistentObject = crudsDaoObject.find(id)) != null) {
       participantMapper = participantMapperFactoryImpl.create(tableName);
@@ -76,10 +78,14 @@ public class ScreeningParticipantService
     }
   }
 
-  private void ensureScreeningExists(ParticipantIntakeApi participantIntakeApi) {
-    if (screeningDao.find(participantIntakeApi.getScreeningId()) == null) {
+  private void ensureScreeningExistsAndOpen(ParticipantIntakeApi participantIntakeApi) {
+    ScreeningEntity screening = null;
+    if ((screening = screeningDao.find(participantIntakeApi.getScreeningId())) == null) {
       LOGGER.error("Screening not found {}", participantIntakeApi.getScreeningId());
       throw new EntityNotFoundException("Screening not found");
+    } else if (ScreeningStatus.SUBMITTED.getStatus().equals(screening.getScreeningStatus())) {
+      LOGGER.error("Screeening is already Submitted {}", screening.getScreeningStatus());
+      throw new ServiceException("Screeening is already Submitted");
     }
   }
 
@@ -124,7 +130,7 @@ public class ScreeningParticipantService
    * @param participantMapperFactoryImpl - participantMapperFactoryImpl
    */
   public void setParticipantMapperFactoryImpl(
-      ParticipantMapperFactoryImpl participantMapperFactoryImpl) {
+      ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl) {
     this.participantMapperFactoryImpl = participantMapperFactoryImpl;
   }
 
