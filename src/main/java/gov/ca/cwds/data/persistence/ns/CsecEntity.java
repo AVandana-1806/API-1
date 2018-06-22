@@ -9,12 +9,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.NamedQuery;
 
 /**
  * CWDS API Team
  *
  * Commercially Sexually Exploited Children
  */
+
+@NamedQuery(name = "gov.ca.cwds.data.persistence.ns.CsecEntity.findByParticipantId",
+    query = "FROM gov.ca.cwds.data.persistence.ns.CsecEntity"
+        + " WHERE participantId = :participantId")
 @Entity
 @Table(name = "csec")
 public class CsecEntity implements PersistentObject, Serializable {

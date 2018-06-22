@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.cms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
@@ -27,6 +28,11 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
 
   @Override
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {
+    if (SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN.equals(metaId)) {
+      List<IntakeLov> lovs = new ArrayList<>();
+      lovs.add(new IntakeLov(0L, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN, null, null, false, null, null, null, null, "At Risk", null));
+      return lovs;
+    }
     return null;
   }
 
