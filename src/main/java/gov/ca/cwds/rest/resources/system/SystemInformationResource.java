@@ -76,8 +76,8 @@ public class SystemInformationResource {
 
   private Attributes getManifestProperties() {
     Attributes attributes = new Attributes();
-    String resource = "/" + this.getClass().getName().replace(".", "/") + ".class";
-    String fullPath = this.getClass().getResource(resource).toString();
+    String resource = "/" + this.getClass().getName().replace('.', '/') + ".class";
+    String fullPath = this.getClass().getResource(resource).toExternalForm();
     String archivePath = fullPath.substring(0, fullPath.length() - resource.length());
     if (archivePath.endsWith("\\WEB-INF\\classes") || archivePath.endsWith("/WEB-INF/classes")) {
       archivePath = archivePath
