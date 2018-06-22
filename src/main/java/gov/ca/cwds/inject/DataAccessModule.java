@@ -63,7 +63,6 @@ import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.cms.TickleDao;
-import gov.ca.cwds.data.cms.XaCmsAddressDao;
 import gov.ca.cwds.data.dao.contact.ContactPartyDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.DeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.IndividualDeliveredServiceDao;
@@ -95,7 +94,6 @@ import gov.ca.cwds.data.ns.PhoneNumberDao;
 import gov.ca.cwds.data.ns.RaceDao;
 import gov.ca.cwds.data.ns.ScreeningAddressDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
-import gov.ca.cwds.data.ns.XaNsAddressDao;
 import gov.ca.cwds.data.persistence.cms.ApiSystemCodeDao;
 import gov.ca.cwds.data.persistence.cms.CountyTriggerEmbeddable;
 import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
@@ -439,7 +437,7 @@ public class DataAccessModule extends AbstractModule {
     bind(ClientScpEthnicityDao.class);
     bind(GovernmentOrganizationDao.class);
     bind(GovernmentOrganizationCrossReportDao.class);
-    bind(XaCmsAddressDao.class);
+    // bind(XaCmsAddressDao.class);
     bind(SpecialProjectDao.class);
     bind(SpecialProjectReferralDao.class);
     bind(SafetyAlertDao.class);
@@ -448,7 +446,7 @@ public class DataAccessModule extends AbstractModule {
     bind(AddressDao.class);
     bind(AddressesDao.class);
     bind(CsecDao.class);
-    bind(XaNsAddressDao.class);
+    // bind(XaNsAddressDao.class);
 
     bind(PersonDao.class);
     bind(ScreeningDao.class);
