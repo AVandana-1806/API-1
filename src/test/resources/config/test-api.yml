@@ -55,6 +55,7 @@ cmsDataSourceFactory:
       hibernate.use_sql_comments: false
       hibernate.default_schema: cwsint
       hibernate.connection.autocommit: false
+      # hibernate.current_session_context_class: thread  
 
 rsDataSourceFactory:
   autoCommitByDefault: false
@@ -184,6 +185,10 @@ elasticsearch:
 
 triggertables:
   laCountySpecificCode: 19
+  
+systemCodeCache: 
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
+  refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
 
 webSecurity:
   httpResponseSecurityHeaders:

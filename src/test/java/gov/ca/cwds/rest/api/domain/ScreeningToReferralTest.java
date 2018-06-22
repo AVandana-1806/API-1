@@ -62,9 +62,10 @@ public class ScreeningToReferralTest {
 
   private Integer method = 2095; // "electronic report";
   private String informDate = "2017-03-15";
-  private Set<Participant> participants = new HashSet<>();
-  private Set<CrossReport> crossReports = new HashSet<>();
-  private Set<Allegation> allegations = new HashSet<>();
+  private Set<Participant> participants = new HashSet<Participant>();
+  private Set<ScreeningRelationship> relationships = new HashSet<ScreeningRelationship>();
+  private Set<CrossReport> crossReports = new HashSet<CrossReport>();
+  private Set<Allegation> allegations = new HashSet<Allegation>();
   private long id = 2;
   private boolean filedOutOfState = false;
   private String countyId = "1101";
@@ -146,7 +147,7 @@ public class ScreeningToReferralTest {
         "0X5", "addtional information", "Screening Descision", "Detail", approvalStatus,
         familyAwarness, filedWithLawEnforcement, responsibleAgency, "S", "", "23", null,
         safetyAlerts.getAlerts(), safetyAlerts.getAlertInformation(), address, participants,
-        crossReports, allegations, reportType));
+        relationships, crossReports, allegations, reportType));
 
     String serialized = MAPPER.writeValueAsString(
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/valid/validstr.json"),
@@ -159,15 +160,15 @@ public class ScreeningToReferralTest {
     Participant participant = new ParticipantResourceBuilder().createParticipant();
     participants.add(participant);
     SafetyAlerts safetyAlerts = new SafetyAlertsEntityBuilder().build();
-    String expected = MAPPER.writeValueAsString(
+    String actual = MAPPER.writeValueAsString(
         new ScreeningToReferralResourceBuilder().setSafetyAlerts(safetyAlerts.getAlerts())
             .setSafetyAlertInformationn(safetyAlerts.getAlertInformation())
             .setParticipants(participants).createScreeningToReferral());
 
-    String serialized = MAPPER.writeValueAsString(
+    String expected = MAPPER.writeValueAsString(
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/validWithSafetyAlert.json"),
             ScreeningToReferral.class));
-    assertThat(serialized, is(expected));
+    assertThat(expected, is(actual));
   }
 
   @Test
@@ -192,8 +193,8 @@ public class ScreeningToReferralTest {
         responseTime, "2016-08-03T01:00:00.000", "Michael Bastow", "0X5", "addtional information",
         "Screening Descision", "Detail", approvalStatus, familyAwarness, filedWithLawEnforcement,
         responsibleAgency, "S", "", "23", null, safetyAlerts.getAlerts(),
-        safetyAlerts.getAlertInformation(), address, participants, crossReports, allegations,
-        reportType);
+        safetyAlerts.getAlertInformation(), address, participants, relationships, crossReports,
+        allegations, reportType);
 
     ScreeningToReferral deserialized =
         MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/valid/validstr.json"),
@@ -213,17 +214,14 @@ public class ScreeningToReferralTest {
 
   @Test
   public void shouldPassWithSafetyAlerts() throws Exception {
-    ScreeningToReferral screening =
-        MAPPER.readValue(fixture("fixtures/domain/ScreeningToReferral/validWithWorkerSafety.json"),
-            ScreeningToReferral.class);
-    validator = Validation.buildDefaultValidatorFactory().getValidator();
-    messageBuilder.addDomainValidationError(validator.validate(screening));
-    List<ErrorMessage> validationErrors = messageBuilder.getMessages();
-    for (ErrorMessage message : validationErrors) {
-      System.out.println(message.getMessage());
-    }
-    assertThat(messageBuilder.getMessages().isEmpty(), is(true));
-
+    SafetyAlerts safetyAlerts =
+        new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Danger Fellow");
+    ScreeningToReferral toValidate = new ScreeningToReferralResourceBuilder()
+        .setSafetyAlerts(safetyAlerts.getAlerts())
+        .setSafetyAlertInformationn(safetyAlerts.getAlertInformation()).createScreeningToReferral();
+    Set<ConstraintViolation<ScreeningToReferral>> constraintViolations =
+        validator.validate(toValidate);
+    assertEquals(0, constraintViolations.size());
   }
 
   @Test

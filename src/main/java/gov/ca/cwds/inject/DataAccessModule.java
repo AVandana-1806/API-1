@@ -1,12 +1,5 @@
 package gov.ca.cwds.inject;
 
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS_REP;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_REP;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,13 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import gov.ca.cwds.data.cms.AddressUcDao;
@@ -62,11 +52,13 @@ import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.cms.TickleDao;
+import gov.ca.cwds.data.cms.XaCmsAddressDao;
 import gov.ca.cwds.data.dao.contact.ContactPartyDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.DeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.IndividualDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.ReferralClientDeliveredServiceDao;
 import gov.ca.cwds.data.es.ElasticsearchDao;
+import gov.ca.cwds.data.legacy.cms.dao.SafetyAlertDao;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
@@ -91,12 +83,11 @@ import gov.ca.cwds.data.ns.PhoneNumberDao;
 import gov.ca.cwds.data.ns.RaceDao;
 import gov.ca.cwds.data.ns.ScreeningAddressDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.ns.XaNsAddressDao;
 import gov.ca.cwds.data.persistence.cms.ApiSystemCodeDao;
 import gov.ca.cwds.data.persistence.cms.CountyTriggerEmbeddable;
 import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
-import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
-import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.ElasticUtils;
@@ -128,8 +119,6 @@ import io.dropwizard.setup.Bootstrap;
  * @see ApiSessionFactoryFactory
  */
 public class DataAccessModule extends AbstractModule {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessModule.class);
 
   private Map<String, Client> clients;
 
@@ -223,7 +212,11 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.legacy.cms.entity.SpecialProject.class,
           gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral.class,
           gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies.class,
-          gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class)
+          gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class,
+          gov.ca.cwds.data.legacy.cms.entity.SafetyAlert.class,
+          gov.ca.cwds.data.legacy.cms.entity.LongText.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.SafetyAlertActivationReasonType.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.County.class)
       .build();
 
   private final ImmutableList<Class<?>> nsEntities = ImmutableList.<Class<?>>builder().add(
@@ -271,7 +264,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_CMS;
+          return "cms";
         }
       };
 
@@ -285,7 +278,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_NS;
+          return "ns";
         }
       };
 
@@ -298,12 +291,12 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_CMS_REP;
+          return "rs";
         }
       };
 
   /**
-   * XA pooled datasource factory for CMS DB2, transactional schema.
+   * XA pooled datasource factory for CMS DB2.
    */
   private final FerbHibernateBundle xaCmsHibernateBundle =
       new FerbHibernateBundle(cmsEntities, new ApiSessionFactoryFactory()) {
@@ -314,23 +307,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_XA_CMS;
-        }
-      };
-
-  /**
-   * XA pooled datasource factory for CMS DB2, replicated schema.
-   */
-  private final FerbHibernateBundle xaCmsRsHibernateBundle =
-      new FerbHibernateBundle(ImmutableList.of(), new ApiSessionFactoryFactory()) {
-        @Override
-        public PooledDataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
-          return configuration.getXaCmsRsDataSourceFactory();
-        }
-
-        @Override
-        public String name() {
-          return DATASOURCE_XA_CMS_REP;
+          return "xa_cms";
         }
       };
 
@@ -346,7 +323,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_XA_NS;
+          return "xa_ns";
         }
       };
 
@@ -359,10 +336,8 @@ public class DataAccessModule extends AbstractModule {
     bootstrap.addBundle(cmsHibernateBundle);
     bootstrap.addBundle(nsHibernateBundle);
     bootstrap.addBundle(rsHibernateBundle);
-
     bootstrap.addBundle(xaCmsHibernateBundle);
     bootstrap.addBundle(xaNsHibernateBundle);
-    bootstrap.addBundle(xaCmsRsHibernateBundle);
   }
 
   /**
@@ -372,86 +347,90 @@ public class DataAccessModule extends AbstractModule {
    */
   @Override
   protected void configure() {
-    LOGGER.debug("configure: CMS DAO's");
-    bind(AddressUcDao.class);
+    // CMS:
+    // CmsReferral participants:
     bind(AllegationDao.class);
-    bind(AllegationPerpetratorHistoryDao.class);
-    bind(AssignmentDao.class);
-    bind(AssignmentUnitDao.class);
-    bind(AttorneyDao.class);
-    bind(CaseAssignmentDao.class);
-    bind(CaseDao.class);
-    bind(CaseLoadDao.class);
-    bind(ChildClientDao.class);
-    bind(ClientCollateralDao.class);
     bind(ClientDao.class);
-    bind(ClientRelationshipDao.class);
-    bind(ClientScpEthnicityDao.class);
-    bind(ClientUcDao.class);
-    bind(CmsDocReferralClientDao.class);
-    bind(CmsDocumentDao.class);
-    bind(ContactPartyDeliveredServiceDao.class);
-    bind(CrossReportDao.class);
-    bind(CwsOfficeDao.class);
-    bind(DeliveredServiceDao.class);
-    bind(DrmsDocumentDao.class);
-    bind(DrmsDocumentTemplateDao.class);
-    bind(ExternalInterfaceDao.class);
-    bind(GovernmentOrganizationCrossReportDao.class);
-    bind(GovernmentOrganizationDao.class);
-    bind(IndividualDeliveredServiceDao.class);
-    bind(LawEnforcementDao.class);
-    bind(LongTextDao.class);
-    bind(OtherCaseReferralDrmsDocumentDao.class);
-    bind(OtherClientNameDao.class);
-    bind(ReferralAssignmentDao.class);
     bind(ReferralClientDao.class);
-    bind(ReferralClientDeliveredServiceDao.class);
     bind(ReferralDao.class);
     bind(ReporterDao.class);
-    bind(SexualExploitationTypeDao.class);
-    bind(SpecialProjectDao.class);
-    bind(SpecialProjectReferralDao.class);
+    bind(CrossReportDao.class);
+    bind(CaseDao.class);
+    bind(ReferralAssignmentDao.class);
+    bind(CaseAssignmentDao.class);
+    bind(ClientRelationshipDao.class);
+    bind(ClientCollateralDao.class);
+
+    bind(AttorneyDao.class);
+    bind(CmsDocReferralClientDao.class);
+    bind(CmsDocumentDao.class);
+    bind(OtherClientNameDao.class);
     bind(StaffPersonDao.class);
     bind(StateIdDao.class);
+    bind(LongTextDao.class);
+    bind(AllegationPerpetratorHistoryDao.class);
+    bind(ClientUcDao.class);
+    bind(ChildClientDao.class);
+    bind(SexualExploitationTypeDao.class);
     bind(SystemCodeDao.class);
     bind(SystemMetaDao.class);
+    bind(DrmsDocumentDao.class);
+    bind(DrmsDocumentTemplateDao.class);
+    bind(OtherCaseReferralDrmsDocumentDao.class);
+    bind(AssignmentDao.class);
+    bind(AssignmentUnitDao.class);
+    bind(CwsOfficeDao.class);
     bind(TickleDao.class);
-    // bind(XaCmsAddressDao.class);
+    bind(AddressUcDao.class);
+    bind(ExternalInterfaceDao.class);
+    bind(DeliveredServiceDao.class);
+    bind(ContactPartyDeliveredServiceDao.class);
+    bind(ReferralClientDeliveredServiceDao.class);
+    bind(IndividualDeliveredServiceDao.class);
+    bind(LawEnforcementDao.class);
+    bind(CaseLoadDao.class);
+    bind(ClientScpEthnicityDao.class);
+    bind(GovernmentOrganizationDao.class);
+    bind(GovernmentOrganizationCrossReportDao.class);
+    bind(XaCmsAddressDao.class);
+    bind(SpecialProjectDao.class);
+    bind(SpecialProjectReferralDao.class);
+    bind(SafetyAlertDao.class);
 
-    LOGGER.debug("configure: NS DAO's");
+    // NS:
     bind(AddressDao.class);
     bind(AddressesDao.class);
-    bind(AgencyDao.class);
-    bind(AllegationIntakeDao.class);
     bind(CsecDao.class);
-    bind(EthnicityDao.class);
+    bind(XaNsAddressDao.class);
+
+    bind(PersonDao.class);
+    bind(ScreeningDao.class);
+    bind(ScreeningAddressDao.class);
+    bind(AgencyDao.class);
     bind(gov.ca.cwds.data.ns.CrossReportDao.class);
+    bind(AllegationIntakeDao.class);
+    bind(ParticipantDao.class);
+    bind(PhoneNumberDao.class);
+    bind(LanguageDao.class);
+    bind(PersonAddressDao.class);
+    bind(PersonPhoneDao.class);
+    bind(PersonLanguageDao.class);
+    bind(PersonEthnicityDao.class);
+    bind(EthnicityDao.class);
+    bind(PersonRaceDao.class);
+    bind(RaceDao.class);
     bind(IntakeLOVCodeDao.class);
     bind(IntakeLovDao.class);
-    bind(LanguageDao.class);
     bind(PaperTrailDao.class);
     bind(PaperTrailInterceptor.class);
-    bind(ParticipantDao.class);
-    bind(PersonAddressDao.class);
-    bind(PersonDao.class);
-    bind(PersonEthnicityDao.class);
-    bind(PersonLanguageDao.class);
-    bind(PersonPhoneDao.class);
-    bind(PersonRaceDao.class);
-    bind(PhoneNumberDao.class);
-    bind(RaceDao.class);
-    bind(ScreeningAddressDao.class);
-    bind(ScreeningDao.class);
-    // bind(XaNsAddressDao.class);
 
-    LOGGER.debug("configure: Trigger Table DAO's");
+    // Trigger Tables:
     bind(CountyOwnershipDao.class);
     bind(CountyTriggerDao.class);
-    bind(CountyTriggerEmbeddable.class);
-    bind(LACountyTrigger.class);
     bind(NonLACountyTriggers.class);
+    bind(LACountyTrigger.class);
     bind(TriggerTablesDao.class);
+    bind(CountyTriggerEmbeddable.class);
 
     // Downstream Tables:
     bind(Reminders.class);
@@ -459,7 +438,7 @@ public class DataAccessModule extends AbstractModule {
     // System code loader DAO:
     bind(ApiSystemCodeDao.class).to(SystemCodeDaoFileImpl.class);
 
-    LOGGER.debug("configure: Referential integrity");
+    // Referential integrity:
     bind(RIClientCollateral.class);
     bind(RIChildClient.class);
     bind(RIAllegationPerpetratorHistory.class);
@@ -473,100 +452,65 @@ public class DataAccessModule extends AbstractModule {
     bind(RIGovernmentOrganizationCrossReport.class);
   }
 
-  // ==========================
-  // HIBERNATE BUNDLES
-  // ==========================
+  @Provides
+  @CmsSessionFactory
+  public SessionFactory cmsSessionFactory() {
+    return cmsHibernateBundle.getSessionFactory();
+  }
 
-  // ==========================
-  // NON-XA Hibernate bundles
-  // ==========================
+  @Provides
+  @NsSessionFactory
+  public SessionFactory nsSessionFactory() {
+    return nsHibernateBundle.getSessionFactory();
+  }
+
+  @Provides
+  @CwsRsSessionFactory
+  public SessionFactory rsSessionFactory() {
+    return rsHibernateBundle.getSessionFactory();
+  }
 
   @Provides
   @CmsHibernateBundle
-  @Singleton
   public HibernateBundle<ApiConfiguration> cmsHibernateBundle() {
     return cmsHibernateBundle;
   }
 
   @Provides
   @NsHibernateBundle
-  @Singleton
   public HibernateBundle<ApiConfiguration> nsHibernateBundle() {
     return nsHibernateBundle;
   }
 
   @Provides
   @CwsRsHibernateBundle
-  @Singleton
   public HibernateBundle<ApiConfiguration> rsHibernateBundle() {
     return rsHibernateBundle;
   }
 
-  // ==========================
-  // XA Hibernate bundles
-  // ==========================
-
   @Provides
   @XaCmsHibernateBundle
-  @Singleton
   public FerbHibernateBundle getXaCmsHibernateBundle() {
-    LOGGER.info("DataAccessModule.getXaCmsHibernateBundle()");
     return xaCmsHibernateBundle;
   }
 
   @Provides
-  @XaCmsRsHibernateBundle
-  @Singleton
-  public FerbHibernateBundle getXaCmsRsHibernateBundle() {
-    LOGGER.info("DataAccessModule.getXaCmsRsHibernateBundle()");
-    return xaCmsRsHibernateBundle;
+  @XaNsSessionFactory
+  public SessionFactory xaNsSessionFactory() {
+    return xaNsHibernateBundle.getSessionFactory();
+  }
+
+  @Provides
+  @XaCmsSessionFactory
+  public SessionFactory xaCmsSessionFactory() {
+    return xaCmsHibernateBundle.getSessionFactory();
   }
 
   @Provides
   @XaNsHibernateBundle
-  @Singleton
   public FerbHibernateBundle getXaNsHibernateBundle() {
-    LOGGER.info("DataAccessModule.getXaNsHibernateBundle()");
     return xaNsHibernateBundle;
   }
-
-  // ==========================
-  // Smart session factories
-  // ==========================
-
-  @Provides
-  @CmsSessionFactory
-  @Singleton
-  public SessionFactory cmsSessionFactory(
-      @CmsHibernateBundle HibernateBundle<ApiConfiguration> cmsHibernateBundle,
-      @XaCmsHibernateBundle FerbHibernateBundle xaCmsHibernateBundle) {
-    LOGGER.info("DataAccessModule.cmsSessionFactory()");
-    return new CandaceSessionFactoryImpl(cmsHibernateBundle, xaCmsHibernateBundle);
-  }
-
-  @Provides
-  @NsSessionFactory
-  @Singleton
-  public SessionFactory nsSessionFactory(
-      @NsHibernateBundle HibernateBundle<ApiConfiguration> nsHibernateBundle,
-      @XaNsHibernateBundle FerbHibernateBundle xaNsHibernateBundle) {
-    LOGGER.info("DataAccessModule.nsSessionFactory()");
-    return new CandaceSessionFactoryImpl(nsHibernateBundle, xaNsHibernateBundle);
-  }
-
-  @Provides
-  @CwsRsSessionFactory
-  @Singleton
-  public SessionFactory rsSessionFactory(
-      @CwsRsHibernateBundle HibernateBundle<ApiConfiguration> cmsRsHibernateBundle,
-      @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
-    LOGGER.info("DataAccessModule.rsSessionFactory()");
-    return new CandaceSessionFactoryImpl(cmsRsHibernateBundle, xaCmsRsHibernateBundle);
-  }
-
-  // ==========================
-  // Elasticsearch
-  // ==========================
 
   @Provides
   public Map<String, ElasticsearchConfiguration> elasticSearchConfigs(
@@ -604,7 +548,7 @@ public class DataAccessModule extends AbstractModule {
     return esDaos.get("screeningsIndex");
   }
 
-  protected synchronized Map<String, Client> makeElasticsearchClients(
+  private synchronized Map<String, Client> makeElasticsearchClients(
       ApiConfiguration apiConfiguration) {
     if (clients == null) {
       clients = new ConcurrentHashMap<>();

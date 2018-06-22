@@ -1,8 +1,15 @@
 package gov.ca.cwds.rest.validation;
 
-import java.time.LocalDateTime;
+import static gov.ca.cwds.rest.api.domain.DomainChef.DATE_FORMAT;
+import static gov.ca.cwds.rest.api.domain.DomainChef.TIMESTAMP_ISO8601_FORMAT;
+import static gov.ca.cwds.rest.api.domain.DomainChef.TIME_FORMAT;
 
-import java.time.format.DateTimeFormatter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,17 +29,19 @@ public class StartDateTimeValidator {
   }
 
   /**
-   * 
+   *
    * @param startDateTime - start date/time
    * @param builder - logError messages
    * @return - timeStarted
    */
   public static String extractStartTime(String startDateTime, MessageBuilder builder) {
     String timeStarted = null;
+    DateFormat dateTimeFormat = new SimpleDateFormat(TIMESTAMP_ISO8601_FORMAT, Locale.US);
+    DateFormat timeFormat = new SimpleDateFormat(TIME_FORMAT);
     try {
-      timeStarted = LocalDateTime.parse(startDateTime)
-          .toLocalTime().withNano(0).format(DateTimeFormatter.ISO_TIME);
-    } catch (Exception e) {
+      Date dateTime = dateTimeFormat.parse(startDateTime);
+      timeStarted = timeFormat.format(dateTime);
+    } catch (ParseException | NullPointerException e) {
       String message = " parsing Start Date/Time ";
       builder.addError(message);
       logError(message, e);
@@ -41,16 +50,19 @@ public class StartDateTimeValidator {
   }
 
   /**
-   * 
+   *
    * @param startDateTime - start date/time
    * @param builder - logError messages
    * @return dateStarted
    */
   public static String extractStartDate(String startDateTime, MessageBuilder builder) {
+    DateFormat dateTimeFormat = new SimpleDateFormat(TIMESTAMP_ISO8601_FORMAT, Locale.US);
+    DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String dateStarted = null;
     try {
-      dateStarted = LocalDateTime.parse(startDateTime).toLocalDate().toString();
-    } catch (Exception e) {
+      Date dateTime = dateTimeFormat.parse(startDateTime);
+      dateStarted = dateFormat.format(dateTime);
+    } catch (ParseException | NullPointerException e) {
       String message = " parsing Start Date/Time ";
       builder.addError(message);
       logError(message, e);

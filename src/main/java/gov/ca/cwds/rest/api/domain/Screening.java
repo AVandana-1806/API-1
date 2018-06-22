@@ -1,17 +1,14 @@
 package gov.ca.cwds.rest.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import io.dropwizard.jackson.JsonSnakeCase;
@@ -20,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * {@link DomainObject} representing a screening.
- * 
+ *
  * @author CWDS API Team
  */
 @JsonSnakeCase
@@ -65,12 +62,14 @@ public class Screening extends ReportingDomain implements Request, Response {
   private String assigneeStaffId;
 
   @JsonProperty("started_at")
-  @ApiModelProperty(value = "Screening Start Date", example = "2018-03-29T16:11:59")
-  private LocalDateTime startedAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIMESTAMP_ISO8601_FORMAT)
+  @ApiModelProperty(value = "Screening Start Date", example = "2018-03-29T19:18:58.999Z")
+  private Date startedAt;
 
   @JsonProperty("ended_at")
-  @ApiModelProperty(value = "Screening End Date", example = "2018-03-30T16:11:37")
-  private LocalDateTime endedAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIMESTAMP_ISO8601_FORMAT)
+  @ApiModelProperty(value = "Screening End Date", example = "2018-03-30T16:11:37.999Z")
+  private Date endedAt;
 
   @JsonProperty("additional_information")
   @ApiModelProperty("Additional screening information")
@@ -146,6 +145,9 @@ public class Screening extends ReportingDomain implements Request, Response {
   @JsonProperty("screening_status")
   private String screeningStatus;
 
+  @JsonProperty("screening_contact_reference")
+  private String screeningContactReference;
+
   /**
    * default constructor
    */
@@ -165,11 +167,13 @@ public class Screening extends ReportingDomain implements Request, Response {
    * @param assigneeStaffId - assignee Id
    * @param reportType - report type
    * @param screeningStatus - screening status
+   * @param screeningContactReference - screening contact reference
    */
   @SuppressWarnings("squid:S00107")
   public Screening(String id, String name, String reference, String screeningDecision,
-      String screeningDecisionDetail, String assignee, LocalDateTime startedAt, String referralId,
-      String assigneeStaffId, String reportType, String screeningStatus) {
+      String screeningDecisionDetail, String assignee, Date startedAt, String referralId,
+      String assigneeStaffId, String reportType, String screeningStatus,
+      String screeningContactReference) {
     super();
     this.id = id;
     this.name = name;
@@ -182,6 +186,7 @@ public class Screening extends ReportingDomain implements Request, Response {
     this.assigneeStaffId = assigneeStaffId;
     this.reportType = reportType;
     this.screeningStatus = screeningStatus;
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**
@@ -229,7 +234,7 @@ public class Screening extends ReportingDomain implements Request, Response {
   /**
    * @return the startedAt
    */
-  public LocalDateTime getStartedAt() {
+  public Date getStartedAt() {
     return startedAt;
   }
 
@@ -279,15 +284,15 @@ public class Screening extends ReportingDomain implements Request, Response {
     this.assigneeStaffId = assigneeStaffId;
   }
 
-  public void setStartedAt(LocalDateTime startedAt) {
+  public void setStartedAt(Date startedAt) {
     this.startedAt = startedAt;
   }
 
-  public LocalDateTime getEndedAt() {
+  public Date getEndedAt() {
     return endedAt;
   }
 
-  public void setEndedAt(LocalDateTime endedAt) {
+  public void setEndedAt(Date endedAt) {
     this.endedAt = endedAt;
   }
 
@@ -425,6 +430,14 @@ public class Screening extends ReportingDomain implements Request, Response {
 
   public void setScreeningStatus(String screeningStatus) {
     this.screeningStatus = screeningStatus;
+  }
+
+  public String getScreeningContactReference() {
+    return screeningContactReference;
+  }
+
+  public void setScreeningContactReference(String screeningContactReference) {
+    this.screeningContactReference = screeningContactReference;
   }
 
   /**

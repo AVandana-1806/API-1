@@ -31,6 +31,7 @@ import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.rest.ApiConfiguration;
+import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
@@ -295,14 +296,26 @@ public class ServicesModule extends AbstractModule {
   /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
+   * @param config - config
    * @return the systemCodes
    */
   @Provides
   public SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
-      SystemMetaDao systemMetaDao) {
+      SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
-    final long secondsToRefreshCache = 15L * 24 * 60 * 60; // 15 days
-    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache, false);
+
+    boolean preLoad = true; // default is true
+    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
+
+    SystemCodeCacheConfiguration systemCodeCacheConfig =
+        config != null ? config.getSystemCodeCacheConfiguration() : null;
+    if (systemCodeCacheConfig != null) {
+      preLoad = systemCodeCacheConfig.getPreLoad(preLoad);
+      secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
+    }
+
+    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
+        preLoad);
   }
 
   /**
@@ -324,7 +337,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao) {
     LOGGER.debug("provide intakeCode service");
-    final long secondsToRefreshCache = 15L * 24 * 60 * 60; // 15 days
+    final long secondsToRefreshCache = 365L * 24 * 60 * 60; // 365 days
     return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache);
   }
 

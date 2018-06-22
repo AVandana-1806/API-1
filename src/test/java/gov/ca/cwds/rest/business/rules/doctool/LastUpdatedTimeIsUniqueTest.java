@@ -4,7 +4,7 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +24,7 @@ import org.mockito.stubbing.Answer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import gov.ca.cwds.data.cms.AddressDao;
 import gov.ca.cwds.data.cms.AllegationDao;
 import gov.ca.cwds.data.cms.AllegationPerpetratorHistoryDao;
@@ -72,6 +73,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -122,6 +124,7 @@ public class LastUpdatedTimeIsUniqueTest {
   private LongTextService longTextService;
   private AssignmentService assignmentService;
   private ParticipantService participantService;
+  private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
   private RIClientAddress riClientAddress;
@@ -131,6 +134,7 @@ public class LastUpdatedTimeIsUniqueTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
+  private ReferralSatefyAlertsService screeningSatefyAlertsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -281,17 +285,19 @@ public class LastUpdatedTimeIsUniqueTest {
     participantService = new ParticipantService(clientService, referralClientService,
         reporterService, childClientService, clientAddressService, validator,
         clientScpEthnicityService, caseDao, referralClientDao);
+    screeningSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
+    clientRelationshipService = mock(ClientRelationshipCoreService.class);
 
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
             staffpersonDao, assignmentService, validator, cmsDocumentService, drmsDocumentService,
             drmsDocumentTemplateService, addressService, longTextService, riReferral);
 
-    screeningToReferralService =
-        new ScreeningToReferralService(referralService, allegationService, crossReportService,
-            participantService, Validation.buildDefaultValidatorFactory().getValidator(),
-            referralDao, new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
-            governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
+        crossReportService, participantService, clientRelationshipService,
+        Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
+        allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
+        clientRelationshipDao, screeningSatefyAlertsService);
   }
 
   /**

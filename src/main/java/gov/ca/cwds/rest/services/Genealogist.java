@@ -52,20 +52,26 @@ public class Genealogist {
       relationshipTo = createRelationShipTo(relationship.getSecondaryLegacyId(),
           relationship.getPrimaryRelationshipCode(), relationship.getSecondaryRelationshipCode(),
           relationship.getSecondaryFirstName(), relationship.getSecondaryLastName(),
-          relationship.getSecondaryNameSuffix(), "");
+          relationship.getSecondaryNameSuffix(), relationship.getSecondaryGenderCode(),
+          relationship.getSecondaryDateOfBirth(), relationship.getSecondaryDateOfDeath(),
+          relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
     } else {
       relationshipTo = createRelationShipTo(relationship.getPrimaryLegacyId(),
           relationship.getSecondaryRelationshipCode(), relationship.getPrimaryRelationshipCode(),
           relationship.getPrimaryFirstName(), relationship.getPrimaryLastName(),
-          relationship.getPrimaryNameSuffix(),"");
+          relationship.getPrimaryNameSuffix(), relationship.getPrimaryGenderCode(),
+          relationship.getPrimaryDateOfBirth(), relationship.getPrimaryDateOfDeath(),
+          relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
     }
     return relationshipTo;
   }
 
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
       String secondaryRelation, String secondaryFirstname, String secodnaryLastName,
-      String nameSuffix, String relationContext) {
-    return new RelationshipTo(secondaryFirstname, secodnaryLastName, nameSuffix, secondaryRelation,
+      String nameSuffix, String relatedGender, String relatedDateOfBirth, String relatedDateOfDeath,
+      String absentParentCode, String sameHomeCode, String relationContext) {
+    return new RelationshipTo(secondaryFirstname, secodnaryLastName, nameSuffix, relatedGender,
+        relatedDateOfBirth, relatedDateOfDeath, absentParentCode, sameHomeCode, secondaryRelation,
         relationContext, primaryRelationCode, relationId);
 
   }

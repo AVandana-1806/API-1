@@ -1,7 +1,9 @@
 package gov.ca.cwds.fixture;
 
+import static gov.ca.cwds.rest.api.domain.DomainChef.uncookISO8601Timestamp;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public class ScreeningResourceBuilder {
 
   String id = "1";
   String referralId = "";
-  LocalDateTime endedAt = LocalDateTime.parse("2017-01-03T11:10:09");
+  Date endedAt = uncookISO8601Timestamp("2017-01-03T11:10:09.999Z");
   String incidentCounty = "34";
   LocalDate incidentDate = LocalDate.parse("2017-01-01");
   String locationType = "Foster Home";
@@ -29,7 +31,7 @@ public class ScreeningResourceBuilder {
   String reportNarrative = "Narrative 123 test";
   String reference = "123ABC";
   String restrictionsRationale = "";
-  LocalDateTime startedAt = LocalDateTime.parse("2017-01-02T10:09:08");
+  Date startedAt = uncookISO8601Timestamp("2017-01-02T10:09:08.999Z");
   String assignee = "Michael Bastow";
   String assigneeStaffId = "0X5";
   String additionalInformation = "additional information";
@@ -84,7 +86,7 @@ public class ScreeningResourceBuilder {
 
 
   public ScreeningResourceBuilder setEndedAt(String endedAt) {
-    this.endedAt = LocalDateTime.parse(endedAt);
+    this.endedAt = uncookISO8601Timestamp(endedAt);
     return this;
   }
 
@@ -143,8 +145,8 @@ public class ScreeningResourceBuilder {
   }
 
 
-  public ScreeningResourceBuilder setStartedAt(String startedAt) {
-    this.startedAt = LocalDateTime.parse(startedAt);
+  public ScreeningResourceBuilder setStartedAt(Date startedAt) {
+    this.startedAt = startedAt;
     return this;
   }
 
