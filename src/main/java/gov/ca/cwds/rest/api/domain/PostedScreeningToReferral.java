@@ -62,7 +62,7 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
    * @param alertInformation - alertInformation
    * @param address - address of referral
    * @param participants - participants of the referral
-   * @param relationships - relationships
+   * @param relationships take a guess
    * @param crossReports - cross reports
    * @param allegations - allegations
    * @param reportType - reportType
@@ -75,8 +75,8 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
       String screeningDecision, String screeningDecisionDetail, int approvalStatus,
       boolean familyAwareness, boolean filedWithLawEnforcement, String responsibleAgency,
       String limitedAccessCode, String limitedAccessDescription, String limitedAccessAgency,
-      java.util.Date limitedAccessDate, Set<Short> alerts, String alertInformation, Address address,
-      Set<Participant> participants, Set<ScreeningRelationship> relationships,
+      java.util.Date limitedAccessDate, Set<String> alerts, String alertInformation,
+      Address address, Set<Participant> participants, Set<ScreeningRelationship> relationships,
       Set<CrossReport> crossReports, Set<Allegation> allegations, String reportType) {
     super(id, legacySourceTable, referralId, endedAt, incidentCounty, incidentDate, locationType,
         communicationMethod, currentLocationOfChildren, name, reportNarrative, reference,

@@ -296,7 +296,7 @@ public class ServicesModule extends AbstractModule {
   /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
-   * @param config - config
+   * @param config Ferb API configuration
    * @return the systemCodes
    */
   @Provides

@@ -63,6 +63,7 @@ cmsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
       hibernate.connection.provider_disables_autocommit: true
+      # hibernate.current_session_context_class: thread
 
 rsDataSourceFactory:
   autoCommitByDefault: false
@@ -85,7 +86,6 @@ rsDataSourceFactory:
       hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
-      hibernate.connection.provider_disables_autocommit: true
 
 xaCmsDataSourceFactory:
   autoCommitByDefault: false
@@ -104,37 +104,6 @@ xaCmsDataSourceFactory:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.show_sql: false
       hibernate.default_schema: ${DB_CMS_SCHEMA}
-      hibernate.connection.autocommit: false
-      hibernate.current_session_context_class: jta
-      hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
-      # hibernate.connection.provider_disables_autocommit: true
-  xaProperties:
-      # Properties for DB2XADataSource
-      serverName: ${DB_CMS_HOST:-localhost}
-      portNumber: ${DB_CMS_PORT:-50000}
-      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
-      driverType: 4 # Type4 connection for DB2 DataSource
-
-xaCmsRsDataSourceFactory:
-  autoCommitByDefault: false
-  driverClass: com.ibm.db2.jcc.DB2Driver
-  user: ${DB_CMS_USER}
-  password: ${DB_CMS_PASSWORD}
-  url: ${DB_CMS_JDBC_URL}
-  xaDataSourceClassName: com.ibm.db2.jcc.DB2XADataSource
-  validationQuery: "/* XA/CMS Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
-  logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
-  minIdleTime: 1 minute
-  properties:
-      hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: false
-      hibernate.default_schema: ${DB_CMSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
@@ -173,10 +142,10 @@ xaNsDataSourceFactory:
       hibernate.connection.release_mode: auto
       connection.release_mode: auto
       hibernate.temp.use_jdbc_metadata_defaults: false
-      # hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: false
-      # hibernate.cache.use_query_cache: false
+      # hibernate.cache.use_second_level_cache: false
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      # hibernate.cache.use_query_cache: false
+      # hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_NS_JDBC_URL}
 
@@ -200,9 +169,9 @@ testConfig:
 triggertables:
   laCountySpecificCode: 19
  
-# systemCodeCache: 
-#   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
-#   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+systemCodeCache: 
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
+  refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
  
 webSecurity:
   httpResponseSecurityHeaders:
@@ -238,7 +207,7 @@ logging:
       level: DEBUG
     "org.hibernate.type.descriptor.sql":
       # Use TRACE to see SQL parameters logged
-      level: ${LOGLEVEL_HIBERNATE_PARAMS:-DEBUG}
+      level: DEBUG
     "gov.ca.cwds.data.ApiHibernateInterceptor":
       # Use DEBUG or TRACE to see entities logged
       level: DEBUG
