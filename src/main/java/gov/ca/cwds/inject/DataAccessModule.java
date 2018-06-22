@@ -1,17 +1,27 @@
 package gov.ca.cwds.inject;
 
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS_REP;
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_REP;
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import gov.ca.cwds.data.ns.ContactDao;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.atomikos.icatch.jta.UserTransactionManager;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import gov.ca.cwds.data.cms.AddressUcDao;
@@ -67,6 +77,7 @@ import gov.ca.cwds.data.ns.AddressDao;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
 import gov.ca.cwds.data.ns.AllegationIntakeDao;
+import gov.ca.cwds.data.ns.ContactDao;
 import gov.ca.cwds.data.ns.CsecDao;
 import gov.ca.cwds.data.ns.EthnicityDao;
 import gov.ca.cwds.data.ns.IntakeLOVCodeDao;
@@ -89,6 +100,8 @@ import gov.ca.cwds.data.persistence.cms.ApiSystemCodeDao;
 import gov.ca.cwds.data.persistence.cms.CountyTriggerEmbeddable;
 import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
+import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.ElasticUtils;
@@ -120,6 +133,12 @@ import io.dropwizard.setup.Bootstrap;
  * @see ApiSessionFactoryFactory
  */
 public class DataAccessModule extends AbstractModule {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessModule.class);
+
+  static {
+    LOGGER.warn("DataAccessModule: static: class loaded");
+  }
 
   private Map<String, Client> clients;
 
@@ -256,6 +275,10 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.ScreeningAddressEntity.class,
       gov.ca.cwds.data.persistence.ns.ScreeningWrapper.class).build();
 
+  static {
+    LOGGER.warn("DataAccessModule: static point 3");
+  }
+
   private final HibernateBundle<ApiConfiguration> cmsHibernateBundle =
       new HibernateBundle<ApiConfiguration>(cmsEntities, new ApiSessionFactoryFactory()) {
 
@@ -266,7 +289,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return "cms";
+          return DATASOURCE_CMS;
         }
       };
 
@@ -280,7 +303,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return "ns";
+          return DATASOURCE_NS;
         }
       };
 
@@ -293,12 +316,12 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return "rs";
+          return DATASOURCE_CMS_REP;
         }
       };
 
   /**
-   * XA pooled datasource factory for CMS DB2.
+   * XA pooled datasource factory for CMS DB2, transactional schema.
    */
   private final FerbHibernateBundle xaCmsHibernateBundle =
       new FerbHibernateBundle(cmsEntities, new ApiSessionFactoryFactory()) {
@@ -309,7 +332,23 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return "xa_cms";
+          return DATASOURCE_XA_CMS;
+        }
+      };
+
+  /**
+   * XA pooled datasource factory for CMS DB2, replicated schema.
+   */
+  private final FerbHibernateBundle xaCmsRsHibernateBundle =
+      new FerbHibernateBundle(ImmutableList.of(), new ApiSessionFactoryFactory()) {
+        @Override
+        public PooledDataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
+          return configuration.getXaCmsRsDataSourceFactory();
+        }
+
+        @Override
+        public String name() {
+          return DATASOURCE_XA_CMS_REP;
         }
       };
 
@@ -325,9 +364,13 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return "xa_ns";
+          return DATASOURCE_XA_NS;
         }
       };
+
+  static {
+    LOGGER.warn("DataAccessModule: static point 4");
+  }
 
   /**
    * Constructor takes the API configuration.
@@ -335,11 +378,14 @@ public class DataAccessModule extends AbstractModule {
    * @param bootstrap the ApiConfiguration
    */
   public DataAccessModule(Bootstrap<ApiConfiguration> bootstrap) {
+    LOGGER.info("DataAccessModule: ctor");
     bootstrap.addBundle(cmsHibernateBundle);
     bootstrap.addBundle(nsHibernateBundle);
     bootstrap.addBundle(rsHibernateBundle);
+
     bootstrap.addBundle(xaCmsHibernateBundle);
     bootstrap.addBundle(xaNsHibernateBundle);
+    bootstrap.addBundle(xaCmsRsHibernateBundle);
   }
 
   /**
@@ -350,7 +396,6 @@ public class DataAccessModule extends AbstractModule {
   @Override
   protected void configure() {
     // CMS:
-    // CmsReferral participants:
     bind(AllegationDao.class);
     bind(ClientDao.class);
     bind(ReferralClientDao.class);
@@ -455,65 +500,114 @@ public class DataAccessModule extends AbstractModule {
     bind(RIGovernmentOrganizationCrossReport.class);
   }
 
+
+  // ==========================
+  // HIBERNATE BUNDLES
+  // ==========================
+
+  // XA transaction manager:
   @Provides
-  @CmsSessionFactory
-  public SessionFactory cmsSessionFactory() {
-    return cmsHibernateBundle.getSessionFactory();
+  @Singleton
+  @Named("AtomikosMgr")
+  public UserTransactionManager xaUserTransactionManager() throws Exception {
+    final UserTransactionManager mgr = new UserTransactionManager();
+    mgr.init();
+    return mgr;
   }
 
-  @Provides
-  @NsSessionFactory
-  public SessionFactory nsSessionFactory() {
-    return nsHibernateBundle.getSessionFactory();
-  }
-
-  @Provides
-  @CwsRsSessionFactory
-  public SessionFactory rsSessionFactory() {
-    return rsHibernateBundle.getSessionFactory();
-  }
+  // ==========================
+  // NON-XA Hibernate bundles
+  // ==========================
 
   @Provides
   @CmsHibernateBundle
+  @Singleton
   public HibernateBundle<ApiConfiguration> cmsHibernateBundle() {
     return cmsHibernateBundle;
   }
 
   @Provides
   @NsHibernateBundle
+  @Singleton
   public HibernateBundle<ApiConfiguration> nsHibernateBundle() {
     return nsHibernateBundle;
   }
 
   @Provides
   @CwsRsHibernateBundle
+  @Singleton
   public HibernateBundle<ApiConfiguration> rsHibernateBundle() {
     return rsHibernateBundle;
   }
 
+  // ==========================
+  // XA Hibernate bundles
+  // ==========================
+
   @Provides
   @XaCmsHibernateBundle
-  public FerbHibernateBundle getXaCmsHibernateBundle() {
+  @Singleton
+  public FerbHibernateBundle getXaCmsHibernateBundle(
+      @Named("AtomikosMgr") UserTransactionManager mgr) {
+    LOGGER.info("DataAccessModule.getXaCmsHibernateBundle()");
     return xaCmsHibernateBundle;
   }
 
   @Provides
-  @XaNsSessionFactory
-  public SessionFactory xaNsSessionFactory() {
-    return xaNsHibernateBundle.getSessionFactory();
-  }
-
-  @Provides
-  @XaCmsSessionFactory
-  public SessionFactory xaCmsSessionFactory() {
-    return xaCmsHibernateBundle.getSessionFactory();
+  @XaCmsRsHibernateBundle
+  @Singleton
+  public FerbHibernateBundle getXaCmsRsHibernateBundle(
+      @Named("AtomikosMgr") UserTransactionManager mgr) {
+    LOGGER.info("DataAccessModule.getXaCmsRsHibernateBundle()");
+    return xaCmsRsHibernateBundle;
   }
 
   @Provides
   @XaNsHibernateBundle
-  public FerbHibernateBundle getXaNsHibernateBundle() {
+  @Singleton
+  public FerbHibernateBundle getXaNsHibernateBundle(
+      @Named("AtomikosMgr") UserTransactionManager mgr) {
+    LOGGER.info("DataAccessModule.getXaNsHibernateBundle()");
     return xaNsHibernateBundle;
   }
+
+  // ==========================
+  // Smart session factories
+  // ==========================
+
+  @Provides
+  @CmsSessionFactory
+  @Singleton
+  public SessionFactory cmsSessionFactory(
+      @CmsHibernateBundle HibernateBundle<ApiConfiguration> cmsHibernateBundle,
+      @XaCmsHibernateBundle FerbHibernateBundle xaCmsHibernateBundle) {
+    LOGGER.info("DataAccessModule.cmsSessionFactory()");
+    return new CandaceSessionFactoryImpl(cmsHibernateBundle, xaCmsHibernateBundle);
+  }
+
+  @Provides
+  @NsSessionFactory
+  @Singleton
+  public SessionFactory nsSessionFactory(
+      @NsHibernateBundle HibernateBundle<ApiConfiguration> nsHibernateBundle,
+      @XaNsHibernateBundle FerbHibernateBundle xaNsHibernateBundle) {
+    LOGGER.info("DataAccessModule.nsSessionFactory()");
+    return new CandaceSessionFactoryImpl(nsHibernateBundle, xaNsHibernateBundle);
+  }
+
+  @Provides
+  @CwsRsSessionFactory
+  @Singleton
+  public SessionFactory rsSessionFactory(
+      @CwsRsHibernateBundle HibernateBundle<ApiConfiguration> cmsRsHibernateBundle,
+      @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
+    LOGGER.info("DataAccessModule.rsSessionFactory()");
+    return new CandaceSessionFactoryImpl(cmsRsHibernateBundle, xaCmsRsHibernateBundle);
+  }
+
+  // ==========================
+  // Elasticsearch
+  // ==========================
 
   @Provides
   public Map<String, ElasticsearchConfiguration> elasticSearchConfigs(

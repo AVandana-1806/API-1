@@ -113,13 +113,13 @@ public class DataAccessModuleTest {
 
   @Test
   public void getXaCmsHibernateBundle_A$() throws Exception {
-    HibernateBundle<ApiConfiguration> actual = target.getXaCmsHibernateBundle();
+    HibernateBundle<ApiConfiguration> actual = target.getXaCmsHibernateBundle(null);
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void getXaNsHibernateBundle_A$() throws Exception {
-    HibernateBundle<ApiConfiguration> actual = target.getXaNsHibernateBundle();
+    HibernateBundle<ApiConfiguration> actual = target.getXaNsHibernateBundle(null);
     assertThat(actual, is(notNullValue()));
   }
 
