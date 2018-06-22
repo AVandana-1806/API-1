@@ -2,10 +2,15 @@ package gov.ca.cwds.rest.core;
 
 /**
  * Constants defining resources locations in the API.
- * 
+ *
  * @author CWDS API Tea "secondaryLanguage":1255,m
  */
 public final class Api {
+
+  /**
+   * A {@code String} constant representing {@value #RESOURCE_SYSTEM_INFORMATION} API..
+   */
+  public static final String RESOURCE_SYSTEM_INFORMATION = "system-information";
 
   /**
    * A {@code String} constant representing {@value #RESOURCE_ADDRESSES} API..
@@ -108,7 +113,8 @@ public final class Api {
   public static final String RESOURCE_REFERRALS = "referrals";
 
   /**
-   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT} API..
+   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT}
+   * API..
    */
   public static final String RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT = "hoi_referrals";
 
@@ -140,6 +146,7 @@ public final class Api {
   }
 
   public static class Datasource {
+
     /**
      * Identifer for Postgres datasource
      */
@@ -158,6 +165,7 @@ public final class Api {
   }
 
   public static class PathParam {
+
     public static final String SCREENING_ID = "screeningId";
     public static final String PARTICIPANT_ID = "participantId";
 
@@ -166,6 +174,7 @@ public final class Api {
   }
 
   public static class ResponseMessage {
+
     public static final String BAD_REQUEST = "Unable to process JSON";
     public static final String UNAUTHORIZED = "Not Authorized";
     public static final String NOT_FOUND = "Not found";
@@ -174,6 +183,15 @@ public final class Api {
     public static final String CONFLICT = "Conflict - already exists";
 
     private ResponseMessage() {
+    }
+  }
+
+  public static class HealthCheck {
+
+    public static final String AUTH_STATUS = "auth_status";
+    public static final String SWAGGER_STATUS = "swagger_status";
+
+    private HealthCheck() {
     }
   }
 
