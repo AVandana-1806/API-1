@@ -59,7 +59,6 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   public CmsDocument find(String primaryKey) {
     LOGGER.debug(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
-    String base64Doc;
 
     gov.ca.cwds.data.persistence.cms.CmsDocument doc = dao.find(primaryKey);
     if (doc != null) {
@@ -69,9 +68,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       doc.setDocName(doc.getDocName() != null ? doc.getDocName().trim() : "");
       doc.setDocServ(doc.getDocServ() != null ? doc.getDocServ().trim() : "");
 
-      base64Doc = dao.decompressDoc(doc);
       retval = new CmsDocument(doc);
-      retval.setBase64Blob(base64Doc);
+      retval.setBase64Blob(dao.decompressDoc(doc));
     } else {
       LOGGER.warn("EMPTY document!");
     }
@@ -81,6 +79,10 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
   /**
    * Create binary document.
+   * 
+   * <p>
+   * Force PKWare compression for new documents. LZW is for decompression only.
+   * <p>
    *
    * @param request domain document
    */
@@ -100,7 +102,6 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       doc.setDocServ(request.getDocServ().trim());
     }
 
-    // Force PKWare compression for new documents
     doc.setCompressionMethod(CmsDocumentDao.COMPRESSION_TYPE_PK_FULL);
 
     final List<CmsDocumentBlobSegment> blobs = dao.compressDoc(doc, request.getBase64Blob().trim());
@@ -127,7 +128,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument update(String primaryKey, CmsDocument request) {
-    LOGGER.debug(PRIMARY_KEY, primaryKey);
+    LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 
     gov.ca.cwds.data.persistence.cms.CmsDocument doc = dao.find(primaryKey);
@@ -153,7 +154,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       doc.getBlobSegments().clear();
       insertBlobs(doc, blobs);
 
-      gov.ca.cwds.data.persistence.cms.CmsDocument managed =
+      final gov.ca.cwds.data.persistence.cms.CmsDocument managed =
           new gov.ca.cwds.data.persistence.cms.CmsDocument(doc);
       managed.setBlobSegments(new HashSet<>(blobs));
 
