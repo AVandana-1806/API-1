@@ -59,15 +59,14 @@ compileJava {
     ]
 }
 
-def dockerTag = apiVersion + ((System.properties.getProperty('build') != null) ? '.' + System.properties.getProperty('build') : '')
+def dockerTag = apiVersion + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 version = apiVersion
 mainClassName = mainclass
 
 repositories {
     mavenLocal()
     maven {
-        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
-    }
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"}
     mavenCentral()
     maven {
         url "http://sonar.dev.cwds.io:8081/artifactory/repo"
@@ -82,14 +81,14 @@ repositories {
 }
 
 shadowJar {
-    classifier = 'dist'
-    baseName = 'api'
-    zip64 = true
-    mergeServiceFiles()
-    manifest {
-        attributes 'Main-Class': mainclass
-    }
-    version = ''
+  classifier = 'dist'
+  baseName = 'api'
+  zip64 = true
+  mergeServiceFiles()
+  manifest {
+    attributes 'Main-Class': mainclass
+  }
+  version = ''
 }
 
 jar {
@@ -101,19 +100,19 @@ jar {
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            groupId 'gov.ca.cwds.api'
-            artifactId 'api'
-            version version + ((System.properties.getProperty('build') != null) ? '.' + System.properties.getProperty('build') : '')
-        }
+  publications {
+      mavenJava(MavenPublication) {
+      from components.java
+      groupId 'gov.ca.cwds.api'
+      artifactId 'api'
+        version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
     }
-    repositories {
-        maven {
-            url "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
-        }
-    }
+  }
+  repositories {
+      maven {
+          url "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
+      }
+  }
 }
 
 dependencies {
@@ -129,61 +128,61 @@ dependencies {
     compile group: "gov.ca.cwds.api.libs", name: "libstdc", version: "6", ext: "so"
     compile group: "gov.ca.cwds.api.libs", name: "lzw", version: "1", ext: "dll"
     compile group: "gov.ca.cwds.api.libs", name: "lzw", version: "1", ext: "lib"
-    compile group: "gov.ca.cwds.api.libs", name: "msvcp", version: "140", ext: "dll"
+    compile group: "gov.ca.cwds.api.libs", name: "msvcp", version: "140" ,ext: "dll"
     compile group: "gov.ca.cwds.api.libs", name: "securezip-toolkit", version: "1"
-    compile group: "gov.ca.cwds.api.libs", name: "vcruntime", version: "140", ext: "dll"
+    compile group: "gov.ca.cwds.api.libs", name: "vcruntime", version: "140" ,ext: "dll"
     // end thirdparty libs
 
     compile group: "io.dropwizard", name: "dropwizard-client", version: dropwizardVersion
-    compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropwizardVersion
-    compile group: "io.dropwizard", name: "dropwizard-views", version: dropwizardVersion
-    compile group: "io.dropwizard", name: "dropwizard-views-mustache", version: dropwizardVersion
-    compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
-    compile group: "io.dropwizard", name: "dropwizard-testing", version: dropwizardVersion
-    compile group: "io.dropwizard.metrics", name: "metrics-core", version: metricsVersion
+	compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropwizardVersion
+	compile group: "io.dropwizard", name: "dropwizard-views", version: dropwizardVersion
+	compile group: "io.dropwizard", name: "dropwizard-views-mustache", version: dropwizardVersion
+	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
+	compile group: "io.dropwizard", name: "dropwizard-testing", version: dropwizardVersion
+	compile group: "io.dropwizard.metrics", name: "metrics-core", version: metricsVersion
     compile group: "io.dropwizard.modules", name: "dropwizard-flyway", version: dropwizardFlywayVersion
 
     compile group: 'gov.ca.cwds.cals', name: 'intake-ns-data-model', version: cwdsModelVersion
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
     compile group: "org.glassfish.jersey.ext", name: "jersey-declarative-linking", version: "2.23.2"
-    compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
-    compile group: "org.glassfish.web", name: "javax.el", version: "2.2.4"
-    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
-    compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
-    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+	compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
+	compile group: "org.glassfish.web", name: "javax.el", version: "2.2.4"
+	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
+	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
+	compile group: 'org.apache.poi', name: 'poi', version: '3.17'
     compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: mapstructVersion
 
     // ES 5.x:
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: elasticsearchVersion
     compile group: 'org.elasticsearch.client', name: 'transport', version: elasticsearchVersion
-    compile("org.elasticsearch.client:x-pack-transport:" + elasticsearchVersion)
+    compile ("org.elasticsearch.client:x-pack-transport:" + elasticsearchVersion)
 
-    // Dropwizard-guice 1.0.0.2 conflicts with jersey-client 2.25.
-    // Exclude transitive dependencies.
-    compile(group: 'gov.ca.cwds.api', name: 'api-core', version: coreApiVersion) {
-        exclude group: 'org.glassfish.jersey.core'
-    }
+	// Dropwizard-guice 1.0.0.2 conflicts with jersey-client 2.25.
+	// Exclude transitive dependencies.
+    compile (group: 'gov.ca.cwds.api', name: 'api-core', version: coreApiVersion) {
+	    exclude group: 'org.glassfish.jersey.core'
+	}
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
-    // LOGGING:
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jVersion
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
-    compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4jVersion
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.1'
-    compile group: 'org.slf4j', name: 'slf4j-ext', version: '1.7.25'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+	// LOGGING:
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jVersion
+  	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4jVersion
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.1'
+	compile group: 'org.slf4j', name: 'slf4j-ext', version: '1.7.25'
+	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 
-    compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.25.1'
-    compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.6.0'
+	compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.25.1'
+	compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.6.0'
 
-    compile 'com.fasterxml.jackson.module:jackson-module-guice:2.8.2'
-    compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
+	compile 'com.fasterxml.jackson.module:jackson-module-guice:2.8.2'
+	compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
 
-    compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
-    compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
+	compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
+	compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: "org.postgresql", name: "postgresql", version: "9.4.1208.jre7"
     compile group: 'org.json', name: 'json', version: '20090211'
 
@@ -193,7 +192,7 @@ dependencies {
     compile group: 'com.atomikos', name: 'transactions-hibernate4', version: '4.0.6'
     compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.8.Final'
 
-    // testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
+	// testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
     testCompile group: 'gov.ca.cwds.api', name: 'api-core-test-support', version: coreApiVersion
     testCompile group: 'gov.ca.cwds.cals', name: 'cws-cms-data-model', version: cwdsModelVersion
 
@@ -203,23 +202,23 @@ dependencies {
     testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: powerMockVersion
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: hamcrestVersion
     testCompile group: 'org.skyscreamer', name: 'jsonassert', version: jsonassertVersion
-    testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
-        exclude group: 'javax.servlet', module: 'javax.servlet-api'
-        exclude group: 'junit', module: 'junit'
+	testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
+		exclude group: 'javax.servlet', module: 'javax.servlet-api'
+		exclude group: 'junit', module: 'junit'
 
-        // functional testing
-        testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
-        compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
-    }
+	// functional testing
+    testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
+    	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
+	}
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
     testCompile group: 'io.rest-assured', name: 'json-schema-validator', version: '3.0.7'
 
-    // https://mvnrepository.com/artifact/nl.jqno.equalsverifier/equalsverifier
-    testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
-    testCompile group: "com.github.fge", name: "json-schema-validator", version: "2.2.6"
+	// https://mvnrepository.com/artifact/nl.jqno.equalsverifier/equalsverifier
+	testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
+	testCompile group: "com.github.fge", name: "json-schema-validator", version: "2.2.6"
 
-    // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
-    testCompile group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.19'
+	// https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
+	testCompile group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.19'
 
     apt 'org.mapstruct:mapstruct-processor:' + mapstructVersion
 }
@@ -276,29 +275,30 @@ run {
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
-        afterEvaluate {
-            classDirectories = files(classDirectories.files.collect {
-                fileTree(dir: it,
-                        exclude: [
-                                'gov/ca/cwds/rest/services/mapper/**'
-                        ]
-                )
-            })
-        }
+  reports {
+    xml.enabled false
+    csv.enabled false
+    html.destination "${buildDir}/jacocoHtml"
+    afterEvaluate {
+      classDirectories = files(classDirectories.files.collect {
+        fileTree(dir: it,
+          exclude: [
+            'gov/ca/cwds/rest/services/mapper/**'
+          ]
+        )
+      })
     }
+  }
 }
 
 sonarqube {
-    properties {
-        property "sonar.jacoco.reportPaths", "${buildDir}/jacoco/test.exec"
-        property "sonar.jacoco.reportPaths", "${buildDir}/jacoco/integrationTest.exec"
-    }
+  properties {
+      property "sonar.jacoco.reportPaths", "${buildDir}/jacoco/test.exec"
+      property "sonar.jacoco.reportPaths", "${buildDir}/jacoco/integrationTest.exec"
+  }
 }
 
+import com.github.jk1.license.render.*
 licenseReport {
     renderers = [new XmlReportRenderer(), new CwdsCsvReportRenderer(), new InventoryHtmlReportRenderer()]
     excludeGroups = ['gov.ca.cwds.api.libs']
@@ -306,7 +306,7 @@ licenseReport {
 
 
 def licenceFolder = 'build/reports/dependency-license'
-task libLicenceFolders(type: Copy) {
+task libLicenceFolders(type: Copy){
     from licenceFolder
     into 'legal/licenses'
     exclude "index.html"
@@ -314,7 +314,7 @@ task libLicenceFolders(type: Copy) {
     exclude "licenses.csv"
 }
 
-task libLicenseReportFiles(type: Copy) {
+task libLicenseReportFiles(type: Copy){
     from licenceFolder
     into 'legal'
     include "index.html"
@@ -323,9 +323,9 @@ task libLicenseReportFiles(type: Copy) {
 }
 
 
-task libLicenseReport(dependsOn: [generateLicenseReport, libLicenceFolders,
-                                  libLicenseReportFiles]) {
-    println("\n\n License files are generated in : ${licenceFolder}")
+task libLicenseReport(dependsOn:[generateLicenseReport, libLicenceFolders,
+                                 libLicenseReportFiles ] ){
+    println ("\n\n License files are generated in : ${licenceFolder}")
 }
 
 task copyConfig(type: Copy) {
@@ -338,11 +338,11 @@ task copyDist(type: Copy, dependsOn: shadowJar) {
     into 'build/docker/libs'
 }
 
-task apidocker(type: Docker, dependsOn: [copyConfig, copyDist]) {
+task apidocker(type: Docker,  dependsOn: [copyConfig, copyDist] ) {
     dockerfile = "Dockerfile"
     project.group = "cwds"
     applicationName = "api"
-    tagVersion = version + ((System.properties.getProperty('build') != null) ? '.' + System.properties.getProperty('build') : '')
+    tagVersion = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 }
 
 task createGradleCache(type: Copy) {
@@ -350,57 +350,57 @@ task createGradleCache(type: Copy) {
     into 'build/gradle_cache'
 }
 
-task createFunctionalTestDockerImage(type: Exec, dependsOn: createGradleCache) {
-    commandLine 'docker', 'build', '--file', 'docker/DockerfileTests', '-t', 'cwds/api-functional-test', '.'
+task createFunctionalTestDockerImage (type:Exec, dependsOn: createGradleCache) {
+  commandLine 'docker', 'build', '--file', 'docker/DockerfileTests',  '-t', 'cwds/api-functional-test', '.'
 }
 
-task createIntegrationTestDockerImage(type: Exec, dependsOn: shadowJar) {
-    commandLine 'docker', 'build', '-t', 'cwds/api-integration-test', '-f', 'DockerfileIntegrationTest', '.'
+task createIntegrationTestDockerImage (type:Exec, dependsOn: shadowJar) {
+  commandLine 'docker',  'build',  '-t',  'cwds/api-integration-test', '-f', 'DockerfileIntegrationTest', '.'
 }
 
-task createDockerImage(type: Exec, dependsOn: shadowJar) {
-    commandLine 'docker', 'build', '-t', 'cwds/api', '-f', 'Dockerfile', '.'
+task createDockerImage(type:Exec, dependsOn: shadowJar) {
+  commandLine 'docker',  'build',  '-t',  'cwds/api', '-f', 'Dockerfile', '.'
 }
 
-task tagFunctionalTestDockerImage(type: Exec, dependsOn: createFunctionalTestDockerImage) {
-    commandLine 'docker', 'tag', 'cwds/api-functional-test', "cwds/api-functional-test:$dockerTag"
+task tagFunctionalTestDockerImage(type:Exec, dependsOn: createFunctionalTestDockerImage) {
+    commandLine 'docker',  'tag',  'cwds/api-functional-test',  "cwds/api-functional-test:$dockerTag"
 }
 
-task tagIntegrationTestDockerImage(type: Exec, dependsOn: createIntegrationTestDockerImage) {
-    commandLine 'docker', 'tag', 'cwds/api-integration-test', "cwds/api-integration-test:$dockerTag"
+task tagIntegrationTestDockerImage(type:Exec, dependsOn: createIntegrationTestDockerImage) {
+  commandLine 'docker',  'tag',  'cwds/api-integration-test',  "cwds/api-integration-test:$dockerTag"
 }
 
-task tagDockerImage(type: Exec, dependsOn: createDockerImage) {
-    commandLine 'docker', 'tag', 'cwds/api', "cwds/api:$dockerTag"
+task tagDockerImage(type:Exec, dependsOn: createDockerImage) {
+  commandLine 'docker',  'tag',  'cwds/api',  "cwds/api:$dockerTag"
 }
 
-task pushIntegrationTestDockerLatest(type: Exec, dependsOn: createIntegrationTestDockerImage) {
-    commandLine 'docker', 'push', 'cwds/api-integration-test:latest'
+task pushIntegrationTestDockerLatest(type:Exec, dependsOn: createIntegrationTestDockerImage) {
+  commandLine 'docker',  'push',  'cwds/api-integration-test:latest'
 }
 
-task pushDockerLatest(type: Exec, dependsOn: createDockerImage) {
-    commandLine 'docker', 'push', 'cwds/api:latest'
+task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
+  commandLine 'docker',  'push',  'cwds/api:latest'
 }
 
-task pushIntegrationTestDockerVersionTagged(type: Exec, dependsOn: tagIntegrationTestDockerImage) {
-    commandLine 'docker', 'push', "cwds/api-integration-test:$dockerTag"
+task pushIntegrationTestDockerVersionTagged(type:Exec, dependsOn: tagIntegrationTestDockerImage) {
+  commandLine 'docker',  'push',  "cwds/api-integration-test:$dockerTag"
 }
 
-task pushDockerVersionTagged(type: Exec, dependsOn: tagDockerImage) {
-    commandLine 'docker', 'push', "cwds/api:$dockerTag"
+task pushDockerVersionTagged(type:Exec, dependsOn: tagDockerImage) {
+  commandLine 'docker',  'push',  "cwds/api:$dockerTag"
 }
-task createFunctionalTests(dependsOn: [tagFunctionalTestDockerImage, createFunctionalTestDockerImage]) {
+task createFunctionalTests(dependsOn: [tagFunctionalTestDockerImage , createFunctionalTestDockerImage]){
     doLast {
         println 'Published Functional Tests'
     }
 
 }
-task createGitTag(type: Exec) {
+task createGitTag(type:Exec) {
     commandLine "git", "tag", "$dockerTag"
 }
 
-task pushGitTag(type: Exec, dependsOn: createGitTag) {
-    doFirst {
+task pushGitTag(type:Exec, dependsOn: createGitTag) {
+    doFirst{
         environment "GIT_SSH_COMMAND", 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
     }
 
@@ -412,7 +412,7 @@ task pushGitTag(type: Exec, dependsOn: createGitTag) {
 }
 task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
                                pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest,
-                               createFunctionalTests]) {
+                               createFunctionalTests] ) {
     doLast {
         println 'Published'
     }
