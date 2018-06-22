@@ -7,13 +7,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
-import gov.ca.cwds.rest.services.screeningparticipant.LegacyToIntakeCodeConveter.IntakeRaceCode;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter.IntakeRaceCode;
 
 /**
  * @author CWDS API Team
  *
  */
-public class LegacyToIntakeCodeConveterTest {
+public class IntakeCodeConverterTest {
 
   /**
    * 
@@ -71,7 +71,7 @@ public class LegacyToIntakeCodeConveterTest {
    * 
    */
   @Test
-  public void findLegacyValueNullNull_Args__String() {
+  public void findLegacyValueNull_Args__String() {
     String legacyValue = null;
     IntakeRaceCode actual = IntakeRaceCode.findByLegacyValue(legacyValue);
     IntakeRaceCode expected = null;
@@ -86,6 +86,39 @@ public class LegacyToIntakeCodeConveterTest {
     String legacyValue = "White - Romanian*";
     String actual = IntakeRaceCode.findByLegacyValue(legacyValue).getRace();
     String expected = IntakeRaceCode.WHITE_ROMANIAN.getRace();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public void lookUpByIntakeRace_ToGet_LegacyValue() {
+    IntakeRace intakeRace = new IntakeRace("White", "Romanian");
+    String actual = IntakeRaceCode.lookUpByIntakeRace(intakeRace).getLegacyValue();
+    String expected = IntakeRaceCode.WHITE_ROMANIAN.getLegacyValue();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public void lookUpByIntakeRace_ReturnNull_WhenIntakeRaceNull() {
+    IntakeRace intakeRace = null;
+    IntakeRaceCode actual = IntakeRaceCode.lookUpByIntakeRace(intakeRace);
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public void lookUpByIntakeRace_WhenRaceDetailNull_LegacyValue() {
+    IntakeRace intakeRace = new IntakeRace("White", null);
+    String actual = IntakeRaceCode.lookUpByIntakeRace(intakeRace).getLegacyValue();
+    String expected = IntakeRaceCode.WHITE.getLegacyValue();
     assertThat(actual, is(equalTo(expected)));
   }
 
