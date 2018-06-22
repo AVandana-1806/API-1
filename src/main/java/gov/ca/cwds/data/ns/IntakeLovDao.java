@@ -50,8 +50,8 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
           session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId);
       final List<IntakeLov> intakeCodes = query.list();
 
-      if (!transactionExists)
-        txn.commit();
+      // if (!transactionExists)
+      // txn.commit();
       return intakeCodes;
     } catch (HibernateException h) {
       txn.rollback();
@@ -76,8 +76,8 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
       final Query<IntakeLov> query = session.getNamedQuery(namedQueryName)
           .setShort("legacySystemCodeId", legacySystemCodeId.shortValue());
       final IntakeLov intakeLov = query.getSingleResult();
-      if (!transactionExists)
-        txn.commit();
+      // if (!transactionExists)
+      // txn.commit();
       return intakeLov;
     } catch (HibernateException h) {
       txn.rollback();
