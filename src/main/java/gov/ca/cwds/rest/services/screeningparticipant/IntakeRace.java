@@ -45,10 +45,16 @@ public class IntakeRace {
     return raceDetail;
   }
 
+  /**
+   * @param race - race
+   */
   public void setRace(String race) {
     this.race = race;
   }
 
+  /**
+   * @param raceDetail - raceDetail
+   */
   public void setRaceDetail(String raceDetail) {
     this.raceDetail = raceDetail;
   }
