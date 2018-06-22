@@ -30,5 +30,6 @@
     <mapping class="gov.ca.cwds.data.persistence.ns.Ethnicity"/>
     <mapping class="gov.ca.cwds.data.persistence.ns.PersonEthnicity"/>
     <mapping class="gov.ca.cwds.data.persistence.ns.Relationship"/>
+    <mapping class="gov.ca.cwds.data.persistence.ns.ContactEntity"/>
   </session-factory>
 </hibernate-configuration>
