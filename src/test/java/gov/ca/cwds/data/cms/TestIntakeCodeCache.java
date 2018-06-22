@@ -6,6 +6,7 @@ import java.util.List;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * @author CWDS API Team
@@ -80,20 +81,14 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
   }
 
   @Override
-  public Short getLegacySystemCodeForRaceAndEthnicity(String metaId, String intakeCode) {
-    if ("DSP_RSNC".contains(metaId) && "Abandoned".contains(intakeCode)) {
+  public Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
+    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
+        && "Abandoned".contains(intakeRace.getRace())) {
       return 6351;
     }
     if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Central American".contains(intakeCode)) {
+        && "Central American".contains(intakeRace.getRaceDetail())) {
       return 841;
-    }
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Central American".contains(intakeCode)) {
-      return 841;
-    }
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId) && "Mexican".contains(intakeCode)) {
-      return 3164;
     }
     return null;
   }

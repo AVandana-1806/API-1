@@ -84,7 +84,7 @@ public class ScreeningTransformer {
         screening.getScreeningDecisionDetail(), APPROVAL_STATUS, FAMILY_AWARENESS,
         FILED_WITH_LAW_ENFORCEMENT, RESPONSIBLE_AGENCY, limitedAccessCode,
         screening.getRestrictionsRationale(), loggedInStaffCounty, limitedAccessDate,
-        convertSafetAlerts(screening), screening.getSafetyInformation(), address, participants,
+        convertSafetyAlerts(screening), screening.getSafetyInformation(), address, participants,
         new HashSet<ScreeningRelationship>(), crossReports, allegations, screening.getReportType());
   }
 
@@ -108,7 +108,7 @@ public class ScreeningTransformer {
         : null;
   }
 
-  private Set<Short> convertSafetAlerts(Screening screening) {
+  private Set<Short> convertSafetyAlerts(Screening screening) {
     Set<Short> safetAlerts = new HashSet<>();
     if (!screening.getSafetyAlerts().isEmpty()) {
       for (String intakeCode : screening.getSafetyAlerts()) {

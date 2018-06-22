@@ -21,6 +21,7 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /***
  * 
@@ -132,8 +133,9 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testToGetLegacySystemIdForRaceCode() {
     cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    IntakeRace intakeRace = new IntakeRace("White", "Central American");
     Short sysId = cachingIntakeCodeService
-        .getLegacySystemCodeForRaceAndEthnicity(SystemCodeCategoryId.ETHNICITY, "Central American");
+        .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
     assertThat(sysId, is(equalTo((short) 841)));
   }
 
@@ -143,8 +145,9 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testWhenIntakeCodeConverterNull() {
     cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    IntakeRace intakeRace = new IntakeRace("Asian", "Central Indian");
     Short sysId = cachingIntakeCodeService
-        .getLegacySystemCodeForRaceAndEthnicity(SystemCodeCategoryId.ETHNICITY, "Central Indian");
+        .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
     Assert.assertNull(sysId);
   }
 
@@ -154,8 +157,8 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testWhenIntakeCodeNull() {
     cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
-    Short sysId = cachingIntakeCodeService
-        .getLegacySystemCodeForRaceAndEthnicity(SystemCodeCategoryId.ETHNICITY, null);
+    Short sysId =
+        cachingIntakeCodeService.getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, null);
     Assert.assertNull(sysId);
   }
 
@@ -165,8 +168,8 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testWhenMetaNullAndReturnNull() {
     cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
-    Short sysId =
-        cachingIntakeCodeService.getLegacySystemCodeForRaceAndEthnicity(null, "Central American");
+    IntakeRace intakeRace = new IntakeRace("Asian", "Central American");
+    Short sysId = cachingIntakeCodeService.getLegacySystemCodeForRace(null, intakeRace);
     Assert.assertNull(sysId);
   }
 
