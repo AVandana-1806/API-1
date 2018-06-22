@@ -12,7 +12,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,7 @@ import gov.ca.cwds.rest.services.TypedCrudsService;
 public class CmsDocumentService implements TypedCrudsService<String, CmsDocument, CmsDocument> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CmsDocumentService.class);
+
   private static final String PRIMARY_KEY = "primaryKey={}";
 
   private CmsDocumentDao dao;
@@ -185,38 +185,37 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected String getCurrentSchema() {
-    return ((SessionFactoryImplementor) dao.getSessionFactory()).getSettings()
-        .getDefaultSchemaName();
+    // hibernate.default_schema
+    LOGGER.info("Hibernate properties: {}", dao.grabSession().getSessionFactory().getProperties());
+
+    return "CWSNS4"; // TODO: Hibernate lacks a simple, elegant way to get the default schema.
+    // return ((SessionFactoryImplementor) dao.getSessionFactory()).getSettings()
+    // .getDefaultSchemaName();
   }
 
-  @SuppressFBWarnings("SQL_INJECTION_JDBC") // There is no sql injection here
+  @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
   private void insertBlobsJdbc(final Connection con,
       gov.ca.cwds.data.persistence.cms.CmsDocument doc, List<CmsDocumentBlobSegment> blobs)
       throws SQLException {
     try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
         final Statement insStmt = con.createStatement()) {
-
       delStmt.setString(1, doc.getId());
       delStmt.executeUpdate();
 
       for (CmsDocumentBlobSegment blob : blobs) {
         insStmt.executeUpdate(blobToInsert(blob));
       }
-
-      con.commit(); // WARNING: deadlock without this.
     } catch (SQLException e) {
       con.rollback();
       throw e;
     }
   }
 
-  @SuppressFBWarnings("SQL_INJECTION_JDBC") // There is no sql injection here
+  @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
   private void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
     try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete())) {
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
-
-      con.commit(); // WARNING: deadlock without this.
     } catch (SQLException e) {
       con.rollback();
       throw e;

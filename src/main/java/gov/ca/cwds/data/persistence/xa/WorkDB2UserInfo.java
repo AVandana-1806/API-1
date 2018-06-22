@@ -61,6 +61,7 @@ public class WorkDB2UserInfo implements Work {
     con.setAutoCommit(false);
     con.setClientInfo("ApplicationName", PROGRAM_NAME);
     con.setClientInfo("ClientUser", userId);
+    con.setClientInfo("ClientHostname", SERVER_IP_NAME);
 
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");

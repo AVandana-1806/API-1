@@ -36,6 +36,7 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
    * @param legacyCategoryId - legacyCategoryId
    * @return the intake code based on the category id
    */
+  @SuppressWarnings("unchecked")
   public List<IntakeLov> findByLegacyMetaId(String legacyCategoryId) {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacyCategoryId";
 
@@ -45,7 +46,7 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
     txn = transactionExists ? txn : session.beginTransaction();
 
     try {
-      final Query query =
+      final Query<IntakeLov> query =
           session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId);
       final List<IntakeLov> intakeCodes = query.list();
 
@@ -62,6 +63,7 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
    * @param legacySystemCodeId - legacySystemCodeId
    * @return the intakeLov
    */
+  @SuppressWarnings("unchecked")
   public IntakeLov findByLegacySystemCodeId(Number legacySystemCodeId) {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacySystemId";
 
@@ -71,9 +73,9 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
     txn = transactionExists ? txn : session.beginTransaction();
 
     try {
-      final Query query = session.getNamedQuery(namedQueryName).setShort("legacySystemCodeId",
-          legacySystemCodeId.shortValue());
-      final IntakeLov intakeLov = (IntakeLov) query.getSingleResult();
+      final Query<IntakeLov> query = session.getNamedQuery(namedQueryName)
+          .setShort("legacySystemCodeId", legacySystemCodeId.shortValue());
+      final IntakeLov intakeLov = query.getSingleResult();
       if (!transactionExists)
         txn.commit();
       return intakeLov;

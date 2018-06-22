@@ -63,7 +63,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
    * @throws Exception if startup fails
    */
   public static void main(final String[] args) throws Exception {
-    LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n\n");
+    LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n");
     new ApiApplication().run(args);
   }
 
