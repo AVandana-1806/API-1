@@ -96,8 +96,7 @@ public class RequestResponseLoggingFilter implements Filter {
         auditLogger
             .audit(reponseStringBuilder.toString().replaceAll("\n", " ").replaceAll("\r", ""));
       } catch (Exception e) {
-        final String msg = "Unable to handle request: " + uniqueId;
-        LOGGER.error(msg, e);
+        LOGGER.error("Unable to handle request: {}", uniqueId, e);
         throw e;
       } finally {
         loggingContext.close();
@@ -125,7 +124,7 @@ public class RequestResponseLoggingFilter implements Filter {
         sb.append(headerName).append(": ").append(request.getHeader(headerName));
       }
     }
-    InputStream bodyInputStream = request.getInputStream();
+    final InputStream bodyInputStream = request.getInputStream();
     sb.append(new String(IOUtils.toByteArray(bodyInputStream), StandardCharsets.UTF_8.name()));
 
     return sb.toString().replace('\n', ' ');
@@ -206,7 +205,6 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-
       if (this.teeWriter == null) {
         this.teeWriter =
             new PrintWriter(new OutputStreamWriter(getOutputStream(), StandardCharsets.UTF_8));
@@ -216,7 +214,6 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-
       if (teeStream == null) {
         bos = new ByteArrayOutputStream();
         teeStream = new TeeServletOutputStream(getResponse().getOutputStream(), bos);

@@ -550,7 +550,9 @@ public class ResourcesModule extends AbstractModule {
   @Provides
   @ContactIntakeApiServiceBackedResource
   public TypedResourceDelegate<String, ContactIntake> contactIntakeApiServiceBackedResource(
-          Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ContactIntakeApiService.class));
+      Injector injector) {
+    return new TypedServiceBackedResourceDelegate<>(
+        injector.getInstance(ContactIntakeApiService.class));
   }
+
 }

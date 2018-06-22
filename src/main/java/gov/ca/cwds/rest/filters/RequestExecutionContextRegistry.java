@@ -1,9 +1,5 @@
 package gov.ca.cwds.rest.filters;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import gov.ca.cwds.data.std.ApiMarker;
 
 /**
@@ -17,47 +13,12 @@ import gov.ca.cwds.data.std.ApiMarker;
  */
 public class RequestExecutionContextRegistry implements ApiMarker {
 
-  /**
-   * Register callbacks for request events, such as request start and end.
-   * 
-   * <p>
-   * Callback methods are invoked on the same thread, since some callback implementations may depend
-   * on ThreadLocal themselves.
-   * </p>
-   * 
-   * @author CWDS API Team
-   */
-  static final class CallbackRegistry implements ApiMarker {
-
-    private static final long serialVersionUID = 1L;
-
-    private final Map<Serializable, RequestExecutionContextCallback> callbacks =
-        new ConcurrentHashMap<>();
-
-    /**
-     * Register a class instance for callbacks.
-     * 
-     * @param callback instance to call
-     */
-    public void register(RequestExecutionContextCallback callback) {
-      callbacks.putIfAbsent(callback.key(), callback);
-    }
-
-    public void startRequest(RequestExecutionContext ctx) {
-      callbacks.values().stream().sequential().forEach(c -> c.startRequest(ctx));
-    }
-
-    public void endRequest(RequestExecutionContext ctx) {
-      callbacks.values().stream().sequential().forEach(c -> c.endRequest(ctx));
-    }
-
-  }
-
   private static final long serialVersionUID = 1L;
 
   private static final ThreadLocal<RequestExecutionContext> bound = new ThreadLocal<>();
 
-  private static final CallbackRegistry callbackRegistry = new CallbackRegistry();
+  private static final RequestContextCallbackRegistry callbackRegistry =
+      new RequestContextCallbackRegistry();
 
   public static synchronized void registerCallback(RequestExecutionContextCallback callback) {
     callbackRegistry.register(callback);
@@ -74,7 +35,7 @@ public class RequestExecutionContextRegistry implements ApiMarker {
   }
 
   /**
-   * Remove RequestExecutionContext from ThreadLocal
+   * Remove RequestExecutionContext from ThreadLocal.
    */
   static void remove() {
     final RequestExecutionContext ctx = bound.get();
@@ -83,7 +44,7 @@ public class RequestExecutionContextRegistry implements ApiMarker {
   }
 
   /**
-   * Get RequestExecutionContext from ThreadLocal
+   * Get RequestExecutionContext from ThreadLocal.
    */
   static RequestExecutionContext get() {
     return bound.get();

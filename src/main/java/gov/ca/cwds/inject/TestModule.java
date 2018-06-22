@@ -32,4 +32,5 @@ public class TestModule extends AbstractModule {
   public CwdsAuthenticationClientConfig getTestConfig(ApiConfiguration configuration) {
     return new TestingYmlConfig(configuration).createTestConfig();
   }
+
 }
