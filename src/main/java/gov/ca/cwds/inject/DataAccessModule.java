@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import gov.ca.cwds.data.ns.ContactDao;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
@@ -47,8 +48,6 @@ import gov.ca.cwds.data.cms.ReferralAssignmentDao;
 import gov.ca.cwds.data.cms.ReferralClientDao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.cms.ReporterDao;
-import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
-import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.cms.StaffPersonDao;
 import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
@@ -60,7 +59,10 @@ import gov.ca.cwds.data.dao.contact.DeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.IndividualDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.ReferralClientDeliveredServiceDao;
 import gov.ca.cwds.data.es.ElasticsearchDao;
+import gov.ca.cwds.data.legacy.cms.dao.SafetyAlertDao;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.ns.AddressDao;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
@@ -211,7 +213,11 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.legacy.cms.entity.SpecialProject.class,
           gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral.class,
           gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies.class,
-          gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class)
+          gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class,
+          gov.ca.cwds.data.legacy.cms.entity.SafetyAlert.class,
+          gov.ca.cwds.data.legacy.cms.entity.LongText.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.SafetyAlertActivationReasonType.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.County.class)
       .build();
 
   private final ImmutableList<Class<?>> nsEntities = ImmutableList.<Class<?>>builder().add(
@@ -219,6 +225,7 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.Addresses.class,
       gov.ca.cwds.data.persistence.ns.Allegation.class,
       gov.ca.cwds.data.persistence.ns.AllegationEntity.class,
+      gov.ca.cwds.data.persistence.ns.ContactEntity.class,
       gov.ca.cwds.data.persistence.ns.CsecEntity.class,
       gov.ca.cwds.data.persistence.ns.CrossReportEntity.class,
       gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity.class,
@@ -390,6 +397,7 @@ public class DataAccessModule extends AbstractModule {
     bind(XaCmsAddressDao.class);
     bind(SpecialProjectDao.class);
     bind(SpecialProjectReferralDao.class);
+    bind(SafetyAlertDao.class);
 
     // NS:
     bind(AddressDao.class);
@@ -417,6 +425,7 @@ public class DataAccessModule extends AbstractModule {
     bind(IntakeLovDao.class);
     bind(PaperTrailDao.class);
     bind(PaperTrailInterceptor.class);
+    bind(ContactDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);

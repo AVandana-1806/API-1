@@ -51,6 +51,8 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE screeningId IN :screeningIds")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningId",
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId")
+@NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIdAndParticipantId",
+    query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND id = :participantId")
 @Entity
 @Table(name = "participants")
 public class ParticipantEntity

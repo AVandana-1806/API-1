@@ -2,11 +2,14 @@ package gov.ca.cwds.rest.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.rest.api.Request;
+import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
+import javax.ws.rs.DefaultValue;
 
 public class ScreeningRelationship extends ReportingDomain implements Request {
+
   @JsonProperty("id")
   @ApiModelProperty(required = true, readOnly = false, value = "Screening Relationship Id",
       example = "12345")
@@ -28,13 +31,29 @@ public class ScreeningRelationship extends ReportingDomain implements Request {
       value = "The relationship type code", example = "190")
   private int relationshipType;
 
-  public ScreeningRelationship() { }
+  @JsonProperty("absent_parent_indicator")
+  @ApiModelProperty(required = true, readOnly = false,
+      value = "This indicates if the parent CLIENT is absent for the child with whom the relationship is being defined", example = "true" )
+  private boolean absentParentIndicator;
 
-  public ScreeningRelationship(String id, String personId, String relationId, int relationshipType) {
+  @JsonProperty("same_home_status")
+  @OneOf({"Y", "N", "U"})
+  @DefaultValue(value = "U")
+  @ApiModelProperty(required = true, readOnly = false,
+      value = "Indicates whether the two CLIENTs live in the same home.", example = "Y")
+  private String sameHomeStatus;
+
+  public ScreeningRelationship() {
+  }
+
+  public ScreeningRelationship(String id, String personId, String relationId,
+      int relationshipType, boolean absentParentIndicator, String sameHomeStatus) {
     this.id = id;
     this.clientId = personId;
     this.relativeId = relationId;
     this.relationshipType = relationshipType;
+    this.absentParentIndicator = absentParentIndicator;
+    this.sameHomeStatus = sameHomeStatus;
   }
 
   public String getId() {
@@ -69,6 +88,22 @@ public class ScreeningRelationship extends ReportingDomain implements Request {
     this.relationshipType = relationshipType;
   }
 
+  public boolean isAbsentParentIndicator() {
+    return absentParentIndicator;
+  }
+
+  public void setAbsentParentIndicator(boolean absentParentIndicator) {
+    this.absentParentIndicator = absentParentIndicator;
+  }
+
+  public String getSameHomeStatus() {
+    return sameHomeStatus;
+  }
+
+  public void setSameHomeStatus(String sameHomeStatus) {
+    this.sameHomeStatus = sameHomeStatus;
+  }
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
@@ -91,10 +126,12 @@ public class ScreeningRelationship extends ReportingDomain implements Request {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     ScreeningRelationship that = (ScreeningRelationship) o;
     return relationshipType == that.relationshipType
         && Objects.equals(id, that.id)

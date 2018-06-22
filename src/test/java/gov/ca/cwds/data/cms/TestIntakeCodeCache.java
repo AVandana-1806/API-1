@@ -1,10 +1,12 @@
 package gov.ca.cwds.data.cms;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * @author CWDS API Team
@@ -26,6 +28,11 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
 
   @Override
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {
+    if (SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN.equals(metaId)) {
+      List<IntakeLov> lovs = new ArrayList<>();
+      lovs.add(new IntakeLov(0L, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN, null, null, false, null, null, null, null, "At Risk", null));
+      return lovs;
+    }
     return null;
   }
 
@@ -66,24 +73,22 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
         && "At Risk".contains(intakeCode)) {
       return 6867;
     }
+    if (SystemCodeCategoryId.SAFETY_ALERTS.contains(metaId)
+        && "Dangerous Animal on Premises".contains(intakeCode)) {
+      return 6401;
+    }
     return null;
   }
 
   @Override
-  public Short getLegacySystemCodeForRaceAndEthnicity(String metaId, String intakeCode) {
-    if ("DSP_RSNC".contains(metaId) && "Abandoned".contains(intakeCode)) {
+  public Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
+    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
+        && "Abandoned".contains(intakeRace.getRace())) {
       return 6351;
     }
     if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Central American".contains(intakeCode)) {
+        && "Central American".contains(intakeRace.getRaceDetail())) {
       return 841;
-    }
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Central American".contains(intakeCode)) {
-      return 841;
-    }
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId) && "Mexican".contains(intakeCode)) {
-      return 3164;
     }
     return null;
   }

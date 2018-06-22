@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.fixture.CsecBuilder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -306,6 +307,24 @@ public class ParticipantServiceTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList()).contains("CSEC start date is not found for code: At Risk"));
+  }
+
+  @Test
+  public void testCsecDuplication() {
+    Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
+    victimParticipant.getCsecs().add(new CsecBuilder().createCsec());
+
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
+            .setParticipants(participants).createScreeningToReferral();
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+
+    assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
+        .collect(Collectors.toList()).contains("CSEC duplication for code: At Risk"));
   }
 
   @Test
@@ -907,6 +926,25 @@ public class ParticipantServiceTest {
         .thenThrow(new PersistenceException());
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
+  }
+
+  @Test
+  public void shouldNotUpdateClientWhenErrorMessageExists() throws Exception {
+    String victimClientLegacyId = "ABC123DSAF";
+
+    LegacyDescriptor descriptor =
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
+    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
+        .setLegacyDescriptor(descriptor).createParticipant();
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).createScreeningToReferral();
+    messageBuilder.addError("this is a test error");
+    participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+    verify(clientService, never()).update(any(), any());
   }
 
   @Test

@@ -3,6 +3,7 @@ package gov.ca.cwds.data.ns;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 
 import gov.ca.cwds.data.BaseDaoImpl;
+import gov.ca.cwds.rest.core.Api.PathParam;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
     @SuppressWarnings("unchecked")
     final Query<String> query = this.getSessionFactory().getCurrentSession()
         .getNamedQuery(ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID)
-        .setParameter("screeningId", screeningId);
+        .setParameter(PathParam.SCREENING_ID, screeningId);
     return new HashSet<>(query.list());
   }
 
@@ -76,7 +77,16 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
     @SuppressWarnings("unchecked")
     final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
         .getNamedQuery(constructNamedQueryName("findByScreeningId"))
-        .setParameter("screeningId", screeningId);
+        .setParameter(PathParam.SCREENING_ID, screeningId);
     return query.list();
+  }
+
+  public ParticipantEntity findByScreeningIdAndParticipantId(String screeningId, String participantId) {
+    @SuppressWarnings("unchecked")
+    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
+        .getNamedQuery(constructNamedQueryName("findByScreeningIdAndParticipantId"))
+        .setParameter(PathParam.SCREENING_ID, screeningId)
+        .setParameter(PathParam.PARTICIPANT_ID, participantId);
+    return query.uniqueResult();
   }
 }

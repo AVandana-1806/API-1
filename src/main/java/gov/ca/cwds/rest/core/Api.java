@@ -63,6 +63,11 @@ public final class Api {
   public static final String RESOURCE_DELIVERY_SERVICE = "contacts";
 
   /**
+   * A {@code String} constant representing {@value #RESOURCE_INTAKE_CONTACTS} API..
+   */
+  public static final String RESOURCE_INTAKE_CONTACTS = "intake/contacts";
+
+  /**
    * A {@code String} constant representing {@value #RESOURCE_GOVERNMENT_ORG} API.
    */
   public static final String RESOURCE_GOVERNMENT_ORG = "cross_report_agency";
@@ -88,9 +93,9 @@ public final class Api {
   public static final String RESOURCE_LOV = "__oldlov";
 
   /**
-   * A {@code String} constant representing {@value #RESOURCE_PARTICIPANTS_INTAKE_API} API..
+   * A {@code String} constant representing {@value #RESOURCE_PARTICIPANTS} API..
    */
-  public static final String RESOURCE_PARTICIPANTS_INTAKE_API = "participants";
+  public static final String RESOURCE_PARTICIPANTS = "participants";
 
   /**
    * A {@code String} constant representing {@value #RESOURCE_PEOPLE} API..
@@ -128,20 +133,48 @@ public final class Api {
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
 
   /**
-   * Identifer for CMS DB2 datasources.
-   */
-  public static final String DATASOURCE_CMS = "cms";
-
-  /**
-   * Identifer for CMS DB2 datasources for XA transactions.
-   */
-  public static final String DATASOURCE_XA_CMS = "xa_cms";
-
-  /**
    * Default private constructor
    */
   private Api() {
     // Default private constructor
+  }
+
+  public static class Datasource {
+    /**
+     * Identifer for Postgres datasource
+     */
+    public static final String NS = "ns";
+    /**
+     * Identifer for CMS DB2 datasource
+     */
+    public static final String CMS = "cms";
+    /**
+     * Identifer for CMS DB2 datasource for XA transaction
+     */
+    public static final String XA_CMS = "xa_cms";
+
+    private Datasource() {
+    }
+  }
+
+  public static class PathParam {
+    public static final String SCREENING_ID = "screeningId";
+    public static final String PARTICIPANT_ID = "participantId";
+
+    private PathParam() {
+    }
+  }
+
+  public static class ResponseMessage {
+    public static final String BAD_REQUEST = "Unable to process JSON";
+    public static final String UNAUTHORIZED = "Not Authorized";
+    public static final String NOT_FOUND = "Not found";
+    public static final String NOT_ACCEPTABLE = "Accept Header not supported";
+    public static final String UNPROCESSABLE_ENTITY = "Unable to validate Document";
+    public static final String CONFLICT = "Conflict - already exists";
+
+    private ResponseMessage() {
+    }
   }
 
 }

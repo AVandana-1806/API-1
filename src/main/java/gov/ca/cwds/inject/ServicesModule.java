@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -245,6 +246,7 @@ public class ServicesModule extends AbstractModule {
     bind(ParticipantMapperFactoryImpl.class);
     bind(SpecialProjectReferralService.class);
     bind(ClientTransformer.class);
+    bind(ContactIntakeApiService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();
@@ -287,7 +289,7 @@ public class ServicesModule extends AbstractModule {
   /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
-   * @param config
+   * @param config - config
    * @return the systemCodes
    */
   @Provides

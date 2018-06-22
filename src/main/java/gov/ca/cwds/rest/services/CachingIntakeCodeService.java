@@ -18,7 +18,8 @@ import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
-import gov.ca.cwds.rest.services.submit.IntakeCodeConveter;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter;
 
 /**
  * Intake code cache Implementation
@@ -83,14 +84,14 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
   }
 
   @Override
-  public Short getLegacySystemCodeForRaceAndEthnicity(String metaId, String intakeCode) {
+  public Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
     Short sysId = null;
-    IntakeCodeConveter intakeCodeConveter =
-        StringUtils.isNotBlank(intakeCode) ? IntakeCodeConveter.findLegacyDescription(intakeCode)
-            : null;
-    if (intakeCodeConveter != null && StringUtils.isNotBlank(intakeCodeConveter.getLegacyValue())
+    IntakeCodeConverter.IntakeRaceCode intakeCodeCode = (intakeRace != null)
+        ? IntakeCodeConverter.IntakeRaceCode.lookUpByIntakeRace(intakeRace)
+        : null;
+    if (intakeCodeCode != null && StringUtils.isNotBlank(intakeCodeCode.getLegacyValue())
         && StringUtils.isNotBlank(metaId)) {
-      sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeConveter.getLegacyValue(), metaId);
+      sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeCode.getLegacyValue(), metaId);
     }
     return sysId;
   }

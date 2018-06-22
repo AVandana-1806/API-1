@@ -29,7 +29,7 @@ public class SafetyAlertsTest {
   private ObjectMapper MAPPER = new ObjectMapper();
   private Validator validator;
 
-  private Set<String> alerts = new HashSet<>();
+  private Set<Short> alerts = new HashSet<>();
   private String alertInformation = "information about the safety alert on this referral";
 
   @Before
@@ -67,7 +67,7 @@ public class SafetyAlertsTest {
 
   @Test
   public void shouldValidateEmptyAlertsSafetyAlerts() {
-    final Set<String> alerts = new HashSet<>();
+    final Set<Short> alerts = new HashSet<>();
     SafetyAlerts safetyAlerts = new SafetyAlertsEntityBuilder().setAlerts(alerts).build();
     Set<ConstraintViolation<SafetyAlerts>> constraintViolations = validator.validate(safetyAlerts);
     assertEquals(0, constraintViolations.size());

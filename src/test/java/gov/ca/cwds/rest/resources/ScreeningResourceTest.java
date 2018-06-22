@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import java.time.LocalDateTime;
+import java.util.Date;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class ScreeningResourceTest {
   @Test
   public void testCreate() throws Exception {
     Screening screening = new Screening("abc", "screening", "reference", "screeningDecision",
-        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "", "Open",
+        "screeningDecisionDetail", "assignee", new Date(), null, "0X5", "", "Open",
         "1234-5678-9ABC-DEFGHIJ");
     int actualStatus =
         inMemoryResource.client().target(ROOT_RESOURCE).request().accept(MediaType.APPLICATION_JSON)
@@ -61,8 +61,7 @@ public class ScreeningResourceTest {
    */
   @Test
   public void testCreateInvalid() throws Exception {
-    Screening screening =
-        new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open", null);
+    Screening screening = new Screening("", "", "", "", "", "", new Date(), null, "0X5", "", "Open", null);
     int actualStatus =
         inMemoryResource.client().target(ROOT_RESOURCE).request().accept(MediaType.APPLICATION_JSON)
             .post(Entity.entity(screening, MediaType.APPLICATION_JSON)).getStatus();
@@ -76,7 +75,7 @@ public class ScreeningResourceTest {
   @Test
   public void testUpdate() throws Exception {
     Screening screening = new Screening("abc", "screening", "reference", "screeningDecision",
-        "screeningDecisionDetail", "assignee", LocalDateTime.now(), null, "0X5", "ssb", "Open",
+        "screeningDecisionDetail", "assignee", new Date(), null, "0X5", "ssb", "Open",
         "1234-5678-9ABC-DEFGHIJ");
 
     int actualStatus = inMemoryResource.client().target(ROOT_RESOURCE + "abc").request()
@@ -93,8 +92,7 @@ public class ScreeningResourceTest {
    */
   @Test
   public void testUpdateInvalid() throws Exception {
-    Screening screening =
-        new Screening("", "", "", "", "", "", LocalDateTime.now(), null, "0X5", "", "Open", null);
+    Screening screening = new Screening("", "", "", "", "", "", new Date(), null, "0X5", "", "Open", null);
 
     int actualStatus = inMemoryResource.client().target(ROOT_RESOURCE + "abc").request()
         .accept(MediaType.APPLICATION_JSON)

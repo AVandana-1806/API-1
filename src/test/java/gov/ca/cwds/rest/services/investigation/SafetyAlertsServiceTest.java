@@ -28,7 +28,7 @@ import io.dropwizard.jackson.Jackson;
 @SuppressWarnings("javadoc")
 public class SafetyAlertsServiceTest {
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
-  private Set<String> alerts = new HashSet<>();
+  private Set<Short> alerts = new HashSet<>();
 
   private SafetyAlertsService safetyAlertsService;
 

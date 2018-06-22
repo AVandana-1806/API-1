@@ -14,6 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "relationships")
 public class Relationship implements PersistentObject {
+
   @Id
   @GenericGenerator(name = "relationships_id",
       strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator", parameters = {
@@ -38,16 +39,27 @@ public class Relationship implements PersistentObject {
   @Column(name = "updated_at")
   private Date updatedAt;
 
-  public Relationship() { }
+  @Column(name = "absent_parent_indicator")
+  private boolean absentParentIndicator;
 
-  public Relationship(String id, String clientId, String relativeId, int relationshipType, Date createdAt, Date updatedAt ) {
+  @Column(name = "same_home_status")
+  private Boolean sameHomeStatus;
+
+  public Relationship() {
+  }
+
+  public Relationship(String id, String clientId, String relativeId, int relationshipType,
+      Date createdAt, Date updatedAt, boolean absentParentIndicator, Boolean sameHomeStatus) {
     this.id = id;
     this.clientId = clientId;
     this.relativeId = relativeId;
     this.relationshipType = relationshipType;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.sameHomeStatus = sameHomeStatus;
+    this.absentParentIndicator = absentParentIndicator;
   }
+
   @Override
   public Serializable getPrimaryKey() {
     return null;
@@ -99,5 +111,21 @@ public class Relationship implements PersistentObject {
 
   public void setUpdatedAt(Date updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public boolean isAbsentParentIndicator() {
+    return absentParentIndicator;
+  }
+
+  public void setAbsentParentIndicator(boolean absentParentIndicator) {
+    this.absentParentIndicator = absentParentIndicator;
+  }
+
+  public Boolean getSameHomeStatus() {
+    return sameHomeStatus;
+  }
+
+  public void setSameHomeStatus(Boolean sameHomeStatus) {
+    this.sameHomeStatus = sameHomeStatus;
   }
 }
