@@ -36,10 +36,10 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import io.dropwizard.hibernate.HibernateBundle;
 
 /**
- * Ferb {@link SessionFactory} facade.
- * <a href="http://phineasandferb.wikia.com/wiki/Candace_Flynn">Candace</a> is the emotionally
- * volatile sister of Phineas and Ferb. She always tries -- and fails -- to prove her brothers'
- * involvement in grand activities.
+ * Ferb smart {@link SessionFactory} facade, which chooses between XA and non-XA SessionFactory
+ * implementations. <a href="http://phineasandferb.wikia.com/wiki/Candace_Flynn">Candace</a> is the
+ * emotionally volatile sister of Phineas and Ferb. She always tries -- and fails -- to prove her
+ * brothers' involvement in grand activities.
  * 
  * <p>
  * <a href="https://www.youtube.com/watch?v=0ZzN83mWpUo">More Phineas, less Candace.</a>

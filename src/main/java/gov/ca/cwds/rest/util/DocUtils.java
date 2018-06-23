@@ -1,5 +1,14 @@
 package gov.ca.cwds.rest.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -9,17 +18,8 @@ import org.apache.poi.hwpf.usermodel.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-
 /**
- * @author Intake Team 4
+ * @author CWDS API Team
  */
 public class DocUtils {
 
@@ -29,29 +29,30 @@ public class DocUtils {
   private static final String SPACE8 = "        ";
 
   private DocUtils() {
-    //static methods only
+    // static methods only
   }
 
-  public static byte[] createFromTemplateUseBookmarks(byte[] template, Map<String, String> keyValuePairs){
-
-    try(HWPFDocument document = new HWPFDocument(new ByteArrayInputStream(template))){
+  public static byte[] createFromTemplateUseBookmarks(byte[] template,
+      Map<String, String> keyValuePairs) {
+    try (HWPFDocument document = new HWPFDocument(new ByteArrayInputStream(template))) {
 
       Bookmarks bookmarks = document.getBookmarks();
-      for(int i = 0; i < bookmarks.getBookmarksCount(); i++){
+      for (int i = 0; i < bookmarks.getBookmarksCount(); i++) {
         Bookmark bookmark = bookmarks.getBookmark(i);
         String value = keyValuePairs.get(bookmark.getName());
-        if( value != null){
+        if (value != null) {
           Range range = new Range(bookmark.getStart(), bookmark.getEnd(), document);
-          //Bookmark text should contain bookmark name in squere brackets . Problems replacing text in empty bookmarks
-          range.replaceText("["+bookmark.getName()+"]", value);
+          // Bookmark text should contain bookmark name in square brackets. Problems replacing text
+          // in empty bookmarks
+          range.replaceText("[" + bookmark.getName() + "]", value);
         }
       }
 
-      ByteArrayOutputStream out = new ByteArrayOutputStream(template.length);
+      final ByteArrayOutputStream out = new ByteArrayOutputStream(template.length);
       document.write(out);
       return out.toByteArray();
 
-    } catch (Exception e){
+    } catch (Exception e) {
       LOGGER.warn("ERROR PROCESSING TEMPLATE: {}", e);
       return template;
     }
@@ -68,21 +69,18 @@ public class DocUtils {
         .concat(ds.substring(4, 6)) // Month
         .concat(ds.substring(2, 4)) // Year year
         .concat(ds.substring(0, 2)) // Year century
-        .concat("*")
-        .concat(docAuth.concat(SPACE8).substring(0, 8)) // User Id (8 characters)
+        .concat("*").concat(docAuth.concat(SPACE8).substring(0, 8)) // User Id (8 characters)
         .concat(StringUtils.leftPad(String.valueOf(random.nextInt(99999)), 5, "0"));
   }
 
   public static String loadTemplateBase64(String docName) {
     try {
-      return DatatypeConverter.printBase64Binary(
-          IOUtils.toByteArray(
-              DocUtils.class
-                  .getClassLoader()
-                  .getResourceAsStream(TEMPLATE_LOCATION + "/" + docName)));
+      return DatatypeConverter.printBase64Binary(IOUtils.toByteArray(
+          DocUtils.class.getClassLoader().getResourceAsStream(TEMPLATE_LOCATION + "/" + docName)));
     } catch (Exception e) {
       LOGGER.error("ERROR LOADING TEMPLATE {} FROM RESOURCES: {}", docName, e);
       return "";
     }
   }
+
 }
