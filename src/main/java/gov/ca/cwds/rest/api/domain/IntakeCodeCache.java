@@ -5,6 +5,7 @@ import java.util.List;
 import gov.ca.cwds.data.persistence.cms.DeferredRegistry;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.data.std.ApiMarker;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * @author CWDS API Team
@@ -46,14 +47,13 @@ public interface IntakeCodeCache extends ApiMarker {
   Short getLegacySystemCodeForIntakeCode(String metaId, String intakeCode);
 
   /**
-   * Get the valid legacy system code id for the race and ethnicty, built a separate method as race
-   * and ethnicty are multiple
+   * Get the valid legacy system code id for the race, built a separate method as race are multiple
    * 
    * @param metaId - metaId
-   * @param intakeCode - intakeCode
-   * @return the race and ethnicity system code
+   * @param intakeRace - {@link IntakeRace}
+   * @return the race system code
    */
-  Short getLegacySystemCodeForRaceAndEthnicity(String metaId, String intakeCode);
+  Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace);
 
   /**
    * Get the valid IntakeLov object using legacy systemId

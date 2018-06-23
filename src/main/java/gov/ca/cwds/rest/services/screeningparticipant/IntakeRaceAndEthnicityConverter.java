@@ -24,7 +24,8 @@ import gov.ca.cwds.rest.services.ServiceException;
  *
  */
 public class IntakeRaceAndEthnicityConverter {
-  private static final Logger LOGGER = LoggerFactory.getLogger(IntakeRaceAndEthnicityConverter.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(IntakeRaceAndEthnicityConverter.class);
 
   private static final String HISPANIC_CODE_OTHER_ID = "02";
   private static final Short CARIBBEAN_RACE_CODE = 3162;
@@ -39,7 +40,7 @@ public class IntakeRaceAndEthnicityConverter {
    * @return the intake race
    */
   public String createRace(Client client) {
-    List<IntakeRaceAndEthnicity.IntakeRace> intakeRaceList = new ArrayList<>();
+    List<IntakeRace> intakeRaceList = new ArrayList<>();
     List<Short> systemIds = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     String stringRace = null;
@@ -54,11 +55,11 @@ public class IntakeRaceAndEthnicityConverter {
           && (!CARIBBEAN_RACE_CODE.equals(id)))) {
         String shortDescrption = systemCode.getShortDescription();
         if (StringUtils.isNotBlank(shortDescrption)) {
-          String race = LegacyToIntakeCodeConveter.IntakeRaceCode.findByLegacyValue(shortDescrption)
-              .getRace();
-          String raceDetail = LegacyToIntakeCodeConveter.IntakeRaceCode
-              .findByLegacyValue(shortDescrption).getRaceDetail();
-          intakeRaceList.add(new IntakeRaceAndEthnicity.IntakeRace(race, raceDetail));
+          String race =
+              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption).getRace();
+          String raceDetail =
+              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption).getRaceDetail();
+          intakeRaceList.add(new IntakeRace(race, raceDetail));
         }
       }
     }
@@ -76,7 +77,7 @@ public class IntakeRaceAndEthnicityConverter {
    * @return the intake hispanic
    */
   public String createHispanic(Client client) {
-    List<IntakeRaceAndEthnicity.IntakeEthnicity> intakeHispanicList = new ArrayList<>();
+    List<IntakeEthnicity> intakeHispanicList = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     String stringHispanic = null;
 
@@ -85,8 +86,8 @@ public class IntakeRaceAndEthnicityConverter {
     if (systemCode != null && HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
         && (!CARIBBEAN_RACE_CODE.equals(client.getPrimaryEthnicityType()))) {
       if (YES.equals(client.getHispanicOriginCode())) {
-        intakeHispanicList.add(new IntakeRaceAndEthnicity.IntakeEthnicity("Yes",
-            Arrays.asList(systemCode.getShortDescription())));
+        intakeHispanicList
+            .add(new IntakeEthnicity("Yes", Arrays.asList(systemCode.getShortDescription())));
       }
     } else {
       buildOtherHispanicCodes(client, intakeHispanicList);
@@ -100,23 +101,19 @@ public class IntakeRaceAndEthnicityConverter {
     return stringHispanic;
   }
 
-  private void buildOtherHispanicCodes(Client client,
-      List<IntakeRaceAndEthnicity.IntakeEthnicity> intakeHispanicList) {
+  private void buildOtherHispanicCodes(Client client, List<IntakeEthnicity> intakeHispanicList) {
     if (client.getPrimaryEthnicityType() == 0 && YES.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeRaceAndEthnicity.IntakeEthnicity("Yes", Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity("Yes", Arrays.asList()));
     } else if (NO.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeRaceAndEthnicity.IntakeEthnicity("No", Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity("No", Arrays.asList()));
     } else if (UNKNOWN.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList
-          .add(new IntakeRaceAndEthnicity.IntakeEthnicity("Unknown", Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity("Unknown", Arrays.asList()));
     } else if (ABANDONED.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList
-          .add(new IntakeRaceAndEthnicity.IntakeEthnicity("Abandoned", Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity("Abandoned", Arrays.asList()));
     } else if (DECLINED_TO_ANSWER.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList
-          .add(new IntakeRaceAndEthnicity.IntakeEthnicity("Declined to answer", Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity("Declined to answer", Arrays.asList()));
     } else {
-      intakeHispanicList.add(new IntakeRaceAndEthnicity.IntakeEthnicity(null, Arrays.asList()));
+      intakeHispanicList.add(new IntakeEthnicity(null, Arrays.asList()));
     }
   }
 }

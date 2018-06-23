@@ -13,7 +13,10 @@ import gov.ca.cwds.rest.api.Response;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModelProperty;
 
-
+/**
+ * @author CWDS API Team
+ *
+ */
 @JsonSnakeCase
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class PostedContactIntake extends ContactIntake implements Response {
@@ -30,7 +33,7 @@ public class PostedContactIntake extends ContactIntake implements Response {
   private Set<String> peopleIds;
 
   /**
-   * @param id primary key
+   * @param id the id
    * @param screeningId screening id
    * @param startedAt started at
    * @param endedAt ended at
@@ -55,7 +58,7 @@ public class PostedContactIntake extends ContactIntake implements Response {
   }
 
   public PostedContactIntake() {
-
+    // no-opt
   }
 
   public Integer getId() {

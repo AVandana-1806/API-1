@@ -1,9 +1,11 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -21,9 +23,11 @@ import gov.ca.cwds.data.persistence.cms.Reporter;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.fixture.ParticipantIntakeApiResourceBuilder;
 import gov.ca.cwds.fixture.ReporterEntityBuilder;
+import gov.ca.cwds.fixture.ScreeningEntityBuilder;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
 
@@ -80,6 +84,24 @@ public class ScreeningParticipantServiceTest {
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
         .setScreeningId(null).setLegacyDescriptor(legacyDescriptor).build();
     screeningParticipantService.create(participantIntakeApi);
+    assertThat("issue_details[0].technical_message", is(equalTo("Screening not found")));
+  }
+
+  /**
+   * 
+   */
+  @Test(expected = ServiceException.class)
+  public void testScreeningIsSubmitted() {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
+        LegacyTable.REPORTER.getName(), null);
+    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
+        .setScreeningId("12").setLegacyDescriptor(legacyDescriptor).build();
+    ScreeningEntity screeningEntity = new ScreeningEntityBuilder().setId("12")
+        .setScreeningStatus(ScreeningStatus.SUBMITTED.getStatus()).build();
+    when(screeningDao.find(anyString())).thenReturn(screeningEntity);
+    screeningParticipantService.create(participantIntakeApi);
+    assertThat("issue_details[0].technical_message",
+        is(equalTo("Screeening is already Submitted")));
   }
 
   /**
