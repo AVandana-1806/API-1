@@ -7,6 +7,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.context.internal.ManagedSessionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -26,6 +28,8 @@ import gov.ca.cwds.rest.services.TypedCrudsService;
  */
 public class ScreeningSummaryService
     implements TypedCrudsService<String, ScreeningSummary, Response> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningSummaryService.class);
 
   private static final String DEFAULT_STUB_KEY = "999999";
 
@@ -74,7 +78,9 @@ public class ScreeningSummaryService
     screeningSummary = screeningEntity != null
         ? new ScreeningSummary(screeningEntity, this.populateSimpleAllegations(screeningEntity))
         : new ScreeningSummary();
-    session.close();
+
+    LOGGER.info("\n\n**** STOP MESSING WITH SESSIONS!!! ****\n");
+    // session.close();
     return screeningSummary;
   }
 
