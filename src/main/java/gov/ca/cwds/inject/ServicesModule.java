@@ -10,7 +10,6 @@ import java.util.Properties;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +38,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
+import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
@@ -309,7 +309,7 @@ public class ServicesModule extends AbstractModule {
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
 
-    SystemCodeCacheConfiguration systemCodeCacheConfig =
+    final SystemCodeCacheConfiguration systemCodeCacheConfig =
         config != null ? config.getSystemCodeCacheConfiguration() : null;
     if (systemCodeCacheConfig != null) {
       preLoad = systemCodeCacheConfig.getPreLoad(preLoad);
@@ -364,4 +364,5 @@ public class ServicesModule extends AbstractModule {
     LOGGER.debug("provide syscode serializer");
     return new CmsSystemCodeSerializer(systemCodeCache);
   }
+
 }
