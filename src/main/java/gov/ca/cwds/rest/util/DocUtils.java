@@ -35,13 +35,12 @@ public class DocUtils {
   public static byte[] createFromTemplateUseBookmarks(byte[] template,
       Map<String, String> keyValuePairs) {
     try (HWPFDocument document = new HWPFDocument(new ByteArrayInputStream(template))) {
-
-      Bookmarks bookmarks = document.getBookmarks();
+      final Bookmarks bookmarks = document.getBookmarks();
       for (int i = 0; i < bookmarks.getBookmarksCount(); i++) {
-        Bookmark bookmark = bookmarks.getBookmark(i);
-        String value = keyValuePairs.get(bookmark.getName());
+        final Bookmark bookmark = bookmarks.getBookmark(i);
+        final String value = keyValuePairs.get(bookmark.getName());
         if (value != null) {
-          Range range = new Range(bookmark.getStart(), bookmark.getEnd(), document);
+          final Range range = new Range(bookmark.getStart(), bookmark.getEnd(), document);
           // Bookmark text should contain bookmark name in square brackets. Problems replacing text
           // in empty bookmarks
           range.replaceText("[" + bookmark.getName() + "]", value);
@@ -51,7 +50,6 @@ public class DocUtils {
       final ByteArrayOutputStream out = new ByteArrayOutputStream(template.length);
       document.write(out);
       return out.toByteArray();
-
     } catch (Exception e) {
       LOGGER.warn("ERROR PROCESSING TEMPLATE: {}", e);
       return template;
@@ -59,8 +57,10 @@ public class DocUtils {
   }
 
   public static String generateDocHandle(Date date, String docAuth) {
-    SecureRandom random = new SecureRandom();
-    String ds = (new SimpleDateFormat(DATE_FORMAT)).format(date);
+    final SecureRandom random = new SecureRandom();
+    final String ds = (new SimpleDateFormat(DATE_FORMAT)).format(date);
+
+    // TODO: find the next available document sequence number instead of randomly generating one.
     return ds.substring(14, 16) // hundreds of seconds
         .concat(ds.substring(12, 14)) // seconds
         .concat(ds.substring(10, 12)) // minutes
