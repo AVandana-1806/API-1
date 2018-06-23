@@ -19,6 +19,8 @@ public class RelationshipEntityBuilder {
   protected String middleName = "R";
   protected String lastName = "Greene";
   protected String dateOfBirth = "2000-10-01";
+  protected String gender = "M";
+  protected String dateOfDeath = "2001-10-01";
   protected String suffixTitle = "";
   protected Boolean sensitive = Boolean.FALSE;
   protected Boolean sealed = Boolean.FALSE;
@@ -27,8 +29,8 @@ public class RelationshipEntityBuilder {
 
   public Relationship build() {
     relationshipsTo.add(relationshipTo);
-    return new Relationship(id, dateOfBirth, firstName, middleName, lastName, suffixTitle,
-        sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+    return new Relationship(id, dateOfBirth, firstName, middleName, lastName, suffixTitle, gender,
+        dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
   }
 
@@ -64,6 +66,16 @@ public class RelationshipEntityBuilder {
 
   public RelationshipEntityBuilder setSuffixTitle(String suffixTitle) {
     this.suffixTitle = suffixTitle;
+    return this;
+  }
+
+  public RelationshipEntityBuilder setGender(String gender) {
+    this.gender = gender;
+    return this;
+  }
+
+  public RelationshipEntityBuilder setDateOfDeath(String dateOfDeath) {
+    this.dateOfDeath = dateOfDeath;
     return this;
   }
 

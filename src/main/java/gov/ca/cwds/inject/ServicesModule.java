@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.rest.ApiConfiguration;
+import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
@@ -137,9 +139,11 @@ public class ServicesModule extends AbstractModule {
 
     private void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, cmsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag,
+            cmsHibernateBundle.getSessionFactory().getStatistics());
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, nsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag,
+            nsHibernateBundle.getSessionFactory().getStatistics());
       }
     }
   }
@@ -242,6 +246,7 @@ public class ServicesModule extends AbstractModule {
     bind(ParticipantMapperFactoryImpl.class);
     bind(SpecialProjectReferralService.class);
     bind(ClientTransformer.class);
+    bind(ContactIntakeApiService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();
@@ -284,14 +289,26 @@ public class ServicesModule extends AbstractModule {
   /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
+   * @param config - config
    * @return the systemCodes
    */
   @Provides
   public SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
-      SystemMetaDao systemMetaDao) {
+      SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
-    final long secondsToRefreshCache = 15L * 24 * 60 * 60; // 15 days
-    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache, false);
+
+    boolean preLoad = true; // default is true
+    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
+
+    SystemCodeCacheConfiguration systemCodeCacheConfig =
+        config != null ? config.getSystemCodeCacheConfiguration() : null;
+    if (systemCodeCacheConfig != null) {
+      preLoad = systemCodeCacheConfig.getPreLoad(preLoad);
+      secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
+    }
+
+    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
+        preLoad);
   }
 
   /**
@@ -313,7 +330,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao) {
     LOGGER.debug("provide intakeCode service");
-    final long secondsToRefreshCache = 15L * 24 * 60 * 60; // 15 days
+    final long secondsToRefreshCache = 365L * 24 * 60 * 60; // 365 days
     return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache);
   }
 

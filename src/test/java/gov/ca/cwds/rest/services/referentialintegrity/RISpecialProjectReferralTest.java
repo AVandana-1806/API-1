@@ -7,16 +7,17 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.cms.ReferralDao;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
 import gov.ca.cwds.data.persistence.cms.Referral;
-import gov.ca.cwds.data.persistence.cms.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
 import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.SpecialProjectEntityBuilder;
+import gov.ca.cwds.fixture.SpecialProjectReferralEntityBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralResourceBuilder;
 import gov.ca.cwds.rest.validation.ReferentialIntegrityException;
 
@@ -42,15 +43,11 @@ public class RISpecialProjectReferralTest {
   @Test(expected = ReferentialIntegrityException.class)
   public void shouldFailWhenReferralIsNotFound() throws Exception {
     // special project referral to check referential integrity
-    String specialProjectReferralId = "1234567ABC";
-    String lastUpdatedId = "0X5";
-    Date lastUpdatedTime = new Date();
-    SpecialProjectReferral domain = new SpecialProjectReferralResourceBuilder().build();
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral specialProjectReferral = 
-        new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral(specialProjectReferralId,
-            domain, lastUpdatedId, lastUpdatedTime);
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral entity = new SpecialProjectReferralEntityBuilder().build();
     
-    // mock the special project
+    SpecialProjectReferral domain = new SpecialProjectReferralResourceBuilder().build();
+    
+    // mock the special project dao
     SpecialProject specialProject = new SpecialProjectEntityBuilder().build();
     when(specialProjectDao.find(any(String.class))).thenReturn(specialProject);
     
@@ -58,19 +55,18 @@ public class RISpecialProjectReferralTest {
     when(referralDao.find(any(String.class))).thenReturn(null);
     
     RISpecialProjectReferral target = new RISpecialProjectReferral(referralDao, specialProjectDao);
-    target.apply(specialProjectReferral);
+    target.apply(entity);
   }
   
   @Test(expected = ReferentialIntegrityException.class)
   public void shouldFailWhenSpecailProjectIsNotFound() throws Exception {
     // special project referral to check referential integrity
-    String specialProjectReferralId = "1234567ABC";
     String lastUpdatedId = "0X5";
-    Date lastUpdatedTime = new Date();
-    SpecialProjectReferral domain = new SpecialProjectReferralResourceBuilder().build();
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral specialProjectReferral = 
-        new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral(specialProjectReferralId,
-            domain, lastUpdatedId, lastUpdatedTime);
+    LocalDateTime lastUpdatedTime = LocalDateTime.now();
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral entity = new SpecialProjectReferralEntityBuilder()
+        .build();
+    entity.setLastUpdateId(lastUpdatedId);
+    entity.setLastUpdateTime(lastUpdatedTime);
 
     // mock the special project
     when(specialProjectDao.find(any(String.class))).thenReturn(null);
@@ -80,19 +76,19 @@ public class RISpecialProjectReferralTest {
     when(referralDao.find(any(String.class))).thenReturn(referral);
     
     RISpecialProjectReferral target = new RISpecialProjectReferral(referralDao, specialProjectDao);
-    target.apply(specialProjectReferral);
+    target.apply(entity);
   }
   
   @Test
   public void shouldPassWhenRI() throws Exception {
     // special project referral to check referential integrity
-    String specialProjectReferralId = "1234567ABC";
     String lastUpdatedId = "0X5";
-    Date lastUpdatedTime = new Date();
+    LocalDateTime lastUpdatedTime = LocalDateTime.now();
     SpecialProjectReferral domain = new SpecialProjectReferralResourceBuilder().build();
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral specialProjectReferral = 
-        new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral(specialProjectReferralId,
-            domain, lastUpdatedId, lastUpdatedTime);
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral entity = new SpecialProjectReferralEntityBuilder()
+        .build();
+    entity.setLastUpdateId(lastUpdatedId);
+    entity.setLastUpdateTime(lastUpdatedTime);
     
     // mock the special project
     SpecialProject specialProject = new SpecialProjectEntityBuilder().build();
@@ -103,7 +99,7 @@ public class RISpecialProjectReferralTest {
     when(referralDao.find(any(String.class))).thenReturn(referral);
     
     RISpecialProjectReferral target = new RISpecialProjectReferral(referralDao, specialProjectDao);
-    Boolean result = target.apply(specialProjectReferral);
+    Boolean result = target.apply(entity);
     assertThat(result, is(equalTo(true)));
     
   }

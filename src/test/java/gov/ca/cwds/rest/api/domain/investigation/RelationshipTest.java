@@ -39,6 +39,8 @@ public class RelationshipTest {
   private String lastName = "Greene";
   private String dateOfBirth = "2000-10-01";
   private String suffixTitle = "";
+  private String gender = "M";
+  private String dateOfDeath = "2001-10-01";
   private Boolean sensitive = Boolean.FALSE;
   private Boolean sealed = Boolean.FALSE;
   private Set<RelationshipTo> relationshipsTo = new HashSet<>();
@@ -59,13 +61,15 @@ public class RelationshipTest {
   @Test
   public void testDomainConstructorSuccess() throws Exception {
     Relationship relationship = new Relationship(id, dateOfBirth, firstName, middleName, lastName,
-        suffixTitle, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+        suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
     assertThat(id, is(equalTo(relationship.getId())));
     assertThat(firstName, is(equalTo(relationship.getFirstName())));
     assertThat(middleName, is(equalTo(relationship.getMiddleName())));
     assertThat(lastName, is(equalTo(relationship.getLastName())));
     assertThat(suffixTitle, is(equalTo(relationship.getSuffixName())));
+    assertThat(gender, is(equalTo(relationship.getGender())));
+    assertThat(dateOfDeath, is(equalTo(relationship.getDateOfDeath())));
     assertThat(sensitive, is(equalTo(relationship.getSensitive())));
     assertThat(sealed, is(equalTo(relationship.getSealed())));
     assertThat(cmsRecordDescriptor, is(equalTo(relationship.getCmsRecordDescriptor())));
@@ -82,6 +86,9 @@ public class RelationshipTest {
     assertThat(relationship.getFirstName(), is(equalTo(client.getFirstName())));
     assertThat(relationship.getMiddleName(), is(equalTo(client.getMiddleName())));
     assertThat(relationship.getLastName(), is(equalTo(client.getLastName())));
+    assertThat(relationship.getGender(), is(equalTo(client.getGender())));
+    assertThat(relationship.getDateOfDeath(),
+        is(equalTo(DomainChef.cookDate(client.getDeathDate()))));
     assertThat(relationship.getRelatedTo(), is(equalTo(relationshipsTo)));
 
   }
@@ -107,6 +114,13 @@ public class RelationshipTest {
     Client client = new ClientEntityBuilder().setBirthDate(null).build();
     Relationship relationship = new Relationship(client, relationshipsTo);
     assertThat(relationship.getDateOfBirth(), is(equalTo(null)));
+  }
+
+  @Test
+  public void testDateOfDeathNull() {
+    Client client = new ClientEntityBuilder().setDeathDate(null).build();
+    Relationship relationship = new Relationship(client, relationshipsTo);
+    assertThat(relationship.getDateOfDeath(), is(equalTo(null)));
   }
 
   @Test

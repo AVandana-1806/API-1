@@ -182,6 +182,11 @@ public class TestSystemCodeCache implements SystemCodeCache {
         return true;
       }
     }
+    if (SystemCodeCategoryId.SAFETY_ALERTS.equals(metaId)) {
+      if (6401 == systemCodeId.intValue()) {
+        return true;
+      }
+    }
 
     return false;
   }

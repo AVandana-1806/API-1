@@ -15,6 +15,7 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
  * Business layer object to transform a {@link EducationProviderContact} to an
@@ -31,8 +32,9 @@ public class EducationProviderContactTransformer
 
     LegacyDescriptor educationProviderContactLegacyDescriptor =
         new LegacyDescriptor(educationProviderContact.getId(), null,
-            new DateTime(educationProviderContact.getLastUpdatedTime()), "EDPRVCNT",
-            "Education Provider Contact");
+            new DateTime(educationProviderContact.getLastUpdatedTime()),
+            LegacyTable.EDUCATION_PROVIDER_CONTACT.getName(),
+            LegacyTable.EDUCATION_PROVIDER_CONTACT.getDescription());
 
     String firstName = educationProviderContact.getFirstName();
     String lastName = educationProviderContact.getLastName();
@@ -49,10 +51,10 @@ public class EducationProviderContactTransformer
     String state =
         IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(educationProvider.getStateCd());
 
-    LegacyDescriptor educationProviderLegacyDescriptor =
-        new LegacyDescriptor(educationProvider.getId(), null,
-            new org.joda.time.DateTime(educationProvider.getLastUpdatedTime()), "ED_PVDRT",
-            "Education Provider");
+    LegacyDescriptor educationProviderLegacyDescriptor = new LegacyDescriptor(
+        educationProvider.getId(), null,
+        new org.joda.time.DateTime(educationProvider.getLastUpdatedTime()),
+        LegacyTable.EDUCATION_PROVIDER.getName(), LegacyTable.EDUCATION_PROVIDER.getDescription());
 
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays
         .asList(new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(),

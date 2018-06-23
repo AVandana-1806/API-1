@@ -1,0 +1,16 @@
+{
+  "started_at": "2010-04-27T23:30:14.000Z",
+  "ended_at": "2010-04-28T23:30:14.000Z",
+  "purpose": "433",
+  "communication_method": "408",
+  "status": "C",
+  "location": "415",
+  "note": "detail text",
+  "people_ids": [
+    "9C7kKgc0CN"
+  ],
+  "id": 3,
+  "screening_id": "36",
+  "service": 1,
+  "messages": []
+}

@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services;
 
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,6 @@ import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantPhoneNumbers;
 import gov.ca.cwds.data.persistence.ns.PhoneNumbers;
 import gov.ca.cwds.data.persistence.ns.SafelySurrenderedBabiesEntity;
-import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
@@ -50,7 +51,8 @@ import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
  *
  * @author Intake Team 4
  */
-public class ParticipantIntakeApiService implements CrudsService {
+public class ParticipantIntakeApiService implements TypedCrudsService<
+    ParticipantResourceParameters, ParticipantIntakeApi, ParticipantIntakeApi> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantIntakeApiService.class);
 
@@ -86,15 +88,25 @@ public class ParticipantIntakeApiService implements CrudsService {
    * @see gov.ca.cwds.rest.services.CrudsService#find(Serializable)
    */
   @Override
-  public ParticipantIntakeApi find(Serializable primaryKey) {
-    assert primaryKey instanceof String;
-    ParticipantEntity participantEntity = participantDao.find(primaryKey);
+  public ParticipantIntakeApi find(ParticipantResourceParameters resourceParameters) {
+    if (resourceParameters == null) {
+      throw new ServiceException("NULL argument for FIND participant");
+    }
+
+    String screeningId = resourceParameters.getScreeningId();
+    String participantId = resourceParameters.getParticipantId();
+    if (!ObjectUtils.allNotNull(screeningId, participantId)) {
+      throw new ServiceException("NULL screening/participant id for FIND participant");
+    }
+
+    ParticipantEntity participantEntity = participantDao.findByScreeningIdAndParticipantId(screeningId, participantId);
     if (participantEntity == null) {
       return null;
     }
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApi(participantEntity);
 
-    participantIntakeApi.setCsecs(csecMapper.toDomain(participantEntity.getCsecs()));
+    List<CsecEntity> csecEntities = csecDao.findByParticipantId(participantId);
+    participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
     participantIntakeApi.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntity.getSafelySurrenderedBabies()));
 
@@ -130,33 +142,42 @@ public class ParticipantIntakeApiService implements CrudsService {
    * @see gov.ca.cwds.rest.services.CrudsService#delete(Serializable)
    */
   @Override
-  public ParticipantIntakeApi delete(Serializable primaryKey) {
-    assert primaryKey instanceof String;
-    ParticipantEntity participantEntity = participantDao.find(primaryKey);
+  public ParticipantIntakeApi delete(ParticipantResourceParameters resourceParameters) {
+    if (resourceParameters == null) {
+      throw new ServiceException("NULL argument for DELETE participant");
+    }
+
+    String screeningId = resourceParameters.getScreeningId();
+    String participantId = resourceParameters.getParticipantId();
+    if (!ObjectUtils.allNotNull(screeningId, participantId)) {
+      throw new ServiceException("NULL screening/participant id for DELETE participant");
+    }
+
+    ParticipantEntity participantEntity = participantDao.findByScreeningIdAndParticipantId(screeningId, participantId);
     if (participantEntity == null) {
       return null;
     }
 
     // Delete all allegations for this participant
-    allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId((String) primaryKey)
+    allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId)
         .stream().map(Allegation::getId).collect(Collectors.toList()));
 
     // Delete Participant Addresses & PhoneNumbers
-    participantAddressesDao.findByParticipantId((String) primaryKey).forEach(
+    participantAddressesDao.findByParticipantId(participantId).forEach(
         participantAddresses -> participantAddressesDao.delete(participantAddresses.getId()));
 
-    participantPhoneNumbersDao.findByParticipantId((String) primaryKey)
+    participantPhoneNumbersDao.findByParticipantId(participantId)
         .forEach(participantPhoneNumbers -> participantPhoneNumbersDao
             .delete(participantPhoneNumbers.getId()));
 
     // Delete legacy descriptor
     LegacyDescriptorEntity legacyDescriptorEntity =
-        legacyDescriptorDao.findParticipantLegacyDescriptor((String) primaryKey);
+        legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
     if (legacyDescriptorEntity != null) {
       legacyDescriptorDao.delete(legacyDescriptorEntity.getId());
     }
 
-    participantDao.delete(primaryKey);
+    participantDao.delete(participantId);
 
     return new ParticipantIntakeApi(participantEntity);
   }
@@ -167,37 +188,38 @@ public class ParticipantIntakeApiService implements CrudsService {
    * @see gov.ca.cwds.rest.services.CrudsService#create(gov.ca.cwds.rest.api.Request)
    */
   @Override
-  public ParticipantIntakeApi create(Request request) {
-    assert request instanceof ParticipantIntakeApi;
-    ParticipantIntakeApi participantIntakeApi = (ParticipantIntakeApi) request;
+  public ParticipantIntakeApi create(ParticipantIntakeApi participant) {
+    if (participant == null) {
+      throw new ServiceException("NULL argument for CREATE participant");
+    }
 
     ParticipantEntity participantEntityManaged =
-        participantDao.create(new ParticipantEntity(participantIntakeApi));
+        participantDao.create(new ParticipantEntity(participant));
 
-    createOrUpdateCsecs(participantIntakeApi, participantEntityManaged);
-    createOrUpdateSafelySurrenderedBabies(participantIntakeApi, participantEntityManaged);
+    createOrUpdateCsecs(participant, participantEntityManaged);
+    createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Create Participant Addresses & PhoneNumbers
     Set<AddressIntakeApi> addressIntakeApiSet =
-        createParticipantAddresses(participantIntakeApi.getAddresses(), participantEntityManaged);
+        createParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet = createParticipantPhoneNumbers(
-        participantIntakeApi.getPhoneNumbers(), participantEntityManaged);
+        participant.getPhoneNumbers(), participantEntityManaged);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
     participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
-    participantIntakeApiPosted.setCsecs(csecMapper.toDomain(participantEntityManaged.getCsecs()));
+    participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
     SafelySurenderedBabiesIntakeApi createdSsb =
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies());
     participantIntakeApiPosted.setSafelySurenderedBabies(createdSsb);
 
     // Save legacy descriptor entity
-    if (participantIntakeApi.getLegacyDescriptor() != null) {
+    if (participant.getLegacyDescriptor() != null) {
       LegacyDescriptorEntity legacyDescriptorEntityManaged = legacyDescriptorDao
-          .create(new LegacyDescriptorEntity(participantIntakeApi.getLegacyDescriptor(),
+          .create(new LegacyDescriptorEntity(participant.getLegacyDescriptor(),
               LegacyDescriptorEntity.DESCRIBABLE_TYPE_PARTICIPANT,
               Long.valueOf(participantEntityManaged.getId())));
       participantIntakeApiPosted
@@ -212,41 +234,50 @@ public class ParticipantIntakeApiService implements CrudsService {
    * @see gov.ca.cwds.rest.services.CrudsService#update(Serializable, gov.ca.cwds.rest.api.Request)
    */
   @Override
-  public ParticipantIntakeApi update(Serializable primaryKey, Request request) {
-    assert primaryKey instanceof String;
-    assert request instanceof ParticipantIntakeApi;
-    ParticipantIntakeApi participantIntakeApi = (ParticipantIntakeApi) request;
-    participantIntakeApi.setId((String) primaryKey);
-    ParticipantEntity participantEntityManaged = participantDao.find(primaryKey);
+  public ParticipantIntakeApi update(ParticipantResourceParameters resourceParameters, ParticipantIntakeApi participant) {
+    if (!ObjectUtils.allNotNull(resourceParameters, participant)) {
+      throw new ServiceException("NULL argument for UPDATE participant");
+    }
+
+    String screeningId = resourceParameters.getScreeningId();
+    String participantId = resourceParameters.getParticipantId();
+    if (!ObjectUtils.allNotNull(screeningId, participantId)) {
+      throw new ServiceException("NULL screening/participant id for UPDATE participant");
+    }
+
+    participant.setScreeningId(resourceParameters.getScreeningId());
+    participant.setId(participantId);
+
+    ParticipantEntity participantEntityManaged = participantDao.findByScreeningIdAndParticipantId(
+        resourceParameters.getScreeningId(), participantId);
+
     if (participantEntityManaged == null) {
-      LOGGER.info("participant not found : {}", participantIntakeApi);
+      LOGGER.info("participant not found : {}", participant);
       throw new ServiceException(new EntityNotFoundException(
-          "Entity ParticipantEntity with id = [" + primaryKey + "] was not found."));
+          "Entity ParticipantEntity with id = [" + participantId + "] was not found."));
     }
 
     participantEntityManaged =
-        participantDao.update(participantEntityManaged.updateFrom(participantIntakeApi));
+        participantDao.update(participantEntityManaged.updateFrom(participant));
 
-    createOrUpdateCsecs(participantIntakeApi, participantEntityManaged);
-    createOrUpdateSafelySurrenderedBabies(participantIntakeApi, participantEntityManaged);
+    createOrUpdateCsecs(participant, participantEntityManaged);
+    createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Update Participant Addresses & PhoneNumbers
     Set<AddressIntakeApi> addressIntakeApiSet =
-        updateParticipantAddresses(participantIntakeApi.getAddresses(), participantEntityManaged);
+        updateParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet = updateParticipantPhoneNumbers(
-        participantIntakeApi.getPhoneNumbers(), participantEntityManaged);
+        participant.getPhoneNumbers(), participantEntityManaged);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
     participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
-    participantIntakeApiPosted.setCsecs(csecMapper.toDomain(participantEntityManaged.getCsecs()));
+    participantIntakeApiPosted.setCsecs(participant.getCsecs());
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
     return participantIntakeApiPosted;
-
-
   }
 
   private Set<AddressIntakeApi> createParticipantAddresses(
@@ -293,28 +324,40 @@ public class ParticipantIntakeApiService implements CrudsService {
     return addressIntakeApiSetPosted;
   }
 
-  private void createOrUpdateCsecs(ParticipantIntakeApi participantIntakeApi,
-      ParticipantEntity participantEntityManaged) {
-    List<CsecEntity> csecEnities = new ArrayList<>(participantIntakeApi.getCsecs().size());
-    for (Csec csec : participantIntakeApi.getCsecs()) {
-      String participantId = participantEntityManaged.getId();
-      CsecEntity csecEntity = csecMapper.map(csec);
-      csecEntity.setParticipantId(participantId);
-      if (csecEntity.getId() == null) {
-        CsecEntity createdCsecEntity = csecDao.create(csecEntity);
-        csec.setId(String.valueOf(createdCsecEntity.getId()));
-        csecEnities.add(createdCsecEntity);
-      } else {
-        CsecEntity managedCsecEntity = csecDao.find(csecEntity.getId());
-        if (managedCsecEntity == null) {
-          throw new ServiceException(
-              "Cannot update CSEC that doesn't exist. id = " + csecEntity.getId());
-        }
-        csecDao.getSessionFactory().getCurrentSession().detach(managedCsecEntity);
-        csecEnities.add(csecDao.update(csecEntity));
+  private void createOrUpdateCsecs(ParticipantIntakeApi participantIntakeApi, ParticipantEntity participantEntityManaged) {
+
+    String participantId = participantEntityManaged.getId();
+    List<CsecEntity> managedCsecEntities = csecDao.findByParticipantId(participantId);
+
+    List<CsecEntity> toDeleteList = new ArrayList<>();
+    List<CsecEntity> toUpdateList = new ArrayList<>();
+    List<CsecEntity> toCreateList = new ArrayList<>();
+    List<Csec> csecs = new ArrayList<>(participantIntakeApi.getCsecs());
+
+    for (CsecEntity managedCsecEntity : managedCsecEntities) {
+      if (!csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId())).findFirst().isPresent()) {
+        toDeleteList.add(managedCsecEntity);
       }
+      csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
+          .findFirst().ifPresent(c -> toUpdateList.add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
     }
-    participantEntityManaged.setCsecs(csecEnities);
+
+    toCreateList.addAll(csecMapper.toPersistence(csecs.stream().filter(c -> c.getId() == null).collect(Collectors.toList())));
+
+    for (CsecEntity csecEntity : toDeleteList) {
+      csecDao.delete(csecEntity.getId());
+    }
+    for (CsecEntity csecEntity : toUpdateList) {
+      csecEntity.setParticipantId(participantId);
+      csecDao.update(csecEntity);
+    }
+    for (CsecEntity csecEntity : toCreateList) {
+      csecEntity.setParticipantId(participantId);
+      csecDao.create(csecEntity);
+    }
+
+    List<CsecEntity> csecEntities = csecDao.findByParticipantId(participantId);
+    participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
   }
 
   private void createOrUpdateSafelySurrenderedBabies(ParticipantIntakeApi participantIntakeApi,

@@ -7,7 +7,7 @@ import java.util.Map;
  * @author CWDS API Team
  *
  */
-public class LegacyToIntakeCodeConveter {
+public class IntakeCodeConverter {
 
   /**
    * Enum to get the intake codes using the legacy description.
@@ -75,7 +75,7 @@ public class LegacyToIntakeCodeConveter {
 
     WHITE_ROMANIAN("White - Romanian*", Constants.WHITE, "Romanian"),
 
-    WHITE("White*", "", Constants.WHITE);
+    WHITE("White*", Constants.WHITE, "");
 
     private static final Map<String, IntakeRaceCode> mapper = new HashMap<>();
 
@@ -89,14 +89,23 @@ public class LegacyToIntakeCodeConveter {
       this.raceDetail = raceDetail;
     }
 
+    /**
+     * @return the legacyValue
+     */
     public String getLegacyValue() {
       return legacyValue;
     }
 
+    /**
+     * @return the race
+     */
     public String getRace() {
       return race;
     }
 
+    /**
+     * @return the raceDetail
+     */
     public String getRaceDetail() {
       return raceDetail;
     }
@@ -107,6 +116,28 @@ public class LegacyToIntakeCodeConveter {
      */
     public static IntakeRaceCode findByLegacyValue(String legacyValue) {
       return mapper.containsKey(legacyValue) ? mapper.get(legacyValue) : null;
+    }
+
+    /**
+     * @param intakeRace - intakeRace
+     * @return the intakeRaceCode
+     */
+    public static IntakeRaceCode lookUpByIntakeRace(IntakeRace intakeRace) {
+      if (intakeRace == null) {
+        return null;
+      }
+      if (intakeRace.getRaceDetail() == null) {
+        intakeRace.setRaceDetail("");
+      }
+      IntakeRaceCode intakeRaceCode = null;
+      for (IntakeRaceCode ce : IntakeRaceCode.values()) {
+        if (intakeRace.getRace().equals(ce.getRace())
+            && intakeRace.getRaceDetail().equals(ce.getRaceDetail())) {
+          intakeRaceCode = ce;
+          break;
+        }
+      }
+      return intakeRaceCode;
     }
 
     static {

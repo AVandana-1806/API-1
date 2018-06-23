@@ -1,8 +1,6 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
 import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -25,8 +23,11 @@ import io.swagger.annotations.ApiModelProperty;
 public class SpecialProjectReferral extends ReportingDomain implements Request, Response{
   
   private static final long serialVersionUID = 1L;
-  private static final String DATE_FORMAT = "yyyy-MM-dd";
-  private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
+  @NotNull
+  @Size(max = CMS_ID_LEN)
+  @ApiModelProperty(required = true, readOnly = true, value = "", example = "1234ABC123")
+  private String id;
 
   @NotNull
   @Size(max = 2)
@@ -98,16 +99,31 @@ public class SpecialProjectReferral extends ReportingDomain implements Request, 
    * @param persistent - persisted special project referral
    * 
    */
-  public SpecialProjectReferral(gov.ca.cwds.data.persistence.cms.SpecialProjectReferral persistent) {
+  public SpecialProjectReferral(gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral persistent) {
     super();
     this.countySpecificCode = persistent.getCountySpecificCode();
     this.referralId = persistent.getReferralId();
     this.specialProjectId = persistent.getSpecialProjectId();
-    this.participationEndDate = cookLocalDate(persistent.getParticipationEndDate());
-    this.participationStartDate = cookLocalDate(persistent.getParticipationStartDate());
-    this.safelySurrenderedBabiesIndicator = DomainChef.uncookBooleanString(persistent.getSafelySurrenderedBabiesIndicator());
+    this.participationEndDate = DomainChef.cookLocalDate(persistent.getPartEndDate());
+    this.participationStartDate = DomainChef.cookLocalDate(persistent.getPartStartDate());
+    this.safelySurrenderedBabiesIndicator = persistent.getSsbIndicator();
+    this.id = persistent.getId();
   }
 
+  /**
+   * @return - id
+   */
+  public String getId() {
+    return id;
+  }
+  
+  /**
+   * @param id - Id
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
+  
   /**
    * 
    * @return - countySpecificCode
@@ -200,12 +216,4 @@ public class SpecialProjectReferral extends ReportingDomain implements Request, 
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
-  
-  private String cookLocalDate(LocalDate date) {
-    if (date != null) {
-      return date.format(formatter);
-    }
-    return null;
-  }
-
 }

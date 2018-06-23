@@ -6,6 +6,7 @@
             <column name="relation" value="190"/>
             <column name="client" value="9C7kKgc0CN"/>
             <column name="relative" value="6YtTyyc0ND"/>
+            <!--<column name="absent_parent_indicator" value="true"/>-->
             <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
             <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
         </insert>

@@ -44,9 +44,9 @@ public class R00725StreetNameExigencyTest {
    * @throws Exception - Exception
    */
   @Test
-  public void failsWhenStreetNumberIsSetAndStreetNameNull() throws Exception {
-    Address toValidate = new CmsAddressResourceBuilder().setStreetNumber("2751").setStreetName(null)
-        .buildCmsAddress();
+  public void failsWhenStreetNumberIsSetAndStreetNameMissing() throws Exception {
+    Address toValidate =
+        new CmsAddressResourceBuilder().setStreetNumber("2751").setStreetName("").buildCmsAddress();
     Set<ConstraintViolation<Address>> constraintViolations = validator.validate(toValidate);
     assertEquals(1, constraintViolations.size());
     assertEquals("is required since streetNumber is set",

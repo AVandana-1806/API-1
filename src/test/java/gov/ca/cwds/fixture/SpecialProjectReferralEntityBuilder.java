@@ -1,9 +1,7 @@
 package gov.ca.cwds.fixture;
 
-import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 import java.time.LocalDate;
-import java.util.Date;
-import gov.ca.cwds.data.persistence.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 
 public class SpecialProjectReferralEntityBuilder {
 
@@ -12,12 +10,19 @@ public class SpecialProjectReferralEntityBuilder {
   private String specialProjectId = "2345678ABC";
   private LocalDate participationEndDate = null;
   private LocalDate participationStartDate = LocalDate.now();
-  private String safelySurrenderedBabiesIndicator = "N";
+  private Boolean safelySurrenderedBabiesIndicator = Boolean.FALSE;
   private String id = "3456789ABC";
   
   public SpecialProjectReferral build() {
-    return new SpecialProjectReferral(countySpecificCode, referralId, specialProjectId, 
-        participationEndDate, participationStartDate, safelySurrenderedBabiesIndicator, id);
+    SpecialProjectReferral spr = new SpecialProjectReferral();
+    spr.setCountySpecificCode(countySpecificCode);
+    spr.setId(id);
+    spr.setPartEndDate(participationEndDate);
+    spr.setPartStartDate(participationStartDate);
+    spr.setReferralId(referralId);
+    spr.setSpecialProjectId(specialProjectId);
+    spr.setSsbIndicator(safelySurrenderedBabiesIndicator);
+    return spr;
   }
   
   public SpecialProjectReferralEntityBuilder setCountySpecificCode(String countySpecificCode) {

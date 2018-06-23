@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.services.cms;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Validator;
@@ -12,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
-import gov.ca.cwds.data.cms.SpecialProjectReferralDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 
 import gov.ca.cwds.data.legacy.cms.dao.NonCWSNumberDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafelySurrenderedBabiesDao;
@@ -21,13 +22,13 @@ import gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber;
 import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies;
 
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
-import gov.ca.cwds.data.persistence.cms.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.api.domain.Csec;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
-import gov.ca.cwds.rest.api.domain.cms.PostedSpecialProjectReferral;
-import gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
@@ -103,17 +104,28 @@ public class SpecialProjectReferralService implements
    */
   @Override
   @UnitOfWork(value = "cms")
-  public PostedSpecialProjectReferral create(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain) {
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral persisted = 
-        new gov.ca.cwds.data.persistence.cms.SpecialProjectReferral(CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId()),
-            sprDomain,
-            RequestExecutionContext.instance().getStaffId(),
-            RequestExecutionContext.instance().getRequestStartTime());
-    return new PostedSpecialProjectReferral(specialProjectReferralDao.create(persisted));
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral create(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain) {
+    SpecialProjectReferral persisted = new SpecialProjectReferral();
+    persisted.setCountySpecificCode(sprDomain.getCountySpecificCode());
+    persisted.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
+    persisted.setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+    persisted.setReferralId(sprDomain.getReferralId());
+    persisted.setSpecialProjectId(sprDomain.getSpecialProjectId());
+    persisted.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
+    persisted.setId(CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId()));
+    persisted.setLastUpdateId(RequestExecutionContext.instance().getStaffId());
+    LocalDateTime localDateTime = RequestExecutionContext.instance().getRequestStartTime()
+        .toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime();
+    persisted.setLastUpdateTime(localDateTime);
+    
+//    specialProjectReferralDao.create(persisted);
+    return new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(specialProjectReferralDao.create(persisted));
   }
 
   /**
-   * save Csec Special Project Referral
+   * save CSEC Special Project Referral
    * 
    * @param csecs - list of CSEC domain objects
    * @param referralId - referral ID
@@ -123,10 +135,8 @@ public class SpecialProjectReferralService implements
    * @return PostedSpecialProjectReferral - posted Special Project Referral
    * 
    */
-  public PostedSpecialProjectReferral saveCsecSpecialProjectReferral(List<Csec> csecs,
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(List<Csec> csecs,
       String referralId, String incidentCounty, MessageBuilder messageBuilder) {
-    
-    PostedSpecialProjectReferral postedSpecialProjectReferral = null;
     
     if (csecs.isEmpty()) {
       String message = "CSEC data not sent or empty";
@@ -154,7 +164,7 @@ public class SpecialProjectReferralService implements
       Csec csecDomain = csecs.get(0);
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
           new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(incidentCounty, referralId,
-              specialProjectId, csecDomain.getEndDate().toString(), csecDomain.getStartDate().toString(), 
+              specialProjectId, DomainChef.cookLocalDate(csecDomain.getEndDate()), DomainChef.cookLocalDate(csecDomain.getStartDate()), 
               Boolean.FALSE);
       messageBuilder.addDomainValidationError(validator.validate(sprDomain));
       
@@ -172,14 +182,14 @@ public class SpecialProjectReferralService implements
   
   private Boolean specialProjectReferralExists(String referralId, String specialProjectId) {
     
-    List<gov.ca.cwds.data.persistence.cms.SpecialProjectReferral> specialProjectReferrals = 
+    List<gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral> specialProjectReferrals = 
         specialProjectReferralDao
         .findSpecialProjectReferralsByReferralIdAndSpecialProjectId(referralId, specialProjectId);
     return specialProjectReferrals.isEmpty() ? Boolean.FALSE : Boolean.TRUE;    
   }
   
   private String findSpecialProjectId(String specialProjectName, Short governmentEntityType) {
-    List<SpecialProject> specialProjects = specialProjectDao.findSpecialProjectsByGovernmentEntityAndName(specialProjectName, governmentEntityType);
+    List<SpecialProject> specialProjects = specialProjectDao.findSpecialProjectByGovernmentEntityAndName(specialProjectName, governmentEntityType);
     String specialProjectId = null;
     
     // use the first matching Special Project that is not end dated
@@ -195,8 +205,10 @@ public class SpecialProjectReferralService implements
   /**
    * Process special project for Safely Surrendered Babies.
    * 
-   * @param childClientId Child cleint ID.
+   * @param childClientId Child client ID.
    * @param referralId Referral ID
+   * @param referralReceivedDate - referral received date
+   * @param referralRecievedTime - referral received time
    * @param ssb Safely Surrendered Babies
    */
   public void processSafelySurrenderedBabies(String childClientId, String referralId,
@@ -208,7 +220,7 @@ public class SpecialProjectReferralService implements
     PerryUserIdentity perryUser = RequestExecutionContext.instance().getUserIdentity();
 
     String staffId = RequestExecutionContext.instance().getStaffId();
-    String staffCountySpecificCode = perryUser.getCountyCode(); // 2 gigit
+    String staffCountySpecificCode = perryUser.getCountyCode(); // 2 characters
     String staffCountyCode = perryUser.getCountyCwsCode(); // 4 digit
 
     /**
@@ -241,7 +253,7 @@ public class SpecialProjectReferralService implements
     spr.setReferralId(referralId);
     spr.setSpecialProjectId(ssbSpecialProject.getId());
     
-    gov.ca.cwds.rest.api.domain.cms.PostedSpecialProjectReferral createdSpr = this.create(spr);
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral createdSpr = this.create(spr);
 
     /**
      * Create SafelySurrenderedBabies persistence record.
@@ -283,7 +295,7 @@ public class SpecialProjectReferralService implements
    * @see gov.ca.cwds.rest.services.CrudsService#delete(java.io.Serializable)
    */
   @Override
-  public SpecialProjectReferral delete(String primaryKey) {
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral delete(String primaryKey) {
     throw new NotImplementedException("delete not implemented");
   }
 
@@ -293,7 +305,7 @@ public class SpecialProjectReferralService implements
    * @see gov.ca.cwds.rest.services.CrudsService#find(java.io.Serializable)
    */
   @Override
-  public SpecialProjectReferral find(String primaryKey) {
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral find(String primaryKey) {
     throw new NotImplementedException("find not implemented");
   }
 
@@ -304,7 +316,7 @@ public class SpecialProjectReferralService implements
    *      gov.ca.cwds.rest.api.Request)
    */
   @Override
-  public SpecialProjectReferral update(String primaryKey, SpecialProjectReferral request) {
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral update(String primaryKey, gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral request) {
     throw new NotImplementedException("update not implemented");
   } 
   
@@ -367,4 +379,5 @@ public class SpecialProjectReferralService implements
   public void setNonCWSNumberDao(NonCWSNumberDao nonCWSNumberDao) {
     this.nonCWSNumberDao = nonCWSNumberDao;
   }
+
 }

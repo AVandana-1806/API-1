@@ -63,22 +63,22 @@ public class SpecialProjectReferralTest {
   
   @Test
   public void testConstructorWithPersistentObject() throws Exception {
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral persistent = 
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral persistent = 
         new SpecialProjectReferralEntityBuilder().build();
     SpecialProjectReferral spr = new SpecialProjectReferral(persistent);
     assertThat(spr.getCountySpecificCode(), is(equalTo(persistent.getCountySpecificCode())));
     assertThat(spr.getReferralId(), is(equalTo(persistent.getReferralId())));
     assertThat(spr.getSpecialProjectId(), is(equalTo(persistent.getSpecialProjectId())));
-    assertThat(spr.getParticipationEndDate(), is(equalTo((cookLocalDate(persistent.getParticipationEndDate())))));
-    assertThat(spr.getParticipationStartDate(), is(equalTo(cookLocalDate(persistent.getParticipationStartDate()))));
-    assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(DomainChef.uncookBooleanString(persistent.getSafelySurrenderedBabiesIndicator()))));
+    assertThat(spr.getParticipationEndDate(), is(equalTo((DomainChef.cookLocalDate(persistent.getPartEndDate())))));
+    assertThat(spr.getParticipationStartDate(), is(equalTo(DomainChef.cookLocalDate(persistent.getPartStartDate()))));
+    assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(persistent.getSsbIndicator())));
   }
 
   @Test
   public void shouldSetIdWhenPostedSpecialProjectCreated() throws Exception {
-    gov.ca.cwds.data.persistence.cms.SpecialProjectReferral persistent = 
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral persistent = 
         new SpecialProjectReferralEntityBuilder().build();
-    PostedSpecialProjectReferral pspr = new PostedSpecialProjectReferral(persistent);
+    SpecialProjectReferral pspr = new SpecialProjectReferral(persistent);
     assertThat(pspr.getId(), is(equalTo(persistent.getId())));    
   }
   
@@ -339,13 +339,5 @@ public class SpecialProjectReferralTest {
     assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
     spr.setSpecialProjectId(specialProjectId);
     assertThat(spr.getSpecialProjectId(), is(equalTo(specialProjectId)));
-  }
-  
-  private String cookLocalDate(LocalDate date) {
-    if (date != null) {
-       String newDate = date.format(formatter);
-      return newDate;
-    }
-    return null;
   }
 }

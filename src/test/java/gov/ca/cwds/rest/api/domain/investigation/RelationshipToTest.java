@@ -28,6 +28,11 @@ public class RelationshipToTest {
   private String relatedFirstName = "Steve";
   private String relatedLastName = "Briggs";
   private String relatednameSuffix = "Jr";
+  private String relatedGender = "M";
+  private String relatedDateOfBirth = "2000-10-01";
+  private String relatedDateOfDeath = "2001-10-01";
+  private String absentParentCode = "N";
+  private String sameHomeCode = "Y";
   private String relationship = "Brother";
   private String relationshipToPerson = "Sister";
   private String relationshipContext = "step";
@@ -46,15 +51,17 @@ public class RelationshipToTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedLastName, relatednameSuffix,
-        relationship, relationshipContext, relationshipToPerson, id);
+    RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedLastName,
+        relatednameSuffix, relatedGender, relatedDateOfBirth, relatedDateOfDeath, absentParentCode,
+        sameHomeCode, relationship, relationshipContext, relationshipToPerson, id);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));
     assertThat(relationshipContext, is(equalTo(relationshipTo.getRelationshipContext())));
     assertThat(relationship, is(equalTo(relationshipTo.getRelationshipToPerson())));
     assertThat(relationshipToPerson, is(equalTo(relationshipTo.getRelatedPersonRelationship())));
-    assertThat(cmsRecordDescriptor.getId(), is(equalTo(relationshipTo.getCmsRecordDescriptor().getId())));
+    assertThat(cmsRecordDescriptor.getId(),
+        is(equalTo(relationshipTo.getCmsRecordDescriptor().getId())));
   }
 
   @Test
@@ -110,18 +117,14 @@ public class RelationshipToTest {
   public void equalsHashCodeWork() {
     EqualsVerifier.forClass(RelationshipTo.class).suppress(Warning.NONFINAL_FIELDS).verify();
   }
-  
+
   @Test
   public void shouldSetValuesWithBuilderSetters() {
-    RelationshipTo relationshipTo = new RelationshipToEntityBuilder().setId(newId)
-    	.setRelatedFirstName(newRelatedFirstName)
-    	.setRelatedLastName(newRelatedLastName)
-      .setRelatedNameSuffix(newRelatedNameSuffix)
-    	.setRelationship(newRelationship)
-    	.setRelationshipContext(newRelationshipContext)
-    	.setRelationshipToPerson(newRelationshipToPerson)
-    	.setTableName(newTableName)
-    	.build();
+    RelationshipTo relationshipTo =
+        new RelationshipToEntityBuilder().setId(newId).setRelatedFirstName(newRelatedFirstName)
+            .setRelatedLastName(newRelatedLastName).setRelatedNameSuffix(newRelatedNameSuffix)
+            .setRelationship(newRelationship).setRelationshipContext(newRelationshipContext)
+            .setRelationshipToPerson(newRelationshipToPerson).setTableName(newTableName).build();
 
     assertThat(relationshipTo.getRelatedFirstName(), is(equalTo(newRelatedFirstName)));
     assertThat(relationshipTo.getRelatedLastName(), is(equalTo(newRelatedLastName)));
@@ -129,7 +132,7 @@ public class RelationshipToTest {
     assertThat(relationshipTo.getRelationshipToPerson(), is(equalTo(newRelationship)));
     assertThat(relationshipTo.getRelationshipContext(), is(equalTo(newRelationshipContext)));
     assertThat(relationshipTo.getRelatedPersonRelationship(), is(equalTo(newRelationshipToPerson)));
-    
+
   }
 
 }

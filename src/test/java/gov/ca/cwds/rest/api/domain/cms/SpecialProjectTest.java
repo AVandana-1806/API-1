@@ -19,7 +19,6 @@ public class SpecialProjectTest {
   private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
   
   private Boolean archiveAssociationIndicator = Boolean.FALSE;
-  private String archiveAssociationIndicatorString = "N";
   private String description = "special project description";
   private String endDateString = "2018-05-30";
   private LocalDate endDate = null;
@@ -43,12 +42,12 @@ public class SpecialProjectTest {
   
   @Test
   public void testConstructorUsingPersistentObject() throws Exception {
-    gov.ca.cwds.data.persistence.cms.SpecialProject persistent = 
-        new gov.ca.cwds.data.persistence.cms.SpecialProject(archiveAssociationIndicatorString, 
+    gov.ca.cwds.data.legacy.cms.entity.SpecialProject persistent = 
+        new gov.ca.cwds.data.legacy.cms.entity.SpecialProject(archiveAssociationIndicator, 
             description, endDate, governmentEntityType, id, name, startDate);
     
     SpecialProject sp = new SpecialProject(persistent);
-    assertThat(sp.getArchiveAssociationIndicator(), is(equalTo(DomainChef.uncookBooleanString(persistent.getArchiveAssociationIndicator()))));
+    assertThat(sp.getArchiveAssociationIndicator(), is(equalTo(persistent.getArrchiveAssociationIndicator())));
     assertThat(sp.getDescription(), is(equalTo(persistent.getProjectDescription())));
     assertThat(sp.getEndDate(), is(equalTo(cookLocalDate(persistent.getEndDate()))));
     assertThat(sp.getGovernmentEntityType(), is(equalTo(persistent.getGovernmentEntityType())));

@@ -1,13 +1,11 @@
 package gov.ca.cwds.rest.business.reminders;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.data.cms.ReferralClientDao;
-import gov.ca.cwds.data.cms.StateIdDao;
 import java.time.DateTimeException;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,8 +20,10 @@ import org.junit.rules.ExpectedException;
 import gov.ca.cwds.data.cms.AllegationDao;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.CrossReportDao;
+import gov.ca.cwds.data.cms.ReferralClientDao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.cms.ReporterDao;
+import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.fixture.AddressResourceBuilder;
 import gov.ca.cwds.fixture.AllegationResourceBuilder;
 import gov.ca.cwds.fixture.CrossReportResourceBuilder;
@@ -81,7 +81,7 @@ public class R04631ReferralInvestigationContactDueTest {
   }
 
   /**
-   * Test if the allegation depsotion type is Entered in Error(5918) CrossReport reminder is not
+   * Test if the allegation disposition type is Entered in Error(5918) CrossReport reminder is not
    * created
    * 
    * @throws Exception - exception
@@ -144,15 +144,15 @@ public class R04631ReferralInvestigationContactDueTest {
     when(allegationDao.find(any(String.class))).thenReturn(savedAllegation);
     when(reporterDao.find(any(String.class))).thenReturn(savedReporter);
     when(crossReportDao.find(any(String.class))).thenReturn(savedCrossReport);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
     R04631ReferralInvestigationContactDue r04631ReferralInvestigationContactDue =
         new R04631ReferralInvestigationContactDue(clientDao, referralDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     r04631ReferralInvestigationContactDue
         .referralInvestigationContactDue(postedScreeningToReferral);
-    verify(tickleService, times(3)).create(any());
+    verify(tickleService, times(2)).create(any());
   }
 
   /**
@@ -219,8 +219,8 @@ public class R04631ReferralInvestigationContactDueTest {
     when(allegationDao.find(any(String.class))).thenReturn(savedAllegation);
     when(reporterDao.find(any(String.class))).thenReturn(savedReporter);
     when(crossReportDao.find(any(String.class))).thenReturn(savedCrossReport);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
     R04464CrossReportLawEnforcementDue r04464CrossReportLawEnforcementDue =
         new R04464CrossReportLawEnforcementDue(referralDao, allegationDao, reporterDao,
             crossReportDao, tickleService);
@@ -298,8 +298,8 @@ public class R04631ReferralInvestigationContactDueTest {
     when(allegationDao.find(any(String.class))).thenReturn(savedAllegation);
     when(reporterDao.find(any(String.class))).thenReturn(savedReporter);
     when(crossReportDao.find(any(String.class))).thenReturn(savedCrossReport);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
     R04464CrossReportLawEnforcementDue r04464CrossReportLawEnforcementDue =
         new R04464CrossReportLawEnforcementDue(referralDao, allegationDao, reporterDao,
             crossReportDao, tickleService);

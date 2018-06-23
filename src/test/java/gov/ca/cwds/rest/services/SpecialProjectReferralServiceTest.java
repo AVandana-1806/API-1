@@ -13,10 +13,10 @@ import org.junit.Test;
 
 import gov.ca.cwds.data.legacy.cms.dao.NonCWSNumberDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafelySurrenderedBabiesDao;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
-import gov.ca.cwds.data.cms.SpecialProjectReferralDao;
-import gov.ca.cwds.data.persistence.cms.SpecialProject;
-import gov.ca.cwds.data.persistence.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;

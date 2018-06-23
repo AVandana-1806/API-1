@@ -7,8 +7,8 @@ import com.google.inject.Inject;
 import gov.ca.cwds.data.ApiHibernateInterceptor;
 import gov.ca.cwds.data.ApiReferentialCheck;
 import gov.ca.cwds.data.cms.ReferralDao;
-import gov.ca.cwds.data.cms.SpecialProjectDao;
-import gov.ca.cwds.data.persistence.cms.SpecialProjectReferral;
+import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
+import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.rest.validation.ReferentialIntegrityException;
 
 /**

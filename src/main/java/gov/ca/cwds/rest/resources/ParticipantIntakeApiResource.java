@@ -1,10 +1,16 @@
 package gov.ca.cwds.rest.resources;
 
-import static gov.ca.cwds.rest.core.Api.RESOURCE_PARTICIPANTS_INTAKE_API;
+import static gov.ca.cwds.rest.core.Api.Datasource.NS;
+import static gov.ca.cwds.rest.core.Api.PathParam.PARTICIPANT_ID;
+import static gov.ca.cwds.rest.core.Api.PathParam.SCREENING_ID;
+import static gov.ca.cwds.rest.core.Api.RESOURCE_PARTICIPANTS;
+import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.inject.ParticipantIntakeApiServiceBackedResource;
+import gov.ca.cwds.inject.ParticipantServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.core.Api.ResponseMessage;
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -31,104 +37,112 @@ import org.apache.http.HttpStatus;
  *
  * @author Intake Team 4
  */
-@Api(value = RESOURCE_PARTICIPANTS_INTAKE_API, tags = RESOURCE_PARTICIPANTS_INTAKE_API)
-@Path(value = RESOURCE_PARTICIPANTS_INTAKE_API)
+@Api(value = RESOURCE_SCREENINGS + "/{" + SCREENING_ID + "}/" + RESOURCE_PARTICIPANTS, tags = RESOURCE_SCREENINGS)
+@Path(value = RESOURCE_SCREENINGS + "/{" + SCREENING_ID + "}/" + RESOURCE_PARTICIPANTS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ParticipantIntakeApiResource {
 
-  private ResourceDelegate resourceDelegate;
+  @Inject
+  @ParticipantServiceBackedResource
+  private TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate;
 
   /**
    * Constructor
    *
-   * @param resourceDelegate The service.
    */
-  @Inject
-  public ParticipantIntakeApiResource(
-      @ParticipantIntakeApiServiceBackedResource ResourceDelegate resourceDelegate) {
-    this.resourceDelegate = resourceDelegate;
+  public ParticipantIntakeApiResource() {
+    //no ops
   }
 
   /**
-   * Finds an participant by id.
+   * Finds a participant by id.
    *
-   * @param id the id
+   * @param screeningId the id of the Screening
+   * @param participantId the id of the Participant
    * @return the response
    */
-  @UnitOfWork(value = "ns", readOnly = true)
+  @UnitOfWork(value = NS, readOnly = true)
   @GET
-  @Path("/{id}")
-  @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
-      @ApiResponse(code = 404, message = "Not found"),
-      @ApiResponse(code = 406, message = "Accept Header not supported")})
+  @Path("/{" + PARTICIPANT_ID + "}")
+  @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = ResponseMessage.UNAUTHORIZED),
+      @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = ResponseMessage.NOT_FOUND),
+      @ApiResponse(code = HttpStatus.SC_NOT_ACCEPTABLE, message = ResponseMessage.NOT_ACCEPTABLE)})
   @ApiOperation(value = "Find Participant", code = HttpStatus.SC_OK,
       response = ParticipantIntakeApi.class)
-  public Response get(@PathParam("id") @ApiParam(required = true, name = "id",
-      value = "The id of the Participant to find") String id) {
-    return resourceDelegate.get(id);
+  public Response get(
+      @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "The id of the Screening") String screeningId,
+      @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "The id of the Participant") String participantId) {
+    return resourceDelegate.get(new ParticipantResourceParameters(screeningId, participantId));
   }
 
   /**
    * Delete a participant
    *
-   * @param id The id of the {@link ParticipantIntakeApi}
-   * @return {@link Response}
+   * @param screeningId the id of the Screening
+   * @param participantId the id of the Participant
+   * @return {@link ParticipantIntakeApi}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(value = NS)
   @DELETE
-  @Path("/{id}")
-  @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
-      @ApiResponse(code = 404, message = "Not found")})
+  @Path("/{" + PARTICIPANT_ID + "}")
+  @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = ResponseMessage.UNAUTHORIZED),
+      @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = ResponseMessage.NOT_FOUND)})
   @ApiOperation(value = "Delete Participant", code = HttpStatus.SC_OK, response = Object.class)
-  public Response delete(@PathParam("id") @ApiParam(required = true, name = "id",
-      value = "The id of the Participant to delete") String id) {
-    return resourceDelegate.delete(id);
+  public Response delete(
+      @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "The id of the Screening") String screeningId,
+      @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "The id of the Participant") String participantId) {
+    return resourceDelegate.delete(new ParticipantResourceParameters(screeningId, participantId));
   }
 
   /**
    * Create an {@link ParticipantIntakeApi}
    *
+   * @param screeningId the id of the Screening
    * @param participant The {@link ParticipantIntakeApi}
-   * @return The {@link Response}
+   * @return The {@link ParticipantIntakeApi}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(value = NS)
   @POST
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
-      @ApiResponse(code = 401, message = "Not Authorized"),
-      @ApiResponse(code = 406, message = "Accept Header not supported"),
-      @ApiResponse(code = 409, message = "Conflict - already exists"),
-      @ApiResponse(code = 422, message = "Unable to validate Participant")})
+  @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = ResponseMessage.BAD_REQUEST),
+      @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = ResponseMessage.UNAUTHORIZED),
+      @ApiResponse(code = HttpStatus.SC_NOT_ACCEPTABLE, message = ResponseMessage.NOT_ACCEPTABLE),
+      @ApiResponse(code = HttpStatus.SC_CONFLICT, message = ResponseMessage.CONFLICT),
+      @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY, message = ResponseMessage.UNPROCESSABLE_ENTITY)})
   @Consumes(value = MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Create Participant", code = HttpStatus.SC_CREATED,
       response = ParticipantIntakeApi.class)
   public Response create(
+      @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "The id of the Screening") String screeningId,
       @Valid @ApiParam(required = true, value = "Participant JSON object") ParticipantIntakeApi participant) {
+        participant.setScreeningId(screeningId);
     return resourceDelegate.create(participant);
   }
 
   /**
    * Update an {@link ParticipantIntakeApi}
    *
-   * @param id the id
+   * @param screeningId the id of the Screening
+   * @param participantId the id of the Participant
    * @param participant {@link ParticipantIntakeApi}
-   * @return The {@link Response}
+   * @return The {@link ParticipantIntakeApi}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(value = NS)
   @PUT
-  @Path("/{id}")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
-      @ApiResponse(code = 401, message = "Not Authorized"),
-      @ApiResponse(code = 404, message = "not found"),
-      @ApiResponse(code = 406, message = "Accept Header not supported"),
-      @ApiResponse(code = 422, message = "Unable to validate Document")})
+  @Path("/{" + PARTICIPANT_ID + "}")
+  @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = ResponseMessage.BAD_REQUEST),
+      @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = ResponseMessage.UNAUTHORIZED),
+      @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = ResponseMessage.NOT_FOUND),
+      @ApiResponse(code = HttpStatus.SC_NOT_ACCEPTABLE, message = ResponseMessage.NOT_ACCEPTABLE),
+      @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY, message = ResponseMessage.UNPROCESSABLE_ENTITY)})
   @Consumes(value = MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Update Participant", code = HttpStatus.SC_NO_CONTENT,
+  @ApiOperation(value = "Update Participant", code = HttpStatus.SC_OK,
       response = ParticipantIntakeApi.class)
-  public Response update(@PathParam("id") @ApiParam(required = true, name = "id",
-      value = "Participant id") String id,
+  public Response update(
+      @PathParam(SCREENING_ID) @ApiParam(required = true, name = SCREENING_ID, value = "Screening id") String screeningId,
+      @PathParam(PARTICIPANT_ID) @ApiParam(required = true, name = PARTICIPANT_ID, value = "Participant id") String participantId,
       @Valid @ApiParam(required = true, value = "Participant JSON object") ParticipantIntakeApi participant) {
-    return resourceDelegate.update(id, participant);
+    return resourceDelegate.update(new ParticipantResourceParameters(screeningId, participantId), participant);
   }
 
 }
