@@ -7,9 +7,11 @@ import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import javax.persistence.EntityTransaction;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,17 +206,19 @@ public class ServicesModule extends AbstractModule {
 
   }
 
-  public static class FerbTransactionInterceptor
+  public static class PhineasMethodLoggerInterceptor
       implements org.aopalliance.intercept.MethodInterceptor {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
 
       try {
-        LOGGER.info("Before XA annotation");
         final Method method = mi.getMethod();
+        Thread.dumpStack();
+
+        LOGGER.info("Before transaction commit or rollback. method: {}", method);
         final Object result = mi.proceed();
-        LOGGER.info("After XA annotation");
+        LOGGER.info("After transaction commit or rollback");
         return result;
       } catch (Exception e) {
         throw e;
@@ -286,6 +290,15 @@ public class ServicesModule extends AbstractModule {
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(XAUnitOfWork.class), xaInterceptor);
     requestInjection(xaInterceptor);
 
+    final PhineasMethodLoggerInterceptor txnInterceptor = new PhineasMethodLoggerInterceptor();
+    bindInterceptor(Matchers.subclassesOf(EntityTransaction.class), Matchers.any(), txnInterceptor);
+    requestInjection(txnInterceptor);
+
+    final PhineasMethodLoggerInterceptor sessionInterceptor = new PhineasMethodLoggerInterceptor();
+    bindInterceptor(Matchers.subclassesOf(Session.class), Matchers.any(), sessionInterceptor);
+    requestInjection(sessionInterceptor);
+
+    // No Hibernate managed transactions when using XA.
     final Properties p = new Properties();
     p.setProperty("managed", "N");
     Names.bindProperties(binder(), p);
