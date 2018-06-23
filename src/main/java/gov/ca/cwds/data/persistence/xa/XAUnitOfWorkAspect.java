@@ -249,8 +249,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     session.setCacheMode(firstXaUnitOfWork.cacheMode());
     session.setHibernateFlushMode(
         firstXaUnitOfWork.readOnly() ? FlushMode.MANUAL : firstXaUnitOfWork.flushMode());
-
-    // ManagedSessionContext.bind(session);
   }
 
   /**
