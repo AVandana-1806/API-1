@@ -153,16 +153,44 @@ public final class Api {
      */
     public static final String XA_CMS = "xa_cms";
 
-    private Datasource() {
-    }
+    private Datasource() {}
   }
+
+  /**
+   * Identifer for CMS DB2 datasources.
+   */
+  public static final String DATASOURCE_CMS = "cms";
+
+  /**
+   * Identifer for CMS DB2 replicated datasources.
+   */
+  public static final String DATASOURCE_CMS_REP = "rs";
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, transactional schema.
+   */
+  public static final String DATASOURCE_XA_CMS = "xa_cms";
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, replicated schema.
+   */
+  public static final String DATASOURCE_XA_CMS_RS = "xa_cms_rs";
+
+  /**
+   * Identifer for NS Postgres datasources.
+   */
+  public static final String DATASOURCE_NS = "ns";
+
+  /**
+   * Identifer for NS Postgres datasources for XA transactions.
+   */
+  public static final String DATASOURCE_XA_NS = "xa_ns";
 
   public static class PathParam {
     public static final String SCREENING_ID = "screeningId";
     public static final String PARTICIPANT_ID = "participantId";
 
-    private PathParam() {
-    }
+    private PathParam() {}
   }
 
   public static class ResponseMessage {
@@ -173,8 +201,7 @@ public final class Api {
     public static final String UNPROCESSABLE_ENTITY = "Unable to validate Document";
     public static final String CONFLICT = "Conflict - already exists";
 
-    private ResponseMessage() {
-    }
+    private ResponseMessage() {}
   }
 
 }

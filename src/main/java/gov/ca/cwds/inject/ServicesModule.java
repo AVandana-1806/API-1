@@ -204,6 +204,25 @@ public class ServicesModule extends AbstractModule {
 
   }
 
+  public static class FerbTransactionInterceptor
+      implements org.aopalliance.intercept.MethodInterceptor {
+
+    @Override
+    public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
+
+      try {
+        LOGGER.info("Before XA annotation");
+        final Method method = mi.getMethod();
+        final Object result = mi.proceed();
+        LOGGER.info("After XA annotation");
+        return result;
+      } catch (Exception e) {
+        throw e;
+      }
+    }
+
+  }
+
   /**
    * Default, no-op constructor.
    */
