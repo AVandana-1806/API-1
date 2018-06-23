@@ -97,14 +97,14 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    */
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
-    final List<String> authorizedClients = authorizeClients(hoiRequest.getClientIds());
-    if (authorizedClients.isEmpty()) {
+    final Collection<String> authorizedClientIds = authorizeClientIds(hoiRequest.getClientIds());
+    if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
 
-    final HOICasesData hcd = new HOICasesData(authorizedClients);
+    final HOICasesData hcd = new HOICasesData(authorizedClientIds);
 
-    loadRelationshipsByClients(authorizedClients, hcd);
+    loadRelationshipsByClients(authorizedClientIds, hcd);
     hcd.getAllClientIds().addAll(getClientIdsFromRelations(hcd));
     loadRelationshipsByClients(hcd.getAllClientIds(), hcd);
     loadClients(hcd);
@@ -216,11 +216,6 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   protected HOICaseResponse handleRequest(HOICase req) {
     LOGGER.info("HOICaseService handle request not implemented");
     throw new NotImplementedException("handle request not implemented");
-  }
-
-  @Override
-  public AuthorizationService getAuthorizationService() {
-    return authorizationService;
   }
 
   @Override
