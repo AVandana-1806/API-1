@@ -23,6 +23,7 @@ import com.google.inject.name.Names;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
+import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
@@ -297,6 +298,10 @@ public class ServicesModule extends AbstractModule {
     final PhineasMethodLoggerInterceptor sessionInterceptor = new PhineasMethodLoggerInterceptor();
     bindInterceptor(Matchers.subclassesOf(Session.class), Matchers.any(), sessionInterceptor);
     requestInjection(sessionInterceptor);
+
+    final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+    bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
+    requestInjection(daoInterceptor);
 
     // No Hibernate managed transactions when using XA.
     final Properties p = new Properties();
