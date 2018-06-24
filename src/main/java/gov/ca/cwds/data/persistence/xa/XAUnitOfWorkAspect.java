@@ -78,12 +78,13 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       return;
     }
 
+    LOGGER.debug("Mark XA transaction in RequestExecutionContext");
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, true);
+
     units.putIfAbsent(method, xaUnitOfWork);
     if (this.firstXaUnitOfWork == null) {
       this.firstXaUnitOfWork = xaUnitOfWork;
     }
-
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, true);
 
     openSessions();
     beginXaTransaction();

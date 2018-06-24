@@ -228,9 +228,9 @@ public class ServicesModule extends AbstractModule {
             m.getName());
         CaresStackUtils.logStack();
 
-        LOGGER.info("Before transaction commit or rollback. method: {}", m);
+        LOGGER.info("Phineas interceptor: before method: {}", m);
         final Object result = mi.proceed();
-        LOGGER.info("After transaction commit or rollback");
+        LOGGER.info("Phineas interceptor: after  method: {}", m);
         return result;
       } catch (Exception e) {
         throw e;
