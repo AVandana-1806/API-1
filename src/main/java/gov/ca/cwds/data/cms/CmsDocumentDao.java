@@ -150,7 +150,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_LZW)) {
       LZWEncoder lzw = new LZWEncoder();
       if (!lzw.didLibraryLoad()) {
-        LOGGER.warn("LZW compression not enabled!");
+        LOGGER.warn("LZW COMPRESSION NOT ENABLED!");
       } else {
         retval = decompressLZW(doc);
       }
@@ -180,7 +180,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_LZW)) {
       LZWEncoder lzw = new LZWEncoder();
       if (!lzw.didLibraryLoad()) {
-        LOGGER.warn("LZW compression not enabled!");
+        LOGGER.warn("LZW COMPRESSION NOT ENABLED!");
       } else {
         retval = compressLZW(doc, base64);
       }

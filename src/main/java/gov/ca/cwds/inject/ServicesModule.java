@@ -5,7 +5,6 @@ import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
 import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Properties;
 
 import javax.persistence.EntityTransaction;
@@ -23,6 +22,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
+import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
@@ -217,13 +217,9 @@ public class ServicesModule extends AbstractModule {
         final Method m = mi.getMethod();
         LOGGER.info("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
             m.getName());
-        final Method method = mi.getMethod();
-        final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        Arrays.stream(stack, 0, stack.length - 1)
-            .filter(e -> e.getClassName().startsWith("gov.ca.cwds"))
-            .forEach(e -> LOGGER.info("\t{}", e));
+        CaresStackUtils.logStack();
 
-        LOGGER.info("Before transaction commit or rollback. method: {}", method);
+        LOGGER.info("Before transaction commit or rollback. method: {}", m);
         final Object result = mi.proceed();
         LOGGER.info("After transaction commit or rollback");
         return result;
