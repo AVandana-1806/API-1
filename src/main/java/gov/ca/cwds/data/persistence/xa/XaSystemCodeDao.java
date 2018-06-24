@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.DaoException;
+import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.inject.CmsSessionFactory;
 
@@ -19,7 +19,7 @@ import gov.ca.cwds.inject.CmsSessionFactory;
  * 
  * @author CWDS API Team
  */
-public class XaSystemCodeDao extends CrudsDaoImpl<SystemCode> {
+public class XaSystemCodeDao extends SystemCodeDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(XaSystemCodeDao.class);
 
@@ -37,6 +37,7 @@ public class XaSystemCodeDao extends CrudsDaoImpl<SystemCode> {
    * @param foreignKeyMetaTable meta group
    * @return all keys by meta table
    */
+  @Override
   @SuppressWarnings("unchecked")
   public SystemCode[] findByForeignKeyMetaTable(String foreignKeyMetaTable) {
     LOGGER.info("SystemCodeDao.findByForeignKeyMetaTable: foreignKeyMetaTable: {}",
@@ -58,6 +59,7 @@ public class XaSystemCodeDao extends CrudsDaoImpl<SystemCode> {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public SystemCode findBySystemCodeId(Number systemCodeId) {
     LOGGER.info("SystemCodeDao.findBySystemCodeId: systemCodeId: {}", systemCodeId);

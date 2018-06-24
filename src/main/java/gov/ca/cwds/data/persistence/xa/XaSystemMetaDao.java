@@ -7,8 +7,8 @@ import org.hibernate.SessionFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.DaoException;
+import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.persistence.cms.SystemMeta;
 import gov.ca.cwds.inject.CmsSessionFactory;
 
@@ -17,7 +17,7 @@ import gov.ca.cwds.inject.CmsSessionFactory;
  * 
  * @author CWDS API Team
  */
-public class XaSystemMetaDao extends CrudsDaoImpl<SystemMeta> {
+public class XaSystemMetaDao extends SystemMetaDao {
 
   /**
    * Constructor
@@ -32,27 +32,17 @@ public class XaSystemMetaDao extends CrudsDaoImpl<SystemMeta> {
   /**
    * @return all meta data records
    */
+  @Override
   @SuppressWarnings("unchecked")
   public SystemMeta[] findAll() {
-
     final String namedQueryName = SystemMeta.class.getName() + ".findAll";
     final Session session = grabSession();
     joinTransaction(session);
 
-    // Transaction txn = session.getTransaction();
-    // boolean transactionExists = txn != null && txn.isActive();
-
     try {
-      // txn = transactionExists ? txn : session.beginTransaction();
-      Query query = session.getNamedQuery(namedQueryName);
-      SystemMeta[] systemMetas = (SystemMeta[]) query.list().toArray(new SystemMeta[0]);
-      // if (!transactionExists)
-      // txn.commit();
-      return systemMetas;
+      final Query<?> query = session.getNamedQuery(namedQueryName);
+      return query.list().toArray(new SystemMeta[0]);
     } catch (HibernateException h) {
-      // if (txn != null) {
-      // txn.rollback();
-      // }
       throw new DaoException(h);
     }
   }
