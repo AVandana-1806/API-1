@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import com.google.inject.Inject;
@@ -41,20 +40,13 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacyCategoryId";
 
     final Session session = grabSession();
-    Transaction txn = joinTransaction(session);
-    boolean transactionExists = txn != null && txn.isActive();
-    txn = transactionExists ? txn : session.beginTransaction();
+    joinTransaction(session);
 
     try {
       final Query<IntakeLov> query =
           session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId);
-      final List<IntakeLov> intakeCodes = query.list();
-
-      // if (!transactionExists)
-      // txn.commit();
-      return intakeCodes;
+      return query.list();
     } catch (HibernateException h) {
-      txn.rollback();
       throw new DaoException(h);
     }
   }
@@ -68,19 +60,13 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacySystemId";
 
     final Session session = grabSession();
-    Transaction txn = joinTransaction(session);
-    boolean transactionExists = txn != null && txn.isActive();
-    txn = transactionExists ? txn : session.beginTransaction();
+    joinTransaction(session);
 
     try {
       final Query<IntakeLov> query = session.getNamedQuery(namedQueryName)
           .setShort("legacySystemCodeId", legacySystemCodeId.shortValue());
-      final IntakeLov intakeLov = query.getSingleResult();
-      // if (!transactionExists)
-      // txn.commit();
-      return intakeLov;
+      return query.getSingleResult();
     } catch (HibernateException h) {
-      txn.rollback();
       throw new DaoException(h);
     }
   }
