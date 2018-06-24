@@ -1,10 +1,13 @@
 package gov.ca.cwds.rest;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
 
 import javax.servlet.DispatcherType;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +67,13 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
    */
   public static void main(final String[] args) throws Exception {
     LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n");
+
+    // Clean up XA transaction log files.
+    final String[] extensions = {"log", "lck"};
+    final Collection<File> tmFiles = FileUtils.listFiles(new File("./"), extensions, false);
+    LOGGER.info("XA transaction files: {}", tmFiles);
+    tmFiles.stream().forEach(File::delete);
+
     new ApiApplication().run(args);
   }
 
