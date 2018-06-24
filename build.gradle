@@ -140,9 +140,11 @@ dependencies {
 	compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
 	compile group: "org.glassfish.web", name: "javax.el", version: "2.2.4"
 	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
+
+	compile group: 'org.apache.poi', name: 'poi', version: '3.17'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
-	compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+
     compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: mapstructVersion
 
     // ES 5.x:
