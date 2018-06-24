@@ -1,5 +1,7 @@
 package gov.ca.cwds.data.cms;
 
+import static java.lang.Math.min;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,9 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.xml.bind.DatatypeConverter;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.util.ByteArrayBuffer;
 import org.hibernate.SessionFactory;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.cms.CmsDocument;
 import gov.ca.cwds.data.persistence.cms.CmsDocumentBlobSegment;
@@ -27,8 +30,6 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.util.jni.CmsPKCompressor;
 import gov.ca.cwds.rest.util.jni.LZWEncoder;
-
-import static java.lang.Math.min;
 
 /**
  * Data Access Object (DAO) for legacy, compressed CMS documents.
@@ -78,7 +79,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
         final String sequence = StringUtils.leftPad(String.valueOf(++i), 4, '0');
         final int segmentLength = min(compressed.length - segmentStart, BLOB_SEGMENT_LENGTH);
         blobs.add(new CmsDocumentBlobSegment(doc.getId(), sequence,
-            Arrays.copyOfRange(compressed,segmentStart, segmentStart + segmentLength)));
+            Arrays.copyOfRange(compressed, segmentStart, segmentStart + segmentLength)));
         segmentStart += segmentLength;
       }
 
@@ -97,6 +98,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
 
     return blobs;
   }
+
   /**
    * No compressed document blob segments.
    *
@@ -115,7 +117,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
         final String sequence = StringUtils.leftPad(String.valueOf(++i), 4, '0');
         final int segmentLength = min(plain.length - segmentStart, BLOB_SEGMENT_LENGTH);
         blobs.add(new CmsDocumentBlobSegment(doc.getId(), sequence,
-                Arrays.copyOfRange(plain,segmentStart, segmentStart + segmentLength)));
+            Arrays.copyOfRange(plain, segmentStart, segmentStart + segmentLength)));
         segmentStart += segmentLength;
       }
 
@@ -162,6 +164,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
 
     return retval;
   }
+
   /**
    * Compress (deflate) a document by determining the compression type, calling appropriate library
    * and splitting on blob segments.
@@ -292,7 +295,8 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
       // DECOMPRESS!
       final LZWEncoder lzw = new LZWEncoder();
       lzw.fileCopyUncompress(src.getAbsolutePath(), tgt.getAbsolutePath());
-      retval = DatatypeConverter.printBase64Binary(Files.readAllBytes(Paths.get(tgt.getAbsolutePath())));
+      retval =
+          DatatypeConverter.printBase64Binary(Files.readAllBytes(Paths.get(tgt.getAbsolutePath())));
 
       final boolean srcDeletedSuccessfully = src.delete();
       if (!srcDeletedSuccessfully) {
@@ -310,7 +314,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
   }
 
   private void blobSegmentsToFile(CmsDocument doc, File src) {
-    try (FileOutputStream fos = new FileOutputStream(src);){
+    try (FileOutputStream fos = new FileOutputStream(src);) {
       for (CmsDocumentBlobSegment seg : doc.getBlobSegments()) {
         final byte[] bytes = seg.getDocBlob();
         fos.write(bytes);
@@ -323,8 +327,8 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
 
 
   /**
-   * Compress (deflate) a document into LZW-compressed by calling native
-   * library and split on blob segments
+   * Compress (deflate) a document into LZW-compressed by calling native library and split on blob
+   * segments
    *
    * <p>
    * OPTION: Trap std::exception in shared library and return error code. The LZW library currently
@@ -381,7 +385,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
         final String sequence = StringUtils.leftPad(String.valueOf(++i), 4, '0');
         final int segmentLength = min(compressed.length - segmentStart, BLOB_SEGMENT_LENGTH);
         blobs.add(new CmsDocumentBlobSegment(doc.getId(), sequence,
-                Arrays.copyOfRange(compressed,segmentStart, segmentStart + segmentLength)));
+            Arrays.copyOfRange(compressed, segmentStart, segmentStart + segmentLength)));
         segmentStart += segmentLength;
       }
 
@@ -405,7 +409,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     throw new ServiceException("ERROR DECOMPRESSING LZW! " + e.getMessage(), e);
   }
 
-  private void errorCompressing(Exception e)  {
+  private void errorCompressing(Exception e) {
     LOGGER.error("ERROR COMPRESSING LZW! {}", e.getMessage());
     throw new ServiceException("ERROR COMPRESSING LZW! " + e.getMessage(), e);
   }
