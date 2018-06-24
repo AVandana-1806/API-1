@@ -5,6 +5,7 @@ import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
 import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.persistence.EntityTransaction;
@@ -212,10 +213,15 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-
       try {
+        final Method m = mi.getMethod();
+        LOGGER.info("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
+            m.getName());
         final Method method = mi.getMethod();
-        Thread.dumpStack();
+        final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        Arrays.stream(stack, 0, stack.length - 1)
+            .filter(e -> e.getClassName().startsWith("gov.ca.cwds"))
+            .forEach(e -> LOGGER.info("\t{}", e));
 
         LOGGER.info("Before transaction commit or rollback. method: {}", method);
         final Object result = mi.proceed();
