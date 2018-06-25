@@ -95,7 +95,6 @@ public class SsaName3Dao {
    * @param primaryKey primary key
    * @param nameCode defines type of entity
    */
-
   public void deleteSsaname3(String phttTable, String primaryKey, String nameCode) {
     callStoredProc(phttTable, "D", primaryKey, nameCode, " ", " ", " ", " ", " ", s,
         DomainChef.uncookDateString(" "), " ");
@@ -128,13 +127,13 @@ public class SsaName3Dao {
       return;
     }
 
-    Session session = sessionFactory.getCurrentSession();
+    final Session session = sessionFactory.getCurrentSession();
     final String STORED_PROC_NAME = "SPSSANAME3";
     final String schema =
         (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
 
     try {
-      ProcedureCall q = session.createStoredProcedureCall(schema + "." + STORED_PROC_NAME);
+      final ProcedureCall q = session.createStoredProcedureCall(schema + "." + STORED_PROC_NAME);
 
       q.registerStoredProcedureParameter("TABLENAME", String.class, ParameterMode.IN);
       q.registerStoredProcedureParameter("CRUDFUNCT", String.class, ParameterMode.IN);
@@ -168,7 +167,7 @@ public class SsaName3Dao {
 
       final String returnStatus = (String) q.getOutputParameterValue("RETSTATUS");
       final String returnMessage = (String) q.getOutputParameterValue("RETMESSAG");
-      int returnCode = Integer.parseInt(returnStatus);
+      final int returnCode = Integer.parseInt(returnStatus);
 
       LOGGER.info("storeProcReturnStatus: {}, storeProcreturnMessage: {}", returnStatus,
           returnMessage);
@@ -182,7 +181,7 @@ public class SsaName3Dao {
       }
 
     } catch (DaoException h) {
-      throw new DaoException("Call to Stored Procedure failed - " + h, h);
+      throw new DaoException("Call to Stored Procedure FAILED! - " + h, h);
     }
   }
 

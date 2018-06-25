@@ -185,6 +185,11 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
         .append(".TSBLOBT WHERE DOC_HANDLE = ?").toString();
   }
 
+  /**
+   * Find the default schema for the current datasource.
+   * 
+   * @return default schema for this datasource
+   */
   protected String getCurrentSchema() {
     return (String) dao.grabSession().getSessionFactory().getProperties()
         .get("hibernate.default_schema");
