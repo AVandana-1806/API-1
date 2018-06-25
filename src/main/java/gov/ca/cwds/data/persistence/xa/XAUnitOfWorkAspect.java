@@ -132,7 +132,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       rollback();
     } catch (Exception e) {
       LOGGER.error("XaUnitOfWorkAspect.onError(): ERROR ON ROLLBACK!", e);
-      rollback();
       throw e;
     } finally {
       // nix

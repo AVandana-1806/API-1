@@ -191,8 +191,10 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    * @return default schema for this datasource
    */
   protected String getCurrentSchema() {
-    return (String) dao.grabSession().getSessionFactory().getProperties()
+    final String schema = (String) dao.grabSession().getSessionFactory().getProperties()
         .get("hibernate.default_schema");
+    LOGGER.info("current schema = {}", schema);
+    return schema;
   }
 
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
@@ -209,7 +211,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       }
     } catch (SQLException e) {
       LOGGER.error("\n\t****** ROLLING BACK DOC BLOB INSERT! {} ******\n", e.getMessage(), e);
-      con.rollback();
+      // con.rollback();
       throw e;
     }
   }
@@ -221,7 +223,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       delStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.error("\n\t****** ROLLING BACK DOC BLOB DELETE! {} ******\n", e.getMessage(), e);
-      con.rollback();
+      // con.rollback();
       throw e;
     }
   }
@@ -231,6 +233,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       final Connection con = getConnection();
       deleteBlobsJdbc(con, docId);
     } catch (SQLException e) {
+      LOGGER.error("FAILED TO DELETE DOCUMENT SEGMENTS: {}", e.getMessage(), e);
       throw new ServiceException("FAILED TO DELETE DOCUMENT SEGMENTS!", e);
     }
   }
@@ -241,6 +244,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       final Connection con = getConnection();
       insertBlobsJdbc(con, doc, blobs);
     } catch (SQLException e) {
+      LOGGER.error("FAILED TO INSERT DOCUMENT SEGMENTS: {}", e.getMessage(), e);
       throw new ServiceException("FAILED TO INSERT DOCUMENT SEGMENTS!", e);
     }
   }

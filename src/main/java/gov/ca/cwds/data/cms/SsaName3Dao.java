@@ -123,7 +123,7 @@ public class SsaName3Dao {
 
     // XA DEBUG:
     if (RequestExecutionContext.instance().isXaTransaction()) {
-      LOGGER.warn("\n\n\t ********* XA: SKIP SPSSANAME3 FOR NOW ********* \n");
+      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 FOR NOW ********* \n");
       return;
     }
 

@@ -13,7 +13,7 @@ import org.hibernate.jdbc.Work;
  */
 public class CaresWorkConnectionStealer implements Work {
 
-  private Connection conn;
+  private Connection con;
 
   /**
    * Constructor.
@@ -27,15 +27,15 @@ public class CaresWorkConnectionStealer implements Work {
    */
   @Override
   public void execute(Connection con) throws SQLException {
-    conn = con;
+    this.con = con;
   }
 
   public Connection getConnection() {
-    return conn;
+    return con;
   }
 
   public void setConnection(Connection conn) {
-    this.conn = conn;
+    this.con = conn;
   }
 
 }
