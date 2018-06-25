@@ -42,14 +42,19 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.stat.SessionStatistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Hibernate session wrapper.
  * 
  * @author CWDS API Team
  */
 public class CandaceSessionImpl implements Session {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
   protected final Session session;
 
@@ -68,6 +73,7 @@ public class CandaceSessionImpl implements Session {
     return session.getTenantIdentifier();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public Session getSession() {
     return session.getSession();
@@ -75,6 +81,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
+    LOGGER.warn("CandaceSessionImpl.close");
     session.close();
   }
 
@@ -90,6 +97,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction beginTransaction() {
+    LOGGER.info("CandaceSessionImpl.beginTransaction");
     return session.beginTransaction();
   }
 
@@ -126,7 +134,7 @@ public class CandaceSessionImpl implements Session {
     return session.createStoredProcedureCall(procedureName, resultSetMappings);
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes", "deprecation"})
   @Override
   public NativeQuery createSQLQuery(String queryString) {
     return session.createSQLQuery(queryString);
@@ -137,6 +145,7 @@ public class CandaceSessionImpl implements Session {
     session.remove(entity);
   }
 
+  @SuppressWarnings({"deprecation", "rawtypes"})
   @Override
   public Criteria createCriteria(Class persistentClass) {
     return session.createCriteria(persistentClass);
@@ -154,7 +163,7 @@ public class CandaceSessionImpl implements Session {
     return session.sessionWithOptions();
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes", "deprecation"})
   @Override
   public Criteria createCriteria(Class persistentClass, String alias) {
     return session.createCriteria(persistentClass, alias);
@@ -167,9 +176,11 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
+    LOGGER.info("CandaceSessionImpl.flush");
     session.flush();
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public Criteria createCriteria(String entityName) {
     return session.createCriteria(entityName);
@@ -181,6 +192,7 @@ public class CandaceSessionImpl implements Session {
     return session.createNativeQuery(sqlString, resultSetMapping);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public void setFlushMode(FlushMode flushMode) {
     session.setFlushMode(flushMode);
@@ -191,13 +203,14 @@ public class CandaceSessionImpl implements Session {
     return session.find(entityClass, primaryKey, properties);
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public Criteria createCriteria(String entityName, String alias) {
     return session.createCriteria(entityName, alias);
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes", "deprecation"})
   public NativeQuery getNamedSQLQuery(String name) {
     return session.getNamedSQLQuery(name);
   }
@@ -212,6 +225,7 @@ public class CandaceSessionImpl implements Session {
     return session.getFlushMode();
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public NativeQuery getNamedNativeQuery(String name) {
     return session.getNamedNativeQuery(name);
@@ -503,6 +517,7 @@ public class CandaceSessionImpl implements Session {
     return session.getCurrentLockMode(object);
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public Query createFilter(Object collection, String queryString) {
     return session.createFilter(collection, queryString);
@@ -510,6 +525,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void clear() {
+    LOGGER.info("CandaceSessionImpl.clear");
     session.clear();
   }
 
@@ -784,12 +800,13 @@ public class CandaceSessionImpl implements Session {
   }
 
   /*
-   * Confusing and contradictory method signatures.
+   * Confusing and contradictory method signatures. After stripping types, method signature is the
+   * same as {@link EntityManager.createNativeQuery(String, Class)};
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
-  // public <R> NativeQuery<R> createNativeQuery(String sqlString, Class<R> resultClass) {
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
     return session.createNativeQuery(sqlString, resultClass);
   }

@@ -143,7 +143,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
 
   @Override
   public boolean isXaTransaction() {
-    return (Boolean) get(Parameter.XA_TRANSACTION);
+    final Boolean ret = (Boolean) get(Parameter.XA_TRANSACTION);
+    return ret != null && ret.booleanValue();
   }
 
   /**

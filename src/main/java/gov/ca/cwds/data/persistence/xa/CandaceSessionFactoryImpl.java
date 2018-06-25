@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.persistence.xa;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +30,15 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.stat.Statistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.inject.FerbHibernateBundle;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
+import gov.ca.cwds.rest.filters.RequestExecutionContextRegistry;
 import io.dropwizard.hibernate.HibernateBundle;
 
 /**
@@ -48,19 +54,25 @@ import io.dropwizard.hibernate.HibernateBundle;
  * @author CWDS API Team
  */
 @SuppressWarnings({"deprecation", "rawtypes"}) // SessionFactory method signatures
-public class CandaceSessionFactoryImpl implements SessionFactory {
+public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
+
+  private static final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+
+  private String sessionFactoryName;
   private SessionFactory normSessionFactory;
   private SessionFactory xaSessionFactory;
 
   private HibernateBundle<ApiConfiguration> hibernateBundle;
   private FerbHibernateBundle xaHibernateBundle;
 
-  public CandaceSessionFactoryImpl(SessionFactory normSessionFactory,
+  public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {
     super();
+    this.sessionFactoryName = "candace_session_factory_" + sessionFactoryName;
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
   }
@@ -68,6 +80,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
       FerbHibernateBundle xaHibernateBundle) {
     super();
+    this.sessionFactoryName = "candace_session_factory_" + xaHibernateBundle.name();
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
   }
@@ -89,7 +102,31 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
     if (normSessionFactory == null || xaSessionFactory == null) {
       this.normSessionFactory = hibernateBundle.getSessionFactory();
       this.xaSessionFactory = xaHibernateBundle.getSessionFactory();
+
+      // Notify this instance upon request start and end.
+      RequestExecutionContextRegistry.registerCallback(this);
     }
+  }
+
+  // ==================================
+  // RequestExecutionContextCallback:
+  // ==================================
+
+  @Override
+  public Serializable key() {
+    return sessionFactoryName;
+  }
+
+  @Override
+  public void startRequest(RequestExecutionContext ctx) {
+    LOGGER.info("CandaceSessionFactoryImpl.startRequest");
+    local.set(null); // clear the current thread
+  }
+
+  @Override
+  public void endRequest(RequestExecutionContext ctx) {
+    LOGGER.info("CandaceSessionFactoryImpl.endRequest");
+    local.set(null); // clear the current thread
   }
 
   // ==================================
@@ -133,7 +170,15 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
 
   @Override
   public Session openSession() throws HibernateException {
-    return pick().openSession();
+    LOGGER.info("CandaceSessionFactoryImpl.openSession");
+
+    CandaceSessionImpl candaceSession = local.get();
+    if (candaceSession == null) {
+      candaceSession = new CandaceSessionImpl(pick().openSession());
+      local.set(candaceSession);
+    }
+
+    return candaceSession;
   }
 
   @Override
@@ -148,7 +193,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
 
   @Override
   public Session getCurrentSession() throws HibernateException {
-    return pick().getCurrentSession();
+    LOGGER.info("CandaceSessionFactoryImpl.getCurrentSession");
+    final CandaceSessionImpl candaceSession = local.get();
+    return candaceSession != null ? candaceSession : pick().getCurrentSession();
   }
 
   @Override
@@ -208,6 +255,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
 
   @Override
   public void close() {
+    LOGGER.warn("CandaceSessionFactoryImpl.close");
+    CaresStackUtils.logStack();
     pick().close();
   }
 
@@ -274,6 +323,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory {
   @Override
   public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
     pick().addNamedEntityGraph(graphName, entityGraph);
+  }
+
+  public String getSessionFactoryName() {
+    return sessionFactoryName;
   }
 
 }
