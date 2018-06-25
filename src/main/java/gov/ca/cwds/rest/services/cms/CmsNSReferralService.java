@@ -67,8 +67,6 @@ public class CmsNSReferralService implements CrudsService {
     LOGGER.info("CmsNSReferralService.create");
     assert request instanceof CmsNSReferral;
     final CmsNSReferral cmsReferral = (CmsNSReferral) request;
-
-    // NOT IN XA TRANSACTIONS!
     final CmsNSHelper helper = new CmsNSHelper(cmsSessionFactory, nsSessionFactory);
 
     final Map<CrudsService, Request> cmsRequest = new HashMap<>();

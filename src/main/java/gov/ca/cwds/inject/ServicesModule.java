@@ -196,14 +196,15 @@ public class ServicesModule extends AbstractModule {
           xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        LOGGER.info("Before XA annotation");
+        LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
         aspect.afterEnd();
-        LOGGER.info("After XA annotation");
+        LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
+        LOGGER.info("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {

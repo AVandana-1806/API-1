@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.persistence.xa;
 
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -50,9 +51,9 @@ public class XaSystemCodeDao extends SystemCodeDao {
 
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
-          .setString("foreignKeyMetaTable", foreignKeyMetaTable);
-      query.setReadOnly(true);
-      query.setCacheable(true);
+          .setString("foreignKeyMetaTable", foreignKeyMetaTable).setReadOnly(true)
+          .setCacheable(false);
+      query.setHibernateFlushMode(FlushMode.MANUAL);
       return query.list().toArray(new SystemCode[0]);
     } catch (HibernateException h) {
       LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
@@ -69,8 +70,9 @@ public class XaSystemCodeDao extends SystemCodeDao {
     joinTransaction(session);
 
     try {
-      final Query<SystemCode> query =
-          session.getNamedQuery(namedQueryName).setShort("systemId", systemCodeId.shortValue());
+      final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
+          .setShort("systemId", systemCodeId.shortValue()).setReadOnly(true).setCacheable(false);
+      query.setHibernateFlushMode(FlushMode.MANUAL);
       return query.getSingleResult();
     } catch (HibernateException h) {
       LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);

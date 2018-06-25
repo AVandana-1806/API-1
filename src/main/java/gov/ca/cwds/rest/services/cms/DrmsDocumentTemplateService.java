@@ -55,7 +55,7 @@ public class DrmsDocumentTemplateService
   }
 
   /**
-   * @param govermentEntity - govermentEntity
+   * @param governmentEntity - government entity
    * @return the document template
    */
   public DrmsDocumentTemplate findScreenerNarrativeTemplateNs(Short govermentEntity) {
@@ -143,4 +143,5 @@ public class DrmsDocumentTemplateService
   public DrmsDocumentTemplate update(String s, DrmsDocumentTemplate request) {
     throw new NotImplementedException("UPDATE NOT IMPLEMENTED");
   }
+
 }

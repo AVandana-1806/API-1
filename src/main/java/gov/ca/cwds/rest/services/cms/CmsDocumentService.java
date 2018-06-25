@@ -246,17 +246,12 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   /**
-   * Synchronize grabbing connections from the connection pool to prevent deadlocks in C3P0.
-   * 
-   * <p>
-   * ALTERNATIVE: call Hibernate {@link Session#doWork(Work)} to execute JDBC statements in the same
-   * session.
-   * </p>
+   * Call Hibernate {@link Session#doWork(Work)} to execute JDBC statements in the same session.
    * 
    * @return a connection
    * @throws SQLException on database error
    */
-  protected synchronized Connection getConnection() throws SQLException {
+  protected Connection getConnection() throws SQLException {
     final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
     dao.grabSession().doWork(work);
     return work.getConnection();

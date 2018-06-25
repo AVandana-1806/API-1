@@ -270,7 +270,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       LOGGER.info("XA BEGIN TRANSACTION!");
       txn = new UserTransactionImp();
-      txn.setTransactionTimeout(80); // NEXT: soft-code timeout
+      txn.setTransactionTimeout(180); // NEXT: soft-code timeout
       txn.begin();
       transactionStarted = true;
     } catch (Exception e) {
@@ -334,10 +334,10 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       final int status = txn.getStatus();
       if (status == Status.STATUS_ROLLING_BACK || status == Status.STATUS_MARKED_ROLLBACK) {
-        LOGGER.info("XA ROLLBACK TRANSACTION!");
+        LOGGER.warn("XA ROLLBACK TRANSACTION!");
         txn.rollback();
       } else {
-        LOGGER.info("XA COMMIT TRANSACTION!");
+        LOGGER.warn("XA COMMIT TRANSACTION!");
         txn.commit();
       }
     } catch (Exception e) {

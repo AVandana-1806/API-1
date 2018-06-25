@@ -38,9 +38,8 @@ public class CmsNSHelper {
 
   public Map<String, Map<CrudsService, Response>> handleResponse(
       Map<CrudsService, Request> cmsRequests, Map<CrudsService, Request> nsRequests) {
-    final boolean isNonXa = RequestExecutionContext.instance().isXaTransaction();
-
     LOGGER.info("CmsNSHelper.handleResponse");
+    final boolean isNonXa = !RequestExecutionContext.instance().isXaTransaction();
     final Map<CrudsService, Response> cmsResponse = new HashMap<>();
     final Map<CrudsService, Response> nsResponse = new HashMap<>();
     final Map<String, Map<CrudsService, Response>> response = new HashMap<>();
@@ -48,10 +47,16 @@ public class CmsNSHelper {
     Response referral = null;
     Response person;
 
-    try (Session sessionCMS = cmsSessionFactory.openSession();
-        Session sessionNS = nsSessionFactory.openSession();) {
-      ManagedSessionContext.bind(sessionCMS); // NOSONAR
-      final Transaction transactionCMS = sessionCMS.beginTransaction();
+    // Don't close sessions! Kills XA.
+    final Session sessionCMS = cmsSessionFactory.getCurrentSession();
+    final Session sessionNS = nsSessionFactory.getCurrentSession();
+
+    try {
+      if (isNonXa) {
+        ManagedSessionContext.bind(sessionCMS); // NOSONAR
+      }
+      final Transaction transactionCMS = sessionCMS.getTransaction();
+
       for (Entry<CrudsService, Request> cmsRequestsService : cmsRequests.entrySet()) {
         try {
           final CrudsService service = cmsRequestsService.getKey();
@@ -74,7 +79,8 @@ public class CmsNSHelper {
         ManagedSessionContext.bind(sessionNS); // NOSONAR
       }
 
-      final Transaction transactionNS = sessionNS.beginTransaction();
+      final Transaction transactionNS = sessionNS.getTransaction();
+
       for (Entry<CrudsService, Request> nsRequestsService : nsRequests.entrySet()) {
         try {
           final CrudsService service = nsRequestsService.getKey();
