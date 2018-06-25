@@ -120,7 +120,6 @@ public class SpecialProjectReferralService implements
         .toLocalDateTime();
     persisted.setLastUpdateTime(localDateTime);
     
-//    specialProjectReferralDao.create(persisted);
     return new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(specialProjectReferralDao.create(persisted));
   }
 
@@ -321,13 +320,6 @@ public class SpecialProjectReferralService implements
   } 
   
   /**
-   * @return the riSpecialProjectReferral
-   */
-  public RISpecialProjectReferral getRiSpecialProjectReferral() {
-    return riSpecialProjectReferral;
-  }
-
-  /**
    * look up the sysId of the row in the SystemCode table that matches the passed user defined logical code
    * and FKSMeta
    * 
@@ -378,6 +370,20 @@ public class SpecialProjectReferralService implements
 
   public void setNonCWSNumberDao(NonCWSNumberDao nonCWSNumberDao) {
     this.nonCWSNumberDao = nonCWSNumberDao;
+  }
+
+  /**
+   * @return the riSpecialProjectReferral
+   */
+  public RISpecialProjectReferral getRiSpecialProjectReferral() {
+    return riSpecialProjectReferral;
+  }
+  
+  /**
+   * @param riSpecialProjectReferral - riSpecialProjectReferral
+   */
+  public void setRiSpecialProjectReferral(RISpecialProjectReferral riSpecialProjectReferral) {
+    this.riSpecialProjectReferral = riSpecialProjectReferral;
   }
 
 }

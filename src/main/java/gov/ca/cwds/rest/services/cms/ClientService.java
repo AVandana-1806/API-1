@@ -136,7 +136,6 @@ public class ClientService implements
           RequestExecutionContext.instance().getStaffId(),
           RequestExecutionContext.instance().getRequestStartTime());
       validateByRuleR04966(managed);
-      executeRuleR04880(managed);
       managed = clientDao.create(managed);
 
       // checking the staffPerson county code
@@ -180,7 +179,6 @@ public class ClientService implements
               RequestExecutionContext.instance().getRequestStartTime());
 
       validateByRuleR04966(existingClient);
-      executeRuleR04880(managed);
 
       managed.setClientAddress(existingClient.getClientAddress());
       managed = clientDao.update(managed);
@@ -202,9 +200,4 @@ public class ClientService implements
           + "in at least one of the name fields (first, middle, last)");
     }
   }
-
-  private void executeRuleR04880(Client managed) {
-    new R04880EstimatedDOBCodeSetting(managed).execute();
-  }
-
 }
