@@ -36,7 +36,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CmsDocumentService.class);
 
-  private static final String PRIMARY_KEY = "primaryKey={}";
+  private static final String PRIMARY_KEY = "CmsDocumentService: primaryKey={}";
 
   private CmsDocumentDao dao;
 
@@ -57,7 +57,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument find(String primaryKey) {
-    LOGGER.debug(PRIMARY_KEY, primaryKey);
+    LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 
     gov.ca.cwds.data.persistence.cms.CmsDocument doc = dao.find(primaryKey);
@@ -174,33 +174,22 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected String blobToInsert(CmsDocumentBlobSegment blob) {
-    return new StringBuilder().append("INSERT INTO ").append(getCurrentSchema())
+    return new StringBuilder().append("INSERT INTO ").append(dao.getCurrentSchema())
         .append(".TSBLOBT(DOC_HANDLE, DOC_SEGSEQ, DOC_BLOB) VALUES").append("('")
         .append(blob.getDocHandle()).append("','").append(blob.getSegmentSequence()).append("',x'")
         .append(DatatypeConverter.printHexBinary(blob.getDocBlob())).append("')").toString();
   }
 
   protected String blobsDelete() {
-    return new StringBuilder().append("DELETE FROM ").append(getCurrentSchema())
+    return new StringBuilder().append("DELETE FROM ").append(dao.getCurrentSchema())
         .append(".TSBLOBT WHERE DOC_HANDLE = ?").toString();
   }
 
-  /**
-   * Find the default schema for the current datasource.
-   * 
-   * @return default schema for this datasource
-   */
-  protected String getCurrentSchema() {
-    final String schema = (String) dao.grabSession().getSessionFactory().getProperties()
-        .get("hibernate.default_schema");
-    LOGGER.info("current schema = {}", schema);
-    return schema;
-  }
-
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
-  private void insertBlobsJdbc(final Connection con,
+  protected void insertBlobsJdbc(final Connection con,
       gov.ca.cwds.data.persistence.cms.CmsDocument doc, List<CmsDocumentBlobSegment> blobs)
       throws SQLException {
+    LOGGER.info("CmsDocumentService.insertBlobsJdbc");
     try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
         final Statement insStmt = con.createStatement()) {
       delStmt.setString(1, doc.getId());
@@ -210,19 +199,20 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
         insStmt.executeUpdate(blobToInsert(blob));
       }
     } catch (SQLException e) {
-      LOGGER.error("\n\t****** ROLLING BACK DOC BLOB INSERT! {} ******\n", e.getMessage(), e);
+      LOGGER.error("\n\t****** FAILED TO INSERT DOC BLOBS! {} ******\n", e.getMessage(), e);
       // con.rollback();
       throw e;
     }
   }
 
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
-  private void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
+  protected void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
+    LOGGER.info("CmsDocumentService.deleteBlobsJdbc");
     try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete())) {
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
     } catch (SQLException e) {
-      LOGGER.error("\n\t****** ROLLING BACK DOC BLOB DELETE! {} ******\n", e.getMessage(), e);
+      LOGGER.error("\n\t****** FAILED TO DELETE DOC BLOBS! {} ******\n", e.getMessage(), e);
       // con.rollback();
       throw e;
     }
@@ -268,7 +258,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument delete(String primaryKey) {
-    LOGGER.debug(PRIMARY_KEY, primaryKey);
+    LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 
     try {
