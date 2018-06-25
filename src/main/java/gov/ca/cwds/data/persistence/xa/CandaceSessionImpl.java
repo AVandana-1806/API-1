@@ -725,21 +725,25 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void doWork(Work work) throws HibernateException {
+    LOGGER.info("CandanceSessionImpl.doWork: work class: {}", work.getClass());
     session.doWork(work);
   }
 
   @Override
   public <T> T doReturningWork(ReturningWork<T> work) throws HibernateException {
+    LOGGER.info("CandanceSessionImpl.doReturningWork: work class: {}", work.getClass());
     return session.doReturningWork(work);
   }
 
   @Override
   public Connection disconnect() {
+    LOGGER.warn("CandanceSessionImpl.disconnect");
     return session.disconnect();
   }
 
   @Override
   public void reconnect(Connection connection) {
+    LOGGER.warn("CandanceSessionImpl.reconnect");
     session.reconnect(connection);
   }
 

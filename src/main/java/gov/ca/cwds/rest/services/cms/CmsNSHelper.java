@@ -38,8 +38,8 @@ public class CmsNSHelper {
 
   public Map<String, Map<CrudsService, Response>> handleResponse(
       Map<CrudsService, Request> cmsRequests, Map<CrudsService, Request> nsRequests) {
-    LOGGER.info("CmsNSHelper.handleResponse");
     final boolean isNonXa = !RequestExecutionContext.instance().isXaTransaction();
+    LOGGER.info("CmsNSHelper.handleResponse: isNonXa: {}", isNonXa);
     final Map<CrudsService, Response> cmsResponse = new HashMap<>();
     final Map<CrudsService, Response> nsResponse = new HashMap<>();
     final Map<String, Map<CrudsService, Response>> response = new HashMap<>();

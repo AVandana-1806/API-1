@@ -113,7 +113,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames,
       Type[] types) {
     final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
-    LOGGER.debug("PaperTrailInterceptor.onSave: readOnly: {}", readOnly);
+    LOGGER.info("PaperTrailInterceptor.onSave: readOnly: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {
       insertsTlSet.get().add(getItemTypeAndId((HasPaperTrail) entity));
@@ -126,7 +126,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState,
       Object[] previousState, String[] propertyNames, Type[] types) {
     final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
-    LOGGER.debug("PaperTrailInterceptor.onSave: onFlushDirty: {}", readOnly);
+    LOGGER.info("PaperTrailInterceptor.onSave: onFlushDirty: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {
       updatesTlSet.get().add(getItemTypeAndId((HasPaperTrail) entity));
@@ -139,7 +139,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames,
       Type[] types) {
     final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
-    LOGGER.debug("PaperTrailInterceptor.onDelete: onFlushDirty: {}", readOnly);
+    LOGGER.info("PaperTrailInterceptor.onDelete: onFlushDirty: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {
       deletesTlSet.get().add(getItemTypeAndId((HasPaperTrail) entity));
@@ -157,7 +157,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
 
   protected void processPaperTrail() {
     try {
-      LOGGER.debug("PaperTrailInterceptor.processPaperTrail: inserts: {}, updates: {}, deletes: {}",
+      LOGGER.info("PaperTrailInterceptor.processPaperTrail: inserts: {}, updates: {}, deletes: {}",
           insertsTlSet.get().size(), updatesTlSet.get().size(), deletesTlSet.get().size());
       insertsTlSet.get()
           .forEach(typeAndId -> paperTrailDao.create(createPaperTrail(typeAndId, CREATE)));

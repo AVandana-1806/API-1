@@ -255,10 +255,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.warn("CandaceSessionFactoryImpl.close");
+    LOGGER.warn("\n\t******** CandaceSessionFactoryImpl.close ********\n");
     CaresStackUtils.logStack();
-    pick().close();
     local.set(null);
+    pick().close();
   }
 
   @Override
