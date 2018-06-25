@@ -49,8 +49,9 @@ public class Client extends ReportingDomain implements Request, Response {
   public static final String DEFAULT_ADOPTION_STATUS_CODE = "N";
   public static final short DEFAULT_CODE = 0;
   public static final Boolean DEFAULT_CHILD_CLIENT_INDICATOR = Boolean.FALSE;
-  public static final String ESTIMATED_DOB_CODE_ACTUALLY_ENTERED = "N";
-  public static final String ESTIMATED_DOB_CODE_NOT_PROVIDED = "U";
+  public static final String ESTIMATED_DOB_CODE_YES = "Y";
+  public static final String ESTIMATED_DOB_CODE_NO = "N";
+  public static final String ESTIMATED_DOB_CODE_UNKNOWN = "U";
   public static final String DEFAULT_INCAPCITATED_PARENT_CODE = "U";
   public static final String DEFAULT_LITERATE_CODE = "U";
   public static final String DEFAULT_MILITARY_STATUS_CODE = "N";
@@ -819,7 +820,7 @@ public class Client extends ReportingDomain implements Request, Response {
         DEFAULT_CODE, Boolean.FALSE, childClientIndicatorVar, "", "", participant.getFirstName(),
         participant.getMiddleName(), participant.getLastName(), "", Boolean.FALSE, dateStarted,
         Boolean.FALSE, "", Boolean.FALSE, "", Boolean.FALSE, "", "", "", DEFAULT_CODE, "",
-        ESTIMATED_DOB_CODE_ACTUALLY_ENTERED, unableToDetermineCode, "", genderCode,
+        ESTIMATED_DOB_CODE_NO, unableToDetermineCode, "", genderCode,
         DEFAULT_GENDER_IDENTITY_TYPE, null, DEFAULT_GENDER_EXPRESSION_TYPE, "",
         hispanicUnableToDetermineCode, hispanicOriginCode, DEFAULT_CODE, DEFAULT_CODE,
         DEFAULT_INCAPCITATED_PARENT_CODE, Boolean.FALSE, Boolean.FALSE, DEFAULT_LITERATE_CODE,
@@ -839,6 +840,7 @@ public class Client extends ReportingDomain implements Request, Response {
   public DateTime getLastUpdatedTime() {
     return lastUpdatedTime;
   }
+ 
 
   /**
    * @return the existingClientId
@@ -1048,6 +1050,13 @@ public class Client extends ReportingDomain implements Request, Response {
    */
   public String getEstimatedDobCode() {
     return estimatedDobCode;
+  }
+  
+  /**
+   * @param estimatedDobCode - estimated date of birth code
+   */
+  public void setEstimatedDobCode(String estimatedDobCode) {
+    this.estimatedDobCode = estimatedDobCode;
   }
 
   /**

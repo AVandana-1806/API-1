@@ -62,6 +62,11 @@ public class RelationshipToTest {
     assertThat(relationshipToPerson, is(equalTo(relationshipTo.getRelatedPersonRelationship())));
     assertThat(cmsRecordDescriptor.getId(),
         is(equalTo(relationshipTo.getCmsRecordDescriptor().getId())));
+    assertThat(relatedGender, is(equalTo(relationshipTo.getRelatedGender())));
+    assertThat(relatedDateOfBirth, is(equalTo(relationshipTo.getrelatedDateOfBirth())));
+    assertThat(relatedDateOfDeath, is(equalTo(relationshipTo.getrelatedDateOfDeath())));
+    assertThat(absentParentCode, is(equalTo(relationshipTo.getAbsentParentCode())));
+    assertThat(sameHomeCode, is(equalTo(relationshipTo.getSameHomeCode())));
   }
 
   @Test
