@@ -53,8 +53,9 @@ public class SubstituteCareProviderTransformer
         substituteCareProvider.getFirstName(), substituteCareProvider.getMiddleName(),
         substituteCareProvider.getLastName(), substituteCareProvider.getSuffixTitleDescription(),
         null, null, null, substituteCareProvider.getSsn(), substituteCareProvider.getBirthDate(),
-        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, phoneNumbers,
-        "R".equals(sensitivityIndicator), "S".equals(sensitivityIndicator));
+        substituteCareProvider.getDeathDate(), new LinkedList<>(), null, null, null,
+        new HashSet<>(), addresses, phoneNumbers, "R".equals(sensitivityIndicator),
+        "S".equals(sensitivityIndicator));
   }
 
   private String getZip(SubstituteCareProvider substituteCareProvider) {

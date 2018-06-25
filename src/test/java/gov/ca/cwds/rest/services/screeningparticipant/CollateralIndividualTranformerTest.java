@@ -93,8 +93,8 @@ public class CollateralIndividualTranformerTest {
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "1", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "firstName", "middleName",
-            "lastName", "Jr", "male", null, null, null, new Date(), new LinkedList<>(), null, null,
-            null, new HashSet<>(), addresses, phoneNumbers, false, false);
+            "lastName", "Jr", "male", null, null, null, new Date(), new Date(), new LinkedList<>(),
+            null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     CollateralIndividual collateralIndividual = new CollateralIndividualEntityBuilder().build();
     ParticipantIntakeApi actual = collateralIndividualTranformer.tranform(collateralIndividual);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);

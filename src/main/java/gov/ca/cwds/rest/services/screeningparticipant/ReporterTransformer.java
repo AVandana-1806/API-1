@@ -42,8 +42,9 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, reporter.getFirstName(),
         reporter.getMiddleInitialName(), reporter.getLastName(),
-        reporter.getSuffixTitleDescription(), null, null, null, null, null, new LinkedList<>(),
-        null, null, null, new HashSet<>(), addresses, phoneNumbers, Boolean.FALSE, Boolean.FALSE);
+        reporter.getSuffixTitleDescription(), null, null, null, null, null, null,
+        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, phoneNumbers,
+        Boolean.FALSE, Boolean.FALSE);
   }
 
   private String getZip(Reporter reporter) {

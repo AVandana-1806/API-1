@@ -120,9 +120,10 @@ public class OtherChildInPlacemtHomeTransformerTest {
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999-0", null, addressLegacyDescriptor)));
     Set<PhoneNumber> phoneNumbers = null;
-    ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
-        "aaa", null, "bbb", null, "male", null, null, null, new Date(), new LinkedList<>(), null,
-        null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
+    ParticipantIntakeApi expected =
+        new ParticipantIntakeApi(null, null, null, legacyDescriptor, "aaa", null, "bbb", null,
+            "male", null, null, null, new Date(), new Date(), new LinkedList<>(), null, null, null,
+            new HashSet<>(), addresses, phoneNumbers, false, false);
     OtherChildInPlacemtHome otherChildInPlacemtHome =
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);

@@ -106,8 +106,9 @@ public class OtherAdultInPlacemtHomeTransformerTest {
     Set<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Karen", null, "Q", null, "M",
-            null, null, null, validOtherAdultInPlacemtHome().getBirthDate(), new LinkedList<>(),
-            null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
+            null, null, null, validOtherAdultInPlacemtHome().getBirthDate(),
+            validOtherAdultInPlacemtHome().getDeathDate(), new LinkedList<>(), null, null, null,
+            new HashSet<>(), addresses, phoneNumbers, false, false);
     OtherAdultInPlacemtHome otherAdultInPlacemtHome = validOtherAdultInPlacemtHome();
     ParticipantIntakeApi actual =
         otherAdultInPlacemtHomeTransformer.tranform(otherAdultInPlacemtHome);
