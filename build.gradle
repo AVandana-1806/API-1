@@ -156,6 +156,7 @@ dependencies {
 	// Exclude transitive dependencies.
     compile (group: 'gov.ca.cwds.api', name: 'api-core', version: coreApiVersion) {
 	    exclude group: 'org.glassfish.jersey.core'
+	    exclude group: 'org.apache.poi'
 	}
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
