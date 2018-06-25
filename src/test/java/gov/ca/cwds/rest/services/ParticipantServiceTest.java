@@ -15,7 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.fixture.CsecBuilder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
+import gov.ca.cwds.fixture.CsecBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReporterResourceBuilder;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
@@ -65,6 +65,7 @@ import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.ChildClient;
 import gov.ca.cwds.rest.api.domain.cms.Client;
 import gov.ca.cwds.rest.api.domain.cms.ClientAddress;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.PostedReporter;
@@ -228,7 +229,7 @@ public class ParticipantServiceTest {
     verify(csecHistoryService).updateCsecHistoriesByClientId(argThat(new ArgumentMatcher<String>() {
       @Override
       public boolean matches(String clientId) {
-        assertEquals("1234567ABC", clientId);
+        assertEquals("098UijH1gf", clientId);
         return true;
       }
     }), argThat(new ArgumentMatcher<List<CsecHistory>>() {
@@ -238,7 +239,7 @@ public class ParticipantServiceTest {
         assertEquals(1, csecs.size());
         CsecHistory csecHistory = csecs.get(0);
         assertNotNull(csecHistory);
-        assertEquals("1234567ABC", csecHistory.getChildClient());
+        assertEquals("098UijH1gf", csecHistory.getChildClient());
         assertEquals(LocalDate.parse("2018-05-28"), csecHistory.getStartDate());
         assertEquals(LocalDate.parse("2018-05-29"), csecHistory.getEndDate());
         SexualExploitationType sexualExploitationType = csecHistory.getSexualExploitationType();
@@ -343,7 +344,7 @@ public class ParticipantServiceTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
-        .contains("There is no CSEC code id provided for client with id: 1234567ABC"));
+        .contains("There is no CSEC code id provided for client with id: 098UijH1gf"));
   }
 
   @Test
@@ -470,7 +471,7 @@ public class ParticipantServiceTest {
   public void shouldFailWhenVictimHasIncompatiableRoles_AnonymousVictim() throws Exception {
     Participant reporterVictim = new ParticipantResourceBuilder()
         .setRoles(new HashSet<>(Arrays.asList("Anonymous Reporter", "Victim"))).setLegacyId("")
-        .createParticipant();
+        .setLegacyDescriptor(null).createParticipant();
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(reporterVictim, defaultPerpetrator));
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
@@ -498,10 +499,10 @@ public class ParticipantServiceTest {
         .parseDateTime("2000-01-27-15.34.55.123");
     String victimClientLegacyId = "ABC123DSAF";
 
-    LegacyDescriptor descriptor =
-        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
-    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
-        .setLegacyDescriptor(descriptor).createParticipant();
+    LegacyDescriptor descriptor = new LegacyDescriptor("ABC123DSAF", null, lastUpdateDate,
+        LegacyTable.CLIENT.getName(), null);
+    Participant victim =
+        new ParticipantResourceBuilder().setLegacyDescriptor(descriptor).createParticipant();
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
@@ -623,9 +624,9 @@ public class ParticipantServiceTest {
   @Test
   public void testMultipleVictimSuccess() throws Exception {
     Participant victim1 = new ParticipantResourceBuilder().setFirstName("Sally").setLegacyId("")
-        .createVictimParticipant();
+        .setLegacyDescriptor(null).createVictimParticipant();
     Participant victim2 = new ParticipantResourceBuilder().setFirstName("Fred").setLegacyId("")
-        .createVictimParticipant();
+        .setLegacyDescriptor(null).createVictimParticipant();
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(victim1, victim2, defaultReporter, defaultVictim));
     int numberOfClientsThatAreNotReporters = 3;
@@ -643,11 +644,11 @@ public class ParticipantServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void shouldNotProcessSelfReporterAsASeperateParticipant() {
-    Set roles = new HashSet<>();
+    Set<String> roles = new HashSet<>();
     roles.add(Role.VICTIM_ROLE.getType());
     roles.add(Role.SELF_REPORTED_ROLE.getType());
     Participant selfReporter = new ParticipantResourceBuilder().setFirstName("Sally")
-        .setRoles(roles).setLegacyId("").createParticipant();
+        .setRoles(roles).setLegacyId("").setLegacyDescriptor(null).createParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(selfReporter));
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
@@ -698,12 +699,12 @@ public class ParticipantServiceTest {
         .setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter", "Victim")))
         .createParticipant();
     LegacyDescriptor descriptor =
-        new LegacyDescriptor("1234567ABC", "", lastUpdateDate, "CLIENT_T", "");
+        new LegacyDescriptor(victimId, "", lastUpdateDate, "CLIENT_T", "");
     reporter.setLegacyDescriptor(descriptor);
     Participant perp = new ParticipantResourceBuilder().setLegacyId(existingPerpId)
         .setFirstName("Fred").setMiddleName("Finnigan").setLastName("Flintsone")
         .setRoles(new HashSet<>(Arrays.asList("Perpetrator"))).createParticipant();
-    descriptor = new LegacyDescriptor("1234567ABC", "", lastUpdateDate, "CLIENT_T", "");
+    descriptor = new LegacyDescriptor(existingPerpId, "", lastUpdateDate, "CLIENT_T", "");
     perp.setLegacyDescriptor(descriptor);
     Set<Participant> participants = new HashSet<>(Arrays.asList(reporter, perp));
 
@@ -868,7 +869,7 @@ public class ParticipantServiceTest {
         .processSafelySurrenderedBabies(argThat(new ArgumentMatcher<String>() {
           @Override
           public boolean matches(String childClientId) {
-            assertEquals("1234567ABC", childClientId);
+            assertEquals("098UijH1gf", childClientId);
             return true;
           }
         }), argThat(new ArgumentMatcher<String>() {
@@ -905,9 +906,9 @@ public class ParticipantServiceTest {
     String victimClientLegacyId = "ABC123DSAF";
 
     LegacyDescriptor descriptor =
-        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
-    Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
-        .setLegacyDescriptor(descriptor).createParticipant();
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, LegacyTable.CLIENT.getName(), "");
+    Participant victim =
+        new ParticipantResourceBuilder().setLegacyDescriptor(descriptor).createParticipant();
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
 
@@ -933,7 +934,7 @@ public class ParticipantServiceTest {
     String victimClientLegacyId = "ABC123DSAF";
 
     LegacyDescriptor descriptor =
-        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, "CLIENT_T", "");
+        new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, LegacyTable.CLIENT.getName(), "");
     Participant victim = new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId)
         .setLegacyDescriptor(descriptor).createParticipant();
     Set<Participant> participants =

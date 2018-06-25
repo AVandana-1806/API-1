@@ -70,8 +70,12 @@ public class ScreeningToReferralResourceBuilder {
             LegacyTable.CLIENT.getName(), null))
         .createVictimParticipant();
     Participant perp = new ParticipantResourceBuilder().setFirstName("Perpetrator").setGender("F")
+        .setLegacyDescriptor(new LegacyDescriptor("098UijHabM", null, new DateTime(),
+            LegacyTable.CLIENT.getName(), null))
         .createPerpParticipant();
     Participant reporter = new ParticipantResourceBuilder().setFirstName("Reporter").setGender("F")
+        .setLegacyDescriptor(new LegacyDescriptor("09H1ijHabM", null, new DateTime(),
+            LegacyTable.CLIENT.getName(), null))
         .createReporterParticipant();
     this.participants = new HashSet<>(Arrays.asList(victim, perp, reporter));
     this.relationships = new HashSet<ScreeningRelationship>();

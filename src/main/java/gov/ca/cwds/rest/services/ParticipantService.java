@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services;
 
-import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import gov.ca.cwds.data.cms.ReferralClientDao;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
+import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Csec;
@@ -201,7 +201,7 @@ public class ParticipantService implements CrudsService {
     boolean newClient = clientLegacyDesc == null || StringUtils.isBlank(clientLegacyDesc.getId())
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
 
-    clientId = incomingParticipant.getLegacyId();
+    clientId = incomingParticipant.getLegacyDescriptor().getId();
     if (newClient) {
       clientId = createNewClient(screeningToReferral, dateStarted, messageBuilder,
           incomingParticipant, sexAtBirth);
@@ -256,9 +256,9 @@ public class ParticipantService implements CrudsService {
     try {
       Reporter savedReporter = saveReporter(incomingParticipant, role, referralId,
           screeningToReferral.getIncidentCounty(), messageBuilder);
-      incomingParticipant.setLegacyId(savedReporter.getReferralId());
-      incomingParticipant.setLegacySourceTable(LegacyTable.REPORTER.getName());
-      incomingParticipant.getLegacyDescriptor().setLastUpdated(savedReporter.getLastUpdatedTime());
+      incomingParticipant.setLegacyDescriptor(
+          new LegacyDescriptor(referralId, null, savedReporter.getLastUpdatedTime(),
+              LegacyTable.REPORTER.getName(), LegacyTable.REPORTER.getDescription()));
     } catch (ServiceException e) {
       String message = e.getMessage();
       messageBuilder.addMessageAndLog(message, e, LOGGER);
@@ -364,7 +364,8 @@ public class ParticipantService implements CrudsService {
 
   private void update(MessageBuilder messageBuilder, Participant incomingParticipant,
       Client foundClient, List<Short> otherRaceCodes) {
-    Client savedClient = this.clientService.update(incomingParticipant.getLegacyId(), foundClient);
+    Client savedClient =
+        this.clientService.update(incomingParticipant.getLegacyDescriptor().getId(), foundClient);
     clientScpEthnicityService.createOtherEthnicity(foundClient.getExistingClientId(),
         otherRaceCodes);
     if (savedClient != null) {
@@ -395,9 +396,9 @@ public class ParticipantService implements CrudsService {
     messageBuilder.addDomainValidationError(validator.validate(client));
     PostedClient postedClient = this.clientService.create(client);
     clientId = postedClient.getId();
-    incomingParticipant.setLegacyId(clientId);
-    incomingParticipant.setLegacySourceTable(LegacyTable.CLIENT.getName());
-    incomingParticipant.getLegacyDescriptor().setLastUpdated(postedClient.getLastUpdatedTime());
+    incomingParticipant
+        .setLegacyDescriptor(new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
+            LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription()));
     clientScpEthnicityService.createOtherEthnicity(postedClient.getId(), otherRaceCodes);
     return clientId;
   }
@@ -475,10 +476,11 @@ public class ParticipantService implements CrudsService {
       }
     }
 
-    List<IntakeLov> intakeLovs = IntakeCodeCache.global()
-        .getAllLegacySystemCodesForMeta(SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
+    List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAllLegacySystemCodesForMeta(
+        SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
     for (IntakeLov intakeLov : intakeLovs) {
-      if (csecs.stream().filter(c -> intakeLov.getIntakeCode().equals(c.getCsecCodeId())).count() > 1) {
+      if (csecs.stream().filter(c -> intakeLov.getIntakeCode().equals(c.getCsecCodeId()))
+          .count() > 1) {
         messageBuilder.addError("CSEC duplication for code: " + intakeLov.getIntakeCode(),
             ErrorMessage.ErrorType.VALIDATION);
         return false;

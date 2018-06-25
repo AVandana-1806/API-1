@@ -489,7 +489,7 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private boolean validateAllegationVictimExists(String victimClientId) {
-    if (victimClientId.isEmpty()) {
+    if (StringUtils.isBlank(victimClientId)) {
       String message = "Victim could not be determined for an allegation";
       logError(message, new ServiceException(message));
       return false;

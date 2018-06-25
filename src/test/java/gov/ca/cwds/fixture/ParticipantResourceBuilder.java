@@ -6,11 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
  * 
@@ -20,8 +23,9 @@ public class ParticipantResourceBuilder {
 
   long id = 5432;
   String legacySourceTable = "CLIENT_T";
-  String legacyId = "1234567ABC";
-  LegacyDescriptor legacyDescriptor = null;
+  String legacyId = null;
+  LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+      new DateTime("2018-06-11T11:47:07.524-07:00"), LegacyTable.CLIENT.getName(), null);
   long screeningId = 12345;
   String firstName = "John";
   String middleName = "T";
