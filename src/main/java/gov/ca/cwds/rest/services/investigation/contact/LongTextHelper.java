@@ -23,7 +23,6 @@ public class LongTextHelper {
   /**
    * @param longTextService the {@link gov.ca.cwds.rest.services.Service} handling
    *        {@link gov.ca.cwds.data.persistence.cms.LongText} objects
-   * 
    */
   @Inject
   public LongTextHelper(LongTextService longTextService) {
@@ -52,13 +51,11 @@ public class LongTextHelper {
    * @return identifier of the posted LongText entity
    */
   public String createLongText(String textDescription, String countySpecificCode) {
-
     gov.ca.cwds.rest.api.domain.cms.LongText longText =
         new gov.ca.cwds.rest.api.domain.cms.LongText(countySpecificCode, textDescription);
     PostedLongText postedLongText = longTextService.create(longText);
 
     return postedLongText.getId();
-
   }
 
   /**

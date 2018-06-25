@@ -107,8 +107,6 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
     String primaryKey = DEFAULT_DOC_ID;
     gov.ca.cwds.rest.api.domain.cms.CmsDocument request = readJsonDoc();
     gov.ca.cwds.rest.api.domain.cms.CmsDocument actual = target.update(primaryKey, request);
-    CmsDocument expected = doc;
-    // assertThat(actual, is(equalTo(expected)));
     assertThat(actual, is(notNullValue()));
   }
 
@@ -131,13 +129,6 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
   }
 
   @Test
-  public void getCurrentSchema_A$() throws Exception {
-    String actual = target.getCurrentSchema();
-    String expected = "CWSNS1";
-    assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
   public void deleteBlobs_A$String() throws Exception {
     String docId = "0131351421120020*JONESMF ";
     target.deleteBlobs(docId);
@@ -153,7 +144,6 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
   @Test
   public void getConnection_A$() throws Exception {
     Connection actual = target.getConnection();
-    Connection expected = null;
     assertThat(actual, is(not(0)));
   }
 

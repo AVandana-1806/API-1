@@ -150,7 +150,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   @SuppressWarnings("rawtypes")
   @Override
   public void preFlush(Iterator entities) {
-    LOGGER.debug("PaperTrailInterceptor.preFlush");
+    LOGGER.info("PaperTrailInterceptor.preFlush");
     processPaperTrail();
     super.preFlush(entities);
   }

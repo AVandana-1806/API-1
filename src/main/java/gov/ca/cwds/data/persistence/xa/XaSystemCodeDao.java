@@ -41,7 +41,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
   @Override
   @SuppressWarnings("unchecked")
   public SystemCode[] findByForeignKeyMetaTable(String foreignKeyMetaTable) {
-    LOGGER.info("SystemCodeDao.findByForeignKeyMetaTable: foreignKeyMetaTable: {}",
+    LOGGER.info("XaSystemCodeDao.findByForeignKeyMetaTable: foreignKeyMetaTable: {}",
         foreignKeyMetaTable);
     final String namedQueryName = SystemCode.class.getName() + ".findByForeignKeyMetaTable";
 
@@ -52,8 +52,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
           .setString("foreignKeyMetaTable", foreignKeyMetaTable).setReadOnly(true)
-          .setCacheable(false);
-      query.setHibernateFlushMode(FlushMode.MANUAL);
+          .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL);
       return query.list().toArray(new SystemCode[0]);
     } catch (HibernateException h) {
       LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
@@ -64,7 +63,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
   @Override
   @SuppressWarnings("unchecked")
   public SystemCode findBySystemCodeId(Number systemCodeId) {
-    LOGGER.info("SystemCodeDao.findBySystemCodeId: systemCodeId: {}", systemCodeId);
+    LOGGER.info("XaSystemCodeDao.findBySystemCodeId: systemCodeId: {}", systemCodeId);
     final String namedQueryName = SystemCode.class.getName() + ".findBySystemCodeId";
     final Session session = grabSession();
     joinTransaction(session);

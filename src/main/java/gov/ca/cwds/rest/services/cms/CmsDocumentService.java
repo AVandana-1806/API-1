@@ -57,6 +57,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument find(String primaryKey) {
+    LOGGER.info("CmsDocumentService.find");
     LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 
@@ -88,6 +89,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument create(CmsDocument request) {
+    LOGGER.info("CmsDocumentService.create");
     gov.ca.cwds.data.persistence.cms.CmsDocument doc =
         new gov.ca.cwds.data.persistence.cms.CmsDocument(request);
     CmsDocument retval = null;
@@ -128,6 +130,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument update(String primaryKey, CmsDocument request) {
+    LOGGER.info("CmsDocumentService.update");
     LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 
@@ -219,9 +222,9 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected void deleteBlobs(String docId) {
+    LOGGER.info("CmsDocumentService.deleteBlobs");
     try {
-      final Connection con = getConnection();
-      deleteBlobsJdbc(con, docId);
+      deleteBlobsJdbc(getConnection(), docId);
     } catch (SQLException e) {
       LOGGER.error("FAILED TO DELETE DOCUMENT SEGMENTS: {}", e.getMessage(), e);
       throw new ServiceException("FAILED TO DELETE DOCUMENT SEGMENTS!", e);
@@ -230,9 +233,9 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
   protected void insertBlobs(gov.ca.cwds.data.persistence.cms.CmsDocument doc,
       List<CmsDocumentBlobSegment> blobs) {
+    LOGGER.info("CmsDocumentService.insertBlobs");
     try {
-      final Connection con = getConnection();
-      insertBlobsJdbc(con, doc, blobs);
+      insertBlobsJdbc(getConnection(), doc, blobs);
     } catch (SQLException e) {
       LOGGER.error("FAILED TO INSERT DOCUMENT SEGMENTS: {}", e.getMessage(), e);
       throw new ServiceException("FAILED TO INSERT DOCUMENT SEGMENTS!", e);
@@ -248,7 +251,9 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   protected Connection getConnection() throws SQLException {
     final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
     dao.grabSession().doWork(work);
-    return work.getConnection();
+    final Connection con = work.getConnection();
+    LOGGER.info("CmsDocumentService.getConnection: connection: {}", con);
+    return con;
   }
 
   /**
