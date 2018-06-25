@@ -20,6 +20,7 @@ import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.inject.CmsSessionFactory;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
  * Hibernate DAO for DB2 stored procedure that calls soundex SSA Name3 and saves to the client
@@ -120,6 +121,13 @@ public class SsaName3Dao {
   protected void callStoredProc(String tableName, String crudOper, String identifier, String nameCd,
       String firstName, String middleName, String lastName, String streettNumber, String streetName,
       Short gvrEntc, Date updateTimeStamp, String updateId) {
+
+    // XA DEBUG:
+    if (RequestExecutionContext.instance().isXaTransaction()) {
+      LOGGER.warn("\n\n\t ********* XA: SKIP SPSSANAME3 FOR NOW ********* \n");
+      return;
+    }
+
     Session session = sessionFactory.getCurrentSession();
     final String STORED_PROC_NAME = "SPSSANAME3";
     final String schema =
