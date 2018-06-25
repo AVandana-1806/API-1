@@ -183,8 +183,8 @@ public class ScreeningEntity implements PersistentObject {
     super();
     this.id = id;
     this.reference = reference;
-    this.startedAt = startedAt;
-    this.endedAt = endedAt;
+    this.startedAt = freshDate(startedAt);
+    this.endedAt = freshDate(endedAt);
     this.incidentCounty = incidentCounty;
     this.incidentDate = incidentDate;
     this.locationType = locationType;
@@ -227,7 +227,7 @@ public class ScreeningEntity implements PersistentObject {
   }
 
   public void setEndedAt(Date endedAt) {
-    this.endedAt = endedAt;
+    this.endedAt = freshDate(endedAt);
   }
 
   public void setIncidentCounty(String incidentCounty) {
@@ -255,7 +255,7 @@ public class ScreeningEntity implements PersistentObject {
   }
 
   public void setStartedAt(Date startedAt) {
-    this.startedAt = startedAt;
+    this.startedAt = freshDate(startedAt);
   }
 
   public void setNarrative(String narrative) {
@@ -340,7 +340,7 @@ public class ScreeningEntity implements PersistentObject {
    * @return the endedAt
    */
   public Date getEndedAt() {
-    return endedAt;
+    return freshDate(endedAt);
   }
 
   /**
@@ -390,7 +390,7 @@ public class ScreeningEntity implements PersistentObject {
    * @return the startedAt
    */
   public Date getStartedAt() {
-    return startedAt;
+    return freshDate(startedAt);
   }
 
   /**

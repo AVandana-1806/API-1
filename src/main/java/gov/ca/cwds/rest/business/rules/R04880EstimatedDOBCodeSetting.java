@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.business.rules;
 
-import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.rest.api.domain.cms.Client;
+import gov.ca.cwds.rest.api.domain.cms.ReferralClient;
 import gov.ca.cwds.rest.business.RuleAction;
 
 /**
@@ -25,28 +26,34 @@ import gov.ca.cwds.rest.business.RuleAction;
  * then (set the Estimated_DOB_Code to N and set Birth_Date to Date of Birth entered); <br>
  * Else If Date of Birth, Age, and Age Unit are blank, then (set Estimated_DOB_Code and Birth_Date
  * U).
- * <p>
- * --- /referrals/POST allows date of birth. It does not currently allow age and time unit to be
- * specified.<br>
- * If the CLIENT.BIRTH_DATE is blank or null, then set CLIENT.ESTIMATED_DOB_CODE to "U". <br>
- * Otherwise set CLIENT.ESTIMATED_DOB_CODE to "N".
  */
 public class R04880EstimatedDOBCodeSetting implements RuleAction {
 
   private Client client;
+  private ReferralClient referralClient;
 
-  public R04880EstimatedDOBCodeSetting(Client client) {
+  public R04880EstimatedDOBCodeSetting(Client client, ReferralClient referralClient) {
     this.client = client;
+    this.referralClient = referralClient;
   }
 
   @Override
   public void execute() {
-    if (client.getBirthDate() == null) {
-      client.setEstimatedDobCode(
-          gov.ca.cwds.rest.api.domain.cms.Client.ESTIMATED_DOB_CODE_NOT_PROVIDED);
+    final Short ageNumber;
+    if (referralClient.getAgeNumber()== null) {
+      ageNumber = 0;
     } else {
-      client.setEstimatedDobCode(
-          gov.ca.cwds.rest.api.domain.cms.Client.ESTIMATED_DOB_CODE_ACTUALLY_ENTERED);
+      ageNumber = referralClient.getAgeNumber();
+    }
+    
+    if (ageNumber != 0 && !referralClient.getAgePeriodCode().isEmpty()) {
+      client.setEstimatedDobCode(gov.ca.cwds.rest.api.domain.cms.Client.ESTIMATED_DOB_CODE_YES);
+    } else {
+      if (client.getBirthDate() != null  && !client.getBirthDate().isEmpty()) {
+        client.setEstimatedDobCode(gov.ca.cwds.rest.api.domain.cms.Client.ESTIMATED_DOB_CODE_NO);
+      } else {
+        client.setEstimatedDobCode(gov.ca.cwds.rest.api.domain.cms.Client.ESTIMATED_DOB_CODE_UNKNOWN);
+      }
     }
   }
 }
