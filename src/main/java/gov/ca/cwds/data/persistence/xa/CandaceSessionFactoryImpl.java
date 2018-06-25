@@ -210,11 +210,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSession openStatelessSession() {
+    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession");
     return pick().openStatelessSession();
   }
 
   @Override
   public StatelessSession openStatelessSession(Connection connection) {
+    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession(con)");
     return pick().openStatelessSession(connection);
   }
 

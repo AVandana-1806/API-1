@@ -226,7 +226,6 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     return retval;
   }
 
-
   /**
    * Decompress (inflate) a non-compressed document by assembling blob segments
    *
@@ -325,7 +324,6 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     }
   }
 
-
   /**
    * Compress (deflate) a document into LZW-compressed by calling native library and split on blob
    * segments
@@ -346,7 +344,6 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    */
   @SuppressFBWarnings("PATH_TRAVERSAL_IN") // There is no path traversal here
   private List<CmsDocumentBlobSegment> compressLZW(CmsDocument doc, String base64) {
-
     final List<CmsDocumentBlobSegment> blobs = new ArrayList<>();
 
     File src = null;

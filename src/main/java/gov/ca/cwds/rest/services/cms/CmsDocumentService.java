@@ -117,7 +117,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       return retval;
 
     } catch (EntityExistsException e) {
-      LOGGER.info("CmsDocument already exists : {}", request);
+      LOGGER.error("CmsDocument already exists : {}", request);
       throw new ServiceException("CmsDocument already exists : {}" + request, e);
     }
   }
@@ -193,8 +193,11 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       gov.ca.cwds.data.persistence.cms.CmsDocument doc, List<CmsDocumentBlobSegment> blobs)
       throws SQLException {
     LOGGER.info("CmsDocumentService.insertBlobsJdbc");
-    try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
-        final Statement insStmt = con.createStatement()) {
+
+    // DRS: does closing prepared statement kill the connection on XA??
+    final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
+    final Statement insStmt = con.createStatement();
+    try {
       delStmt.setString(1, doc.getId());
       delStmt.executeUpdate();
 
@@ -203,7 +206,6 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       }
     } catch (SQLException e) {
       LOGGER.error("\n\t****** FAILED TO INSERT DOC BLOBS! {} ******\n", e.getMessage(), e);
-      // con.rollback();
       throw e;
     }
   }
@@ -211,12 +213,12 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
   protected void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
     LOGGER.info("CmsDocumentService.deleteBlobsJdbc");
-    try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete())) {
+    final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
+    try {
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
     } catch (SQLException e) {
       LOGGER.error("\n\t****** FAILED TO DELETE DOC BLOBS! {} ******\n", e.getMessage(), e);
-      // con.rollback();
       throw e;
     }
   }
@@ -263,6 +265,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument delete(String primaryKey) {
+    LOGGER.info("CmsDocumentService.delete");
     LOGGER.info(PRIMARY_KEY, primaryKey);
     CmsDocument retval = null;
 

@@ -68,7 +68,7 @@ public class WorkDB2UserInfo implements Work {
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
       db2conn.setDB2ClientApplicationInformation(userId);
-      db2conn.setDB2ClientProgramId(PROGRAM_NAME);
+      db2conn.setDB2ClientProgramId(userId);
       db2conn.setDB2ClientUser(staffId);
       db2conn.setDB2ClientWorkstation(SERVER_IP_ADDRESS);
 
