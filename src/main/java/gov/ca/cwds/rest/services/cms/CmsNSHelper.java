@@ -62,7 +62,9 @@ public class CmsNSHelper {
           final CrudsService service = cmsRequestsService.getKey();
           referral = service.create(cmsRequests.get(service));
           cmsResponse.put(service, referral);
-          sessionCMS.flush();
+          if (isNonXa) {
+            sessionCMS.flush();
+          }
         } catch (Exception e) {
           LOGGER.error("EXCEPTION CREATING CMS! {}", e.getMessage(), e);
 
@@ -86,7 +88,9 @@ public class CmsNSHelper {
           final CrudsService service = nsRequestsService.getKey();
           person = service.create(nsRequests.get(service));
           nsResponse.put(service, person);
-          sessionNS.flush();
+          if (isNonXa) {
+            sessionNS.flush();
+          }
         } catch (Exception e) {
           LOGGER.error("EXCEPTION CREATING NS! {}", e.getMessage(), e);
 
