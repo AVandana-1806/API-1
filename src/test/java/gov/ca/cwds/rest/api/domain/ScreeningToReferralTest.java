@@ -41,6 +41,7 @@ import gov.ca.cwds.fixture.CrossReportResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.investigation.SafetyAlertsEntityBuilder;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 import gov.ca.cwds.rest.core.Api;
@@ -127,7 +128,10 @@ public class ScreeningToReferralTest {
   public void shouldSerializeToJSON() throws Exception {
 
     Address address = new AddressResourceBuilder().createAddress();
-    Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+    Participant participant = new ParticipantResourceBuilder()
+        .setLegacyDescriptor(
+            new LegacyDescriptor("098UijH1gf", null, null, LegacyTable.CLIENT.getName(), null))
+        .createVictimParticipant();
     participants.add(participant);
     CrossReport crossReport = new CrossReport("", "", "", filedOutOfState, method, informDate,
         countyId, Sets.newHashSet());

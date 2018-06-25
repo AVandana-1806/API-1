@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.fixture.AddressResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.resources.cms.JerseyGuiceRule;
 import io.dropwizard.jackson.Jackson;
 
@@ -99,7 +100,10 @@ public class ParticipantTest {
   @Test
   public void serializesToJSON() throws Exception {
 
-    Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+    Participant participant = new ParticipantResourceBuilder()
+        .setLegacyDescriptor(
+            new LegacyDescriptor("098UijH1gf", null, null, LegacyTable.CLIENT.getName(), null))
+        .createVictimParticipant();
     String expected = MAPPER.writeValueAsString(participant);
 
     String serialized = MAPPER.writeValueAsString(MAPPER
@@ -110,7 +114,10 @@ public class ParticipantTest {
 
   @Test
   public void deserializesFromJSON() throws Exception {
-    Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+    Participant participant = new ParticipantResourceBuilder()
+        .setLegacyDescriptor(
+            new LegacyDescriptor("098UijH1gf", null, null, LegacyTable.CLIENT.getName(), null))
+        .createVictimParticipant();
 
     Participant serialized = MAPPER
         .readValue(fixture("fixtures/domain/participant/valid/valid.json"), Participant.class);
