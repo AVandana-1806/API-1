@@ -58,6 +58,8 @@ public class CandaceSessionImpl implements Session {
 
   protected final Session session;
 
+  protected CandaceTransactionImpl txn;
+
   public CandaceSessionImpl(Session session) {
     this.session = session;
   }
@@ -98,12 +100,18 @@ public class CandaceSessionImpl implements Session {
   @Override
   public Transaction beginTransaction() {
     LOGGER.info("CandaceSessionImpl.beginTransaction");
-    return session.beginTransaction();
+    this.txn = new CandaceTransactionImpl(session.beginTransaction());
+    return txn;
   }
 
   @Override
   public Transaction getTransaction() {
-    return session.getTransaction();
+    LOGGER.info("CandaceSessionImpl.getTransaction");
+    if (this.txn == null) {
+      this.txn = new CandaceTransactionImpl(session.getTransaction());
+    }
+
+    return txn;
   }
 
   @Override
