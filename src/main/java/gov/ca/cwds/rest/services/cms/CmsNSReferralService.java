@@ -24,11 +24,9 @@ import gov.ca.cwds.rest.services.PersonService;
 
 /**
  * @author CWDS API Team
- *
  */
 public class CmsNSReferralService implements CrudsService {
 
-  @SuppressWarnings("unused")
   private static final Logger LOGGER = LoggerFactory.getLogger(CmsNSReferralService.class);
 
   private ReferralService referralService;
@@ -66,25 +64,24 @@ public class CmsNSReferralService implements CrudsService {
    */
   @Override
   public Response create(Request request) {
-
+    LOGGER.info("CmsNSReferralService.create");
     assert request instanceof CmsNSReferral;
-    CmsNSReferral cmsReferral = (CmsNSReferral) request;
+    final CmsNSReferral cmsReferral = (CmsNSReferral) request;
 
-    CmsNSHelper helper = new CmsNSHelper(cmsSessionFactory, nsSessionFactory);
+    // NOT IN XA TRANSACTIONS!
+    final CmsNSHelper helper = new CmsNSHelper(cmsSessionFactory, nsSessionFactory);
 
-    Map<CrudsService, Request> cmsRequest = new HashMap<>();
-    Map<CrudsService, Request> nsRequest = new HashMap<>();
+    final Map<CrudsService, Request> cmsRequest = new HashMap<>();
+    final Map<CrudsService, Request> nsRequest = new HashMap<>();
 
     cmsRequest.put((CrudsService) referralService, cmsReferral.getReferral());
     nsRequest.put(personService, cmsReferral.getPerson());
 
-    Map<String, Map<CrudsService, Response>> response =
+    final Map<String, Map<CrudsService, Response>> response =
         helper.handleResponse(cmsRequest, nsRequest);
     return new PostedCmsNSReferral((PostedReferral) response.get("cms").get(referralService),
         (PostedPerson) response.get("ns").get(personService));
-
   }
-
 
   /**
    * {@inheritDoc}

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.data.persistence.XADataSourceFactory;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.CrudsService;
 
 /**
@@ -24,7 +25,6 @@ import gov.ca.cwds.rest.services.CrudsService;
  */
 public class CmsNSHelper {
 
-  @SuppressWarnings("unused")
   private static final Logger LOGGER = LoggerFactory.getLogger(CmsNSHelper.class);
 
   private SessionFactory cmsSessionFactory;
@@ -38,7 +38,9 @@ public class CmsNSHelper {
 
   public Map<String, Map<CrudsService, Response>> handleResponse(
       Map<CrudsService, Request> cmsRequests, Map<CrudsService, Request> nsRequests) {
+    final boolean isNonXa = RequestExecutionContext.instance().isXaTransaction();
 
+    LOGGER.info("CmsNSHelper.handleResponse");
     final Map<CrudsService, Response> cmsResponse = new HashMap<>();
     final Map<CrudsService, Response> nsResponse = new HashMap<>();
     final Map<String, Map<CrudsService, Response>> response = new HashMap<>();
@@ -57,12 +59,21 @@ public class CmsNSHelper {
           cmsResponse.put(service, referral);
           sessionCMS.flush();
         } catch (Exception e) {
-          transactionCMS.rollback();
+          LOGGER.error("EXCEPTION CREATING CMS! {}", e.getMessage(), e);
+
+          // NOT IN XA TRANSACTIONS!
+          // Throwing an exception should suffice.
+          if (isNonXa) {
+            transactionCMS.rollback();
+          }
           throw e;
         }
       }
 
-      ManagedSessionContext.bind(sessionNS); // NOSONAR
+      if (isNonXa) {
+        ManagedSessionContext.bind(sessionNS); // NOSONAR
+      }
+
       final Transaction transactionNS = sessionNS.beginTransaction();
       for (Entry<CrudsService, Request> nsRequestsService : nsRequests.entrySet()) {
         try {
@@ -71,20 +82,33 @@ public class CmsNSHelper {
           nsResponse.put(service, person);
           sessionNS.flush();
         } catch (Exception e) {
-          transactionNS.rollback();
-          transactionCMS.rollback();
+          LOGGER.error("EXCEPTION CREATING NS! {}", e.getMessage(), e);
+
+          // NOT IN XA TRANSACTIONS!
+          // Throwing an exception should suffice.
+          if (isNonXa) {
+            transactionNS.rollback();
+            transactionCMS.rollback();
+          }
+
           throw e;
         }
         try {
-          transactionCMS.commit();
-          transactionNS.commit();
+          // NOT IN XA TRANSACTIONS!
+          if (isNonXa) {
+            transactionCMS.commit();
+            transactionNS.commit();
+          }
         } catch (Exception e) {
+          LOGGER.error("EXCEPTION ON COMMIT! {}", e.getMessage(), e);
           throw e;
         }
       }
     } finally {
-      ManagedSessionContext.unbind(cmsSessionFactory); // NOSONAR
-      ManagedSessionContext.unbind(nsSessionFactory); // NOSONAR
+      if (isNonXa) {
+        ManagedSessionContext.unbind(cmsSessionFactory); // NOSONAR
+        ManagedSessionContext.unbind(nsSessionFactory); // NOSONAR
+      }
     }
 
     response.put("cms", cmsResponse);

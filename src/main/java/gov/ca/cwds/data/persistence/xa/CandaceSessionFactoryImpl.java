@@ -257,8 +257,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public void close() {
     LOGGER.warn("CandaceSessionFactoryImpl.close");
     CaresStackUtils.logStack();
-    local.set(null);
     pick().close();
+    local.set(null);
   }
 
   @Override

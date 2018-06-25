@@ -53,6 +53,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
           .setString("foreignKeyMetaTable", foreignKeyMetaTable);
       return query.list().toArray(new SystemCode[0]);
     } catch (HibernateException h) {
+      LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }
@@ -68,9 +69,9 @@ public class XaSystemCodeDao extends SystemCodeDao {
     try {
       final Query<SystemCode> query =
           session.getNamedQuery(namedQueryName).setShort("systemId", systemCodeId.shortValue());
-      final SystemCode systemCode = query.getSingleResult();
-      return systemCode;
+      return query.getSingleResult();
     } catch (HibernateException h) {
+      LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }

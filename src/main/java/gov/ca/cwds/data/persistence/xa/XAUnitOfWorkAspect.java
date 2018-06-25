@@ -78,7 +78,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       return;
     }
 
-    LOGGER.debug("Mark XA transaction in RequestExecutionContext");
+    LOGGER.info("Mark XA transaction in RequestExecutionContext");
     RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, true);
 
     units.putIfAbsent(method, xaUnitOfWork);
@@ -106,7 +106,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     }
 
     try {
-      LOGGER.info("XaUnitOfWorkAspect.afterEnd(): commit");
+      LOGGER.warn("XaUnitOfWorkAspect.afterEnd(): commit");
       commit();
     } catch (Exception e) {
       LOGGER.error("XaUnitOfWorkAspect.afterEnd(): ERROR ON COMMIT!", e);

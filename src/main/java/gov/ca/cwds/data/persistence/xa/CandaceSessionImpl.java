@@ -99,7 +99,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.info("CandaceSessionImpl.beginTransaction");
+    LOGGER.warn("CandaceSessionImpl.beginTransaction");
     this.txn = new CandaceTransactionImpl(session.beginTransaction());
     return txn;
   }
@@ -110,7 +110,6 @@ public class CandaceSessionImpl implements Session {
     if (this.txn == null) {
       this.txn = new CandaceTransactionImpl(session.getTransaction());
     }
-
     return txn;
   }
 
