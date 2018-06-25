@@ -49,6 +49,7 @@ import gov.ca.cwds.rest.business.rules.R00832SetStaffPersonAddedInd;
 import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
 import gov.ca.cwds.rest.business.rules.R02265ChildClientExists;
 import gov.ca.cwds.rest.business.rules.R04466ClientSensitivityIndicator;
+import gov.ca.cwds.rest.business.rules.R04880EstimatedDOBCodeSetting;
 import gov.ca.cwds.rest.core.FerbConstants;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
@@ -128,7 +129,22 @@ public class ParticipantService implements CrudsService {
    */
   @Override
   public Response create(Request request) {
-    throw new NotImplementedException("");
+    throw new NotImplementedException("create is not implemented");
+  }
+
+  @Override
+  public Response delete(Serializable id) {
+    throw new NotImplementedException("delete is not implemented");
+  }
+
+  @Override
+  public Response find(Serializable id) {
+    throw new NotImplementedException("find is not implemented");
+  }
+
+  @Override
+  public Response update(Serializable id, Request participant) {
+    throw new NotImplementedException("update is not implemented");
   }
 
   /**
@@ -198,6 +214,8 @@ public class ParticipantService implements CrudsService {
     String clientId;
 
     LegacyDescriptor clientLegacyDesc = incomingParticipant.getLegacyDescriptor();
+    
+    // true if descriptor null or descriptor Id is blank or descriptor is not for the client table
     boolean newClient = clientLegacyDesc == null || StringUtils.isBlank(clientLegacyDesc.getId())
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
 
@@ -286,6 +304,15 @@ public class ParticipantService implements CrudsService {
         incomingParticipant.getApproximateAgeUnits());
 
     Client client = this.clientService.find(clientId);
+    
+    // set the Estimated DOB code of CLIENT before setting the Referral Client age and age unit
+    R04880EstimatedDOBCodeSetting r04880EstimatedDOBCodeSetting = 
+        new R04880EstimatedDOBCodeSetting(client, referralClient);
+    r04880EstimatedDOBCodeSetting.execute();
+    if (!isErrorMessagesExist(messageBuilder)) {
+      this.clientService.update(clientId, client);      
+    }
+    
     R00834AgeUnitRestriction r00834AgeUnitRestriction =
         new R00834AgeUnitRestriction(client, referralClient, dateStarted);
     r00834AgeUnitRestriction.execute();
@@ -545,21 +572,6 @@ public class ParticipantService implements CrudsService {
 
     return clientAddressService.saveClientAddress(clientParticipant, referralId, clientId,
         messageBuilder);
-  }
-
-  @Override
-  public Response delete(Serializable arg0) {
-    return null;
-  }
-
-  @Override
-  public Response find(Serializable arg0) {
-    return null;
-  }
-
-  @Override
-  public Response update(Serializable arg0, Request arg1) {
-    return null;
   }
 
   /**

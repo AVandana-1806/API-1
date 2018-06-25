@@ -339,5 +339,7 @@ public class SpecialProjectReferralTest {
     assertThat(spr.getSafelySurrenderedBabiesIndicator(), is(equalTo(safelySurrenderedBabiesIndicator)));
     spr.setSpecialProjectId(specialProjectId);
     assertThat(spr.getSpecialProjectId(), is(equalTo(specialProjectId)));
+    spr.setId(id);
+    assertThat(spr.getId(), is(equalTo(id)));
   }
 }
