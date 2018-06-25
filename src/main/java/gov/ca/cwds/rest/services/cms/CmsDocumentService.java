@@ -194,10 +194,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       throws SQLException {
     LOGGER.info("CmsDocumentService.insertBlobsJdbc");
 
-    // DRS: does closing prepared statement kill the connection on XA??
-    final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
-    final Statement insStmt = con.createStatement();
-    try {
+    try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
+        final Statement insStmt = con.createStatement()) {
       delStmt.setString(1, doc.getId());
       delStmt.executeUpdate();
 
@@ -213,8 +211,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here
   protected void deleteBlobsJdbc(final Connection con, String docId) throws SQLException {
     LOGGER.info("CmsDocumentService.deleteBlobsJdbc");
-    final PreparedStatement delStmt = con.prepareStatement(blobsDelete());
-    try {
+    try (final PreparedStatement delStmt = con.prepareStatement(blobsDelete())) {
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
     } catch (SQLException e) {
@@ -270,7 +267,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
     CmsDocument retval = null;
 
     try {
-      gov.ca.cwds.data.persistence.cms.CmsDocument managed = dao.delete(primaryKey);
+      final gov.ca.cwds.data.persistence.cms.CmsDocument managed = dao.delete(primaryKey);
       deleteBlobs(primaryKey);
       if (managed != null) {
         retval = new CmsDocument(managed);

@@ -393,8 +393,8 @@ public class ReferralService implements
     String longTextId = null;
     if (screening.getAlertInformation() != null && !screening.getAlertInformation().isEmpty()) {
       try {
-        longTextId = createLongText(screening.getIncidentCounty(), 
-            screening.getAlertInformation(), mb);
+        longTextId =
+            createLongText(screening.getIncidentCounty(), screening.getAlertInformation(), mb);
       } catch (ServiceException e) {
         mb.addMessageAndLog(e.getMessage(), e, LOGGER);
       }
@@ -536,8 +536,8 @@ public class ReferralService implements
 
       PostedDrmsDocument posted = drmsDocumentService.create(document);
       screenerNarrativeId = posted.getId();
-
     }
+
     return screenerNarrativeId;
   }
 

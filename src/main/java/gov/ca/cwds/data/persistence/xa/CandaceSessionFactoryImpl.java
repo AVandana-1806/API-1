@@ -222,6 +222,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Statistics getStatistics() {
+    LOGGER.info("CandaceSessionFactoryImpl.getStatistics");
     return pick().getStatistics();
   }
 

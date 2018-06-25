@@ -272,7 +272,7 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.ScreeningWrapper.class).build();
 
   static {
-    LOGGER.warn("DataAccessModule: static point 3");
+    LOGGER.warn("DataAccessModule: static point 2");
   }
 
   private final HibernateBundle<ApiConfiguration> cmsHibernateBundle =
@@ -365,7 +365,7 @@ public class DataAccessModule extends AbstractModule {
       };
 
   static {
-    LOGGER.warn("DataAccessModule: static point 4");
+    LOGGER.warn("DataAccessModule: static point 3");
   }
 
   /**

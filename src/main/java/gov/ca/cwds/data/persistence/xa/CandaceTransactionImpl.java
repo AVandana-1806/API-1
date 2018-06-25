@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.CaresStackUtils;
 
+/**
+ * Hibernate {@link Transaction} connection facade.
+ * 
+ * @author CWDS API Team
+ */
 public class CandaceTransactionImpl implements Transaction {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceTransactionImpl.class);
@@ -48,6 +53,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void setRollbackOnly() {
+    LOGGER.warn("\n\t****** CandaceTransactionImpl.setRollbackOnly! ****** \n");
     txn.setRollbackOnly();
   }
 

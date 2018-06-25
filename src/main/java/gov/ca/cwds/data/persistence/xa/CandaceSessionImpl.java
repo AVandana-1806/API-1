@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hibernate session wrapper.
+ * Hibernate session facade.
  * 
  * @author CWDS API Team
  */
@@ -466,6 +466,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
+    LOGGER.warn("CandaceSessionImpl.detach");
     session.detach(entity);
   }
 
@@ -743,7 +744,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void reconnect(Connection connection) {
-    LOGGER.warn("CandanceSessionImpl.reconnect");
+    LOGGER.warn("CandanceSessionImpl.reconnect: connection: {}", connection);
     session.reconnect(connection);
   }
 
@@ -780,11 +781,14 @@ public class CandaceSessionImpl implements Session {
   @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(String queryString) {
+    LOGGER.info("CandanceSessionImpl.createQuery: queryString: {}", queryString);
     return session.createQuery(queryString);
   }
 
   @Override
   public <T> Query<T> createQuery(String queryString, Class<T> resultType) {
+    LOGGER.info("CandanceSessionImpl.createQuery: queryString: {}, resultType: {}", queryString,
+        resultType);
     return session.createQuery(queryString, resultType);
   }
 
@@ -807,6 +811,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public <T> Query<T> createNamedQuery(String name, Class<T> resultType) {
+    LOGGER.info("CandanceSessionImpl.createNamedQuery: name: {}, resultType: {}", name, resultType);
     return session.createNamedQuery(name, resultType);
   }
 
@@ -819,6 +824,8 @@ public class CandaceSessionImpl implements Session {
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
+    LOGGER.info("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
+        resultClass);
     return session.createNativeQuery(sqlString, resultClass);
   }
 
