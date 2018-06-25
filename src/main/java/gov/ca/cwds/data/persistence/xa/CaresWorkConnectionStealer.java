@@ -27,7 +27,7 @@ public class CaresWorkConnectionStealer implements Work {
    */
   @Override
   public void execute(Connection con) throws SQLException {
-    this.con = con;
+    this.con = new CandaceConnectionImpl(con);
   }
 
   public Connection getConnection() {
