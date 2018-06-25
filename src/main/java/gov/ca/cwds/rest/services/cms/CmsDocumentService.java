@@ -186,12 +186,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected String getCurrentSchema() {
-    // hibernate.default_schema
-    LOGGER.info("Hibernate properties: {}", dao.grabSession().getSessionFactory().getProperties());
-
-    return "CWSNS4"; // TODO: Hibernate lacks a simple, elegant way to get the default schema.
-    // return ((SessionFactoryImplementor) dao.getSessionFactory()).getSettings()
-    // .getDefaultSchemaName();
+    return (String) dao.grabSession().getSessionFactory().getProperties()
+        .get("hibernate.default_schema");
   }
 
   @SuppressFBWarnings("SQL_INJECTION_JDBC") // no SQL injection here

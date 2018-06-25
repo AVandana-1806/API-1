@@ -119,10 +119,9 @@ public class ServicesModule extends AbstractModule {
     @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      // NOT in an XA transaction!
       if (RequestExecutionContext.instance().isXaTransaction()) {
         final Method m = mi.getMethod();
-        LOGGER.warn("\n** Ignore @UnitOfWork for XA. class: {}, method: {}** \n",
+        LOGGER.warn("\n***** XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}***** \n",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
