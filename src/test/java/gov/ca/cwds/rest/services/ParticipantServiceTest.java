@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javax.persistence.PersistenceException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
@@ -50,6 +52,7 @@ import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
+import gov.ca.cwds.fixture.ClientResourceBuilder;
 import gov.ca.cwds.fixture.CsecBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReporterResourceBuilder;
@@ -132,6 +135,7 @@ public class ParticipantServiceTest {
   private SexualExploitationTypeDao sexualExploitationTypeDao;
   private CsecHistoryService csecHistoryService;
   private SpecialProjectReferralService specialProjectReferralService;
+  private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    *
@@ -223,6 +227,11 @@ public class ParticipantServiceTest {
   public void testCsecIsUpdated() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setReportType(FerbConstants.ReportType.CSEC).createScreeningToReferral();
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -256,6 +265,12 @@ public class ParticipantServiceTest {
   public void testCsecIsNotUpdatedForNotSupportedReportType() {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType("").createScreeningToReferral();
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
+
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -282,6 +297,11 @@ public class ParticipantServiceTest {
   private void checkCsecEmptyMessage(Participant victimParticipant) {
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
 
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
@@ -297,6 +317,12 @@ public class ParticipantServiceTest {
   public void testCsecStartDateIsNotFound() {
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
     victimParticipant.getCsecs().get(0).setStartDate(null);
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
+
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
@@ -322,6 +348,9 @@ public class ParticipantServiceTest {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
             .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
@@ -331,6 +360,11 @@ public class ParticipantServiceTest {
 
   @Test
   public void testCsecCodeIdIsNotFound() {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
     victimParticipant.getCsecs().get(0).setCsecCodeId(null);
 
@@ -350,6 +384,11 @@ public class ParticipantServiceTest {
 
   @Test
   public void testIntakeLOVCodeEntityIsNotFound() {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
     victimParticipant.getCsecs().get(0).setCsecCodeId("-1000");
 
@@ -359,6 +398,9 @@ public class ParticipantServiceTest {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
             .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
@@ -377,6 +419,9 @@ public class ParticipantServiceTest {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
             .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
@@ -397,6 +442,9 @@ public class ParticipantServiceTest {
 
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -414,6 +462,11 @@ public class ParticipantServiceTest {
   // R - 00831
   public void shouldFailCreateWhenReporterRolesAreIncompatable_AnonymousSelfReporter()
       throws Exception {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
     Participant anonymousSelfReporter = new ParticipantResourceBuilder()
         .setRoles(new HashSet<>(Arrays.asList("Anonymous Reporter", "Self Reported")))
         .createParticipant();
@@ -471,6 +524,11 @@ public class ParticipantServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenVictimHasIncompatiableRoles_AnonymousVictim() throws Exception {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
     Participant reporterVictim = new ParticipantResourceBuilder()
         .setRoles(new HashSet<>(Arrays.asList("Anonymous Reporter", "Victim"))).setLegacyId("")
         .setLegacyDescriptor(null).createParticipant();
@@ -512,14 +570,16 @@ public class ParticipantServiceTest {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
 
-    Client updatedClient = mock(Client.class);
-    Client foundClient = mock(Client.class);
+    Client updatedClient = new ClientResourceBuilder().setBirthDate(null).build();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
     when(foundClient.getLastUpdatedTime()).thenReturn(modifiedLastUpdateDate);
     PostedClient createdClient = mock(PostedClient.class);
     when(createdClient.getId()).thenReturn("LEGACYIDXX");
 
     when(clientService.find(eq(victimClientLegacyId))).thenReturn(foundClient);
     when(clientService.create(any())).thenReturn(createdClient);
+    when(clientService.find(eq("LEGACYIDXX"))).thenReturn(foundClient);
     when(clientService.update(eq(victimClientLegacyId), any())).thenReturn(updatedClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
@@ -565,6 +625,9 @@ public class ParticipantServiceTest {
         new HashSet<>(Arrays.asList(anonymousNonMandatedReporter, defaultVictim));
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -584,14 +647,16 @@ public class ParticipantServiceTest {
 
     LegacyDescriptor descriptor =
         new LegacyDescriptor("IUKNOWNIDI", "", lastUpdateDate, "CLIENT_T", "");
-    Participant perp =
-        new ParticipantResourceBuilder().setLegacyId(badLegacyId).setLegacyDescriptor(descriptor)
-            .setRoles(new HashSet<>(Arrays.asList("Perpetrator"))).createParticipant();
+    Participant perp = new ParticipantResourceBuilder().setLegacyDescriptor(descriptor)
+        .setRoles(new HashSet<>(Arrays.asList("Perpetrator"))).createParticipant();
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(perp, defaultReporter, defaultVictim));
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -609,6 +674,11 @@ public class ParticipantServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void shouldSaveReporterIfAddressIsNull() throws Exception {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
 
     Participant reporter =
         new ParticipantResourceBuilder().setLegacyId("").createReporterParticipant();
@@ -618,6 +688,9 @@ public class ParticipantServiceTest {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
 
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
     assertEquals("Expected no error to have been recorded", 0, messageBuilder.getMessages().size());
@@ -636,6 +709,9 @@ public class ParticipantServiceTest {
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -656,6 +732,9 @@ public class ParticipantServiceTest {
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -670,7 +749,7 @@ public class ParticipantServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void shouldNotProcessAnonymousReporter() {
-    Set roles = new HashSet<>();
+    Set<String> roles = new HashSet<>();
     roles.add(Role.VICTIM_ROLE.getType());
     roles.add(Role.ANONYMOUS_REPORTER_ROLE.getType());
     Participant selfReporter = new ParticipantResourceBuilder().setFirstName("Sally")
@@ -787,7 +866,7 @@ public class ParticipantServiceTest {
     when(addressService.find(savedAddressId)).thenReturn(foundAddress);
 
     ClientAddress clientAddress = mock(ClientAddress.class);
-    ArrayList addresses = new ArrayList();
+    ArrayList<Response> addresses = new ArrayList();
     addresses.add(clientAddress);
     when(clientAddressService.findByAddressAndClient(any(), eq(reporter))).thenReturn(addresses);
 
@@ -815,6 +894,9 @@ public class ParticipantServiceTest {
     when(clientService.create(any())).thenReturn(createdClient);
 
     ArgumentCaptor<Client> clientArgCaptor = ArgumentCaptor.forClass(Client.class);
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -825,7 +907,7 @@ public class ParticipantServiceTest {
         clientArgCaptor.getValue().getSensitivityIndicator());
   }
 
-  @Test
+  @Test(expected = NotImplementedException.class)
   public void shouldReturnNullWhenDelete() {
     Response response = participantService.delete("abc");
     assertThat(response, is(nullValue()));
@@ -833,6 +915,11 @@ public class ParticipantServiceTest {
 
   @Test
   public void testSSBIsNotUpdatedForNotSupportedReportType() {
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setReportType("").createScreeningToReferral();
 
@@ -847,6 +934,11 @@ public class ParticipantServiceTest {
   public void testSSBIsNull() {
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
     victimParticipant.setSafelySurrenderedBabies(null);
+    gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
+        new ClientEntityBuilder().setId("1234567ABC").build();
+    PostedClient savedClient = new PostedClient(savedEntityClient, false);
+    when(clientService.update(any(), any())).thenReturn(savedClient);
+    when(clientService.find(any())).thenReturn(savedClient);
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
@@ -865,6 +957,9 @@ public class ParticipantServiceTest {
   public void testSSBIsUpdated() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setReportType(FerbConstants.ReportType.SSB).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -947,19 +1042,22 @@ public class ParticipantServiceTest {
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
     messageBuilder.addError("this is a test error");
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
     verify(clientService, never()).update(any(), any());
   }
 
-  @Test
+  @Test(expected = NotImplementedException.class)
   public void shouldReturnNullWhenFind() {
     Response response = participantService.find("abc");
     assertThat(response, is(nullValue()));
   }
 
-  @Test
+  @Test(expected = NotImplementedException.class)
   public void shouldReturnNullWhenUpdate() {
     Response response = participantService.update("abc", null);
     assertThat(response, is(nullValue()));
