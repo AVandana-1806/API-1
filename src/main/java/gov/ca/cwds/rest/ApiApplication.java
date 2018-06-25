@@ -70,7 +70,8 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
 
     // Clean up XA transaction log files.
     final String[] extensions = {"log", "lck"};
-    final Collection<File> tmFiles = FileUtils.listFiles(new File("./"), extensions, false);
+    final Collection<File> tmFiles =
+        FileUtils.listFiles(new File(System.getProperty("user.dir")), extensions, false);
     LOGGER.info("XA transaction files: {}", tmFiles);
     tmFiles.stream().forEach(File::delete);
 
