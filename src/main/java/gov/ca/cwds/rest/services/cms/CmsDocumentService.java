@@ -227,7 +227,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected void deleteBlobs(String docId) {
-    try (final Connection con = getConnection()) {
+    try {
+      final Connection con = getConnection();
       deleteBlobsJdbc(con, docId);
     } catch (SQLException e) {
       throw new ServiceException("FAILED TO DELETE DOCUMENT SEGMENTS!", e);
@@ -236,7 +237,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
   protected void insertBlobs(gov.ca.cwds.data.persistence.cms.CmsDocument doc,
       List<CmsDocumentBlobSegment> blobs) {
-    try (final Connection con = getConnection()) {
+    try {
+      final Connection con = getConnection();
       insertBlobsJdbc(con, doc, blobs);
     } catch (SQLException e) {
       throw new ServiceException("FAILED TO INSERT DOCUMENT SEGMENTS!", e);

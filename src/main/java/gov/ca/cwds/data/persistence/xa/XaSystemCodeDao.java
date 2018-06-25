@@ -51,6 +51,8 @@ public class XaSystemCodeDao extends SystemCodeDao {
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
           .setString("foreignKeyMetaTable", foreignKeyMetaTable);
+      query.setReadOnly(true);
+      query.setCacheable(true);
       return query.list().toArray(new SystemCode[0]);
     } catch (HibernateException h) {
       LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);

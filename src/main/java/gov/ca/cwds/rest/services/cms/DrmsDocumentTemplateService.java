@@ -61,7 +61,7 @@ public class DrmsDocumentTemplateService
   public DrmsDocumentTemplate findScreenerNarrativeTemplateNs(Short govermentEntity) {
     gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate template = null;
     gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate[] templates = drmsDocumentTemplateDao
-        .findByApplicationContextAndGovermentEntity(APPLICATION_CONTEXT_OTHER, govermentEntity);
+        .findByApplicationContextAndGovernmentEntity(APPLICATION_CONTEXT_OTHER, govermentEntity);
     for (gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate doc : templates) {
       // TO1DO For now can't use DOT files as templates with POI. So only _NS files are considered,
       // which will be a DOC files

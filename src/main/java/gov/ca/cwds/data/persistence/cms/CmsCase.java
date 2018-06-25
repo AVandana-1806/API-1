@@ -213,8 +213,8 @@ public class CmsCase extends CmsPersistentObject {
 
   public CmsCase(String id, String alertText, String approvalNumber, Short approvalStatusType,
       Short caseClosureReasonType, String caseplanChildrenDetailIndVar, String closureStatementText,
-      Short countryCodeType, String countySpecificCode, String drmsNotesDoc,
-      Date emancipationDate, Date endDate, String fkchldClt, String fkreferlt, String fkstfperst,
+      Short countryCodeType, String countySpecificCode, String drmsNotesDoc, Date emancipationDate,
+      Date endDate, String fkchldClt, String fkreferlt, String fkstfperst,
       Short governmentEntityType, String icpcOutgngPlcmtStatusIndVar,
       String icpcOutgoingRequestIndVar, String limitedAccessCode, Date limitedAccessDate,
       String limitedAccessDesc, Short limitedAccessGovernmentEntityType, String caseName,
@@ -259,7 +259,6 @@ public class CmsCase extends CmsPersistentObject {
     this.staffPerson = staffPerson;
     this.riReferral = riReferral;
   }
-
 
   @Override
   public Serializable getPrimaryKey() {

@@ -41,7 +41,7 @@ public class DrmsDocumentTemplateDao extends CrudsDaoImpl<DrmsDocumentTemplate> 
    * @return - list of DrmsDocumentTemplates
    */
   @SuppressWarnings("unchecked")
-  public DrmsDocumentTemplate[] findByApplicationContextAndGovermentEntity(
+  public DrmsDocumentTemplate[] findByApplicationContextAndGovernmentEntity(
       Short applicationContextType, Short governmentEntityType) {
 
     final Query<DrmsDocumentTemplate> query = this.grabSession().getNamedQuery(
