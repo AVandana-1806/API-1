@@ -34,22 +34,21 @@ public class DrmsDocumentTemplateDao extends CrudsDaoImpl<DrmsDocumentTemplate> 
   }
 
   /**
-   * finding templates based on application context id and government entity type
+   * Find templates by application context id and government entity type.
    *
    * @param applicationContextType - application context type id
-   * @param govermentEntityType - government entity type id.
+   * @param governmentEntityType - government entity type id.
    * @return - list of DrmsDocumentTemplates
    */
   @SuppressWarnings("unchecked")
   public DrmsDocumentTemplate[] findByApplicationContextAndGovermentEntity(
-      Short applicationContextType, Short govermentEntityType) {
+      Short applicationContextType, Short governmentEntityType) {
 
-    final Query<DrmsDocumentTemplate> query =
-        this.getSessionFactory().getCurrentSession().getNamedQuery(
-            DrmsDocumentTemplate.NQ_TEMPLATES_BY_APPLICATION_CONTEXT_AND_GOVERNMENT_ENTITY);
+    final Query<DrmsDocumentTemplate> query = this.grabSession().getNamedQuery(
+        DrmsDocumentTemplate.NQ_TEMPLATES_BY_APPLICATION_CONTEXT_AND_GOVERNMENT_ENTITY);
 
     query.setParameter("applicationContextType", applicationContextType)
-        .setParameter("govermentEntityType", govermentEntityType);
+        .setParameter("govermentEntityType", governmentEntityType);
     return query.list().toArray(new DrmsDocumentTemplate[0]);
   }
 

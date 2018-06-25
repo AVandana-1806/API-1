@@ -208,6 +208,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
         insStmt.executeUpdate(blobToInsert(blob));
       }
     } catch (SQLException e) {
+      LOGGER.error("\n\t****** ROLLING BACK DOC BLOB INSERT! {} ******\n", e.getMessage(), e);
       con.rollback();
       throw e;
     }
@@ -219,6 +220,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       delStmt.setString(1, docId);
       delStmt.executeUpdate();
     } catch (SQLException e) {
+      LOGGER.error("\n\t****** ROLLING BACK DOC BLOB DELETE! {} ******\n", e.getMessage(), e);
       con.rollback();
       throw e;
     }

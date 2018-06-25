@@ -7,11 +7,9 @@ import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-import javax.persistence.EntityTransaction;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +22,6 @@ import com.google.inject.name.Names;
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
-import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
@@ -301,17 +298,9 @@ public class ServicesModule extends AbstractModule {
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(XAUnitOfWork.class), xaInterceptor);
     requestInjection(xaInterceptor);
 
-    final PhineasMethodLoggerInterceptor txnInterceptor = new PhineasMethodLoggerInterceptor();
-    bindInterceptor(Matchers.subclassesOf(EntityTransaction.class), Matchers.any(), txnInterceptor);
-    requestInjection(txnInterceptor);
-
-    final PhineasMethodLoggerInterceptor sessionInterceptor = new PhineasMethodLoggerInterceptor();
-    bindInterceptor(Matchers.subclassesOf(Session.class), Matchers.any(), sessionInterceptor);
-    requestInjection(sessionInterceptor);
-
-    final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
-    bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
-    requestInjection(daoInterceptor);
+    // final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+    // bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
+    // requestInjection(daoInterceptor);
 
     // No Hibernate managed transactions when using XA.
     final Properties p = new Properties();
