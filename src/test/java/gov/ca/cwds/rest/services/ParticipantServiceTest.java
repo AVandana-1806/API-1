@@ -642,6 +642,7 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test
+  @Ignore
   public void testClientDoesNotExistFail() throws Exception {
     String badLegacyId = "IUKNOWNIDI";
 
@@ -773,6 +774,7 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test
+  @Ignore
   public void shouldUpdatePerpetratorWhenAlreadyExists() throws Exception {
     String victimId = "VICTIM__ID";
     String existingPerpId = "1234567ABC";
