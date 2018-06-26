@@ -72,7 +72,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {
     super();
-    this.sessionFactoryName = "candace_session_factory_" + sessionFactoryName;
+    this.sessionFactoryName = makeSessionFactoryName(sessionFactoryName);
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
   }
@@ -80,7 +80,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
       FerbHibernateBundle xaHibernateBundle) {
     super();
-    this.sessionFactoryName = "candace_session_factory_" + xaHibernateBundle.name();
+    this.sessionFactoryName = makeSessionFactoryName(xaHibernateBundle.name());
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
   }
@@ -111,6 +111,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   // ==================================
   // RequestExecutionContextCallback:
   // ==================================
+
+  protected final String makeSessionFactoryName(String name) {
+    return "candace_session_factory_" + name;
+  }
 
   @Override
   public Serializable key() {
