@@ -25,7 +25,7 @@ public class ParticipantResourceBuilder {
   String legacySourceTable = "CLIENT_T";
   String legacyId = null;
   LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
-      new DateTime("2010-03-14T13:33:12.456-0700"), LegacyTable.CLIENT.getName(), null);
+      new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
   long screeningId = 12345;
   String firstName = "John";
   String middleName = "T";
