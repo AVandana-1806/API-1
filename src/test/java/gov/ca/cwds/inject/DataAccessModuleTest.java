@@ -77,19 +77,25 @@ public class DataAccessModuleTest {
 
   @Test
   public void cmsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.cmsSessionFactory(null, null);
+    final HibernateBundle<ApiConfiguration> bundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.cmsSessionFactory(bundle, xaBundle);
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void nsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.nsSessionFactory(null, null);
+    final HibernateBundle<ApiConfiguration> nsBundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaNsBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.nsSessionFactory(nsBundle, xaNsBundle);
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void rsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.rsSessionFactory(null, null);
+    final HibernateBundle<ApiConfiguration> bundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.rsSessionFactory(bundle, xaBundle);
     assertThat(actual, is(notNullValue()));
   }
 
