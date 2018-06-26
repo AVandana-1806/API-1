@@ -20,6 +20,7 @@
     <include file="liquibase/dml/cws_client_data.xml"/>
     <include file="liquibase/dml/cws_client_relationship_data.xml"/>
     <include file="liquibase/dml/cws_staff_person_data.xml"/>
+    <include file="liquibase/dml/cws_system_meta_table_data.xml"/>    
     <include file="liquibase/dml/cws_system_code_table_data.xml"/>
     <include file="liquibase/dml/cws_referral_client_data.xml"/>
     <include file="liquibase/dml/cws_referral_data.xml"/>
