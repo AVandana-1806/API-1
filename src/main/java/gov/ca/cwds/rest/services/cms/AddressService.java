@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.cms;
 
+import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
@@ -101,7 +102,8 @@ public class AddressService implements
       address.setLegacyId(postedAddress.getExistingAddressId());
       address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
     } catch (Exception e) {
-      messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
+      String message = "Error creating address: " + e.getMessage();
+      messageBuilder.addMessageAndLog(message, e, LOGGER, ErrorType.DATA_ACCESS);
     }
 
     return address;

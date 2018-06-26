@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -220,16 +221,21 @@ public class ParticipantService implements CrudsService {
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
 
     clientId = incomingParticipant.getLegacyId();
-    if (newClient) {
-      clientId = createNewClient(screeningToReferral, dateStarted, messageBuilder,
-          incomingParticipant, sexAtBirth);
-    } else if (!isErrorMessagesExist(messageBuilder)) {
-      updateClientIfItExistsInLegacy(screeningToReferral, messageBuilder, incomingParticipant,
-          clientId);
+    try {
+      if (newClient) {
+        clientId = createNewClient(screeningToReferral, dateStarted, messageBuilder,
+            incomingParticipant, sexAtBirth);
+      } else if (!isErrorMessagesExist(messageBuilder)) {
+        updateClientIfItExistsInLegacy(screeningToReferral, messageBuilder, incomingParticipant,
+            clientId);
+      }
+      processReferralClient(screeningToReferral, referralId, messageBuilder, incomingParticipant,
+          clientId, dateStarted);
+    } catch (ServiceException e) {
+      String message = "Error saving client: " + e.getMessage();
+      messageBuilder.addMessageAndLog(message, e, LOGGER, ErrorType.DATA_ACCESS);
+      // next role
     }
-
-    processReferralClient(screeningToReferral, referralId, messageBuilder, incomingParticipant,
-        clientId, dateStarted);
     /*
      * determine other participant/roles attributes relating to CWS/CMS allegation
      */
@@ -420,12 +426,16 @@ public class ParticipantService implements CrudsService {
     executeR04466ClientSensitivityIndicator(client, screeningToReferral);
 
     messageBuilder.addDomainValidationError(validator.validate(client));
-    PostedClient postedClient = this.clientService.create(client);
-    clientId = postedClient.getId();
-    incomingParticipant.setLegacyId(clientId);
-    incomingParticipant.setLegacySourceTable(LegacyTable.CLIENT.getName());
-    incomingParticipant.getLegacyDescriptor().setLastUpdated(postedClient.getLastUpdatedTime());
-    clientScpEthnicityService.createOtherEthnicity(postedClient.getId(), otherRaceCodes);
+    try {
+      PostedClient postedClient = this.clientService.create(client);
+      clientId = postedClient.getId();
+      incomingParticipant.setLegacyId(clientId);
+      incomingParticipant.setLegacySourceTable(LegacyTable.CLIENT.getName());
+      incomingParticipant.getLegacyDescriptor().setLastUpdated(postedClient.getLastUpdatedTime());
+      clientScpEthnicityService.createOtherEthnicity(postedClient.getId(), otherRaceCodes);
+    } catch (Exception e) {
+      throw new ServiceException("Error creating client: " + e.getMessage(), e);
+    }
     return clientId;
   }
 
