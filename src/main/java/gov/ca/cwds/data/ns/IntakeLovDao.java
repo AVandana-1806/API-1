@@ -48,8 +48,11 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
 
     try {
       final Query<IntakeLov> query =
-          session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId)
-              .setReadOnly(true).setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL);
+          session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId);
+
+      query.setReadOnly(true);
+      query.setCacheable(false);
+      query.setHibernateFlushMode(FlushMode.MANUAL);
       return query.list();
     } catch (HibernateException h) {
       LOGGER.error("ERROR FINDING META! {}", h.getMessage(), h);

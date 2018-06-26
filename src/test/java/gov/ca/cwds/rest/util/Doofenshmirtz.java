@@ -44,6 +44,7 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.hibernate.type.StringType;
+import org.hibernate.type.TimestampType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockito.Mockito;
@@ -107,6 +108,8 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
   public SystemCodeDao systemCodeDao;
   public SystemMetaDao systemMetaDao;
 
+  public Query query;
+
   Subject mockSubject;
   PrincipalCollection principalCollection;
   RequestExecutionContext ctx;
@@ -166,9 +169,9 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     when(sessionFactory.getProperties()).thenReturn(sessionProperties);
 
     when(sessionFactoryImplementor.getCurrentSession()).thenReturn(session);
+    when(sessionFactoryImplementor.openSession()).thenReturn(session);
     when(sessionFactoryImplementor.createEntityManager()).thenReturn(em);
     when(sessionFactoryImplementor.getSessionFactoryOptions()).thenReturn(sfo);
-    when(sessionFactoryImplementor.getCurrentSession()).thenReturn(session);
     when(sessionFactoryImplementor.getProperties()).thenReturn(sessionProperties);
     when(sessionFactoryImplementor.getSettings()).thenReturn(settings);
 
@@ -232,6 +235,28 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
 
     systemCodeDao = mock(SystemCodeDao.class);
     systemMetaDao = mock(SystemMetaDao.class);
+
+    final Query q = Mockito.mock(Query.class);
+    when(sessionFactory.getCurrentSession()).thenReturn(session);
+    when(session.getNamedQuery(any(String.class))).thenReturn(q);
+    when(q.list()).thenReturn(new ArrayList<>());
+
+    when(q.setString(any(String.class), any(String.class))).thenReturn(q);
+    when(q.setParameter(any(String.class), any(String.class), any(StringType.class))).thenReturn(q);
+    when(q.setParameter(any(String.class), any(String.class))).thenReturn(q);
+    when(q.setHibernateFlushMode(any(FlushMode.class))).thenReturn(q);
+    when(q.setReadOnly(any(Boolean.class))).thenReturn(q);
+    when(q.setCacheMode(any(CacheMode.class))).thenReturn(q);
+    when(q.setFetchSize(any(Integer.class))).thenReturn(q);
+    when(q.setCacheable(any(Boolean.class))).thenReturn(q);
+    when(q.setParameter(any(String.class), any(Timestamp.class), any(TimestampType.class)))
+        .thenReturn(q);
+
+    final ScrollableResults results = mock(ScrollableResults.class);
+    when(q.scroll(any(ScrollMode.class))).thenReturn(results);
+    when(results.next()).thenReturn(true).thenReturn(false);
+    when(results.get()).thenReturn(new Object[0]);
+    query = q;
 
     new TestingRequestExecutionContext("02f");
     SystemCodeCache.global().getAllSystemCodes();

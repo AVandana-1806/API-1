@@ -85,7 +85,7 @@ public class CmsNSHelperTest extends Doofenshmirtz<Client> {
   @Test
   public void shouldCloseHibernateCmsSessionResource() {
     helper.handleResponse(cmsRequests, nsRequests);
-    verify(nsSession, atLeastOnce()).close();
+    verify(cmsSession, atLeastOnce()).close();
   }
 
   @Test

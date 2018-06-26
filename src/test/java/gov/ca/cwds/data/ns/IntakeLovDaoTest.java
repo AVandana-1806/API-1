@@ -6,48 +6,26 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.spi.SessionFactoryOptions;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.query.Query;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
-public class IntakeLovDaoTest {
+public class IntakeLovDaoTest extends Doofenshmirtz<Client> {
 
-  private SessionFactory sessionFactory;
-
+  @Override
   @Before
   public void setup() throws Exception {
-    sessionFactory = mock(SessionFactory.class);
-    Session session = mock(Session.class);
-
-    Transaction transaction = mock(Transaction.class);
-    when(sessionFactory.getCurrentSession()).thenReturn(session);
-    when(session.beginTransaction()).thenReturn(transaction);
-
-    sessionFactory = mock(SessionFactory.class);
-
-    SessionFactoryOptions sfo = mock(SessionFactoryOptions.class);
-    when(sessionFactory.getSessionFactoryOptions()).thenReturn(sfo);
-
-    StandardServiceRegistry reg = mock(StandardServiceRegistry.class);
-    when(sfo.getServiceRegistry()).thenReturn(reg);
-
-    ConnectionProvider cp = mock(ConnectionProvider.class);
-    when(reg.getService(ConnectionProvider.class)).thenReturn(cp);
-
-    Connection con = mock(Connection.class);
-    when(cp.getConnection()).thenReturn(con);
+    super.setup();
   }
 
   @Test
@@ -79,6 +57,5 @@ public class IntakeLovDaoTest {
     List<IntakeLov> response = target.findByLegacyMetaId("LANG_TPC");
     assertThat(response, notNullValue());
   }
-
 
 }
