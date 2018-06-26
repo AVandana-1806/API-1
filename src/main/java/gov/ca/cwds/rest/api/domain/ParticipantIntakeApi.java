@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "legacySourceTable", "legacyId", "firstName", "lastName", "gender", "ssn",
-    "dateOfBirth", "roles", "addresses", "races", "ethnicity"})
+    "dateOfBirth", "date_of_death", "roles", "addresses", "races", "ethnicity"})
 public class ParticipantIntakeApi extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
@@ -81,6 +81,12 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   @ApiModelProperty(required = false, readOnly = false, value = "Date of Birth",
       example = "2001-09-11")
   private Date dateOfBirth;
+
+  @JsonProperty("date_of_death")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+  @ApiModelProperty(required = false, readOnly = false, value = "Date of Death",
+      example = "2001-12-13")
+  private Date dateOfDeath;
 
   @JsonProperty("approximate_age")
   @ApiModelProperty(required = false, readOnly = false, value = "Approximate Age", example = "25")
@@ -183,6 +189,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    * @param approximateAge - guesstimate age
    * @param approximateAgeUnits - years or months/weeks for infants
    * @param dateOfBirth date of birth
+   * @param dateOfDeath date of death
    * @param languages - languages spoken
    * @param ssn The social security number
    * @param races the races
@@ -197,8 +204,8 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   public ParticipantIntakeApi(String id, String legacySourceTable, String clientId,
       LegacyDescriptor legacyDescriptor, String firstName, String middleName, String lastName,
       String nameSuffix, String gender, String approximateAge, String approximateAgeUnits,
-      String ssn, Date dateOfBirth, List<String> languages, String races, String ethnicity,
-      String screeningId, Set<String> roles, Set<AddressIntakeApi> addresses,
+      String ssn, Date dateOfBirth, Date dateOfDeath, List<String> languages, String races,
+      String ethnicity, String screeningId, Set<String> roles, Set<AddressIntakeApi> addresses,
       Set<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
 
     super();
@@ -210,6 +217,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.gender = gender;
     this.ssn = ssn;
     this.dateOfBirth = dateOfBirth != null ? new Date(dateOfBirth.getTime()) : null;
+    this.dateOfDeath = dateOfDeath;
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
     this.roles = roles;
@@ -242,6 +250,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.gender = participantEntity.getGender();
     this.ssn = participantEntity.getSsn();
     this.dateOfBirth = participantEntity.getDateOfBirth();
+    this.dateOfDeath = participantEntity.getDateOfDeath();
     this.approximateAge = participantEntity.getApproximateAge();
     this.approximateAgeUnits = participantEntity.getApproximateAgeUnits();
     this.roles = new HashSet<>(Arrays.asList(participantEntity.getRoles()));
@@ -384,6 +393,10 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.dateOfBirth = FerbDateUtils.freshDate(dateOfBirth);
   }
 
+  public void setDateOfDeath(Date dateOfDeath) {
+    this.dateOfDeath = dateOfDeath;
+  }
+
   public void setApproximateAge(String approximateAge) {
     this.approximateAge = approximateAge;
   }
@@ -461,6 +474,14 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    */
   public Date getDateOfBirth() {
     return freshDate(dateOfBirth);
+  }
+
+
+  /**
+   * @return the dateOfDeath
+   */
+  public Date getDateOfDeath() {
+    return freshDate(dateOfDeath);
   }
 
   /**

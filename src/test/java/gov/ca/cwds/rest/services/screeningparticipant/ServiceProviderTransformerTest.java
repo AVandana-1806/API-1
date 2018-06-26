@@ -96,8 +96,8 @@ public class ServiceProviderTransformerTest {
         new HashSet<>(Arrays.asList(new PhoneNumber(null, "999", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Horacio", null, "G",
-            "suffixTitleDescription", null, null, null, null, null, new LinkedList<>(), null, null,
-            null, new HashSet<>(), addresses, phoneNumbers, false, false);
+            "suffixTitleDescription", null, null, null, null, null, null, new LinkedList<>(), null,
+            null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     ServiceProvider serviceProvider = validServiceProvider();
     ParticipantIntakeApi actual = serviceProviderTransformer.tranform(serviceProvider);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);

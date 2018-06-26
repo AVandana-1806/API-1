@@ -16,6 +16,8 @@ public class RelationshipToEntityBuilder {
   protected String relationshipContext = "step";
   protected String relatedDateOfBirth = "2000-10-01";
   protected String relatedDateOfDeath = "2001-10-01";
+  protected String relationshipStartDate = "2000-10-01";
+  protected String relationshipEndDate = "2001-10-01";
   protected String absentParentCode = "N";
   protected String sameHomeCode = "U";
 
@@ -24,8 +26,9 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipTo build() {
     return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
-        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, absentParentCode, sameHomeCode,
-        relationship, relationshipContext, relationshipToPerson, cmsRecordDescriptor);
+        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate,
+        relationshipEndDate, absentParentCode, sameHomeCode, relationship, relationshipContext,
+        relationshipToPerson, cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {
@@ -100,6 +103,16 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipToEntityBuilder setSameHomeCode(String sameHomeCode) {
     this.sameHomeCode = sameHomeCode;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelationshipStartDate(String relationshipStartDate) {
+    this.relationshipStartDate = relationshipStartDate;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelationshipEndDate(String relationshipEndDate) {
+    this.relationshipEndDate = relationshipEndDate;
     return this;
   }
 

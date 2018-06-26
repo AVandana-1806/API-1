@@ -45,8 +45,8 @@ public class ClientTransformer implements ParticipantMapper<Client> {
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
         client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, null, null,
-        convertSSN(client), client.getBirthDate(), languages, races, hispanic, null,
-        new HashSet<>(), addresses, null, getSealedIndicator(client),
+        convertSSN(client), client.getBirthDate(), client.getDeathDate(), languages, races,
+        hispanic, null, new HashSet<>(), addresses, null, getSealedIndicator(client),
         getSensitivieIndicator(client));
   }
 
