@@ -162,6 +162,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     when(sessionFactory.createEntityManager()).thenReturn(em);
     when(sessionFactory.getSessionFactoryOptions()).thenReturn(sfo);
     when(sessionFactory.getCurrentSession()).thenReturn(session);
+    when(sessionFactory.openSession()).thenReturn(session);
     when(sessionFactory.getProperties()).thenReturn(sessionProperties);
 
     when(sessionFactoryImplementor.getCurrentSession()).thenReturn(session);
