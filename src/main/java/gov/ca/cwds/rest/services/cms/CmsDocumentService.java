@@ -93,7 +93,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
     gov.ca.cwds.data.persistence.cms.CmsDocument doc =
         new gov.ca.cwds.data.persistence.cms.CmsDocument(request);
     CmsDocument retval = null;
-    String base64Doc = request.getBase64Blob();
+    final String base64Doc = request.getBase64Blob();
     if (StringUtils.isNotBlank(request.getDocAuth())) {
       doc.setDocAuth(request.getDocAuth().trim());
     }
@@ -106,21 +106,20 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
     doc.setCompressionMethod(CmsDocumentDao.COMPRESSION_TYPE_PK_FULL);
 
-    LOGGER.warn("\n\t******* XA TESTING! SKIP DOCUMENT BLOBS! *******\n");
     try {
-      if (false) {
-        final List<CmsDocumentBlobSegment> blobs =
-            dao.compressDoc(doc, request.getBase64Blob().trim());
-        doc.setBlobSegments(new HashSet<>(blobs));
-        insertBlobs(doc, blobs);
-      }
+      LOGGER.info("Compress document blobs");
+      final List<CmsDocumentBlobSegment> blobs =
+          dao.compressDoc(doc, request.getBase64Blob().trim());
+      LOGGER.info("Save document blobs");
+      doc.setBlobSegments(new HashSet<>(blobs));
+      insertBlobs(doc, blobs);
 
       doc = dao.create(doc);
       retval = new CmsDocument(doc);
-      // retval.setBase64Blob(base64Doc);
+      retval.setBase64Blob(base64Doc);
     } catch (Exception e) {
-      LOGGER.error("CmsDocument already exists : {}", request);
-      throw new ServiceException("CmsDocument already exists : {}" + request, e);
+      LOGGER.error("FAILED TO CREATE DOCUMENT! {}", request);
+      throw new ServiceException("FAILED TO CREATE DOCUMENT! {}" + request, e);
     }
 
     return retval;
@@ -156,16 +155,16 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       // Force PKWare compression for updated documents
       doc.setCompressionMethod(CmsDocumentDao.COMPRESSION_TYPE_PK_FULL);
 
-      final List<CmsDocumentBlobSegment> blobs =
-          dao.compressDoc(doc, request.getBase64Blob().trim());
-      doc.getBlobSegments().clear();
-      insertBlobs(doc, blobs);
-
-      final gov.ca.cwds.data.persistence.cms.CmsDocument managed =
-          new gov.ca.cwds.data.persistence.cms.CmsDocument(doc);
-      managed.setBlobSegments(new HashSet<>(blobs));
-
+      gov.ca.cwds.data.persistence.cms.CmsDocument managed = null;
       try {
+        final List<CmsDocumentBlobSegment> blobs =
+            dao.compressDoc(doc, request.getBase64Blob().trim());
+        doc.getBlobSegments().clear();
+        insertBlobs(doc, blobs);
+
+        managed = new gov.ca.cwds.data.persistence.cms.CmsDocument(doc);
+        managed.setBlobSegments(new HashSet<>(blobs));
+
         dao.update(managed);
       } catch (Exception e) {
         LOGGER.error("FAILED TO UPDATE DOCUMENT! {}", e.getMessage(), e);

@@ -102,7 +102,8 @@ xaCmsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: false
+      hibernate.show_sql: true
+      hibernate.format_sql: true
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
@@ -111,7 +112,7 @@ xaCmsDataSourceFactory:
       hibernate.connection.release_mode: auto
       hibernate.connection.isolation: 1
       connection.release_mode: auto
-      hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -134,7 +135,8 @@ xaCmsRsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: false
+      hibernate.show_sql: true
+      hibernate.format_sql: true
       hibernate.default_schema: ${DB_CMSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
@@ -143,7 +145,7 @@ xaCmsRsDataSourceFactory:
       hibernate.connection.release_mode: auto
       hibernate.connection.isolation: 1
       connection.release_mode: auto
-      hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -166,7 +168,8 @@ xaNsDataSourceFactory:
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
       hibernate.id.new_generator_mappings: false
-      hibernate.show_sql: false
+      hibernate.show_sql: true
+      hibernate.format_sql: true
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
@@ -177,7 +180,7 @@ xaNsDataSourceFactory:
       hibernate.temp.use_jdbc_metadata_defaults: false
       hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_second_level_cache: false
-      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
       # hibernate.cache.use_query_cache: false
   xaProperties:
       url: ${DB_NS_JDBC_URL}
