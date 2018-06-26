@@ -47,7 +47,7 @@ public class CmsNSHelper {
     Response referral = null;
     Response person;
 
-    // Don't close sessions! Kills XA.
+    // DRS: Don't close sessions! Kills XA.
     final Session sessionCMS = cmsSessionFactory.getCurrentSession();
     final Session sessionNS = nsSessionFactory.getCurrentSession();
 

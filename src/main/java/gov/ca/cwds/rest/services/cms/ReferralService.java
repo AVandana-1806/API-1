@@ -257,7 +257,6 @@ public class ReferralService implements
        */
       referralId = CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId());
 
-      // LOGGER.warn("******** XA: SKIP DOCUMENT CREATION! ******** ");
       String screenerNarrativeId =
           createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
       if (!StringUtils.isBlank(screenerNarrativeId)) {

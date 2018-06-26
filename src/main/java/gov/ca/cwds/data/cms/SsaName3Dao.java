@@ -122,7 +122,7 @@ public class SsaName3Dao {
       Short gvrEntc, Date updateTimeStamp, String updateId) {
 
     if (CaresValidationUtils.isBusinessValidationEnabled()) {
-      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 UNIT COMMIT IS REMOVED! ********* \n");
+      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 UNTIL COMMIT IS REMOVED! ********* \n");
       return;
     }
 

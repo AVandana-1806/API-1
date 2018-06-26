@@ -118,7 +118,7 @@ public class ServicesModule extends AbstractModule {
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
       if (RequestExecutionContext.instance().isXaTransaction()) {
         final Method m = mi.getMethod();
-        LOGGER.warn("\n***** XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}***** \n",
+        LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
@@ -299,6 +299,7 @@ public class ServicesModule extends AbstractModule {
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(XAUnitOfWork.class), xaInterceptor);
     requestInjection(xaInterceptor);
 
+    // DRS: uncomment to log stack traces for DAO's.
     // final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
     // bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
     // requestInjection(daoInterceptor);
