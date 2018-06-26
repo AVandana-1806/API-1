@@ -75,7 +75,7 @@ public class R04631ReferralInvestigationContactDue {
       if ((ParticipantValidator.hasVictimRole(participant)
           || ParticipantValidator.isPerpetrator(participant))
           && participant.getDateOfBirth() != null) {
-        Client client = clientDao.find(participant.getLegacyId());
+        Client client = clientDao.find(participant.getLegacyDescriptor().getId());
         if (client == null) {
           return;
         }
