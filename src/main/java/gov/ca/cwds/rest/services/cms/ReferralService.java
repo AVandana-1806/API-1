@@ -240,11 +240,9 @@ public class ReferralService implements
         referral = createReferralWithDefaults(screeningToReferral, dateStarted, timeStarted,
             strsMessageBuilder);
       } catch (ServiceException | NullPointerException e) {
-        String message = e.getMessage();
-        strsMessageBuilder.addMessageAndLog(message, e, LOGGER);
+        strsMessageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
       } catch (Exception e) {
-        String message = e.getMessage();
-        strsMessageBuilder.addMessageAndLog(message, e, LOGGER);
+        strsMessageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
         throw e;
       }
 
@@ -259,14 +257,14 @@ public class ReferralService implements
        */
       referralId = CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId());
 
-      LOGGER.warn("******** XA: SKIP DOCUMENT CREATION! ******** ");
-      // String screenerNarrativeId =
-      // createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
-      // if (!StringUtils.isBlank(screenerNarrativeId)) {
-      // // Pass the referral Id
-      // referral.setUiIdentifier(referralId);
-      // referral.setDrmsAllegationDescriptionDoc(screenerNarrativeId);
-      // }
+      // LOGGER.warn("******** XA: SKIP DOCUMENT CREATION! ******** ");
+      String screenerNarrativeId =
+          createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
+      if (!StringUtils.isBlank(screenerNarrativeId)) {
+        // Pass the referral Id
+        referral.setUiIdentifier(referralId);
+        referral.setDrmsAllegationDescriptionDoc(screenerNarrativeId);
+      }
 
       PostedReferral postedReferral = this.create(referral);
       referralId = postedReferral.getId();

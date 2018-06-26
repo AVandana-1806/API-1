@@ -59,18 +59,18 @@ public class WorkDB2UserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
-    con.setClientInfo("ApplicationName", PROGRAM_NAME);
-    con.setClientInfo("ClientUser", userId);
-    con.setClientInfo("ClientHostname", SERVER_IP_NAME);
-
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");
+      con.setClientInfo("ApplicationName", PROGRAM_NAME);
+      con.setClientInfo("ClientUser", userId);
+      con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
+
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
       db2conn.setDB2ClientApplicationInformation(userId);
       db2conn.setDB2ClientProgramId(userId);
       db2conn.setDB2ClientUser(staffId);
-      db2conn.setDB2ClientWorkstation(SERVER_IP_ADDRESS);
+      db2conn.setDB2ClientWorkstation(SERVER_IP_NAME);
 
       // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
     }

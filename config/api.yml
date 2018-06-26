@@ -87,6 +87,10 @@ rsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
 
+##==========================
+## XA DATA SOURCES:
+##==========================
+
 xaCmsDataSourceFactory:
   autoCommitByDefault: false
   driverClass: com.ibm.db2.jcc.DB2Driver

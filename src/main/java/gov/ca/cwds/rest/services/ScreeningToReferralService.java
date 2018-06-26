@@ -37,7 +37,6 @@ import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.business.rules.R06998ZippyIndicator;
 import gov.ca.cwds.rest.business.rules.R08740SetNonProtectingParentCode;
 import gov.ca.cwds.rest.business.rules.Reminders;
-import gov.ca.cwds.rest.exception.BusinessValidationException;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -164,9 +163,11 @@ public class ScreeningToReferralService implements CrudsService {
         foundError = true;
       }
     }
-    if (foundError) {
-      throw new BusinessValidationException(messageBuilder.getIssues());
-    }
+
+    LOGGER.warn("XA: DON'T CARE ABOUT BUSINESS VALIDATION!");
+    // if (foundError) {
+    // throw new BusinessValidationException(messageBuilder.getIssues());
+    // }
 
     return pstr;
   }
