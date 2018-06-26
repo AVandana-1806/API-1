@@ -16,6 +16,8 @@
     "related_person_gender" : "I",
     "related_person_date_of_birth" : "2000-10-01",
     "related_person_date_of_death" : "2001-10-01",
+    "relationship_start_date" : "2000-10-01",
+    "relationship_end_date" : "2001-10-01",
     "absent_parent_code" : "N",
     "same_home_code" : "U",
     "relationship_context" : "step",

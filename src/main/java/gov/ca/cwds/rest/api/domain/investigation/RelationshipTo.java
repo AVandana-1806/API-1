@@ -31,9 +31,9 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 @JsonPropertyOrder({"related_person_first_name", "related_person_last_name",
     "related_person_name_suffix", "related_person_gender", "related_person_date_of_birth",
-    "related_person_date_of_death", "absent_parent_code", "same_home_code",
-    "index_person_relationship", "relationship_context", "related_person_relationship",
-    "legacy_description"})
+    "related_person_date_of_death", "relationship_start_date", "relationship_end_date",
+    "absent_parent_code", "same_home_code", "relationship_context", "indexed_person_relationship",
+    "related_person_relationship", "legacy_description"})
 public final class RelationshipTo implements Serializable {
 
   /**
@@ -77,6 +77,20 @@ public final class RelationshipTo implements Serializable {
   @ApiModelProperty(required = false, readOnly = false, value = "date of death",
       example = "2000-10-01")
   private String relatedDateOfDeath;
+
+  @JsonProperty("relationship_start_date")
+  @gov.ca.cwds.rest.validation.Date(format = gov.ca.cwds.rest.api.domain.DomainObject.DATE_FORMAT,
+      required = false)
+  @ApiModelProperty(required = false, readOnly = false, value = "relationship start date",
+      example = "2000-10-01")
+  private String relationshipStartDate;
+
+  @JsonProperty("relationship_end_date")
+  @gov.ca.cwds.rest.validation.Date(format = gov.ca.cwds.rest.api.domain.DomainObject.DATE_FORMAT,
+      required = false)
+  @ApiModelProperty(required = false, readOnly = false, value = "relationship end date",
+      example = "2001-10-01")
+  private String relationshipEndDate;
 
   @JsonProperty("absent_parent_code")
   @Size(min = 1, max = 1)
@@ -122,6 +136,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
    * @param relatedDateOfDeath - death date of related person
+   * @param relationshipStartDate - relationship start date
+   * @param relationshipEndDate - relationship end date
    * @param absentParentCode - absent parent code
    * @param sameHomeCode - same home code
    * @param relationshipToPerson - relation of owning person
@@ -134,6 +150,8 @@ public final class RelationshipTo implements Serializable {
       String relatedGender,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
+      @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
+      @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship,
       CmsRecordDescriptor cmsRecordDescriptor) {
@@ -144,6 +162,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedGender = relatedGender;
     this.relatedDateOfBirth = relatedDateOfBirth;
     this.relatedDateOfDeath = relatedDateOfDeath;
+    this.relationshipStartDate = relationshipStartDate;
+    this.relationshipEndDate = relationshipEndDate;
     this.absentParentCode = absentParentCode;
     this.sameHomeCode = sameHomeCode;
     this.relationshipToPerson = relationshipToPerson;
@@ -159,6 +179,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
    * @param relatedDateOfDeath - death date of related person
+   * @param relationshipStartDate - relationship start date
+   * @param relationshipEndDate - relationship end date
    * @param absentParentCode - absent parent code
    * @param sameHomeCode - same home code
    * @param relationshipToPerson - relation of owning person
@@ -170,11 +192,13 @@ public final class RelationshipTo implements Serializable {
       String relatedGender,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
+      @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
+      @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship, String clientId) {
     this(relatedFirstName, relatedLastName, relatedNameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, absentParentCode, sameHomeCode, relationshipToPerson,
-        relationshipContext, relatedPersonRelationship,
+        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
+        sameHomeCode, relationshipToPerson, relationshipContext, relatedPersonRelationship,
         CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
@@ -191,6 +215,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedGender = client.getGender();
     this.relatedDateOfBirth = DomainChef.cookDate(client.getBirthDate());
     this.relatedDateOfDeath = DomainChef.cookDate(client.getDeathDate());
+    this.relationshipStartDate = DomainChef.cookDate(clientRelationship.getStartDate());
+    this.relationshipEndDate = DomainChef.cookDate(clientRelationship.getEndDate());
     this.relationshipToPerson = String.valueOf(clientRelationship.getClientRelationshipType());
     relationshipContext = " ";
     relatedPersonRelationship = " ";
@@ -289,6 +315,21 @@ public final class RelationshipTo implements Serializable {
    */
   public String getSameHomeCode() {
     return sameHomeCode;
+  }
+
+
+  /**
+   * @return the relationshipStartDate
+   */
+  public String getRelationshipStartDate() {
+    return relationshipStartDate;
+  }
+
+  /**
+   * @return the relationshipEndDate
+   */
+  public String getRelationshipEndDate() {
+    return relationshipEndDate;
   }
 
   /**

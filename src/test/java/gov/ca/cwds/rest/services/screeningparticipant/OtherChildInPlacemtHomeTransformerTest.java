@@ -121,8 +121,8 @@ public class OtherChildInPlacemtHomeTransformerTest {
         "streetNumber streetName", "Sacramento", "CA", "99999-0", null, addressLegacyDescriptor)));
     Set<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
-        "aaa", null, "bbb", null, "male", null, null, null, new Date(), new LinkedList<>(), null,
-        null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
+        "aaa", null, "bbb", null, "male", null, null, null, new Date(), null, new LinkedList<>(),
+        null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     OtherChildInPlacemtHome otherChildInPlacemtHome =
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);

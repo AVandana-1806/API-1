@@ -31,7 +31,10 @@ import org.hibernate.annotations.NamedNativeQuery;
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
-        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE \n" + "FROM  {h-schema}CLIENT_T  GT \n"
+        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
+        + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
+        + "    CLNR.END_DT            AS Relationship_END_DATE \n"
+        + "FROM  {h-schema}CLIENT_T  GT \n"
         + "JOIN {h-schema}CLN_RELT CLNR  ON GT.IDENTIFIER   = CLNR.FKCLIENT_T \n"
         + "JOIN {h-schema}CLIENT_T CLNS  ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
         + "JOIN {h-schema}CLIENT_T CLNP  ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
@@ -58,7 +61,10 @@ import org.hibernate.annotations.NamedNativeQuery;
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
-        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE \n" + "FROM  {h-schema}CLIENT_T GT \n"
+        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
+        + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
+        + "    CLNR.END_DT            AS Relationship_END_DATE \n"
+        + "FROM  {h-schema}CLIENT_T GT \n"
         + "JOIN {h-schema}CLN_RELT CLNR ON GT.IDENTIFIER   = CLNR.FKCLIENT_0 \n"
         + "JOIN {h-schema}CLIENT_T CLNS ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
         + "JOIN {h-schema}CLIENT_T CLNP ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
@@ -130,6 +136,12 @@ public class RelationshipWrapper {
 
   @Column(name = "SAME_HOME_CODE")
   private String sameHomeCode;
+
+  @Column(name = "Relationship_START_DATE")
+  private String relationshipStartDate;
+
+  @Column(name = "Relationship_END_DATE")
+  private String relationshipEndDate;
 
 
   public RelationshipWrapper() {}
@@ -298,6 +310,22 @@ public class RelationshipWrapper {
 
   public void setSecondaryGenderCode(String secondaryGenderCode) {
     this.secondaryGenderCode = secondaryGenderCode;
+  }
+
+  public String getRelationshipStartDate() {
+    return relationshipStartDate;
+  }
+
+  public void setRelationshipStartDate(String relationshipStartDate) {
+    this.relationshipStartDate = relationshipStartDate;
+  }
+
+  public String getRelationshipEndDate() {
+    return relationshipEndDate;
+  }
+
+  public void setRelationshipEndDate(String relationshipEndDate) {
+    this.relationshipEndDate = relationshipEndDate;
   }
 
 

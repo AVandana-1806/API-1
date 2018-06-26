@@ -83,8 +83,8 @@ public class ReporterTransformerTest {
     Set<PhoneNumber> phoneNumbers =
         new HashSet<>(Arrays.asList(new PhoneNumber(null, "6199221167", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
-        "Fred", "W", "Reporter", "", null, null, null, null, null, new LinkedList<>(), null, null,
-        null, new HashSet<>(), addresses, phoneNumbers, false, false);
+        "Fred", "W", "Reporter", "", null, null, null, null, null, null, new LinkedList<>(), null,
+        null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     Reporter reporter = new ReporterEntityBuilder().build();
     ParticipantIntakeApi actual = reporterTransformer.tranform(reporter);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
