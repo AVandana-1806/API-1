@@ -58,19 +58,19 @@ public class DrmsDocumentTemplateService
    * @param governmentEntity - government entity
    * @return the document template
    */
-  public DrmsDocumentTemplate findScreenerNarrativeTemplateNs(Short govermentEntity) {
+  public DrmsDocumentTemplate findScreenerNarrativeTemplateNs(Short governmentEntity) {
     gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate template = null;
     gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate[] templates = drmsDocumentTemplateDao
-        .findByApplicationContextAndGovernmentEntity(APPLICATION_CONTEXT_OTHER, govermentEntity);
+        .findByApplicationContextAndGovernmentEntity(APPLICATION_CONTEXT_OTHER, governmentEntity);
     for (gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate doc : templates) {
       // TO1DO For now can't use DOT files as templates with POI. So only _NS files are considered,
       // which will be a DOC files
       if (SCREENERNARRATIVE_NS.equals(doc.getTitleName().trim())
           && doc.getDocumentDOSFilePrefixName().toUpperCase().endsWith("_NS")) {
         template = doc;
-        if ((GOVERMENT_ENTITY_SYSTEM.equals(govermentEntity)
+        if ((GOVERMENT_ENTITY_SYSTEM.equals(governmentEntity)
             && GOVERMENT_ENTITY_SYSTEM.equals(doc.getGovermentEntityType()))
-            || (!GOVERMENT_ENTITY_SYSTEM.equals(govermentEntity)
+            || (!GOVERMENT_ENTITY_SYSTEM.equals(governmentEntity)
                 && !GOVERMENT_ENTITY_SYSTEM.equals(doc.getGovermentEntityType()))) {
           // Asked for system and found system or asked for not system and found not system use it
           // right away. If both exists then not system takes priority

@@ -3,7 +3,6 @@ package gov.ca.cwds.data.persistence.xa;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.jdbc.Work;
 
 /**
@@ -21,7 +20,7 @@ public class CaresWorkConnectionStealer implements Work {
   public CaresWorkConnectionStealer() {}
 
   /**
-   * Call {@link AtomLoadStepHandler#handleSecondaryJdbc(Connection, Pair)}.
+   * Stored a reference to the connection and make available to the caller or direct JDBC.
    * 
    * @param con current database connection
    */
