@@ -50,6 +50,16 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   /**
+   * Find the default schema for the current datasource.
+   * 
+   * @return default schema for this datasource
+   */
+  public String getCurrentSchema() {
+    return (String) dao.grabSession().getSessionFactory().getProperties()
+        .get("hibernate.default_schema");
+  }
+
+  /**
    * {@inheritDoc}
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#find(java.io.Serializable)
@@ -82,7 +92,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    * 
    * <p>
    * Force PKWare compression for new documents. LZW is for decompression only.
-   * <p>
+   * </p>
    *
    * @param request domain document
    */
@@ -180,14 +190,14 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   }
 
   protected String blobToInsert(CmsDocumentBlobSegment blob) {
-    return new StringBuilder().append("INSERT INTO ").append(dao.getCurrentSchema())
+    return new StringBuilder().append("INSERT INTO ").append(getCurrentSchema())
         .append(".TSBLOBT(DOC_HANDLE, DOC_SEGSEQ, DOC_BLOB) VALUES").append("('")
         .append(blob.getDocHandle()).append("','").append(blob.getSegmentSequence()).append("',x'")
         .append(DatatypeConverter.printHexBinary(blob.getDocBlob())).append("')").toString();
   }
 
   protected String blobsDelete() {
-    return new StringBuilder().append("DELETE FROM ").append(dao.getCurrentSchema())
+    return new StringBuilder().append("DELETE FROM ").append(getCurrentSchema())
         .append(".TSBLOBT WHERE DOC_HANDLE = ?").toString();
   }
 

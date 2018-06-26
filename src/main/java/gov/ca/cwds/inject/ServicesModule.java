@@ -142,7 +142,7 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    private void clearHibernateStatistics(String bundleTag) {
+    protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         cmsHibernateBundle.getSessionFactory().getStatistics().clear();
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
@@ -150,7 +150,7 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    private void collectAndProvideHibernateStatistics(String bundleTag) {
+    protected void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         provideHibernateStatistics(bundleTag,
             cmsHibernateBundle.getSessionFactory().getStatistics());
