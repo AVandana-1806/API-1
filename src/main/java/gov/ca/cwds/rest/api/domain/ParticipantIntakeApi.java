@@ -75,8 +75,8 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   @JsonProperty("ssn")
   @ApiModelProperty(required = false, readOnly = false, value = "", example = "123456789")
-  // This regualr expression(regexp) validates the ssn should be only numeric and length 9
-  @Pattern(regexp = "^(|[0-9]{9})$")
+  // This regualr expression(regexp) validates the ssn should be only numeric with hypens
+  @Pattern(regexp = "^(\\d{3}-\\d{2}-\\d{4})$")
   private String ssn;
 
   @JsonProperty("date_of_birth")
