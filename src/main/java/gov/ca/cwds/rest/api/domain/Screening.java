@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.api.domain;
 
+import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -181,7 +183,7 @@ public class Screening extends ReportingDomain implements Request, Response {
     this.screeningDecision = screeningDecision;
     this.screeningDecisionDetail = screeningDecisionDetail;
     this.assignee = assignee;
-    this.startedAt = startedAt;
+    this.startedAt = freshDate(startedAt);
     this.referralId = referralId;
     this.assigneeStaffId = assigneeStaffId;
     this.reportType = reportType;
@@ -235,7 +237,7 @@ public class Screening extends ReportingDomain implements Request, Response {
    * @return the startedAt
    */
   public Date getStartedAt() {
-    return startedAt;
+    return freshDate(startedAt);
   }
 
   /**
@@ -285,15 +287,15 @@ public class Screening extends ReportingDomain implements Request, Response {
   }
 
   public void setStartedAt(Date startedAt) {
-    this.startedAt = startedAt;
+    this.startedAt = freshDate(startedAt);
   }
 
   public Date getEndedAt() {
-    return endedAt;
+    return freshDate(endedAt);
   }
 
   public void setEndedAt(Date endedAt) {
-    this.endedAt = endedAt;
+    this.endedAt = freshDate(endedAt);
   }
 
   public String getAdditionalInformation() {

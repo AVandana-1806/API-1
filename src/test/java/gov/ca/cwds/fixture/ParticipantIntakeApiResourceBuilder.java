@@ -29,6 +29,7 @@ public class ParticipantIntakeApiResourceBuilder {
   String gender = "male";
   String ssn = "123456789";
   Date dateOfBirth = DomainChef.uncookDateString("2001-03-15");
+  Date dateOfDeath = DomainChef.uncookDateString("2001-02-15");
   String approximateAge = "12";
   String approximateAgeUnits = "years";
   List<String> languages = new LinkedList<>(Arrays.asList("English", "Russian"));
@@ -52,8 +53,8 @@ public class ParticipantIntakeApiResourceBuilder {
   public ParticipantIntakeApi build() {
     return new ParticipantIntakeApi(id, legacySourceTable, clientId, legacyDescriptor, firstName,
         middleName, lastName, nameSuffix, gender, approximateAge, approximateAgeUnits, ssn,
-        dateOfBirth, languages, races, ethnicity, screeningId, roles, addresses, phoneNumbers,
-        sealed, sensitive);
+        dateOfBirth, dateOfDeath, languages, races, ethnicity, screeningId, roles, addresses,
+        phoneNumbers, sealed, sensitive);
   }
 
   /**
@@ -125,6 +126,16 @@ public class ParticipantIntakeApiResourceBuilder {
    */
   public ParticipantIntakeApiResourceBuilder setDateOfBirth(Date dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
+    return this;
+  }
+
+
+
+  /**
+   * @param dateOfDeath the dateOfDeath to set * @return the dateOfDeath
+   */
+  public ParticipantIntakeApiResourceBuilder setDateOfDeath(Date dateOfDeath) {
+    this.dateOfDeath = dateOfDeath;
     return this;
   }
 

@@ -34,11 +34,4 @@ public class ScreeningRelationshipTest extends FunctionalTest{
         .header("Accept", "application/json")
     .when().post(resourcePath).then().statusCode(400);
   }
-
-  @Test
-  public void foo() {
-    given().queryParam("token", token).body("{bad object}").header("Content-Type", "application/json")
-        .header("Accept", "application/json")
-        .when().post(resourcePath).then().statusCode(400);
-  }
 }

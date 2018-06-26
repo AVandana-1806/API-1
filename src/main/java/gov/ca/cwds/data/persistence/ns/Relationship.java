@@ -62,7 +62,7 @@ public class Relationship implements PersistentObject {
 
   @Override
   public Serializable getPrimaryKey() {
-    return null;
+    return getId();
   }
 
   public String getId() {

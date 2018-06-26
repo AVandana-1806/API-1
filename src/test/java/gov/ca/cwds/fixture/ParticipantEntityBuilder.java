@@ -1,9 +1,10 @@
 package gov.ca.cwds.fixture;
 
+import java.util.Date;
+
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.api.domain.DomainChef;
-import java.util.Date;
 
 @SuppressWarnings("javadoc")
 public class ParticipantEntityBuilder {
@@ -12,6 +13,7 @@ public class ParticipantEntityBuilder {
 
   private String id = DEFAULT_PERSON_ID;
   private Date dateOfBirth;
+  private Date dateOfDeath;
   private String firstName = "John";
   private String gender;
   private String lastName = "Smith";
@@ -35,9 +37,9 @@ public class ParticipantEntityBuilder {
   }
 
   public ParticipantEntity build() {
-    return new ParticipantEntity(id, dateOfBirth, firstName, gender, lastName, ssn, screeningEntity,
-        legacyId, roles, languages, middleName, nameSuffix, races, ethnicity, legacySourceTable,
-        sensitive, sealed, approximateAge, approximateAgeUnits);
+    return new ParticipantEntity(id, dateOfBirth, dateOfDeath, firstName, gender, lastName, ssn,
+        screeningEntity, legacyId, roles, languages, middleName, nameSuffix, races, ethnicity,
+        legacySourceTable, sensitive, sealed, approximateAge, approximateAgeUnits);
   }
 
   public ParticipantEntityBuilder setId(String id) {
@@ -47,6 +49,12 @@ public class ParticipantEntityBuilder {
 
   public ParticipantEntityBuilder setDateOfBirth(String dateOfBirth) {
     this.dateOfBirth = DomainChef.uncookDateString(dateOfBirth);
+    return this;
+  }
+
+
+  public ParticipantEntityBuilder setDateOfDeath(Date dateOfDeath) {
+    this.dateOfDeath = dateOfDeath;
     return this;
   }
 

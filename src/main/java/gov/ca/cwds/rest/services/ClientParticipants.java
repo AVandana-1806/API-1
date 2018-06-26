@@ -93,9 +93,9 @@ public class ClientParticipants {
 
   private void addToClientIds(Participant participant) {
     if (participant.isVictim()) {
-      addVictimIds(participant.getId(), participant.getLegacyId());
+      addVictimIds(participant.getId(), participant.getLegacyDescriptor().getId());
     } else if (participant.isPerpetrator()) {
-      addPerpetratorIds(participant.getId(), participant.getLegacyId());
+      addPerpetratorIds(participant.getId(), participant.getLegacyDescriptor().getId());
     }
   }
 

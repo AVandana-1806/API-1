@@ -84,7 +84,8 @@ public class ScreeningRelationshipServiceTest {
     assertEquals(relationshipEntity.getCreatedAt(), savedDate);
     assertEquals(relationshipEntity.getUpdatedAt(), updatedDate);
     assertEquals(relationshipEntity.isAbsentParentIndicator(), saved.isAbsentParentIndicator());
-    assertEquals(relationshipEntity.getSameHomeStatus(), SameHomeStatus.toValue(relationship.getSameHomeStatus()));
+    assertEquals(relationshipEntity.getSameHomeStatus(),
+        SameHomeStatus.toValue(relationship.getSameHomeStatus()));
   }
 
   @Test
@@ -93,9 +94,32 @@ public class ScreeningRelationshipServiceTest {
     when(relationshipDao.create(any())).thenReturn(relationshipEntity);
     ScreeningRelationship saved = (ScreeningRelationship) service.create(relationship);
   }
-
+  
   @Test
-  public void shouldReturnNullWhenUpdateIsCalled() {
-    assertNull(service.update(serialized, relationship));
+  public void update() throws Exception {
+    Date creationDate = new Date();
+    Relationship existingEntity = new Relationship("123", "ClientID", "RelationId", 190,
+        creationDate,
+        new Date(), true, null);
+    Relationship updatedEntity = new Relationship("123", "ClientID", "RelationId", 191,
+        creationDate,
+        new Date(), true, null);
+
+    when(relationshipDao.find(any())).thenReturn(existingEntity);
+    when(relationshipDao.update(any())).thenReturn(updatedEntity);
+
+    ScreeningRelationship relationshipForUpdate = new ScreeningRelationship("123", "ClientID",
+        "RelationId", 191, true, "U");
+    ScreeningRelationship updated = (ScreeningRelationship) service
+        .update("123", relationshipForUpdate);
+
+    assertEquals(updatedEntity.getId(), updated.getId());
+    assertEquals(updatedEntity.getClientId(), updated.getClientId());
+    assertEquals(updatedEntity.getRelativeId(), updated.getRelativeId());
+    assertEquals(updatedEntity.getRelationshipType(), updated.getRelationshipType());
+    assertEquals(updatedEntity.getCreatedAt(), creationDate);
+    assertEquals(updatedEntity.isAbsentParentIndicator(), updated.isAbsentParentIndicator());
+    assertEquals(updatedEntity.getSameHomeStatus(),
+        SameHomeStatus.toValue(updated.getSameHomeStatus()));
   }
 }
