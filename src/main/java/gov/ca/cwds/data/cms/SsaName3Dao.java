@@ -20,7 +20,7 @@ import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.inject.CmsSessionFactory;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
-import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.validation.CaresValidationUtils;
 
 /**
  * Hibernate DAO for DB2 stored procedure that calls soundex SSA Name3 and saves to the client
@@ -121,9 +121,8 @@ public class SsaName3Dao {
       String firstName, String middleName, String lastName, String streettNumber, String streetName,
       Short gvrEntc, Date updateTimeStamp, String updateId) {
 
-    // XA DEBUG:
-    if (RequestExecutionContext.instance().isXaTransaction()) {
-      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 FOR NOW ********* \n");
+    if (CaresValidationUtils.isBusinessValidationEnabled()) {
+      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 UNIT COMMIT IS REMOVED! ********* \n");
       return;
     }
 
