@@ -38,6 +38,7 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cfg.Settings;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.jdbc.Work;
 import org.hibernate.loader.BatchFetchStyle;
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
@@ -47,6 +48,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,6 +58,7 @@ import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.persistence.xa.CaresWorkConnectionStealer;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextImplTest;
@@ -173,6 +177,18 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     when(session.beginTransaction()).thenReturn(transaction);
     when(session.getTransaction()).thenReturn(transaction);
     when(session.createStoredProcedureCall(any(String.class))).thenReturn(proc);
+
+    Mockito.doAnswer(new Answer<Void>() {
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        final Object[] args = invocation.getArguments();
+        final CaresWorkConnectionStealer work = (CaresWorkConnectionStealer) args[0];
+        work.execute(con);
+        return null;
+      }
+
+    }).when(session).doWork(any(Work.class));
 
     when(sfo.getServiceRegistry()).thenReturn(reg);
     when(reg.getService(ConnectionProvider.class)).thenReturn(cp);

@@ -6,14 +6,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,6 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
   @Override
   public void setup() throws Exception {
     super.setup();
-    // dao = new CmsDocumentDao(sessionFactoryImplementor);
     dao = mock(CmsDocumentDao.class);
     target = new CmsDocumentService(dao);
     q = queryInator();
@@ -52,6 +49,7 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
     when(dao.find(any(String.class))).thenReturn(doc);
     when(dao.create(any(CmsDocument.class))).thenReturn(doc);
     when(dao.getSessionFactory()).thenReturn(sessionFactoryImplementor);
+    when(dao.grabSession()).thenReturn(session);
   }
 
   protected CmsDocument readPersistedObject() throws IOException {
@@ -148,19 +146,9 @@ public class CmsDocumentServiceTest extends Doofenshmirtz<CmsDocument> {
   }
 
   @Test
-  public void getConnection_A$_T$SQLException() throws Exception {
-    try {
-      when(sessionFactoryImplementor.getSessionFactoryOptions()).thenThrow(SQLException.class);
-      target.getConnection();
-      fail("Expected exception was not thrown!");
-    } catch (SQLException e) {
-    }
-  }
-
-  @Test
   public void delete_A$String() throws Exception {
-    String primaryKey = "0131351421120020*JONESMF ";
-    gov.ca.cwds.rest.api.domain.cms.CmsDocument actual = target.delete(primaryKey);
+    final String primaryKey = "0131351421120020*JONESMF ";
+    final gov.ca.cwds.rest.api.domain.cms.CmsDocument actual = target.delete(primaryKey);
     CmsDocument expected = null;
     assertThat(actual, is(equalTo(expected)));
   }

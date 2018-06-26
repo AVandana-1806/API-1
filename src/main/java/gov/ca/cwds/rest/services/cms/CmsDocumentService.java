@@ -55,8 +55,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    * @return default schema for this datasource
    */
   public String getCurrentSchema() {
-    return (String) dao.grabSession().getSessionFactory().getProperties()
-        .get("hibernate.default_schema");
+    return (String) dao.getSessionFactory().getProperties().get("hibernate.default_schema");
   }
 
   /**
