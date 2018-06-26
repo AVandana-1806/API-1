@@ -58,7 +58,6 @@ import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.data.persistence.xa.CaresWorkConnectionStealer;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextImplTest;
@@ -183,7 +182,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
       @Override
       public Void answer(InvocationOnMock invocation) throws Throwable {
         final Object[] args = invocation.getArguments();
-        final CaresWorkConnectionStealer work = (CaresWorkConnectionStealer) args[0];
+        final Work work = (Work) args[0];
         work.execute(con);
         return null;
       }
