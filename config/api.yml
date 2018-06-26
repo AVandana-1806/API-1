@@ -252,9 +252,9 @@ logging:
       level: ${LOGLEVEL_HIBERNATE_PARAMS:-DEBUG}
     "gov.ca.cwds.data.ApiHibernateInterceptor":
       # Use DEBUG or TRACE to see entities logged
-      level: DEBUG
+      level: ${LOGLEVEL_HIBERNATE_INTERCEPTOR:-DEBUG}
     "com.atomikos.jdbc":
-      level: TRACE
+      level: ${LOGLEVEL_XA_TRANSACTION:-DEBUG}
     "io.dropwizard.server":
       level: INFO
     "io.dropwizard.jersey.DropwizardResourceConfig":
