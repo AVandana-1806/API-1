@@ -168,8 +168,8 @@ testConfig:
 
 triggertables:
   laCountySpecificCode: 19
- 
-systemCodeCache: 
+
+systemCodeCache:
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
 webSecurity:

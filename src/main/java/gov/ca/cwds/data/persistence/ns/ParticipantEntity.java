@@ -51,6 +51,9 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE screeningId IN :screeningIds")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningId",
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId")
+@NamedQuery(
+    name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIdAndParticipantId",
+    query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND id = :participantId")
 @Entity
 @Table(name = "participants")
 public class ParticipantEntity
@@ -75,6 +78,10 @@ public class ParticipantEntity
   @Column(name = "date_of_birth")
   @Type(type = "date")
   private Date dateOfBirth;
+
+  @Column(name = "date_of_death")
+  @Type(type = "date")
+  private Date dateOfDeath;
 
   @Column(name = "first_name")
   private String firstName;
@@ -161,13 +168,14 @@ public class ParticipantEntity
     updateFrom(participantIntakeApi);
   }
 
-  public ParticipantEntity(String id, Date dateOfBirth, String firstName, String gender,
-      String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId, String[] roles,
-      String[] languages, String middleName, String nameSuffix, String races, String ethnicity,
-      String legacySourceTable, Boolean sensitive, Boolean sealed, String approximateAge,
-      String approximateAgeUnits) {
+  public ParticipantEntity(String id, Date dateOfBirth, Date dateOfDeath, String firstName,
+      String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
+      String[] roles, String[] languages, String middleName, String nameSuffix, String races,
+      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
+      String approximateAge, String approximateAgeUnits) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
+    this.dateOfDeath = freshDate(dateOfDeath);
     this.firstName = firstName;
     this.gender = gender;
     this.lastName = lastName;
@@ -190,6 +198,7 @@ public class ParticipantEntity
   public final ParticipantEntity updateFrom(ParticipantIntakeApi participantIntakeApi) {
     id = participantIntakeApi.getId();
     dateOfBirth = participantIntakeApi.getDateOfBirth();
+    dateOfDeath = participantIntakeApi.getDateOfDeath();
     firstName = participantIntakeApi.getFirstName();
     gender = participantIntakeApi.getGender();
     lastName = participantIntakeApi.getLastName();
@@ -222,6 +231,10 @@ public class ParticipantEntity
 
   public Date getDateOfBirth() {
     return freshDate(dateOfBirth);
+  }
+
+  public Date getDateOfDeath() {
+    return dateOfDeath;
   }
 
   public String getFirstName() {
@@ -310,6 +323,10 @@ public class ParticipantEntity
 
   public void setDateOfBirth(Date dateOfBirth) {
     this.dateOfBirth = freshDate(dateOfBirth);
+  }
+
+  public void setDateOfDeath(Date dateOfDeath) {
+    this.dateOfDeath = dateOfDeath;
   }
 
   public void setFirstName(String firstName) {

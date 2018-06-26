@@ -3,6 +3,7 @@ package gov.ca.cwds.inject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import com.google.inject.Injector;
 
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.IntakeLovService;
-import gov.ca.cwds.rest.services.ParticipantService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
@@ -192,7 +192,7 @@ public class ResourcesModuleTest {
   @Test
   public void participantServiceBackedResourceShouldRetrieveServiceFromInjector() {
     resourceModule.participantServiceBackedResource(injector);
-    verify(injector).getInstance(ParticipantService.class);
+    verify(injector).getInstance(ParticipantIntakeApiService.class);
   }
 
   @Test

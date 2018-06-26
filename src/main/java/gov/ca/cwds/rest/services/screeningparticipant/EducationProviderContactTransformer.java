@@ -67,7 +67,8 @@ public class EducationProviderContactTransformer
 
     return new ParticipantIntakeApi(null, null, null, educationProviderContactLegacyDescriptor,
         firstName, middleName, lastName, suffixTitle, educationProviderContact.getGender(), null,
-        null, null, educationProviderContact.getBirthDate(), new LinkedList<>(), null, null, ssn,
+        null, null, educationProviderContact.getBirthDate(),
+        educationProviderContact.getDeathDate(), new LinkedList<>(), null, null, ssn,
         new HashSet<>(), addresses, phoneNumbers, "R".equals(sensitivityIndicator),
         "S".equals(sensitivityIndicator));
   }

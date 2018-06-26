@@ -8,13 +8,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-
-import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
-import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
@@ -66,8 +62,6 @@ public class ScreeningToReferralResourceBuilder {
   public ScreeningToReferralResourceBuilder() {
     address = new AddressResourceBuilder().createAddress();
     Participant victim = new ParticipantResourceBuilder().setFirstName("Victim").setGender("M")
-        .setLegacyDescriptor(new LegacyDescriptor("098UijH1gf", null, new DateTime(),
-            LegacyTable.CLIENT.getName(), null))
         .createVictimParticipant();
     Participant perp = new ParticipantResourceBuilder().setFirstName("Perpetrator").setGender("F")
         .createPerpParticipant();

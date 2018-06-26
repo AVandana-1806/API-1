@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_SCREENINGS;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 
+import gov.ca.cwds.rest.api.domain.Csec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,9 +15,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import gov.ca.cwds.IntakeBaseTest;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
-import gov.ca.cwds.rest.api.domain.AllegationIntake;
 import gov.ca.cwds.rest.api.domain.CrossReportIntake;
-import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.Screening;
@@ -28,7 +27,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
 
   @Test
   public void testGet() throws Exception {
-    String actualJson = doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52");
+    String actualJson = getStringResponse(doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-get-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -37,7 +36,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPost() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-post-request.json");
-    String actualJson = doPostCall(RESOURCE_INTAKE_SCREENINGS, request);
+    String actualJson = getStringResponse(doPostCall(RESOURCE_INTAKE_SCREENINGS, request));
     Screening screening = objectMapper.readValue(actualJson.getBytes(), Screening.class);
 
     String expectedResponse =
@@ -76,26 +75,9 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPut() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-request.json");
-    String actualJson = doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request);
+    String actualJson = getStringResponse(doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
-
-  @Test
-  public void testCsecDuplicationPost() throws Exception {
-    String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-post-request.json");
-    Screening screening = objectMapper.readValue(request.getBytes(), Screening.class);
-    ParticipantIntakeApi participant = screening.getParticipantIntakeApis().iterator().next();
-    List<Csec> csecs = new ArrayList<>(2);
-    Csec csec = new Csec();
-    csec.setCsecCodeId("519");
-    csecs.add(csec);
-    csecs.add(csec);
-    participant.setCsecs(csecs);
-    String csecsDuplicationRequest = objectMapper.writeValueAsString(screening);
-    String response = doPostCall(RESOURCE_INTAKE_SCREENINGS, csecsDuplicationRequest);
-    Assert.assertTrue(response.contains("UNIQUE_CSEC_CODE_PER_PARTICIPANT"));
-  }
-
 }

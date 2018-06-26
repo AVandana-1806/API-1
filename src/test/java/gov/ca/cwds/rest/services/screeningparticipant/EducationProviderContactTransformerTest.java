@@ -90,9 +90,10 @@ public class EducationProviderContactTransformerTest {
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999-0", null, addressLegacyDescriptor)));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "0", null)));
-    ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
-        "Firstname", "Middle", "Lastname", "Esq", null, null, null, null, null, new LinkedList<>(),
-        null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
+    ParticipantIntakeApi expected =
+        new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Firstname", "Middle",
+            "Lastname", "Esq", null, null, null, null, null, null, new LinkedList<>(), null, null,
+            null, new HashSet<>(), addresses, phoneNumbers, false, false);
     EducationProviderContact educationProviderContact = validEducationProviderContact();
     ParticipantIntakeApi actual =
         educationProviderContactTransformer.tranform(educationProviderContact);

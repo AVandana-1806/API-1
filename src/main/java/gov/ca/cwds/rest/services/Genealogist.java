@@ -54,6 +54,7 @@ public class Genealogist {
           relationship.getSecondaryFirstName(), relationship.getSecondaryLastName(),
           relationship.getSecondaryNameSuffix(), relationship.getSecondaryGenderCode(),
           relationship.getSecondaryDateOfBirth(), relationship.getSecondaryDateOfDeath(),
+          relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
           relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
     } else {
       relationshipTo = createRelationShipTo(relationship.getPrimaryLegacyId(),
@@ -61,6 +62,7 @@ public class Genealogist {
           relationship.getPrimaryFirstName(), relationship.getPrimaryLastName(),
           relationship.getPrimaryNameSuffix(), relationship.getPrimaryGenderCode(),
           relationship.getPrimaryDateOfBirth(), relationship.getPrimaryDateOfDeath(),
+          relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
           relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
     }
     return relationshipTo;
@@ -69,10 +71,12 @@ public class Genealogist {
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
       String secondaryRelation, String secondaryFirstname, String secodnaryLastName,
       String nameSuffix, String relatedGender, String relatedDateOfBirth, String relatedDateOfDeath,
-      String absentParentCode, String sameHomeCode, String relationContext) {
+      String relationshipStartDate, String relationshipEndDate, String absentParentCode,
+      String sameHomeCode, String relationContext) {
     return new RelationshipTo(secondaryFirstname, secodnaryLastName, nameSuffix, relatedGender,
-        relatedDateOfBirth, relatedDateOfDeath, absentParentCode, sameHomeCode, secondaryRelation,
-        relationContext, primaryRelationCode, relationId);
+        relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
+        absentParentCode, sameHomeCode, secondaryRelation, relationContext, primaryRelationCode,
+        relationId);
 
   }
 

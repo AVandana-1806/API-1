@@ -97,8 +97,9 @@ public class SubstituteCareProviderTransformerTest {
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "0", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "Fish", "N", "Tuna", "Description", null, null, null, "000994415",
-        validSubstituteCareProvider().getBirthDate(), new LinkedList<>(), null, null, null,
-        new HashSet<>(), addresses, phoneNumbers, false, false);
+        validSubstituteCareProvider().getBirthDate(), validSubstituteCareProvider().getDeathDate(),
+        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, phoneNumbers, false,
+        false);
     SubstituteCareProvider substituteCareProvider = validSubstituteCareProvider();
     ParticipantIntakeApi actual =
         substituteCareProviderTransformer.tranform(substituteCareProvider);

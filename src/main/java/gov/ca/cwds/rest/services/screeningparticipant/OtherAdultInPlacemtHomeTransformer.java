@@ -62,8 +62,9 @@ public class OtherAdultInPlacemtHomeTransformer
 
     return new ParticipantIntakeApi(null, null, null, otherAdultLegacyDescriptor, firstName, null,
         lastName, null, otherAdultInPlacemtHome.getGenderCode(), null, null, null,
-        otherAdultInPlacemtHome.getBirthDate(), new LinkedList<>(), null, null, null,
-        new HashSet<>(), addresses, null, Boolean.FALSE, Boolean.FALSE);
+        otherAdultInPlacemtHome.getBirthDate(), otherAdultInPlacemtHome.getDeathDate(),
+        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, null, Boolean.FALSE,
+        Boolean.FALSE);
   }
 
   private String getFirstName(OtherAdultInPlacemtHome otherAdultInPlacemtHome) {

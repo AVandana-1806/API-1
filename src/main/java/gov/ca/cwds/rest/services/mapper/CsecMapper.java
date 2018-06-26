@@ -9,7 +9,9 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -18,10 +20,12 @@ public interface CsecMapper {
   CsecMapper INSTANCE = Mappers.getMapper(CsecMapper.class);
 
   @Mapping(target = "participantId", source = "participantId", ignore = true)
+  CsecEntity map(Csec csec);
+
+  @Mapping(target = "participantId", source = "participantId", ignore = true)
   Csec map(CsecEntity csecEntity);
 
-  @InheritInverseConfiguration
-  CsecEntity map(Csec csec);
+  CsecEntity update(@MappingTarget CsecEntity csecEntity, Csec csec);
 
   List<Csec> toDomain(List<CsecEntity> csecEntities);
 
