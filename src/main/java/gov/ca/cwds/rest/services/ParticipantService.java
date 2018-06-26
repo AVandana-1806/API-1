@@ -214,7 +214,7 @@ public class ParticipantService implements CrudsService {
     String clientId;
 
     LegacyDescriptor clientLegacyDesc = incomingParticipant.getLegacyDescriptor();
-    
+
     // true if descriptor null or descriptor Id is blank or descriptor is not for the client table
     boolean newClient = clientLegacyDesc == null || StringUtils.isBlank(clientLegacyDesc.getId())
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
@@ -274,9 +274,9 @@ public class ParticipantService implements CrudsService {
     try {
       Reporter savedReporter = saveReporter(incomingParticipant, role, referralId,
           screeningToReferral.getIncidentCounty(), messageBuilder);
-      incomingParticipant.setLegacyDescriptor(
-          new LegacyDescriptor(referralId, null, savedReporter.getLastUpdatedTime(),
-              LegacyTable.REPORTER.getName(), LegacyTable.REPORTER.getDescription()));
+      incomingParticipant.setLegacyDescriptor(new LegacyDescriptor(savedReporter.getReferralId(),
+          null, savedReporter.getLastUpdatedTime(), LegacyTable.REPORTER.getName(),
+          LegacyTable.REPORTER.getDescription()));
     } catch (ServiceException e) {
       String message = e.getMessage();
       messageBuilder.addMessageAndLog(message, e, LOGGER);
@@ -304,15 +304,15 @@ public class ParticipantService implements CrudsService {
         incomingParticipant.getApproximateAgeUnits());
 
     Client client = this.clientService.find(clientId);
-    
+
     // set the Estimated DOB code of CLIENT before setting the Referral Client age and age unit
-    R04880EstimatedDOBCodeSetting r04880EstimatedDOBCodeSetting = 
-        new R04880EstimatedDOBCodeSetting(client, referralClient);
-    r04880EstimatedDOBCodeSetting.execute();
     if (!isErrorMessagesExist(messageBuilder)) {
-      this.clientService.update(clientId, client);      
+      R04880EstimatedDOBCodeSetting r04880EstimatedDOBCodeSetting =
+          new R04880EstimatedDOBCodeSetting(client, referralClient);
+      r04880EstimatedDOBCodeSetting.execute();
+      this.clientService.update(clientId, client);
     }
-    
+
     R00834AgeUnitRestriction r00834AgeUnitRestriction =
         new R00834AgeUnitRestriction(client, referralClient, dateStarted);
     r00834AgeUnitRestriction.execute();

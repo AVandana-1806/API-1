@@ -144,14 +144,13 @@ public class ParticipantServiceTest {
   public void setup() {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
     legacyDescriptor.setLastUpdated(DateTime.now());
-    defaultVictim = new ParticipantResourceBuilder().setLegacyId("")
-        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    defaultVictim =
+        new ParticipantResourceBuilder().setLegacyDescriptor(null).createVictimParticipant();
     defaultReporter = new ParticipantResourceBuilder()
-        .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).setLegacyId("")
-        .createReporterParticipant();
-    defaultMandatedReporter =
-        new ParticipantResourceBuilder().setLegacyId("").createReporterParticipant();
-    defaultPerpetrator = new ParticipantResourceBuilder().setLegacyId("").createPerpParticipant();
+        .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).createReporterParticipant();
+    defaultMandatedReporter = new ParticipantResourceBuilder().createReporterParticipant();
+    defaultPerpetrator =
+        new ParticipantResourceBuilder().setLegacyDescriptor(null).createPerpParticipant();
 
     clientService = mock(ClientService.class);
     gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
@@ -491,9 +490,13 @@ public class ParticipantServiceTest {
   @Ignore
   public void shouldUpdateClientWhenClientIdIsPresent() throws Exception {
     String victimClientLegacyId = "098UijH1gf";
-
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor(victimClientLegacyId, null,
         lastUpdateDate, LegacyTable.CLIENT.getName(), null);
+    defaultReporter = new ParticipantResourceBuilder()
+        .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).createReporterParticipant();
+    defaultPerpetrator = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createPerpParticipant();
+
     Participant victim =
         new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor).createParticipant();
     Set<Participant> participants =
@@ -512,12 +515,13 @@ public class ParticipantServiceTest {
     when(clientService.create(any())).thenReturn(createdClient);
 
     Client updatedClient = mock(Client.class);
-    when(clientService.update(eq(victimClientLegacyId), any())).thenReturn(updatedClient);
+    when(clientService.update(eq(victimClientLegacyId), any(Client.class)))
+        .thenReturn(updatedClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
-    verify(clientService).update(eq(victim.getLegacyId()), any());
+    verify(clientService, times(4)).update(any(), any());
   }
 
 
@@ -554,7 +558,6 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test
-  @Ignore
   public void shouldNotUpdateClientWhenClientRecordHasBeenModifiedInLegacyDb() throws Exception {
     DateTime modifiedLastUpdateDate = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss.SSS")
         .parseDateTime("2000-01-27-15.34.55.123");
@@ -573,7 +576,6 @@ public class ParticipantServiceTest {
     Client updatedClient = new ClientResourceBuilder().setBirthDate(null).build();
     Client foundClient = new ClientResourceBuilder().setBirthDate(null)
         .setLastUpdateTime(modifiedLastUpdateDate).build();
-    when(foundClient.getLastUpdatedTime()).thenReturn(modifiedLastUpdateDate);
     PostedClient createdClient = mock(PostedClient.class);
     when(createdClient.getId()).thenReturn("LEGACYIDXX");
 
@@ -642,8 +644,10 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test
-  @Ignore
   public void testClientDoesNotExistFail() throws Exception {
+    defaultReporter = new ParticipantResourceBuilder()
+        .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).createReporterParticipant();
+    defaultVictim = new ParticipantResourceBuilder().createPerpParticipant();
     String badLegacyId = "IUKNOWNIDI";
 
     LegacyDescriptor descriptor =
@@ -655,9 +659,6 @@ public class ParticipantServiceTest {
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setParticipants(participants).createScreeningToReferral();
-    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
-        .setLastUpdateTime(modifiedLastUpdateDate).build();
-    when(clientService.find(any())).thenReturn(foundClient);
 
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
@@ -774,7 +775,6 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test
-  @Ignore
   public void shouldUpdatePerpetratorWhenAlreadyExists() throws Exception {
     String victimId = "VICTIM__ID";
     String existingPerpId = "1234567ABC";
@@ -824,7 +824,8 @@ public class ParticipantServiceTest {
         (short) 841, "A", "A", "X", "2001-03-15");
     verify(foundPerp, times(1)).update("Fred", "Finnigan", "Flintsone", "", "M", "123456789",
         (short) 841, "A", "A", "X", "2001-03-15");
-    verify(clientService).update(eq(existingPerpId), any());
+    verify(clientService, times(2)).update(eq(existingPerpId), any());
+
   }
 
   @SuppressWarnings("javadoc")
@@ -884,13 +885,12 @@ public class ParticipantServiceTest {
   }
 
   @Test
-  @Ignore
   public void shouldApplySensitivityIndicatorFromClientWhenSavingNewClient() {
-    Set<Participant> participants =
+    Set<Participant> defaultParticipant =
         new HashSet<>(Arrays.asList(defaultVictim, defaultReporter, defaultPerpetrator));
 
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
-        .setLimitedAccessCode("N").setParticipants(participants).createScreeningToReferral();
+        .setLimitedAccessCode("N").setParticipants(defaultParticipant).createScreeningToReferral();
 
     PostedClient createdClient = mock(PostedClient.class);
     when(clientService.create(any())).thenReturn(createdClient);
@@ -1002,7 +1002,6 @@ public class ParticipantServiceTest {
 
   @SuppressWarnings("javadoc")
   @Test(expected = ServiceException.class)
-  @Ignore
   public void shouldThrowServiceExceptionWhenUpdateClientThrowsPersistenceException()
       throws Exception {
     String victimClientLegacyId = "ABC123DSAF";
@@ -1023,10 +1022,9 @@ public class ParticipantServiceTest {
     PostedClient createdClient = mock(PostedClient.class);
 
     when(createdClient.getId()).thenReturn("LEGACYIDXX");
-    when(clientService.find(eq(victimClientLegacyId))).thenReturn(foundClient);
+    when(clientService.find(any(String.class))).thenReturn(foundClient);
     when(clientService.create(any())).thenReturn(createdClient);
-    when(clientService.update(eq(victimClientLegacyId), any()))
-        .thenThrow(new PersistenceException());
+    when(clientService.update(any(String.class), any())).thenThrow(new PersistenceException());
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
   }
