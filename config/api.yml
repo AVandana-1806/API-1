@@ -109,6 +109,7 @@ xaCmsDataSourceFactory:
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: auto
+      hibernate.connection.isolation: 1
       connection.release_mode: auto
       hibernate.connection.provider_disables_autocommit: true
   xaProperties:
@@ -140,6 +141,7 @@ xaCmsRsDataSourceFactory:
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: auto
+      hibernate.connection.isolation: 1
       connection.release_mode: auto
       hibernate.connection.provider_disables_autocommit: true
   xaProperties:
@@ -242,6 +244,8 @@ logging:
     "gov.ca.cwds.data.ApiHibernateInterceptor":
       # Use DEBUG or TRACE to see entities logged
       level: DEBUG
+    "com.atomikos.jdbc":
+      level: TRACE
     "io.dropwizard.server":
       level: INFO
     "io.dropwizard.jersey.DropwizardResourceConfig":

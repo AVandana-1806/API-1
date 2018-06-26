@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.persistence.EntityExistsException;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
@@ -90,6 +89,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
   @Override
   public CmsDocument create(CmsDocument request) {
     LOGGER.info("CmsDocumentService.create");
+
     gov.ca.cwds.data.persistence.cms.CmsDocument doc =
         new gov.ca.cwds.data.persistence.cms.CmsDocument(request);
     CmsDocument retval = null;
@@ -106,20 +106,24 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
     doc.setCompressionMethod(CmsDocumentDao.COMPRESSION_TYPE_PK_FULL);
 
-    final List<CmsDocumentBlobSegment> blobs = dao.compressDoc(doc, request.getBase64Blob().trim());
-    doc.setBlobSegments(new HashSet<>(blobs));
-    insertBlobs(doc, blobs);
-
+    LOGGER.warn("\n\t******* XA TESTING! SKIP DOCUMENT BLOBS! *******\n");
     try {
+      if (false) {
+        final List<CmsDocumentBlobSegment> blobs =
+            dao.compressDoc(doc, request.getBase64Blob().trim());
+        doc.setBlobSegments(new HashSet<>(blobs));
+        insertBlobs(doc, blobs);
+      }
+
       doc = dao.create(doc);
       retval = new CmsDocument(doc);
-      retval.setBase64Blob(base64Doc);
-      return retval;
-
-    } catch (EntityExistsException e) {
+      // retval.setBase64Blob(base64Doc);
+    } catch (Exception e) {
       LOGGER.error("CmsDocument already exists : {}", request);
       throw new ServiceException("CmsDocument already exists : {}" + request, e);
     }
+
+    return retval;
   }
 
   /**
