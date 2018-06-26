@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -68,15 +67,13 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   private String nameSuffix;
 
   @JsonProperty("gender")
-  @OneOf(value = {"male", "female", "unknown"})
+  @OneOf(value = {"male", "female", "unknown", "intersex"})
   @ApiModelProperty(required = false, readOnly = false, value = "Gender Code", example = "male",
       allowableValues = "male, female, unknown, intersex")
   private String gender;
 
   @JsonProperty("ssn")
   @ApiModelProperty(required = false, readOnly = false, value = "", example = "123456789")
-  // This regualr expression(regexp) validates the ssn should be only numeric with hypens
-  @Pattern(regexp = "^(\\d{3}-\\d{2}-\\d{4})$")
   private String ssn;
 
   @JsonProperty("date_of_birth")
