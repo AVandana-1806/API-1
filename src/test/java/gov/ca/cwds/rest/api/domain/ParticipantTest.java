@@ -21,6 +21,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.fixture.AddressResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.resources.cms.JerseyGuiceRule;
 import io.dropwizard.jackson.Jackson;
 
@@ -100,6 +103,7 @@ public class ParticipantTest {
   public void serializesToJSON() throws Exception {
 
     Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+
     String expected = MAPPER.writeValueAsString(participant);
 
     String serialized = MAPPER.writeValueAsString(MAPPER
@@ -110,15 +114,20 @@ public class ParticipantTest {
 
   @Test
   public void deserializesFromJSON() throws Exception {
-    Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+    DateTime dateTime = DateTime.parse("2018-06-11T11:47:07.524-07:00");
+    DateTime dateTimeUTC = dateTime.withZone(DateTimeZone.UTC);
+    LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor("098UijH1gf", null, dateTimeUTC, LegacyTable.CLIENT.getName(), null);
+
+    Participant participant = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createVictimParticipant();
 
     Participant serialized = MAPPER
         .readValue(fixture("fixtures/domain/participant/valid/valid.json"), Participant.class);
-
-    String p = MAPPER.writeValueAsString(participant);
-    String e = MAPPER.writeValueAsString(serialized);
-
+    MAPPER.writeValueAsString(serialized);
+    MAPPER.writeValueAsString(participant);
     assertThat(serialized, is(participant));
+
   }
 
   @Test

@@ -25,6 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.assertj.core.util.Sets;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -41,6 +43,7 @@ import gov.ca.cwds.fixture.CrossReportResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.investigation.SafetyAlertsEntityBuilder;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 import gov.ca.cwds.rest.core.Api;
@@ -127,7 +130,12 @@ public class ScreeningToReferralTest {
   public void shouldSerializeToJSON() throws Exception {
 
     Address address = new AddressResourceBuilder().createAddress();
-    Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
+    DateTime dateTime = DateTime.parse("2018-06-11T11:47:07.524-07:00");
+    DateTime dateTimeUTC = dateTime.withZone(DateTimeZone.UTC);
+    LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor("098UijH1gf", null, dateTimeUTC, LegacyTable.CLIENT.getName(), null);
+    Participant participant = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createVictimParticipant();
     participants.add(participant);
     CrossReport crossReport = new CrossReport("", "", "", filedOutOfState, method, informDate,
         countyId, Sets.newHashSet());
