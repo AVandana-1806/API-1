@@ -38,8 +38,8 @@ public class CmsNSHelper {
 
   public Map<String, Map<CrudsService, Response>> handleResponse(
       Map<CrudsService, Request> cmsRequests, Map<CrudsService, Request> nsRequests) {
-    final boolean isNonXa = !RequestExecutionContext.instance().isXaTransaction();
-    LOGGER.info("CmsNSHelper.handleResponse: isNonXa: {}", isNonXa);
+    final boolean isXa = RequestExecutionContext.instance().isXaTransaction();
+    LOGGER.info("CmsNSHelper.handleResponse: isNonXa: {}", isXa);
     final Map<CrudsService, Response> cmsResponse = new HashMap<>();
     final Map<CrudsService, Response> nsResponse = new HashMap<>();
     final Map<String, Map<CrudsService, Response>> response = new HashMap<>();
@@ -52,7 +52,7 @@ public class CmsNSHelper {
     final Session sessionNS = nsSessionFactory.getCurrentSession();
 
     try {
-      if (isNonXa) {
+      if (!isXa) {
         ManagedSessionContext.bind(sessionCMS); // NOSONAR
       }
       final Transaction transactionCMS = sessionCMS.getTransaction();
@@ -62,7 +62,7 @@ public class CmsNSHelper {
           final CrudsService service = cmsRequestsService.getKey();
           referral = service.create(cmsRequests.get(service));
           cmsResponse.put(service, referral);
-          if (isNonXa) {
+          if (!isXa) {
             sessionCMS.flush();
           }
         } catch (Exception e) {
@@ -70,14 +70,14 @@ public class CmsNSHelper {
 
           // NOT IN XA TRANSACTIONS!
           // Throwing an exception should suffice.
-          if (isNonXa) {
+          if (!isXa) {
             transactionCMS.rollback();
           }
           throw e;
         }
       }
 
-      if (isNonXa) {
+      if (!isXa) {
         ManagedSessionContext.bind(sessionNS); // NOSONAR
       }
 
@@ -88,7 +88,7 @@ public class CmsNSHelper {
           final CrudsService service = nsRequestsService.getKey();
           person = service.create(nsRequests.get(service));
           nsResponse.put(service, person);
-          if (isNonXa) {
+          if (!isXa) {
             sessionNS.flush();
           }
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class CmsNSHelper {
 
           // NOT IN XA TRANSACTIONS!
           // Throwing an exception should suffice.
-          if (isNonXa) {
+          if (!isXa) {
             transactionNS.rollback();
             transactionCMS.rollback();
           }
@@ -105,7 +105,7 @@ public class CmsNSHelper {
         }
         try {
           // NOT IN XA TRANSACTIONS!
-          if (isNonXa) {
+          if (!isXa) {
             transactionCMS.commit();
             transactionNS.commit();
           }
@@ -115,7 +115,7 @@ public class CmsNSHelper {
         }
       }
     } finally {
-      if (isNonXa) {
+      if (!isXa) {
         ManagedSessionContext.unbind(cmsSessionFactory); // NOSONAR
         ManagedSessionContext.unbind(nsSessionFactory); // NOSONAR
       }
