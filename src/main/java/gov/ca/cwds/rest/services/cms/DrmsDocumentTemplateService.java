@@ -87,7 +87,8 @@ public class DrmsDocumentTemplateService
         LOGGER.warn("CAN'T LOAD (_NS) SCREENER NARRATIVE TEMPLATE.");
         return null;
       }
-      Date now = new Date();
+
+      final Date now = new Date();
       final String docAuth = "CWDS_NS";
       final String docServ = "AUTOCRTD";
       final String docDate = new SimpleDateFormat(DomainObject.DATE_FORMAT).format(now);

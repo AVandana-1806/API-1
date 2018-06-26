@@ -258,13 +258,16 @@ public class ReferralService implements
        * Attach default screener narrative created from template
        */
       referralId = CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId());
-      String screenerNarrativeId =
-          createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
-      if (!StringUtils.isBlank(screenerNarrativeId)) {
-        // Pass the referral Id
-        referral.setUiIdentifier(referralId);
-        referral.setDrmsAllegationDescriptionDoc(screenerNarrativeId);
-      }
+
+      LOGGER.warn("******** XA: SKIP DOCUMENT CREATION! ******** ");
+      // String screenerNarrativeId =
+      // createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
+      // if (!StringUtils.isBlank(screenerNarrativeId)) {
+      // // Pass the referral Id
+      // referral.setUiIdentifier(referralId);
+      // referral.setDrmsAllegationDescriptionDoc(screenerNarrativeId);
+      // }
+
       PostedReferral postedReferral = this.create(referral);
       referralId = postedReferral.getId();
 
@@ -503,11 +506,10 @@ public class ReferralService implements
       CmsDocument cmsTemplate = cmsDocumentService.find(drmsTemplate.getCmsDocumentId());
 
       // Make Word doc from Template with new DOC_HANDLE etc.
+      final Date now = new Date();
+      final String docAuth = RequestExecutionContext.instance().getUserId();
 
-      Date now = new Date();
-      String docAuth = RequestExecutionContext.instance().getUserId();
-
-      SecureRandom random = new SecureRandom();
+      final SecureRandom random = new SecureRandom();
       String docHandle = DocUtils.generateDocHandle(now, docAuth);
       Short segments = 1;
       Long docLength = 1L;
