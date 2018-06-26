@@ -57,6 +57,22 @@ public class ScreeningRelationshipService implements CrudsService {
 
   @Override
   public Response update(Serializable serializable, Request request) {
-    return null;
+    assert serializable instanceof String;
+    ScreeningRelationship relationship = (ScreeningRelationship) request;
+    Relationship entity = relationshipDao.find(serializable);
+    if (entity == null) {
+      return null;
+    }
+
+    entity.setRelativeId(relationship.getRelativeId());
+    entity.setRelationshipType(relationship.getRelationshipType());
+    entity.setUpdatedAt(new Date());
+    entity.setAbsentParentIndicator(relationship.isAbsentParentIndicator());
+    entity.setSameHomeStatus(SameHomeStatus.toValue(relationship.getSameHomeStatus()));
+    relationshipDao.update(entity);
+    LOGGER.debug("updated relationship {}", relationship);
+
+    relationship.setId(entity.getId());
+    return relationship;
   }
 }
