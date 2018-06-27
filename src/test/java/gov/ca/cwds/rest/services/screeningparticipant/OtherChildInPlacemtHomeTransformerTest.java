@@ -118,7 +118,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
         LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
 
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "streetNumber streetName", "Sacramento", "CA", "99999-0", null, addressLegacyDescriptor)));
+        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor)));
     Set<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "aaa", null, "bbb", null, "male", null, null, null, new Date(), null, new LinkedList<>(),
