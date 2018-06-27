@@ -210,7 +210,9 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private void saveRelationships(ScreeningToReferral screeningToReferral) {
+    if (screeningToReferral.getRelationships() == null){ return; }
     for (ScreeningRelationship relationship : screeningToReferral.getRelationships()) {
+      if (relationship == null) continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
           ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);

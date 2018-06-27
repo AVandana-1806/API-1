@@ -35,7 +35,7 @@ public class HoiReferralResourceIRT extends HOIBaseTest {
 
     assertHOIReferralsAreSorted(new String[]{"MYsSPHW0DW", "9OQhOAE0DW"}, actualHOIReferrals);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 10);
+    assertQueryExecutionCount(CMS_BUNDLE_TAG, 6);
     assertDbNotTouched(NS_BUNDLE_TAG);
   }
 

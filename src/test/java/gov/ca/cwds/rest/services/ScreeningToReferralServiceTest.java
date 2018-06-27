@@ -809,6 +809,54 @@ public class ScreeningToReferralServiceTest {
     verify(clientRelationshipService, times(0)).createRelationship(any());
   }
 
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipIsNull()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    Set<ScreeningRelationship> relationships = new HashSet<>();
+    ScreeningRelationship relationship = null;
+
+    relationships.add(relationship);
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setRelationships(relationships).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipsAreNonExistant()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setRelationships(null).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
   @SuppressWarnings("javadoc")
   @Test
   // R - 03895
