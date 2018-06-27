@@ -50,9 +50,9 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         serviceProvider.getFirstName(), serviceProvider.getMiddleName(),
         serviceProvider.getLastName(), serviceProvider.getSuffixTitleDescription(), null, null,
-        null, null, serviceProvider.getBirthDate(), new LinkedList<>(), null, null, null,
-        new HashSet<>(), addresses, phoneNumbers, "R".equals(sensitivityIndicator),
-        "S".equals(sensitivityIndicator));
+        null, null, serviceProvider.getBirthDate(), serviceProvider.getDeathDate(),
+        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, phoneNumbers,
+        "R".equals(sensitivityIndicator), "S".equals(sensitivityIndicator));
   }
 
   private String getZip(ServiceProvider serviceProvider) {

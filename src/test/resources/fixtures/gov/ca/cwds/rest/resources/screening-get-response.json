@@ -82,6 +82,7 @@
       "gender": "male",
       "ssn": "456-47-8798",
       "date_of_birth": "2002-11-15",
+      "date_of_death": "2002-12-30",
       "roles": [
         "Victim"
       ],
@@ -165,6 +166,7 @@
       "gender": "male",
       "ssn": "435-64-7898",
       "date_of_birth": "1990-03-03",
+      "date_of_death": "1990-12-30",
       "roles": [
         "Perpetrator"
       ],
@@ -232,6 +234,7 @@
       "gender": "female",
       "ssn": "435-40-1360",
       "date_of_birth": "1967-09-05",
+      "date_of_death": "2000-12-30",
       "roles": [
         "Mandated Reporter"
       ],

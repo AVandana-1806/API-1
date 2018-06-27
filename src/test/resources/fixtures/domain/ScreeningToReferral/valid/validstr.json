@@ -39,12 +39,12 @@
     {
       "id": 5432,
       "legacy_source_table": "CLIENT_T",
-      "legacy_id": "1234567ABC",
+      "legacy_id": null,
       "legacy_descriptor": {
-        "legacy_id": null,
+        "legacy_id": "098UijH1gf",
         "legacy_ui_id": null,
-        "legacy_last_updated": null,
-        "legacy_table_name": null,
+        "legacy_last_updated":"2018-06-11T11:47:07.524-07:00",
+        "legacy_table_name": "CLIENT_T",
         "legacy_table_description": null
       },
       "first_name": "John",

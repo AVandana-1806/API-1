@@ -204,7 +204,9 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private void saveRelationships(ScreeningToReferral screeningToReferral) {
+    if (screeningToReferral.getRelationships() == null){ return; }
     for (ScreeningRelationship relationship : screeningToReferral.getRelationships()) {
+      if (relationship == null) continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
           ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
@@ -489,7 +491,7 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private boolean validateAllegationVictimExists(String victimClientId) {
-    if (victimClientId.isEmpty()) {
+    if (StringUtils.isBlank(victimClientId)) {
       String message = "Victim could not be determined for an allegation";
       logError(message, new ServiceException(message));
       return false;
