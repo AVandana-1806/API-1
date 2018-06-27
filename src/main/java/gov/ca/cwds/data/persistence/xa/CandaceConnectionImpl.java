@@ -56,25 +56,25 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public PreparedStatement prepareStatement(String sql) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.prepareStatement: sql: {}", sql);
+    LOGGER.debug("CandaceConnectionImpl.prepareStatement: sql: {}", sql);
     return con.prepareStatement(sql);
   }
 
   @Override
   public CallableStatement prepareCall(String sql) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.prepareCall: sql: {}", sql);
+    LOGGER.debug("CandaceConnectionImpl.prepareCall: sql: {}", sql);
     return con.prepareCall(sql);
   }
 
   @Override
   public String nativeSQL(String sql) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.nativeSQL: sql: {}", sql);
+    LOGGER.debug("CandaceConnectionImpl.nativeSQL: sql: {}", sql);
     return con.nativeSQL(sql);
   }
 
   @Override
   public void setAutoCommit(boolean autoCommit) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.setAutoCommit: autoCommit: {}", autoCommit);
+    LOGGER.debug("CandaceConnectionImpl.setAutoCommit: autoCommit: {}", autoCommit);
     con.setAutoCommit(autoCommit);
   }
 
@@ -107,7 +107,7 @@ public class CandaceConnectionImpl implements Connection {
   @Override
   public boolean isClosed() throws SQLException {
     final boolean ret = con.isClosed();
-    LOGGER.info("CandaceConnectionImpl.isClosed: {}", ret);
+    LOGGER.debug("CandaceConnectionImpl.isClosed: {}", ret);
     return ret;
   }
 
@@ -118,7 +118,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public void setReadOnly(boolean readOnly) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.setReadOnly: readOnly: {}", readOnly);
+    LOGGER.debug("CandaceConnectionImpl.setReadOnly: readOnly: {}", readOnly);
     con.setReadOnly(readOnly);
   }
 
@@ -139,14 +139,14 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public void setTransactionIsolation(int level) throws SQLException {
-    LOGGER.info("CandaceConnectionImpl.setTransactionIsolation: level: {}", level);
+    LOGGER.debug("CandaceConnectionImpl.setTransactionIsolation: level: {}", level);
     con.setTransactionIsolation(level);
   }
 
   @Override
   public int getTransactionIsolation() throws SQLException {
     final int ret = con.getTransactionIsolation();
-    LOGGER.info("CandaceConnectionImpl.getTransactionIsolation: {}", ret);
+    LOGGER.debug("CandaceConnectionImpl.getTransactionIsolation: {}", ret);
     return ret;
   }
 

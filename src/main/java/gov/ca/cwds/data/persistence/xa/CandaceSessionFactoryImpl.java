@@ -124,13 +124,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
-    LOGGER.info("CandaceSessionFactoryImpl.startRequest");
+    LOGGER.debug("CandaceSessionFactoryImpl.startRequest");
     local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    LOGGER.info("CandaceSessionFactoryImpl.endRequest");
+    LOGGER.debug("CandaceSessionFactoryImpl.endRequest");
     local.set(null); // clear the current thread
   }
 
@@ -175,7 +175,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Session openSession() throws HibernateException {
-    LOGGER.info("CandaceSessionFactoryImpl.openSession");
+    LOGGER.debug("CandaceSessionFactoryImpl.openSession");
 
     CandaceSessionImpl candaceSession = local.get();
     if (candaceSession == null) {
@@ -198,7 +198,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Session getCurrentSession() throws HibernateException {
-    LOGGER.info("CandaceSessionFactoryImpl.getCurrentSession");
+    LOGGER.debug("CandaceSessionFactoryImpl.getCurrentSession");
     final CandaceSessionImpl candaceSession = local.get();
     return candaceSession != null ? candaceSession : pick().getCurrentSession();
   }
@@ -215,19 +215,19 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSession openStatelessSession() {
-    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession");
+    LOGGER.debug("CandaceSessionFactoryImpl.openStatelessSession");
     return pick().openStatelessSession();
   }
 
   @Override
   public StatelessSession openStatelessSession(Connection connection) {
-    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession(con)");
+    LOGGER.debug("CandaceSessionFactoryImpl.openStatelessSession(con)");
     return pick().openStatelessSession(connection);
   }
 
   @Override
   public Statistics getStatistics() {
-    LOGGER.info("CandaceSessionFactoryImpl.getStatistics");
+    LOGGER.debug("CandaceSessionFactoryImpl.getStatistics");
     return pick().getStatistics();
   }
 

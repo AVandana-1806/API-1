@@ -106,7 +106,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction getTransaction() {
-    LOGGER.info("CandaceSessionImpl.getTransaction");
+    LOGGER.debug("CandaceSessionImpl.getTransaction");
     if (this.txn == null) {
       this.txn = new CandaceTransactionImpl(session.getTransaction());
     }
@@ -183,7 +183,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.info("CandaceSessionImpl.flush");
+    LOGGER.debug("CandaceSessionImpl.flush");
     session.flush();
   }
 
@@ -533,7 +533,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void clear() {
-    LOGGER.info("CandaceSessionImpl.clear");
+    LOGGER.debug("CandaceSessionImpl.clear");
     session.clear();
   }
 
@@ -726,13 +726,13 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void doWork(Work work) throws HibernateException {
-    LOGGER.info("CandanceSessionImpl.doWork: work class: {}", work.getClass());
+    LOGGER.debug("CandanceSessionImpl.doWork: work class: {}", work.getClass());
     session.doWork(work);
   }
 
   @Override
   public <T> T doReturningWork(ReturningWork<T> work) throws HibernateException {
-    LOGGER.info("CandanceSessionImpl.doReturningWork: work class: {}", work.getClass());
+    LOGGER.debug("CandanceSessionImpl.doReturningWork: work class: {}", work.getClass());
     return session.doReturningWork(work);
   }
 
@@ -781,13 +781,13 @@ public class CandaceSessionImpl implements Session {
   @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(String queryString) {
-    LOGGER.info("CandanceSessionImpl.createQuery: queryString: {}", queryString);
+    LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}", queryString);
     return session.createQuery(queryString);
   }
 
   @Override
   public <T> Query<T> createQuery(String queryString, Class<T> resultType) {
-    LOGGER.info("CandanceSessionImpl.createQuery: queryString: {}, resultType: {}", queryString,
+    LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}, resultType: {}", queryString,
         resultType);
     return session.createQuery(queryString, resultType);
   }
@@ -811,7 +811,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public <T> Query<T> createNamedQuery(String name, Class<T> resultType) {
-    LOGGER.info("CandanceSessionImpl.createNamedQuery: name: {}, resultType: {}", name, resultType);
+    LOGGER.debug("CandanceSessionImpl.createNamedQuery: name: {}, resultType: {}", name,
+        resultType);
     return session.createNamedQuery(name, resultType);
   }
 
@@ -824,7 +825,7 @@ public class CandaceSessionImpl implements Session {
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
-    LOGGER.info("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
+    LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
         resultClass);
     return session.createNativeQuery(sqlString, resultClass);
   }
