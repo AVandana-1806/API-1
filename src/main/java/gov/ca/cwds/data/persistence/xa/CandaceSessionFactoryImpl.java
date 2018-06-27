@@ -94,8 +94,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     if (normSessionFactory == null) {
       init();
     }
-    return RequestExecutionContext.instance().isXaTransaction() ? xaSessionFactory
-        : normSessionFactory;
+
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    return ctx != null && ctx.isXaTransaction() ? xaSessionFactory : normSessionFactory;
   }
 
   protected synchronized void init() {

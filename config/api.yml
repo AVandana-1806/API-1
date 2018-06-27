@@ -35,8 +35,8 @@ nsDataSourceFactory:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
       hibernate.jdbc.time_zone: America/Los_Angeles
       hibernate.id.new_generator_mappings: false
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.temp.use_jdbc_metadata_defaults: false
@@ -56,8 +56,8 @@ cmsDataSourceFactory:
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
-      hibernate.show_sql: false
-      hibernate.format_sql: true
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.use_sql_comments: false
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
@@ -80,8 +80,8 @@ rsDataSourceFactory:
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
-      hibernate.show_sql: false
-      hibernate.format_sql: true
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.use_sql_comments: false
       hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
@@ -106,8 +106,8 @@ xaCmsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: true
-      hibernate.format_sql: true
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
@@ -140,8 +140,8 @@ xaCmsRsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: true
-      hibernate.format_sql: true
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_CMSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
@@ -174,8 +174,8 @@ xaNsDataSourceFactory:
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
       hibernate.id.new_generator_mappings: false
-      hibernate.show_sql: true
-      hibernate.format_sql: true
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
