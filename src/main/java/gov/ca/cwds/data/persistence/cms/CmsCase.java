@@ -34,6 +34,7 @@ import gov.ca.cwds.rest.validation.ValidCounty;
  * 
  * @author CWDS API Team
  */
+//@formatter:off
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.CmsCase.findByClientIds",
     query = "FROM CmsCase WHERE fkchldClt IN :clientIds")
 
@@ -54,9 +55,10 @@ import gov.ca.cwds.rest.validation.ValidCounty;
         + "     {h-schema}CASE_T Y                  \n"
         + "     WHERE Z.FKCLIENT_0  = :clientId     \n"
         + "     AND Z.FKCLIENT_T <> :clientId       \n"
-        + "     AND Z.FKCLIENT_T = Y.FKCHLD_CLT     \n" + "   WITH UR",
+        + "     AND Z.FKCLIENT_T = Y.FKCHLD_CLT     \n" 
+        + "   FOR READ ONLY WITH UR",
     resultClass = CmsCase.class, readOnly = true)
-
+//@formatter:on
 @Entity
 @Table(name = "CASE_T")
 @JsonPropertyOrder(alphabetic = true)

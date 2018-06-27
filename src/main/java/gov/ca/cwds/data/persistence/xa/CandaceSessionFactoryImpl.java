@@ -60,7 +60,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
-  private static final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  // Only works for the same datasource.
+  // private static final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
 
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
@@ -125,13 +126,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.debug("CandaceSessionFactoryImpl.startRequest");
-    local.set(null); // clear the current thread
+    // local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
     LOGGER.debug("CandaceSessionFactoryImpl.endRequest");
-    local.set(null); // clear the current thread
+    // local.set(null); // clear the current thread
   }
 
   // ==================================
@@ -177,13 +178,14 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public Session openSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.openSession");
 
-    CandaceSessionImpl candaceSession = local.get();
-    if (candaceSession == null) {
-      candaceSession = new CandaceSessionImpl(pick().openSession());
-      local.set(candaceSession);
-    }
+    // CandaceSessionImpl candaceSession = local.get();
+    // if (candaceSession == null) {
+    // candaceSession = new CandaceSessionImpl(pick().openSession());
+    // local.set(candaceSession);
+    // }
+    // return candaceSession;
 
-    return candaceSession;
+    return new CandaceSessionImpl(pick().openSession());
   }
 
   @Override
@@ -267,7 +269,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public void close() {
     LOGGER.warn("\n\t******** CandaceSessionFactoryImpl.close ********\n");
     CaresStackUtils.logStack();
-    local.set(null);
+    // local.set(null);
     pick().close();
   }
 

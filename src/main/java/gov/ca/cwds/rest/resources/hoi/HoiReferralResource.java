@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT;
 
 import java.util.List;
@@ -63,7 +64,7 @@ public class HoiReferralResource {
    * @param clientIds - clientIds
    * @return the hoi referrals
    */
-  @UnitOfWork(value = "cms", readOnly = true, transactional = true, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),

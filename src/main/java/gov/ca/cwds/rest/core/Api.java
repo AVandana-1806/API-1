@@ -180,6 +180,11 @@ public final class Api {
   public static final String DATASOURCE_CMS = Datasource.CMS;
 
   /**
+   * Identifer for CMS DB2 datasources.
+   */
+  public static final String DS_CMS = Datasource.CMS;
+
+  /**
    * Identifer for CMS DB2 replicated datasources.
    */
   public static final String DATASOURCE_CMS_REP = Datasource.CMS_REP;

@@ -58,7 +58,7 @@ public class ReferralClientService implements
    *        {@link gov.ca.cwds.data.rules.TriggerTablesDao} objects
    * @param staffpersonDao The {@link Dao} handling
    *        {@link gov.ca.cwds.data.persistence.cms.StaffPerson} objects
-   * @param riReferralClient the ri for referral client
+   * @param riReferralClient RI for referral client
    */
   @Inject
   public ReferralClientService(ReferralClientDao referralClientDao,
