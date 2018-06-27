@@ -20,7 +20,6 @@ import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.inject.CmsSessionFactory;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
-import gov.ca.cwds.rest.validation.CaresValidationUtils;
 
 /**
  * Hibernate DAO for DB2 stored procedure that calls soundex SSA Name3 and saves to the client
@@ -95,6 +94,7 @@ public class SsaName3Dao {
    * @param primaryKey primary key
    * @param nameCode defines type of entity
    */
+
   public void deleteSsaname3(String phttTable, String primaryKey, String nameCode) {
     callStoredProc(phttTable, "D", primaryKey, nameCode, " ", " ", " ", " ", " ", s,
         DomainChef.uncookDateString(" "), " ");
@@ -120,19 +120,13 @@ public class SsaName3Dao {
   protected void callStoredProc(String tableName, String crudOper, String identifier, String nameCd,
       String firstName, String middleName, String lastName, String streettNumber, String streetName,
       Short gvrEntc, Date updateTimeStamp, String updateId) {
-
-    if (CaresValidationUtils.isBusinessValidationEnabled()) {
-      LOGGER.warn("\n\t ********* XA: SKIP SPSSANAME3 UNTIL COMMIT IS REMOVED! ********* \n");
-      return;
-    }
-
-    final Session session = sessionFactory.getCurrentSession();
+    Session session = sessionFactory.getCurrentSession();
     final String STORED_PROC_NAME = "SPSSANAME3";
     final String schema =
         (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
 
     try {
-      final ProcedureCall q = session.createStoredProcedureCall(schema + "." + STORED_PROC_NAME);
+      ProcedureCall q = session.createStoredProcedureCall(schema + "." + STORED_PROC_NAME);
 
       q.registerStoredProcedureParameter("TABLENAME", String.class, ParameterMode.IN);
       q.registerStoredProcedureParameter("CRUDFUNCT", String.class, ParameterMode.IN);
@@ -166,7 +160,7 @@ public class SsaName3Dao {
 
       final String returnStatus = (String) q.getOutputParameterValue("RETSTATUS");
       final String returnMessage = (String) q.getOutputParameterValue("RETMESSAG");
-      final int returnCode = Integer.parseInt(returnStatus);
+      int returnCode = Integer.parseInt(returnStatus);
 
       LOGGER.info("storeProcReturnStatus: {}, storeProcreturnMessage: {}", returnStatus,
           returnMessage);
@@ -175,12 +169,13 @@ public class SsaName3Dao {
        * procedure 3=SQL failed, 4=Call to SSANAME3 DLL failed
        */
       if (returnCode != 0 && returnCode != 1) {
-        LOGGER.error("Stored Procedure return message - {}", returnMessage);
-        throw new DaoException("Stored Procedure returned with ERROR - {}" + returnMessage);
+        String msg = "Stored Procedure " + STORED_PROC_NAME + " returned with ERROR: " + returnMessage;
+        LOGGER.error(msg);
+        throw new DaoException(msg);
       }
 
     } catch (DaoException h) {
-      throw new DaoException("Call to Stored Procedure FAILED! - " + h, h);
+      throw new DaoException("Call to Stored Procedure " + STORED_PROC_NAME + " failed - " + h, h);
     }
   }
 
