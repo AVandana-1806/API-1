@@ -120,7 +120,7 @@ public class ClientScpEthnicityService
    * @param otherRaceCodes - race codes
    */
   public void createOtherEthnicity(String clientId, List<Short> otherRaceCodes) {
-    if (otherRaceCodes != null) {
+    if (otherRaceCodes != null && !otherRaceCodes.isEmpty()) {
       deleteExistingRecords(clientId);
       for (Short code : otherRaceCodes) {
         gov.ca.cwds.data.persistence.cms.ClientScpEthnicity clientScpEthnicity =
