@@ -199,8 +199,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Session getCurrentSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.getCurrentSession");
-    final CandaceSessionImpl candaceSession = local.get();
-    return candaceSession != null ? candaceSession : pick().getCurrentSession();
+    // final CandaceSessionImpl candaceSession = local.get();
+    // return candaceSession != null ? candaceSession : pick().getCurrentSession();
+
+    return new CandaceSessionImpl(pick().getCurrentSession());
   }
 
   @Override
