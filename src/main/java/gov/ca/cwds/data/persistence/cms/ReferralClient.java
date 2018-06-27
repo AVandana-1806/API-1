@@ -25,8 +25,6 @@ import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import gov.ca.cwds.data.CmsSystemCodeDeserializer;
@@ -40,15 +38,15 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * @author CWDS API Team
  */
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.ReferralClient.findByReferral",
-    query = "FROM ReferralClient WHERE referralId = :referralId")
+    query = "FROM gov.ca.cwds.data.persistence.cms.ReferralClient WHERE referralId = :referralId",
+    readOnly = true, cacheable = true)
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.ReferralClient.findByClientIds",
-    query = "FROM ReferralClient WHERE clientId in :clientIds")
+    query = "FROM gov.ca.cwds.data.persistence.cms.ReferralClient WHERE clientId in :clientIds",
+    readOnly = true, cacheable = true)
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "REFR_CLT")
 @IdClass(ReferralClient.PrimaryKey.class)
-@JsonPropertyOrder(alphabetic = true)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferralClient extends CmsPersistentObject {
 
   /**

@@ -157,6 +157,7 @@ dependencies {
     compile (group: 'gov.ca.cwds.api', name: 'api-core', version: coreApiVersion) {
 	    exclude group: 'org.glassfish.jersey.core'
 	    exclude group: 'org.apache.poi'
+	    exclude group: 'org.hibernate'
 	}
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
@@ -185,7 +186,9 @@ dependencies {
     compile group: 'com.atomikos', name: 'atomikos-util', version: '4.0.6'
     compile group: 'com.atomikos', name: 'transactions-jta', version: '4.0.6'
     compile group: 'com.atomikos', name: 'transactions-hibernate4', version: '4.0.6'
-    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.12.Final'
+
+	compile group: 'org.hibernate', name: 'hibernate-core',    version: '5.2.17.Final'
+    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.17.Final'
     
 	// testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
     testCompile group: 'gov.ca.cwds.api', name: 'api-core-test-support', version: coreApiVersion

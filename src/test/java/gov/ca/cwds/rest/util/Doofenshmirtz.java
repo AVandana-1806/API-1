@@ -242,6 +242,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     when(q.list()).thenReturn(new ArrayList<>());
 
     when(q.setString(any(String.class), any(String.class))).thenReturn(q);
+    when(q.setShort(any(Short.class), any(Short.class))).thenReturn(q);
     when(q.setParameter(any(String.class), any(String.class), any(StringType.class))).thenReturn(q);
     when(q.setParameter(any(String.class), any(String.class))).thenReturn(q);
     when(q.setHibernateFlushMode(any(FlushMode.class))).thenReturn(q);
