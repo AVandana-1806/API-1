@@ -31,7 +31,7 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
     assertEquals(expectedHOICases, actualHOICases);
     assertHOICasesAreSorted(new String[] {"Co8uaDi0DW", "IdQImWo0DW"}, actualHOICases);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 11);
+    assertQueryExecutionCount(CMS_BUNDLE_TAG, 9);
     assertDbNotTouched(NS_BUNDLE_TAG);
   }
 
