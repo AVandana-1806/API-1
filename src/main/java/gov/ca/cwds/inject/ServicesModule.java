@@ -206,6 +206,7 @@ public class ServicesModule extends AbstractModule {
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
         LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
+        BaseAuthorizationDao.setXaMode(true);
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
