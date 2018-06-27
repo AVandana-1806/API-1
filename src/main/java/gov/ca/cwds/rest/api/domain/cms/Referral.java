@@ -452,7 +452,7 @@ public class Referral extends ReportingDomain implements Request, Response {
     this.limitedAccessCode =
         limitedAccessCode == null ? DEFAULT_LIMITIED_ACCESS_CODE : limitedAccessCode;
     this.mandatedCrossReportReceivedDate = mandatedCrossReportReceivedDate;
-    this.referralName = referralName == null ? "" : referralName;
+    this.referralName = referralName;
     this.openAdequateCaseCode = openAdequateCaseCode;
     this.receivedDate = receivedDate;
     this.receivedTime = receivedTime;
