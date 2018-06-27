@@ -138,6 +138,7 @@ public class ServicesModule extends AbstractModule {
         aspect.afterEnd();
         return result;
       } catch (Exception e) {
+        LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
