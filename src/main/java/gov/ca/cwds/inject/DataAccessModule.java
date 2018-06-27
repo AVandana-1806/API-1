@@ -137,7 +137,7 @@ public class DataAccessModule extends AbstractModule {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessModule.class);
 
   static {
-    LOGGER.warn("DataAccessModule: static: class loaded");
+    LOGGER.warn("DataAccessModule: static point 1");
   }
 
   private Map<String, Client> clients;

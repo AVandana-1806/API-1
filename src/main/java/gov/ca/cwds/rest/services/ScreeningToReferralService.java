@@ -165,7 +165,7 @@ public class ScreeningToReferralService implements CrudsService {
       }
     }
 
-    // TO1DO: XA DEBUG:
+    // DRS: XA DEBUG: turn off business rules locally with system property.
     if (foundError && CaresValidationUtils.isBusinessValidationEnabled()) {
       LOGGER.warn("XA: DISABLE BUSINESS VALIDATION!");
       foundError = false;
@@ -210,9 +210,12 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private void saveRelationships(ScreeningToReferral screeningToReferral) {
-    if (screeningToReferral.getRelationships() == null){ return; }
+    if (screeningToReferral.getRelationships() == null) {
+      return;
+    }
     for (ScreeningRelationship relationship : screeningToReferral.getRelationships()) {
-      if (relationship == null) continue;
+      if (relationship == null)
+        continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
           ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
