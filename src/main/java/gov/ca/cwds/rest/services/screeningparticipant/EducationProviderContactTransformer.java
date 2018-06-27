@@ -74,11 +74,13 @@ public class EducationProviderContactTransformer
   }
 
   private String getZip(EducationProvider educationProvider) {
-    String zip = educationProvider.getZipNumber().toString();
-    if (educationProvider.getZipSuffixNumber() != null) {
-      return educationProvider.getZipNumber() + "-" + educationProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return educationProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (educationProvider.getZipSuffixNumber() != null) { return educationProvider.getZipNumber()
+     * + "-" + educationProvider.getZipSuffixNumber(); } return zip;
+     */
   }
 
 }

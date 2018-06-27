@@ -59,12 +59,13 @@ public class SubstituteCareProviderTransformer
   }
 
   private String getZip(SubstituteCareProvider substituteCareProvider) {
-    String zip = substituteCareProvider.getZipNumber().toString();
-    if (substituteCareProvider.getZipSuffixNumber() != null) {
-      return substituteCareProvider.getZipNumber() + "-"
-          + substituteCareProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return substituteCareProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (substituteCareProvider.getZipSuffixNumber() != null) { return
+     * substituteCareProvider.getZipNumber() + "-" + substituteCareProvider.getZipSuffixNumber(); }
+     */
   }
 
 }

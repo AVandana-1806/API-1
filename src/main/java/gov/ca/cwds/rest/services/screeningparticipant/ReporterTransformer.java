@@ -48,11 +48,13 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
   }
 
   private String getZip(Reporter reporter) {
-    String zip = reporter.getZipNumber().toString();
-    if (reporter.getZipSuffixNumber() != null) {
-      return reporter.getZipNumber() + "-" + reporter.getZipSuffixNumber();
-    }
-    return zip;
+    return reporter.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (reporter.getZipSuffixNumber() != null) { return reporter.getZipNumber() + "-" +
+     * reporter.getZipSuffixNumber(); }
+     */
   }
 
 }
