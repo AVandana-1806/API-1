@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 import gov.ca.cwds.rest.filters.RequestExecutionContextRegistry;
@@ -50,15 +51,18 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.startRequest");
     local.set(null); // clear the current thread
+    BaseAuthorizationDao.clearXaMode();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
     LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.endRequest");
     local.set(null); // clear the current thread
+    BaseAuthorizationDao.clearXaMode();
   }
 
   protected XAUnitOfWorkAspect make(Map<String, SessionFactory> someSessionFactories) {
+    BaseAuthorizationDao.setXaMode(true);
     XAUnitOfWorkAspect ret = local.get();
     if (ret == null) {
       ret = new XAUnitOfWorkAspect(someSessionFactories);
