@@ -1000,11 +1000,10 @@ public class ParticipantServiceTest {
         }));
   }
 
-  @Ignore
   @SuppressWarnings("javadoc")
-  @Test(expected = ServiceException.class)
-  public void shouldThrowServiceExceptionWhenUpdateClientThrowsPersistenceException()
-      throws Exception {
+  @Test
+  public void shouldReportExceptionWhenUpdateClientThrowsPersistenceException()
+      {
     String victimClientLegacyId = "ABC123DSAF";
 
     LegacyDescriptor descriptor =
@@ -1028,6 +1027,7 @@ public class ParticipantServiceTest {
     when(clientService.update(any(String.class), any())).thenThrow(new PersistenceException());
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
+    assertEquals (messageBuilder.getMessages().size(),1);
   }
 
   @Test
