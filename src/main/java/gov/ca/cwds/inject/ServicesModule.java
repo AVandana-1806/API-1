@@ -231,6 +231,7 @@ public class ServicesModule extends AbstractModule {
         LOGGER.info("Phineas interceptor: after  method: {}", m);
         return result;
       } catch (Exception e) {
+        LOGGER.error("Phineas interceptor: ERROR PRINTING STACK TRACE! {}", e.getMessage(), e);
         throw e;
       }
     }
