@@ -98,8 +98,8 @@ xaCmsDataSourceFactory:
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
       hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
@@ -125,8 +125,8 @@ xaCmsRsDataSourceFactory:
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
       hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsint\;set schema cwsrs1}
@@ -152,8 +152,8 @@ xaNsDataSourceFactory:
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
       # hibernate.temp.use_jdbc_metadata_defaults: false
       hibernate.cache.use_query_cache: false
       hibernate.cache.use_second_level_cache: false
@@ -167,7 +167,7 @@ elasticsearch:
   peopleIndex:
     elasticsearch.host: ${ES_HOST_PEOPLE:-127.0.0.1}
     elasticsearch.port: ${ES_PORT_PEOPLE:-9200}
-    elasticsearch.cluster: ${ES_CLUSTER_PEOPLE:-taborda-dev-es}
+    elasticsearch.cluster: ${ES_CLUSTER_PEOPLE:-elasticsearch}
     elasticsearch.alias: ${ES_ALIAS_PEOPLE:-people}
     elasticsearch.doctype: ${ES_DOCTYPE_PEOPLE:-person}
     elasticsearch.xpack.user: ${XPACK_USER_PEOPLE:-}
@@ -175,9 +175,9 @@ elasticsearch:
 
   # Screenings index
   screeningsIndex:
-    elasticsearch.host: ${ES_HOST_SCREENINGS:-127.0.0.1}
-    elasticsearch.port: ${ES_PORT_SCREENINGS:-9200}
-    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-taborda-dev-es}
+    elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
+    elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
+    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
     elasticsearch.xpack.user: ${XPACK_USER_SCREENINGS:-}

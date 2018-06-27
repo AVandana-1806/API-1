@@ -102,7 +102,7 @@ xaCmsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -136,7 +136,7 @@ xaCmsRsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -169,7 +169,7 @@ xaNsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${DB_NS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-8}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
@@ -246,7 +246,7 @@ logging:
   loggers:
     "org.hibernate.SQL":
       # Use DEBUG to see SQL logged
-      level: DEBUG
+      level: ${LOGLEVEL_HIBERNATE_SQL:-DEBUG}
     "org.hibernate.type.descriptor.sql":
       # Use TRACE to see SQL parameters logged
       level: ${LOGLEVEL_HIBERNATE_PARAMS:-DEBUG}
