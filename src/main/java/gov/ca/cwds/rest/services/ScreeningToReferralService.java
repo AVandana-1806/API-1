@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -121,7 +122,7 @@ public class ScreeningToReferralService implements CrudsService {
 
   @UnitOfWork(value = "cms")
   @Override
-  public Response create(Request request) {
+  public Response create(@Valid Request request) {
     ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     verifyReferralHasValidParticipants(screeningToReferral);
 

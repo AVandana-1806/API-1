@@ -1,12 +1,13 @@
 package gov.ca.cwds.rest.services.investigation.contact;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.ca.cwds.rest.api.domain.DomainObject;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +272,8 @@ public class ContactService implements TypedCrudsService<String, ContactReferral
     Date referralReceivedDateTime;
     referralReceivedDateTime =
         DomainChef.concatenateDateAndTime(referralReceivedDate, referralReceivedTime);
-    Date contactStartedAtDateTime = Date.from(Instant.parse(contactStartedAt.trim()));
+    Date contactStartedAtDateTime = DateTimeFormat.forPattern(DomainObject.TIMESTAMP_ISO8601_FORMAT)
+            .parseDateTime(contactStartedAt.trim()).toDate();
     if (!new R05904ContactStartedAt(contactStartedAtDateTime, referralReceivedDateTime).isValid()) {
       throw new ServiceException(
           "Contact Started At is the same or before the Referral Received Date");

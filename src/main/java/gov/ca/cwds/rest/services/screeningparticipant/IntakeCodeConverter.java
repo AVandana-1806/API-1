@@ -49,6 +49,8 @@ public class IntakeCodeConverter {
 
     OTHER_ASIAN("Other Asian*", Constants.ASIAN, "Other Asian"),
 
+    ASIAN("Other Asian*", Constants.ASIAN, ""),
+
     OTHER_PACIFIC_ISLANDER("Other Pacific Islander*", Constants.NATIVE_HAWAIIAN,
         "Other Pacific Islander"),
 
@@ -56,6 +58,8 @@ public class IntakeCodeConverter {
 
     OTHER_ASIAN_ISLANDER("Other Asian/Pacific Islander*", Constants.NATIVE_HAWAIIAN,
         "Other Asian/Pacific Islander"),
+
+    NATIVE_HAWAIIAN("Other Pacific Islander*", Constants.NATIVE_HAWAIIAN, ""),
 
     POLYNESIAN("Polynesian*", Constants.NATIVE_HAWAIIAN, "Polynesian"),
 

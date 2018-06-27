@@ -122,4 +122,26 @@ public class IntakeCodeConverterTest {
     assertThat(actual, is(equalTo(expected)));
   }
 
+  /**
+   * 
+   */
+  @Test
+  public void lookUpByIntakeRace_ForAsian_LegacyValue() {
+    IntakeRace intakeRace = new IntakeRace("Asian", "");
+    String actual = IntakeRaceCode.lookUpByIntakeRace(intakeRace).getLegacyValue();
+    String expected = IntakeRaceCode.ASIAN.getLegacyValue();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public void lookUpByIntakeRace_ForNativeHawaiian_LegacyValue() {
+    IntakeRace intakeRace = new IntakeRace("Native Hawaiian or Other Pacific Islander", "");
+    String actual = IntakeRaceCode.lookUpByIntakeRace(intakeRace).getLegacyValue();
+    String expected = IntakeRaceCode.NATIVE_HAWAIIAN.getLegacyValue();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
 }
