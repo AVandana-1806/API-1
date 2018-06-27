@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 
+import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.std.ApiMarker;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
@@ -80,6 +81,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     }
 
     LOGGER.info("Mark XA transaction in RequestExecutionContext");
+    BaseAuthorizationDao.setXaMode(true);
     RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, true);
     RequestExecutionContext.instance().put(Parameter.RESOURCE_READ_ONLY, false);
 
@@ -144,6 +146,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    */
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
+    BaseAuthorizationDao.clearXaMode();
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, false);
     this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
         .forEach(ManagedSessionContext::unbind);
 

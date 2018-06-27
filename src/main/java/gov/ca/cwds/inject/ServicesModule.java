@@ -38,6 +38,7 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
@@ -195,6 +196,11 @@ public class ServicesModule extends AbstractModule {
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
       BaseAuthorizationDao.setXaMode(true);
+      final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      if (ctx != null) {
+        ctx.put(Parameter.XA_TRANSACTION, true);
+      }
+
       proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
           xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
@@ -207,7 +213,7 @@ public class ServicesModule extends AbstractModule {
         LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
-        LOGGER.info("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
+        LOGGER.error("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
