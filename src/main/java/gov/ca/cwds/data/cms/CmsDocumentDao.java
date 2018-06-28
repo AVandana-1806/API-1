@@ -211,7 +211,8 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     try {
       final ByteArrayBuffer buf = new ByteArrayBuffer(doc.getDocLength().intValue());
       for (CmsDocumentBlobSegment seg : doc.getBlobSegments()) {
-        buf.append(seg.getDocBlob(), 0, seg.getDocBlob().length);
+        final byte[] blob = seg.getDocBlob();
+        buf.append(blob, 0, blob.length);
       }
 
       final byte[] bytes = new CmsPKCompressor().decompressBytes(buf.buffer());
