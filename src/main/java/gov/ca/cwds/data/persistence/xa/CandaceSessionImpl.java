@@ -71,7 +71,6 @@ public class CandaceSessionImpl implements Session {
     return CandaceSessionFactoryImpl.isXaTransaction();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query getNamedQuery(String queryName) {
     return session.getNamedQuery(queryName);
@@ -82,7 +81,6 @@ public class CandaceSessionImpl implements Session {
     return session.getTenantIdentifier();
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public Session getSession() {
     return session.getSession();
@@ -173,13 +171,11 @@ public class CandaceSessionImpl implements Session {
     return session.createNativeQuery(sqlString);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public SharedSessionBuilder sessionWithOptions() {
     return session.sessionWithOptions();
   }
 
-  @SuppressWarnings({"rawtypes", "deprecation"})
   @Override
   public Criteria createCriteria(Class persistentClass, String alias) {
     return session.createCriteria(persistentClass, alias);
@@ -196,19 +192,16 @@ public class CandaceSessionImpl implements Session {
     session.flush();
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public Criteria createCriteria(String entityName) {
     return session.createCriteria(entityName);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NativeQuery createNativeQuery(String sqlString, String resultSetMapping) {
     return session.createNativeQuery(sqlString, resultSetMapping);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void setFlushMode(FlushMode flushMode) {
     session.setFlushMode(flushMode);
@@ -219,14 +212,12 @@ public class CandaceSessionImpl implements Session {
     return session.find(entityClass, primaryKey, properties);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public Criteria createCriteria(String entityName, String alias) {
     return session.createCriteria(entityName, alias);
   }
 
   @Override
-  @SuppressWarnings({"rawtypes", "deprecation"})
   public NativeQuery getNamedSQLQuery(String name) {
     return session.getNamedSQLQuery(name);
   }
@@ -241,7 +232,6 @@ public class CandaceSessionImpl implements Session {
     return session.getFlushMode();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NativeQuery getNamedNativeQuery(String name) {
     return session.getNamedNativeQuery(name);
