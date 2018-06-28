@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
@@ -354,6 +355,7 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
+  @Singleton
   public SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
@@ -379,7 +381,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
-    SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
+    final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
     systemCodeCache.register();
     return systemCodeCache;
   }
@@ -397,7 +399,7 @@ public class ServicesModule extends AbstractModule {
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
 
-    SystemCodeCacheConfiguration intakeCodeCacheConfig =
+    final SystemCodeCacheConfiguration intakeCodeCacheConfig =
         config != null ? config.getIntakeCodeCacheConfiguration() : null;
     if (intakeCodeCacheConfig != null) {
       preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
@@ -414,7 +416,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
-    IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
+    final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
     intakeCodeCache.register();
     return intakeCodeCache;
   }

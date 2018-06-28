@@ -55,7 +55,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
           .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL);
       return query.list().toArray(new SystemCode[0]);
     } catch (HibernateException h) {
-      LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
+      LOGGER.error("XaSystemCodeDao: ERROR! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }
@@ -74,7 +74,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
       query.setHibernateFlushMode(FlushMode.MANUAL);
       return query.getSingleResult();
     } catch (HibernateException h) {
-      LOGGER.error("XaSystemCodeDao: OOPS! {}", h.getMessage(), h);
+      LOGGER.error("XaSystemCodeDao: ERROR! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }
