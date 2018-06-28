@@ -236,6 +236,12 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     systemCodeDao = mock(SystemCodeDao.class);
     systemMetaDao = mock(SystemMetaDao.class);
 
+    when(systemCodeDao.grabSession()).thenReturn(session);
+    when(systemCodeDao.joinTransaction(any(Session.class))).thenReturn(transaction);
+
+    when(systemMetaDao.grabSession()).thenReturn(session);
+    when(systemMetaDao.joinTransaction(any(Session.class))).thenReturn(transaction);
+
     final Query q = Mockito.mock(Query.class);
     when(sessionFactory.getCurrentSession()).thenReturn(session);
     when(session.getNamedQuery(any(String.class))).thenReturn(q);
