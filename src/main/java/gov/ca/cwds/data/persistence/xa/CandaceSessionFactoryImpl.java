@@ -88,7 +88,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   protected boolean isXaTransaction() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    return ctx != null && ctx.isXaTransaction();
+    final boolean ret = ctx != null && ctx.isXaTransaction();
+    LOGGER.debug("isXaTransaction: {}", ret);
+    return ret;
   }
 
   /**
