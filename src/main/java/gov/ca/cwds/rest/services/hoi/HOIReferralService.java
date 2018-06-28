@@ -74,7 +74,8 @@ public class HOIReferralService extends
 
   @Override
   public HOIReferralResponse handleFind(HOIRequest hoiRequest) {
-    final Collection<String> authorizedClientIds = authorizeClientIds(hoiRequest.getClientIds());
+    final Collection<String> authorizedClientIds = authorizationService
+        .filterClientIds(hoiRequest.getClientIds());
     if (authorizedClientIds.isEmpty()) {
       return new HOIReferralResponse();
     }

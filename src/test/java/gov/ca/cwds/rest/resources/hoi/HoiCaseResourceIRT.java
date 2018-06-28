@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.hoi;
 
+import static gov.ca.cwds.IntakeBaseTestConstants.USER_SOCIAL_WORKER_ONLY;
 import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
 import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CASE_HISTORY_OF_INVOLVEMENT;
@@ -28,13 +29,16 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
     assertEquals(expectedHOICases, actualHOICases);
     assertHOICasesAreSorted(new String[]{"Co8uaDi0DW", "IdQImWo0DW"}, actualHOICases);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 17);
+    assertQueryExecutionCount(CMS_BUNDLE_TAG, 18);
     assertDbNotTouched(NS_BUNDLE_TAG);
   }
 
   private String doGet() throws Exception {
-    WebTarget target = clientTestRule.target(RESOURCE_CASE_HISTORY_OF_INVOLVEMENT);
-    Response response = target.queryParam("clientIds", "5DK5THO0DW", "SFpVhtC0DW").request()
+    WebTarget target = clientTestRule.withSecurityToken(USER_SOCIAL_WORKER_ONLY)
+        .target(RESOURCE_CASE_HISTORY_OF_INVOLVEMENT);
+    // clients with ID-s "1S3k0iv00T", "SZdBGYk75C" are sensitive and will be filtered out
+    Response response = target
+        .queryParam("clientIds", "5DK5THO0DW", "SFpVhtC0DW", "1S3k0iv00T", "SZdBGYk75C").request()
         .accept(MediaType.APPLICATION_JSON).get();
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }

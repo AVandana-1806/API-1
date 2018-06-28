@@ -97,7 +97,8 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    */
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
-    final Collection<String> authorizedClientIds = authorizeClientIds(hoiRequest.getClientIds());
+    final Collection<String> authorizedClientIds = authorizationService
+        .filterClientIds(hoiRequest.getClientIds());
     if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
@@ -154,7 +155,7 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
         .forEach(rel -> ids.add(rel.getSecondaryClientId()));
     hcd.getAllRelationshipsBySecondaryClients().stream().filter(relationshipFilter)
         .forEach(rel -> ids.add(rel.getPrimaryClientId()));
-    return ids;
+    return authorizationService.filterClientIds(ids);
   }
 
   private void loadCmsCases(HOICasesData hcd) {
