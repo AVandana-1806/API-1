@@ -347,6 +347,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * </p>
    *
    * @param doc LZW archive to decompress
+   * @param base64 base64-encoded String
    * @return base64-encoded String of decompressed document
    */
   @SuppressFBWarnings("PATH_TRAVERSAL_IN") // There is no path traversal here
