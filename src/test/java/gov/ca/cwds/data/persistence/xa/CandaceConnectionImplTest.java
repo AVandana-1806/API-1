@@ -51,13 +51,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   }
 
   @Test
-  public void instantiation() throws Exception {
-    assertThat(target, notNullValue());
-  }
-
-  @Test
   public void unwrap_A$Class() throws Exception {
-    Class<Client> iface = Client.class;
+    Class<?> iface = Client.class;
     Object actual = target.unwrap(iface);
     Object expected = null;
     assertThat(actual, is(equalTo(expected)));
@@ -380,7 +375,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setHoldability_A$int_T$SQLException() throws Exception {
-    doThrow(new SQLException()).when(con).setHoldability(any());
+    doThrow(new SQLException()).when(con).setHoldability(any(Integer.class));
     int holdability = 0;
     target.setHoldability(holdability);
   }
@@ -692,7 +687,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setNetworkTimeout_A$Executor$int_T$SQLException() throws Exception {
-    doThrow(new SQLException()).when(con).setNetworkTimeout(any(), any());
+    doThrow(new SQLException()).when(con).setNetworkTimeout(any(Executor.class),
+        any(Integer.class));
     Executor executor = mock(Executor.class);
     int milliseconds = 0;
     target.setNetworkTimeout(executor, milliseconds);
