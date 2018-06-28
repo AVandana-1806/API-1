@@ -15,6 +15,9 @@ import gov.ca.cwds.data.CaresStackUtils;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
+    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
+    "findsecbugs:SQL_INJECTION_JDBC"})
 public class CandaceTransactionImpl implements Transaction {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceTransactionImpl.class);

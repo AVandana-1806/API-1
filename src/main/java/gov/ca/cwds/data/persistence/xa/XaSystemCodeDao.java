@@ -2,7 +2,6 @@ package gov.ca.cwds.data.persistence.xa;
 
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
@@ -20,6 +19,7 @@ import gov.ca.cwds.inject.CmsSessionFactory;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"squid:S1854"})
 public class XaSystemCodeDao extends SystemCodeDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(XaSystemCodeDao.class);
@@ -61,6 +61,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
       if (!session.isXaTransaction()) {
         LOGGER.warn("COMMIT TRANSACTION, CLOSE SESSION");
         txn.commit();
+        session.close();
       }
 
     } catch (Exception h) {
@@ -76,18 +77,28 @@ public class XaSystemCodeDao extends SystemCodeDao {
   public SystemCode findBySystemCodeId(Number systemCodeId) {
     LOGGER.info("XaSystemCodeDao.findBySystemCodeId: systemCodeId: {}", systemCodeId);
     final String namedQueryName = SystemCode.class.getName() + ".findBySystemCodeId";
-    final Session session = grabSession();
+    final CandaceSessionImpl session = new CandaceSessionImpl(grabSession());
     final Transaction txn = joinTransaction(session);
+    SystemCode ret;
 
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
           .setShort("systemId", systemCodeId.shortValue()).setReadOnly(true).setCacheable(false);
       query.setHibernateFlushMode(FlushMode.MANUAL);
-      return query.getSingleResult();
+
+      ret = query.getSingleResult();
+      if (!session.isXaTransaction()) {
+        LOGGER.warn("COMMIT TRANSACTION, CLOSE SESSION");
+        txn.commit();
+        session.close();
+      }
+
     } catch (Exception h) {
       LOGGER.error("XaSystemCodeDao.findBySystemCodeId: ERROR! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
+
+    return ret;
   }
 
 }

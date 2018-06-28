@@ -29,7 +29,9 @@ import gov.ca.cwds.data.CaresStackUtils;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC"})
+@SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
+    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
+    "findsecbugs:SQL_INJECTION_JDBC"})
 public class CandaceConnectionImpl implements Connection {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceConnectionImpl.class);

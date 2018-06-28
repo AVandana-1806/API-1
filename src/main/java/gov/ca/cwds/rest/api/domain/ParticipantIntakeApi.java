@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.util.FerbDateUtils;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
@@ -390,11 +389,11 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   }
 
   public void setDateOfBirth(Date dateOfBirth) {
-    this.dateOfBirth = FerbDateUtils.freshDate(dateOfBirth);
+    this.dateOfBirth = freshDate(dateOfBirth);
   }
 
   public void setDateOfDeath(Date dateOfDeath) {
-    this.dateOfDeath = dateOfDeath;
+    this.dateOfDeath = freshDate(dateOfDeath);
   }
 
   public void setApproximateAge(String approximateAge) {

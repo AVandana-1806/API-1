@@ -54,7 +54,8 @@ import io.dropwizard.hibernate.HibernateBundle;
  * @author CWDS API Team
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
-    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck"})
+    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;

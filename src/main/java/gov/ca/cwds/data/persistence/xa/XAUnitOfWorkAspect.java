@@ -39,6 +39,9 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
  *
  * @author CWDS API Team
  */
+@SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
+    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;

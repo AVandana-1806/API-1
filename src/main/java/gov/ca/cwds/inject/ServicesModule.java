@@ -231,6 +231,21 @@ public class ServicesModule extends AbstractModule {
 
   }
 
+  /**
+   * Construct an interceptor to stack traces for any injected class.
+   * 
+   * <blockquote>
+   * 
+   * <pre>
+   * final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+   * bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
+   * requestInjection(daoInterceptor);
+   * </pre>
+   * 
+   * </blockquote>
+   * 
+   * @author CWDS API Team
+   */
   public static class PhineasMethodLoggerInterceptor
       implements org.aopalliance.intercept.MethodInterceptor {
 
@@ -316,11 +331,6 @@ public class ServicesModule extends AbstractModule {
     final XAUnitOfWorkInterceptor xaInterceptor = new XAUnitOfWorkInterceptor();
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(XAUnitOfWork.class), xaInterceptor);
     requestInjection(xaInterceptor);
-
-    // DRS: uncomment to log stack traces for DAO's.
-    // final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
-    // bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
-    // requestInjection(daoInterceptor);
 
     // No Hibernate managed transactions when using XA.
     final Properties p = new Properties();

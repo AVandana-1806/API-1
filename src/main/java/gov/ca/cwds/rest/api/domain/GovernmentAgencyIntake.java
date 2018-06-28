@@ -9,17 +9,19 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import gov.ca.cwds.data.std.ApiMarker;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author CWDS API Team
- *
  */
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "code", "type"})
-public class GovernmentAgencyIntake {
+public class GovernmentAgencyIntake implements ApiMarker {
+
+  private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
   @ApiModelProperty(required = true, value = "", example = "123")

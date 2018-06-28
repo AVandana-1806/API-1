@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author CWDS API Team
- *
  */
+@SuppressWarnings("fb-contrib:STT_TOSTRING_STORED_IN_FIELD")
 public class PingableServer implements Pingable {
   private static final Logger LOGGER = LoggerFactory.getLogger(PingableServer.class);
 
@@ -51,7 +51,7 @@ public class PingableServer implements Pingable {
     return ok;
   }
 
-  private boolean acceptableResponse(Response response){
+  private boolean acceptableResponse(Response response) {
     return response.getStatus() >= 200 && response.getStatus() < 500;
   }
 

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.transaction.SystemException;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
@@ -502,7 +504,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @Singleton
   @Named("AtomikosMgr")
-  public UserTransactionManager xaUserTransactionManager() throws Exception {
+  public UserTransactionManager xaUserTransactionManager() throws SystemException {
     final UserTransactionManager mgr = new UserTransactionManager();
     mgr.init();
     return mgr;

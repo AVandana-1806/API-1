@@ -17,7 +17,9 @@ public class CaresWorkConnectionStealer implements Work {
   /**
    * Constructor.
    */
-  public CaresWorkConnectionStealer() {}
+  public CaresWorkConnectionStealer() {
+    // Default
+  }
 
   /**
    * Stored a reference to the connection and make available to the caller or direct JDBC.
