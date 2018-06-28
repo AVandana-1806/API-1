@@ -10,6 +10,7 @@ import org.hibernate.annotations.NamedQuery;
 
 import gov.ca.cwds.data.ns.NsPersistentObject;
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 
 /**
  * {@link NsPersistentObject} representing a Person.
@@ -25,7 +26,7 @@ import gov.ca.cwds.data.persistence.PersistentObject;
     query = "FROM IntakeLov WHERE legacySystemCodeId = :legacySystemCodeId")
 @Entity
 @Table(name = "VW_INTAKE_LOV")
-public class IntakeLov implements PersistentObject {
+public class IntakeLov extends ApiObjectIdentity implements PersistentObject {
 
   @Id
   @Column(name = "LG_SYS_ID")
