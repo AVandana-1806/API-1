@@ -62,10 +62,12 @@ public class IntakeAddressConverter {
   }
 
   private String getZip(Address address) {
-    String zip = address.getZip();
-    if (address.getZip4() != null) {
-      return address.getZip() + "-" + address.getZip4();
-    }
-    return zip;
+    return address.getZip();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (address.getZip4() != null) { return address.getZip() + "-" + address.getZip4(); } return
+     * zip;
+     */
   }
 }

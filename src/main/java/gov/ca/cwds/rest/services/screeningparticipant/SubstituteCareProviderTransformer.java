@@ -53,17 +53,19 @@ public class SubstituteCareProviderTransformer
         substituteCareProvider.getFirstName(), substituteCareProvider.getMiddleName(),
         substituteCareProvider.getLastName(), substituteCareProvider.getSuffixTitleDescription(),
         null, null, null, substituteCareProvider.getSsn(), substituteCareProvider.getBirthDate(),
-        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, phoneNumbers,
-        "R".equals(sensitivityIndicator), "S".equals(sensitivityIndicator));
+        substituteCareProvider.getDeathDate(), new LinkedList<>(), null, null, null,
+        new HashSet<>(), addresses, phoneNumbers, "R".equals(sensitivityIndicator),
+        "S".equals(sensitivityIndicator));
   }
 
   private String getZip(SubstituteCareProvider substituteCareProvider) {
-    String zip = substituteCareProvider.getZipNumber().toString();
-    if (substituteCareProvider.getZipSuffixNumber() != null) {
-      return substituteCareProvider.getZipNumber() + "-"
-          + substituteCareProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return substituteCareProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (substituteCareProvider.getZipSuffixNumber() != null) { return
+     * substituteCareProvider.getZipNumber() + "-" + substituteCareProvider.getZipSuffixNumber(); }
+     */
   }
 
 }

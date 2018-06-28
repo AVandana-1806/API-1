@@ -67,17 +67,20 @@ public class EducationProviderContactTransformer
 
     return new ParticipantIntakeApi(null, null, null, educationProviderContactLegacyDescriptor,
         firstName, middleName, lastName, suffixTitle, educationProviderContact.getGender(), null,
-        null, null, educationProviderContact.getBirthDate(), new LinkedList<>(), null, null, ssn,
+        null, null, educationProviderContact.getBirthDate(),
+        educationProviderContact.getDeathDate(), new LinkedList<>(), null, null, ssn,
         new HashSet<>(), addresses, phoneNumbers, "R".equals(sensitivityIndicator),
         "S".equals(sensitivityIndicator));
   }
 
   private String getZip(EducationProvider educationProvider) {
-    String zip = educationProvider.getZipNumber().toString();
-    if (educationProvider.getZipSuffixNumber() != null) {
-      return educationProvider.getZipNumber() + "-" + educationProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return educationProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (educationProvider.getZipSuffixNumber() != null) { return educationProvider.getZipNumber()
+     * + "-" + educationProvider.getZipSuffixNumber(); } return zip;
+     */
   }
 
 }

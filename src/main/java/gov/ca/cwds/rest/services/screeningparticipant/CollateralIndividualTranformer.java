@@ -59,16 +59,20 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         collateralIndividual.getFirstName(), collateralIndividual.getMiddleInitialName(),
         collateralIndividual.getLastName(), collateralIndividual.getSuffixTitleDescription(),
-        gender, null, null, null, collateralIndividual.getBirthDate(), new LinkedList<>(), null,
-        null, null, new HashSet<>(), addresses, phoneNumbers, Boolean.FALSE, Boolean.FALSE);
+        gender, null, null, null, collateralIndividual.getBirthDate(),
+        collateralIndividual.getDeathDate(), new LinkedList<>(), null, null, null, new HashSet<>(),
+        addresses, phoneNumbers, Boolean.FALSE, Boolean.FALSE);
   }
 
   private String getZip(CollateralIndividual collateralIndividual) {
-    String zip = collateralIndividual.getZipNumber().toString();
-    if (collateralIndividual.getZipSuffixNumber() != null) {
-      return collateralIndividual.getZipNumber() + "-" + collateralIndividual.getZipSuffixNumber();
-    }
-    return zip;
+    return collateralIndividual.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (collateralIndividual.getZipSuffixNumber() != null) { return
+     * collateralIndividual.getZipNumber() + "-" + collateralIndividual.getZipSuffixNumber(); }
+     * return zip;
+     */
   }
 
 }

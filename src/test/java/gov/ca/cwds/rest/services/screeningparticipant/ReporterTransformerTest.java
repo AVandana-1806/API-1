@@ -79,12 +79,12 @@ public class ReporterTransformerTest {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc0987654", null, lastUpdated,
         LegacyTable.REPORTER.getName(), LegacyTable.REPORTER.getDescription());
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "2751 First Street", "Sacramento", "CA", "95833-0", null, legacyDescriptor)));
+        "2751 First Street", "Sacramento", "CA", "95833", null, legacyDescriptor)));
     Set<PhoneNumber> phoneNumbers =
         new HashSet<>(Arrays.asList(new PhoneNumber(null, "6199221167", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
-        "Fred", "W", "Reporter", "", null, null, null, null, null, new LinkedList<>(), null, null,
-        null, new HashSet<>(), addresses, phoneNumbers, false, false);
+        "Fred", "W", "Reporter", "", null, null, null, null, null, null, new LinkedList<>(), null,
+        null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     Reporter reporter = new ReporterEntityBuilder().build();
     ParticipantIntakeApi actual = reporterTransformer.tranform(reporter);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);

@@ -58,7 +58,7 @@ public class ParticipantsTransformer {
         primaryLanguage = getlanguageLegacyId(p.getLanguages().get(0));
       }
 
-      Participant participant = new Participant(pid, p.getLegacySourceTable(), p.getLegacyId(),
+      Participant participant = new Participant(pid, p.getLegacySourceTable(), null,
           p.getLegacyDescriptor(), p.getFirstName(), p.getMiddleName(), p.getLastName(),
           p.getNameSuffix(), gender, ssn, dob, primaryLanguage, secondayLanguage,
           Integer.parseInt(p.getScreeningId()), reporterConfidentialWaiver, reporterEmployerName,

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -120,7 +121,7 @@ public class ScreeningToReferralService implements CrudsService {
 
   @UnitOfWork(value = "cms")
   @Override
-  public Response create(Request request) {
+  public Response create(@Valid Request request) {
     ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     verifyReferralHasValidParticipants(screeningToReferral);
 
@@ -204,7 +205,12 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private void saveRelationships(ScreeningToReferral screeningToReferral) {
+    if (screeningToReferral.getRelationships() == null) {
+      return;
+    }
     for (ScreeningRelationship relationship : screeningToReferral.getRelationships()) {
+      if (relationship == null)
+        continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
           ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
@@ -489,7 +495,7 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private boolean validateAllegationVictimExists(String victimClientId) {
-    if (victimClientId.isEmpty()) {
+    if (StringUtils.isBlank(victimClientId)) {
       String message = "Victim could not be determined for an allegation";
       logError(message, new ServiceException(message));
       return false;

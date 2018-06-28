@@ -98,6 +98,12 @@ public class RelationshipsServiceTest {
   }
 
   @Test
+  public void findForIdsShouldReturnEmptyReplationshipsWhenNoClientIdsExist() {
+    RelationshipList relationships = (RelationshipList) service.findForIds(null);
+    assertTrue(relationships.getRelationship().isEmpty());
+  }
+
+  @Test
   public void findForIdsShouldSearchRelationshipsForMultipleClients() {
     service.findForIds(clientIds);
     verify(relationshipDao).findRelationshipsByClientId(clientId);

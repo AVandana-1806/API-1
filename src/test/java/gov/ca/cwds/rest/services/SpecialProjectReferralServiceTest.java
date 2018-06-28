@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -12,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.legacy.cms.dao.NonCWSNumberDao;
+import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafelySurrenderedBabiesDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
@@ -21,6 +24,7 @@ import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
+import gov.ca.cwds.rest.services.referentialintegrity.RISpecialProjectReferral;
 
 /**
  * Unit tests for SpecialProjectReferralService.
@@ -34,7 +38,9 @@ public class SpecialProjectReferralServiceTest {
   private SpecialProjectDao specialProjectDao;
   private SpecialProjectReferralDao specialProjectReferralDao;
   private SafelySurrenderedBabiesDao safelySurrenderedBabiesDao;
+  private RISpecialProjectReferral riSpecialProjectReferral;
   private NonCWSNumberDao nonCWSNumberDao;
+  private ReferralDao referralDao;
 
   @Before
   public void setup() {
@@ -42,6 +48,7 @@ public class SpecialProjectReferralServiceTest {
     specialProjectReferralDao = mock(SpecialProjectReferralDao.class);
     safelySurrenderedBabiesDao = mock(SafelySurrenderedBabiesDao.class);
     nonCWSNumberDao = mock(NonCWSNumberDao.class);
+    riSpecialProjectReferral = mock(RISpecialProjectReferral.class);
 
     List<SpecialProject> ssbSpecialProjects = new ArrayList<>();
     SpecialProject specialProject = new SpecialProject();
@@ -62,6 +69,7 @@ public class SpecialProjectReferralServiceTest {
     specialProjectReferralService.setSafelySurrenderedBabiesDao(safelySurrenderedBabiesDao);
     specialProjectReferralService.setSpecialProjectDao(specialProjectDao);
     specialProjectReferralService.setSpecialProjectReferralDao(specialProjectReferralDao);
+    specialProjectReferralService.setRiSpecialProjectReferral(riSpecialProjectReferral);
 
     new TestingRequestExecutionContext("0X5");
   }
@@ -83,5 +91,13 @@ public class SpecialProjectReferralServiceTest {
     SafelySurrenderedBabies ssb = new SafelySurrenderedBabiesBuilder().build();
     specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
         now.toLocalDate(), now.toLocalTime(), ssb);
+  }
+  
+  @Test
+  public void shouldReturnRiSpecialProjectReferral() {
+    referralDao = mock(ReferralDao.class);
+    RISpecialProjectReferral ri = new RISpecialProjectReferral(referralDao, specialProjectDao);
+    specialProjectReferralService.setRiSpecialProjectReferral(ri);
+    assertThat(specialProjectReferralService.getRiSpecialProjectReferral(), is(ri));
   }
 }

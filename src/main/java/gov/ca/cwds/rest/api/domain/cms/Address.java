@@ -278,8 +278,9 @@ public class Address extends ReportingDomain implements Request, Response {
 
     return new Address(" ", address.getLegacyDescriptor().getLastUpdated(), address.getCity(),
         DEFAULT_LONG, DEFAULT_INT, false, DEFAULT_CODE, DEFAULT_LONG, DEFAULT_INT, " ",
-        DEFAULT_LONG, DEFAULT_INT, address.getState().shortValue(), streetName, streetNumber,
-        zipCode, " ", zipSuffix, " ", " ", DEFAULT_CODE, DEFAULT_CODE, " ");
+        DEFAULT_LONG, DEFAULT_INT, address.getState() != null ? address.getState().shortValue() : 0,
+        streetName, streetNumber, zipCode, " ", zipSuffix, " ", " ", DEFAULT_CODE, DEFAULT_CODE,
+        " ");
   }
 
   /**

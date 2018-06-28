@@ -86,6 +86,7 @@ import gov.ca.cwds.rest.api.domain.cms.ChildClient;
 import gov.ca.cwds.rest.api.domain.cms.Client;
 import gov.ca.cwds.rest.api.domain.cms.ClientAddress;
 import gov.ca.cwds.rest.api.domain.cms.CrossReport;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
 import gov.ca.cwds.rest.api.domain.cms.PostedAllegation;
 import gov.ca.cwds.rest.api.domain.cms.PostedAllegationPerpetratorHistory;
@@ -808,6 +809,54 @@ public class ScreeningToReferralServiceTest {
     verify(clientRelationshipService, times(0)).createRelationship(any());
   }
 
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipIsNull()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    Set<ScreeningRelationship> relationships = new HashSet<>();
+    ScreeningRelationship relationship = null;
+
+    relationships.add(relationship);
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setRelationships(relationships).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipsAreNonExistant()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setRelationships(null).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
   @SuppressWarnings("javadoc")
   @Test
   // R - 03895
@@ -1002,15 +1051,18 @@ public class ScreeningToReferralServiceTest {
 
     Date now = new Date();
 
-    defaultPerpetrator = new ParticipantResourceBuilder().setId(perpId).setLegacyId(perpLegacyId)
+    defaultPerpetrator = new ParticipantResourceBuilder().setId(perpId)
+        .setLegacyDescriptor(new LegacyDescriptor(perpLegacyId, null, new DateTime(),
+            LegacyTable.CLIENT.getName(), null))
         .createPerpParticipant();
     defaultVictim = new ParticipantResourceBuilder().setId(vicId).createVictimParticipant();
 
-    Set participants =
+    Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultPerpetrator, defaultReporter, defaultVictim));
     gov.ca.cwds.rest.api.domain.Allegation allegation = new AllegationResourceBuilder()
         .setVictimPersonId(vicId).setPerpetratorPersonId(perpId).createAllegation();
-    Set allegations = new HashSet<>(Arrays.asList(allegation));
+    Set<gov.ca.cwds.rest.api.domain.Allegation> allegations =
+        new HashSet<>(Arrays.asList(allegation));
     ScreeningToReferral screeningToReferral = defaultReferralBuilder.setReferralId("0987654321")
         .setParticipants(participants).setAllegations(allegations).createScreeningToReferral();
     mockParticipantService(screeningToReferral);
@@ -1042,15 +1094,18 @@ public class ScreeningToReferralServiceTest {
     int vicId = 123;
     String perpLegacyId = "perpIdABCD";
 
-    defaultPerpetrator = new ParticipantResourceBuilder().setId(perpId).setLegacyId(perpLegacyId)
+    defaultPerpetrator = new ParticipantResourceBuilder().setId(perpId)
+        .setLegacyDescriptor(new LegacyDescriptor(perpLegacyId, null, new DateTime(),
+            LegacyTable.CLIENT.getName(), null))
         .createPerpParticipant();
     defaultVictim = new ParticipantResourceBuilder().setId(vicId).createVictimParticipant();
 
-    Set participants =
+    Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultPerpetrator, defaultReporter, defaultVictim));
     gov.ca.cwds.rest.api.domain.Allegation allegation = new AllegationResourceBuilder()
         .setVictimPersonId(vicId).setPerpetratorPersonId(perpId).createAllegation();
-    Set allegations = new HashSet<>(Arrays.asList(allegation));
+    Set<gov.ca.cwds.rest.api.domain.Allegation> allegations =
+        new HashSet<>(Arrays.asList(allegation));
     ScreeningToReferral screeningToReferral = defaultReferralBuilder.setReferralId("0987654321")
         .setParticipants(participants).setAllegations(allegations).createScreeningToReferral();
     mockParticipantService(screeningToReferral);
@@ -1294,7 +1349,8 @@ public class ScreeningToReferralServiceTest {
 
     CmsIdGenerator generator = new CmsIdGenerator();
     for (Participant participant : participants) {
-      participant.setLegacyId(generator.generate());
+      participant
+          .setLegacyDescriptor(new LegacyDescriptor(generator.generate(), null, null, null, null));
     }
     clientParticipants.addParticipants(participants);
     when(participantService.saveParticipants(any(), any(), any(), any(), any()))

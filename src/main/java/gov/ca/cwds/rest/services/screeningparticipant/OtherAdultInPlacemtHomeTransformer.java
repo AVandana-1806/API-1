@@ -62,8 +62,9 @@ public class OtherAdultInPlacemtHomeTransformer
 
     return new ParticipantIntakeApi(null, null, null, otherAdultLegacyDescriptor, firstName, null,
         lastName, null, otherAdultInPlacemtHome.getGenderCode(), null, null, null,
-        otherAdultInPlacemtHome.getBirthDate(), new LinkedList<>(), null, null, null,
-        new HashSet<>(), addresses, null, Boolean.FALSE, Boolean.FALSE);
+        otherAdultInPlacemtHome.getBirthDate(), otherAdultInPlacemtHome.getDeathDate(),
+        new LinkedList<>(), null, null, null, new HashSet<>(), addresses, null, Boolean.FALSE,
+        Boolean.FALSE);
   }
 
   private String getFirstName(OtherAdultInPlacemtHome otherAdultInPlacemtHome) {
@@ -83,10 +84,12 @@ public class OtherAdultInPlacemtHomeTransformer
   }
 
   private String getZip(PlacementHome placementHome) {
-    String zip = placementHome.getZipNo();
-    if (placementHome.getZipSfxNo() != null) {
-      return placementHome.getZipNo() + "-" + placementHome.getZipSfxNo();
-    }
-    return zip;
+    return placementHome.getZipNo();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (placementHome.getZipSfxNo() != null) { return placementHome.getZipNo() + "-" +
+     * placementHome.getZipSfxNo(); } return zip;
+     */
   }
 }

@@ -14,7 +14,7 @@ public class ContactResourceIRT extends IntakeBaseTest {
   public void testPost() throws Exception {
     String request =
             fixture("fixtures/gov/ca/cwds/rest/resources/contact-intake-api-post-request.json");
-    String actualJson = doPostCall(RESOURCE_INTAKE_CONTACTS, request);
+    String actualJson = getStringResponse(doPostCall(RESOURCE_INTAKE_CONTACTS, request));
     String expectedResponse =
             fixture("fixtures/gov/ca/cwds/rest/resources/contact-intake-api-post-response.json");
 

@@ -91,13 +91,13 @@ public class ServiceProviderTransformerTest {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Ao9dm8T0Ki", null, lastUpdated,
         LegacyTable.SERVICE_PROVIDER.getName(), LegacyTable.SERVICE_PROVIDER.getDescription());
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "streetNumber streetName", "Sacramento", "CA", "99999-0", null, legacyDescriptor)));
+        "streetNumber streetName", "Sacramento", "CA", "99999", null, legacyDescriptor)));
     Set<PhoneNumber> phoneNumbers =
         new HashSet<>(Arrays.asList(new PhoneNumber(null, "999", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Horacio", null, "G",
-            "suffixTitleDescription", null, null, null, null, null, new LinkedList<>(), null, null,
-            null, new HashSet<>(), addresses, phoneNumbers, false, false);
+            "suffixTitleDescription", null, null, null, null, null, null, new LinkedList<>(), null,
+            null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     ServiceProvider serviceProvider = validServiceProvider();
     ParticipantIntakeApi actual = serviceProviderTransformer.tranform(serviceProvider);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);

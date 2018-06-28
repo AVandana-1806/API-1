@@ -23,13 +23,12 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
   public void testGet() throws Exception {
     final List<HOICase> expectedHOICases = getExpectedInvolvementHistory().getCases();
     final String actualJson = doGet();
-    final List<HOICase> actualHOICases = objectMapper
-        .readValue(actualJson.getBytes(), new TypeReference<List<HOICase>>() {
-        });
+    final List<HOICase> actualHOICases =
+        objectMapper.readValue(actualJson.getBytes(), new TypeReference<List<HOICase>>() {});
     assertEquals(expectedHOICases, actualHOICases);
     assertHOICasesAreSorted(new String[]{"Co8uaDi0DW", "IdQImWo0DW"}, actualHOICases);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 18);
+    assertQueryExecutionCount(CMS_BUNDLE_TAG, 9);
     assertDbNotTouched(NS_BUNDLE_TAG);
   }
 

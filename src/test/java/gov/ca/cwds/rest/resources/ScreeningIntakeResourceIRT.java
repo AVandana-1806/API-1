@@ -3,8 +3,12 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_SCREENINGS;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 
+import gov.ca.cwds.rest.api.domain.Csec;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -23,7 +27,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
 
   @Test
   public void testGet() throws Exception {
-    String actualJson = doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52");
+    String actualJson = getStringResponse(doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-get-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -32,7 +36,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPost() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-post-request.json");
-    String actualJson = doPostCall(RESOURCE_INTAKE_SCREENINGS, request);
+    String actualJson = getStringResponse(doPostCall(RESOURCE_INTAKE_SCREENINGS, request));
     Screening screening = objectMapper.readValue(actualJson.getBytes(), Screening.class);
 
     String expectedResponse =
@@ -71,7 +75,7 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
   @Test
   public void testPut() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-request.json");
-    String actualJson = doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request);
+    String actualJson = getStringResponse(doPutCall(RESOURCE_INTAKE_SCREENINGS + "/52", request));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);

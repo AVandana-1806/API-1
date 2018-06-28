@@ -405,6 +405,8 @@ public class ClientTest implements DomainTestTemplate {
         client.getGenderCode());
     assertEquals("Expected dateStarted field to be initialized with values", dateStarted,
         client.getCreationDate());
+    assertEquals("Expected estimatedDobCode field to be initialized with N", Client.ESTIMATED_DOB_CODE_NO, client.getEstimatedDobCode());
+    
   }
 
   @Test
