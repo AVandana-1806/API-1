@@ -4,10 +4,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -16,6 +16,7 @@ import java.sql.Clob;
 import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
@@ -34,6 +35,7 @@ import gov.ca.cwds.data.legacy.cms.entity.Client;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
+
   CandaceConnectionImpl target;
 
   @Override
@@ -55,7 +57,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void unwrap_A$Class() throws Exception {
-    Class<Object> iface = mock(Class.class);
+    Class<Client> iface = Client.class;
     Object actual = target.unwrap(iface);
     Object expected = null;
     assertThat(actual, is(equalTo(expected)));
@@ -63,13 +65,14 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void unwrap_A$Class_T$SQLException() throws Exception {
-    Class<Object> iface = mock(Class.class);
+    doThrow(new SQLClientInfoException()).when(con).unwrap(any());
+    Class<Client> iface = Client.class;
     target.unwrap(iface);
   }
 
   @Test
   public void isWrapperFor_A$Class() throws Exception {
-    Class<?> iface = mock(Class.class);
+    Class<?> iface = Client.class;
     boolean actual = target.isWrapperFor(iface);
     boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
@@ -77,19 +80,20 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void isWrapperFor_A$Class_T$SQLException() throws Exception {
-    Class<?> iface = mock(Class.class);
+    doThrow(new SQLClientInfoException()).when(con).isWrapperFor(any());
+    Class<?> iface = Client.class;
     target.isWrapperFor(iface);
   }
 
   @Test
   public void createStatement_A$() throws Exception {
     Statement actual = target.createStatement();
-    Statement expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test(expected = SQLException.class)
   public void createStatement_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).createStatement();
     target.createStatement();
   }
 
@@ -103,6 +107,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void prepareStatement_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).prepareStatement(any());
     String sql = null;
     target.prepareStatement(sql);
   }
@@ -117,6 +122,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void prepareCall_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).prepareCall(any());
     String sql = null;
     target.prepareCall(sql);
   }
@@ -131,6 +137,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void nativeSQL_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).nativeSQL(any());
     String sql = null;
     target.nativeSQL(sql);
   }
@@ -143,6 +150,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setAutoCommit_A$boolean_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).setAutoCommit(any(Boolean.class));
     boolean autoCommit = false;
     target.setAutoCommit(autoCommit);
   }
@@ -156,6 +164,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getAutoCommit_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).getAutoCommit();
     target.getAutoCommit();
   }
 
@@ -168,7 +177,6 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   public void commit_A$_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).commit();
     target.commit();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -178,8 +186,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void rollback_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).rollback();
     target.rollback();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -189,8 +197,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void close_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).close();
     target.close();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -202,8 +210,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void isClosed_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).isClosed();
     target.isClosed();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -215,8 +223,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getMetaData_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).getMetaData();
     target.getMetaData();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -227,6 +235,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setReadOnly_A$boolean_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setReadOnly(any(Boolean.class));
     boolean readOnly = false;
     target.setReadOnly(readOnly);
   }
@@ -252,15 +261,16 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setCatalog_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setCatalog(any());
     String catalog = null;
-    doThrow(new SQLException()).when(con).setCatalog(any(String.class));
     target.setCatalog(catalog);
   }
 
   @Test
   public void getCatalog_A$() throws Exception {
+    when(con.getCatalog()).thenReturn("CWSNS4");
     String actual = target.getCatalog();
-    String expected = null;
+    String expected = "CWSNS4";
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -278,9 +288,9 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setTransactionIsolation_A$int_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setTransactionIsolation(any(Integer.class));
     int level = 0;
     target.setTransactionIsolation(level);
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -292,6 +302,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getTransactionIsolation_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).getTransactionIsolation();
     target.getTransactionIsolation();
   }
 
@@ -306,7 +317,6 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   public void getWarnings_A$_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).getWarnings();
     target.getWarnings();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -316,8 +326,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void clearWarnings_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).clearWarnings();
     target.clearWarnings();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -357,6 +367,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setTypeMap_A$Map_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).setTypeMap(any());
     Map map = new HashMap();
     target.setTypeMap(map);
   }
@@ -369,6 +380,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setHoldability_A$int_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setHoldability(any());
     int holdability = 0;
     target.setHoldability(holdability);
   }
@@ -382,8 +394,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getHoldability_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).getHoldability();
     target.getHoldability();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -395,8 +407,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setSavepoint_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).setSavepoint();
     target.setSavepoint();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -424,7 +436,6 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
     Savepoint savepoint = mock(Savepoint.class);
     doThrow(new SQLException()).when(con).releaseSavepoint(any(Savepoint.class));
     target.releaseSavepoint(savepoint);
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -500,7 +511,6 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   public void createClob_A$_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).createClob();
     target.createClob();
-    fail("Expected exception was not thrown!");
   }
 
   @Test
@@ -512,6 +522,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void createBlob_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).createBlob();
     target.createBlob();
   }
 
@@ -524,6 +535,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void createNClob_A$_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).createNClob();
     target.createNClob();
   }
 
@@ -536,6 +548,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void createSQLXML_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).createSQLXML();
     target.createSQLXML();
   }
 
@@ -549,6 +562,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void isValid_A$int_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).isValid(any(Integer.class));
     int timeout = 0;
     target.isValid(timeout);
   }
@@ -560,8 +574,9 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
     target.setClientInfo(name, value);
   }
 
-  @Test(expected = SQLException.class)
+  @Test(expected = SQLClientInfoException.class)
   public void setClientInfo_A$String$String_T$SQLClientInfoException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).setClientInfo(any(), any());
     String name = null;
     String value = null;
     target.setClientInfo(name, value);
@@ -583,6 +598,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getClientInfo_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLClientInfoException()).when(con).getClientInfo(any());
     String name = null;
     target.getClientInfo(name);
   }
@@ -605,6 +621,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void createArrayOf_A$String$ObjectArray_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).createArrayOf(any(), any());
     String typeName = null;
     Object[] elements = new Object[] {};
     target.createArrayOf(typeName, elements);
@@ -621,6 +638,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void createStruct_A$String$ObjectArray_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).createStruct(any(), any());
     String typeName = null;
     Object[] attributes = new Object[] {};
     target.createStruct(typeName, attributes);
@@ -634,6 +652,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setSchema_A$String_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setSchema(any());
     String schema = null;
     target.setSchema(schema);
   }
@@ -647,6 +666,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getSchema_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).getSchema();
     target.getSchema();
   }
 
@@ -658,6 +678,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void abort_A$Executor_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).abort(any(Executor.class));
     Executor executor = mock(Executor.class);
     target.abort(executor);
   }
@@ -671,6 +692,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void setNetworkTimeout_A$Executor$int_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).setNetworkTimeout(any(), any());
     Executor executor = mock(Executor.class);
     int milliseconds = 0;
     target.setNetworkTimeout(executor, milliseconds);
@@ -685,6 +707,7 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test(expected = SQLException.class)
   public void getNetworkTimeout_A$_T$SQLException() throws Exception {
+    doThrow(new SQLException()).when(con).getNetworkTimeout();
     target.getNetworkTimeout();
   }
 
