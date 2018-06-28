@@ -23,7 +23,6 @@ import io.restassured.response.Response;
  * Functional Testing for hoi referrals end point with Social Worker Privilege Only.
  * 
  * @author CWDS API Team
- *
  */
 public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
 
