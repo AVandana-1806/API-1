@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC"})
 public class CandaceSessionImpl implements Session {
 
   private static final long serialVersionUID = 1L;

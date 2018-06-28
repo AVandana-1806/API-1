@@ -203,7 +203,7 @@ public class ServicesModule extends AbstractModule {
       BaseAuthorizationDao.setXaMode(true);
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
       if (ctx != null) {
-        ctx.put(Parameter.XA_TRANSACTION, true);
+        ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
       }
 
       proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
