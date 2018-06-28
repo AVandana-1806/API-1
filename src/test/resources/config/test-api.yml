@@ -21,7 +21,7 @@ nsDataSourceFactory:
   driverClass: org.h2.Driver
   user: sa
   password:
-  url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
+  url: jdbc:h2:~/ns;INIT=create schema if not exists intakens\;set schema intakens
   validationQuery: "/* MyService Health Check */ SELECT 1"
   logValidationErrors: true
   initialSize: ${DB_NS_CP_INITIAL_SIZE:-2}
@@ -159,9 +159,13 @@ elasticsearch:
 triggertables:
   laCountySpecificCode: 19
   
-systemCodeCache: 
+systemCodeCache:
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+  
+intakeCodeCache:
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-false}
+  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}  
 
 webSecurity:
   httpResponseSecurityHeaders:
