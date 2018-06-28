@@ -23,6 +23,8 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"fb-contrib:JVR_JDBC_VENDOR_RELIANCE", "squid:CallToDeprecatedMethod",
+    "fb-contrib:MDM_INETADDRESS_GETLOCALHOST"})
 public class WorkDB2UserInfo implements Work {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkDB2UserInfo.class);
@@ -51,7 +53,6 @@ public class WorkDB2UserInfo implements Work {
     }
   }
 
-  @SuppressWarnings({"fb-contrib:JVR_JDBC_VENDOR_RELIANCE", "squid:CallToDeprecatedMethod"})
   @Override
   public void execute(Connection con) throws SQLException {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();

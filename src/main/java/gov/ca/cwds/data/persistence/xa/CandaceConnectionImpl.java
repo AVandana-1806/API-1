@@ -25,13 +25,14 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.data.CaresStackUtils;
 
 /**
- * JDBC connection facade.
+ * JDBC connection facade. By its nature, this implementation class must implement methods on
+ * Connection interface, some of which are deprecated or otherwise disturb SonarQube. Get over it.
  * 
  * @author CWDS API Team
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findsecbugs:SQL_INJECTION_JDBC"})
+    "findsecbugs:SQL_INJECTION_JDBC", "findsecbugs:EXTERNAL_CONFIG_CONTROL"})
 public class CandaceConnectionImpl implements Connection {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceConnectionImpl.class);

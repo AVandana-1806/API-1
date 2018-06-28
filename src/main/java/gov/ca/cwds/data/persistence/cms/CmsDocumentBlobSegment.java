@@ -177,7 +177,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
    * @return hex string of segment data
    */
   public byte[] getDocBlob() {
-    return docBlob;
+    return docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
@@ -186,7 +186,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
    * @param docBlob hex of binary, compressed data for this segment
    */
   public void setDocBlob(byte[] docBlob) {
-    this.docBlob = docBlob;
+    this.docBlob = docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
