@@ -572,4 +572,8 @@ public class ReferralService implements
     return riReferral;
   }
 
+  public NonLACountyTriggers getNonLaTriggers() {
+    return nonLaTriggers;
+  }
+
 }

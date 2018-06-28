@@ -162,4 +162,8 @@ public class ReferralClientService implements
     return new ReferralClient.PrimaryKey(referralId, clientId);
   }
 
+  public RIReferralClient getRiReferralClient() {
+    return riReferralClient;
+  }
+
 }

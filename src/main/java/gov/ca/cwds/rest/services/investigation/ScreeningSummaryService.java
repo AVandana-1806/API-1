@@ -5,10 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.SessionFactory;
 import org.hibernate.context.internal.ManagedSessionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -28,8 +25,6 @@ import gov.ca.cwds.rest.services.TypedCrudsService;
  */
 public class ScreeningSummaryService
     implements TypedCrudsService<String, ScreeningSummary, Response> {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningSummaryService.class);
 
   private static final String DEFAULT_STUB_KEY = "999999";
 
@@ -54,7 +49,6 @@ public class ScreeningSummaryService
   public Response find(String referralId) {
     if (StringUtils.equals(referralId, DEFAULT_STUB_KEY)) {
       return new ScreeningSummaryEntityBuilder().build();
-
     }
 
     return this.findScreeningSummaryByReferralId(referralId);
@@ -63,24 +57,27 @@ public class ScreeningSummaryService
   /**
    * Find screening summary by referral id.
    * 
+   * <p>
+   * COMMENT: if you need to open a Postgres session, then either use {@code UnitOfWork} or
+   * {@code XAUnitOfWork}.
+   * </p>
+   * 
    * @param referralId - referral id
    * @return - Screening Summary object.
    */
   private ScreeningSummary findScreeningSummaryByReferralId(String referralId) {
     ScreeningSummary screeningSummary = null;
-    // SessionFactory from postgres DB and need to open session in order to execute.
-    SessionFactory sessionFactory = screeningDao.getSessionFactory();
-    org.hibernate.Session session = sessionFactory.openSession();
+
+    final org.hibernate.Session session = screeningDao.grabSession();
     ManagedSessionContext.bind(session);
 
-    ScreeningEntity[] screeningEntities = screeningDao.findScreeningsByReferralId(referralId);
-    ScreeningEntity screeningEntity = screeningEntities.length > 0 ? screeningEntities[0] : null;
+    final ScreeningEntity[] screeningEntities = screeningDao.findScreeningsByReferralId(referralId);
+    final ScreeningEntity screeningEntity =
+        screeningEntities.length > 0 ? screeningEntities[0] : null;
     screeningSummary = screeningEntity != null
         ? new ScreeningSummary(screeningEntity, this.populateSimpleAllegations(screeningEntity))
         : new ScreeningSummary();
 
-    LOGGER.info("\n\n**** STOP MESSING WITH SESSIONS!!! ****\n");
-    // session.close();
     return screeningSummary;
   }
 
