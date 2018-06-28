@@ -17,7 +17,6 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.IntakeLov.findAll",
     query = "FROM IntakeLov ORDER BY intakeType, intakeCode")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.IntakeLov.findByLegacyCategoryId",
@@ -26,7 +25,10 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
     query = "FROM IntakeLov WHERE legacySystemCodeId = :legacySystemCodeId")
 @Entity
 @Table(name = "VW_INTAKE_LOV")
+@SuppressWarnings({"squid:S2160"})
 public class IntakeLov extends ApiObjectIdentity implements PersistentObject {
+
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "LG_SYS_ID")

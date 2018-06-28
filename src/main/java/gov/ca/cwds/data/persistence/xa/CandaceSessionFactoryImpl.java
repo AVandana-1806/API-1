@@ -53,7 +53,8 @@ import io.dropwizard.hibernate.HibernateBundle;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"deprecation", "rawtypes"}) // SessionFactory method signatures
+@SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
+    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck"})
 public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;
@@ -61,7 +62,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
   // Only works for the same datasource.
-  // private final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  private final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
 
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
@@ -130,13 +131,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.debug("CandaceSessionFactoryImpl.startRequest");
-    // local.set(null); // clear the current thread
+    local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
     LOGGER.debug("CandaceSessionFactoryImpl.endRequest");
-    // local.set(null); // clear the current thread
+    local.set(null); // clear the current thread
   }
 
   // ==================================
@@ -181,14 +182,6 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Session openSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.openSession");
-
-    // CandaceSessionImpl candaceSession = local.get();
-    // if (candaceSession == null) {
-    // candaceSession = new CandaceSessionImpl(pick().openSession());
-    // local.set(candaceSession);
-    // }
-    // return candaceSession;
-
     return new CandaceSessionImpl(pick().openSession());
   }
 
@@ -205,9 +198,6 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Session getCurrentSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.getCurrentSession");
-    // final CandaceSessionImpl candaceSession = local.get();
-    // return candaceSession != null ? candaceSession : pick().getCurrentSession();
-
     return new CandaceSessionImpl(pick().getCurrentSession());
   }
 
@@ -273,7 +263,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public void close() {
     LOGGER.warn("\n\t******** CandaceSessionFactoryImpl.close ********\n");
     CaresStackUtils.logStack();
-    // local.set(null);
+    local.set(null);
     pick().close();
   }
 

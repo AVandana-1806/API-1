@@ -200,7 +200,7 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      BaseAuthorizationDao.setXaMode(true);
+      BaseAuthorizationDao.setXaMode(Boolean.TRUE);
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
       if (ctx != null) {
         ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
@@ -223,6 +223,7 @@ public class ServicesModule extends AbstractModule {
         aspect.onError();
         throw e;
       } finally {
+        LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
         BaseAuthorizationDao.clearXaMode();
       }

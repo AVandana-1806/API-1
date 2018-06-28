@@ -73,7 +73,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     super();
     this.docHandle = docHandle;
     this.segmentSequence = segmentSequence;
-    this.docBlob = docBlob;
+    this.docBlob = Arrays.copyOf(docBlob, docBlob.length); // security, externally mutable
   }
 
   /**
@@ -99,7 +99,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     result = prime * result + ((docHandle == null) ? 0 : docHandle.hashCode());
     result = prime * result + ((segmentSequence == null) ? 0 : segmentSequence.hashCode());
 
-    // 1) NOT part of unique key, 2) potentially large waste of processing to compute.
+    // DRS: 1) NOT part of unique key, 2) waste of processing to compute,
     // 3) if you got this far, well ... ;)
     return prime * result + ((docBlob == null) ? 0 : Arrays.hashCode(docBlob));
   }
@@ -141,7 +141,8 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     // 3) if you got this far, well ... ;)
     if (docBlob == null) {
       return other.docBlob == null;
-    } else return Arrays.equals(docBlob, other.docBlob);
+    } else
+      return Arrays.equals(docBlob, other.docBlob);
 
   }
 

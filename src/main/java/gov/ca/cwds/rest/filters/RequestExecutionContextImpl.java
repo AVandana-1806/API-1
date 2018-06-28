@@ -44,13 +44,13 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
    * 
    * @param userIdentity User identity
    */
-  private RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
+  protected RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
     put(Parameter.REQUEST_START_TIME, new Date());
     put(Parameter.USER_IDENTITY, userIdentity);
     put(Parameter.SEQUENCE_EXTERNAL_TABLE, Integer.valueOf(0));
     put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
-    put(Parameter.RESOURCE_READ_ONLY, true);
-    put(Parameter.XA_TRANSACTION, false);
+    put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
+    put(Parameter.XA_TRANSACTION, Boolean.FALSE);
   }
 
   /**

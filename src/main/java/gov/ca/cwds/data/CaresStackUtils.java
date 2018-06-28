@@ -16,16 +16,20 @@ public class CaresStackUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CaresStackUtils.class);
 
+  private CaresStackUtils() {
+    // private, static methods only
+  }
+
   public static void logStack() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    if (ctx != null && ctx.isXaTransaction()) {
+    if (ctx != null && ctx.isXaTransaction() && LOGGER.isDebugEnabled()) {
       try {
         final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         Arrays.stream(stack, 0, stack.length - 1)
             .filter(e -> e.getClassName().startsWith("gov.ca.cwds")
                 && !e.getClassName().startsWith("gov.ca.cwds.rest.filters")
                 && !e.getClassName().contains("$$"))
-            .forEach(e -> LOGGER.info("\t{}", e));
+            .forEach(e -> LOGGER.debug("\t{}", e));
       } catch (Exception e) {
         LOGGER.error("FAILED TO PRINT STACK! {}", e);
         throw e;
