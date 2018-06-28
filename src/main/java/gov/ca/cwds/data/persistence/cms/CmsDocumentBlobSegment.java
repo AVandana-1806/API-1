@@ -73,7 +73,9 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     super();
     this.docHandle = docHandle;
     this.segmentSequence = segmentSequence;
-    this.docBlob = Arrays.copyOf(docBlob, docBlob.length); // security, externally mutable
+
+    // Don't blindly accept a externally mutable byte array.
+    this.docBlob = docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
