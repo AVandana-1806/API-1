@@ -12,7 +12,6 @@ import gov.ca.cwds.server.TestingYmlConfig;
  * To initialize the testConfig location.
  * 
  * @author CWDS API Team
- *
  */
 public class TestModule extends AbstractModule {
 
