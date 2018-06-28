@@ -1,6 +1,8 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,7 +83,7 @@ public class IntakeCodeConverter {
 
     WHITE("White*", Constants.WHITE, "");
 
-    private static final Map<String, IntakeRaceCode> mapper = new HashMap<>();
+    private static final Map<String, List<IntakeRaceCode>> mapper = new HashMap<>();
 
     private final String legacyValue;
     private final String race;
@@ -119,7 +121,7 @@ public class IntakeCodeConverter {
      * @return the intake code values
      */
     public static IntakeRaceCode findByLegacyValue(String legacyValue) {
-      return mapper.containsKey(legacyValue) ? mapper.get(legacyValue) : null;
+      return mapper.containsKey(legacyValue) ? mapper.get(legacyValue).get(0) : null;
     }
 
     /**
@@ -146,7 +148,16 @@ public class IntakeCodeConverter {
 
     static {
       for (IntakeRaceCode intakeRaceCode : IntakeRaceCode.values()) {
-        mapper.put(intakeRaceCode.legacyValue, intakeRaceCode);
+        List<IntakeRaceCode> list = null;
+        if (mapper.containsKey(intakeRaceCode.legacyValue)) {
+          list = mapper.get(intakeRaceCode.legacyValue);
+          list.add(intakeRaceCode);
+          mapper.put(intakeRaceCode.legacyValue, list);
+        } else {
+          list = new ArrayList<>();
+          list.add(intakeRaceCode);
+          mapper.put(intakeRaceCode.legacyValue, list);
+        }
       }
     }
   }
