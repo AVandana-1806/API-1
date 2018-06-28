@@ -106,7 +106,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * @param base64 base64 encoded bytes
    * @return new blobs in order
    */
-  private List<CmsDocumentBlobSegment> compressPLAIN(final CmsDocument doc, String base64) {
+  protected List<CmsDocumentBlobSegment> compressPlain(final CmsDocument doc, String base64) {
     final List<CmsDocumentBlobSegment> blobs = new ArrayList<>();
     try {
       final byte[] plain = DatatypeConverter.parseBase64Binary(base64);
@@ -157,7 +157,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     } else if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_PK)) {
       retval = decompressPK(doc);
     } else if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_PLAIN)) {
-      retval = decompressPLAIN(doc);
+      retval = decompressPlain(doc);
     } else {
       LOGGER.error("UNSUPPORTED COMPRESSION METHOD! {}", doc.getCompressionMethod());
     }
@@ -168,7 +168,6 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
   /**
    * Compress (deflate) a document by determining the compression type, calling appropriate library
    * and splitting on blob segments.
-   *
    *
    * @param doc document to compress
    * @param base64 base64 encoded bytes
@@ -187,7 +186,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     } else if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_PK)) {
       retval = compressPK(doc, base64);
     } else if (doc.getCompressionMethod().endsWith(COMPRESSION_TYPE_PLAIN)) {
-      retval = compressPLAIN(doc, base64);
+      retval = compressPlain(doc, base64);
     } else {
       LOGGER.error("UNSUPPORTED COMPRESSION METHOD! {}", doc.getCompressionMethod());
     }
@@ -236,13 +235,15 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * @param doc PLAIN archive to decompress
    * @return base64-encoded String of decompressed document
    */
-  private String decompressPLAIN(CmsDocument doc) {
+  protected String decompressPlain(CmsDocument doc) {
     String retval = "";
 
     try {
       final ByteArrayBuffer buf = new ByteArrayBuffer(doc.getDocLength().intValue());
+      byte[] blob;
       for (CmsDocumentBlobSegment seg : doc.getBlobSegments()) {
-        buf.append(seg.getDocBlob(), 0, seg.getDocBlob().length);
+        blob = seg.getDocBlob();
+        buf.append(blob, 0, blob.length);
       }
 
       final byte[] bytes = buf.buffer();
@@ -275,7 +276,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * @return base64-encoded String of decompressed document
    */
   @SuppressFBWarnings("PATH_TRAVERSAL_IN") // There is no path traversal here
-  private String decompressLZW(CmsDocument doc) {
+  protected String decompressLZW(CmsDocument doc) {
     String retval = "";
 
     File src = null;
@@ -312,7 +313,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     return retval;
   }
 
-  private void blobSegmentsToFile(CmsDocument doc, File src) {
+  protected void blobSegmentsToFile(CmsDocument doc, File src) {
     try (FileOutputStream fos = new FileOutputStream(src);) {
       for (CmsDocumentBlobSegment seg : doc.getBlobSegments()) {
         final byte[] bytes = seg.getDocBlob();
@@ -343,7 +344,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * @return base64-encoded String of decompressed document
    */
   @SuppressFBWarnings("PATH_TRAVERSAL_IN") // There is no path traversal here
-  private List<CmsDocumentBlobSegment> compressLZW(CmsDocument doc, String base64) {
+  protected List<CmsDocumentBlobSegment> compressLZW(CmsDocument doc, String base64) {
     final List<CmsDocumentBlobSegment> blobs = new ArrayList<>();
 
     File src = null;
@@ -401,13 +402,13 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     return blobs;
   }
 
-  private void errorDecompressing(Exception e) {
+  protected void errorDecompressing(Exception e) {
     LOGGER.error("ERROR DECOMPRESSING LZW! {}", e.getMessage(), e);
     throw new ServiceException("ERROR DECOMPRESSING LZW! " + e.getMessage(), e);
   }
 
-  private void errorCompressing(Exception e) {
-    LOGGER.error("ERROR COMPRESSING LZW! {}", e.getMessage());
+  protected void errorCompressing(Exception e) {
+    LOGGER.error("ERROR COMPRESSING LZW! {}", e.getMessage(), e);
     throw new ServiceException("ERROR COMPRESSING LZW! " + e.getMessage(), e);
   }
 
