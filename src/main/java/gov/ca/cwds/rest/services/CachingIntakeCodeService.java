@@ -24,10 +24,9 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
- * Intake code cache Implementation
+ * Intake code cache implementation for list-of-values (LOV).
  * 
  * @author CWDS API Team
- *
  */
 public class CachingIntakeCodeService extends IntakeLovService implements IntakeCodeCache {
 
@@ -46,8 +45,9 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
   /**
    * Construct the object.
    * 
-   * @param intakeLovDao Intake Lov Dao
+   * @param intakeLovDao Intake list-of-values (LOV) Dao
    * @param secondsToRefreshCache Seconds after which cache entries will be invalidated for refresh.
+   * @param preloadCache load the cache at server startup before requests are accepted
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao, long secondsToRefreshCache,
@@ -60,8 +60,7 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
 
     if (preloadCache) {
       try {
-        Map<CacheKey, Object> intakeLovs = cacheLoader.loadAll();
-        intakeCodeCache.putAll(intakeLovs);
+        intakeCodeCache.putAll(cacheLoader.loadAll());
       } catch (Exception e) {
         LOGGER.error("Error loading intake lovs", e);
         throw new ServiceException(e);
