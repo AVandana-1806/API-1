@@ -56,11 +56,13 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
   }
 
   private String getZip(ServiceProvider serviceProvider) {
-    String zip = serviceProvider.getZipNumber().toString();
-    if (serviceProvider.getZipSuffixNumber() != null) {
-      return serviceProvider.getZipNumber() + "-" + serviceProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return serviceProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (serviceProvider.getZipSuffixNumber() != null) { return serviceProvider.getZipNumber() +
+     * "-" + serviceProvider.getZipSuffixNumber(); }
+     */
   }
 
 }

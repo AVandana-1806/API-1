@@ -88,7 +88,7 @@ public class EducationProviderContactTransformerTest {
     LegacyDescriptor addressLegacyDescriptor =
         new LegacyDescriptor("fk12345678", null, lastUpdated, "ED_PVDRT", "Education Provider");
     Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "streetNumber streetName", "Sacramento", "CA", "99999-0", null, addressLegacyDescriptor)));
+        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor)));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "0", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Firstname", "Middle",

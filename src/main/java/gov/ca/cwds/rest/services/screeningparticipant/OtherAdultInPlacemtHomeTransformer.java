@@ -84,10 +84,12 @@ public class OtherAdultInPlacemtHomeTransformer
   }
 
   private String getZip(PlacementHome placementHome) {
-    String zip = placementHome.getZipNo();
-    if (placementHome.getZipSfxNo() != null) {
-      return placementHome.getZipNo() + "-" + placementHome.getZipSfxNo();
-    }
-    return zip;
+    return placementHome.getZipNo();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (placementHome.getZipSfxNo() != null) { return placementHome.getZipNo() + "-" +
+     * placementHome.getZipSfxNo(); } return zip;
+     */
   }
 }

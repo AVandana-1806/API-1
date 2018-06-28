@@ -36,6 +36,7 @@ public class R05904ContactStartedAt implements RuleValidator {
 
   @Override
   public boolean isValid() {
-    return contactStartedAtDateTime.after(referralReceivedDateTime);
+    return (contactStartedAtDateTime.after(referralReceivedDateTime)
+        || contactStartedAtDateTime.equals(referralReceivedDateTime));
   }
 }
