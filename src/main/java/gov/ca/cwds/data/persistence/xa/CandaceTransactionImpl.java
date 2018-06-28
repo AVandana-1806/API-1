@@ -27,14 +27,14 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void begin() {
-    LOGGER.warn("\n\t****** CandaceTransactionImpl.begin! ****** \n");
+    LOGGER.info("\n\t****** CandaceTransactionImpl.begin! ****** \n");
     CaresStackUtils.logStack();
     txn.begin();
   }
 
   @Override
   public void commit() {
-    LOGGER.warn("\n\t****** CandaceTransactionImpl.commit! ****** \n");
+    LOGGER.info("\n\t****** CandaceTransactionImpl.commit! ****** \n");
     CaresStackUtils.logStack();
     txn.commit();
   }
@@ -84,6 +84,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void markRollbackOnly() {
+    LOGGER.warn("\n\t****** CandaceTransactionImpl.markRollbackOnly! ****** \n");
     txn.markRollbackOnly();
   }
 

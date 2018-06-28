@@ -61,7 +61,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
   // Only works for the same datasource.
-  // private static final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  // private final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
 
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
@@ -86,20 +86,18 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.xaHibernateBundle = xaHibernateBundle;
   }
 
-  protected boolean isXaTransaction() {
+  public static boolean isXaTransaction() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    final boolean ret = ctx != null && ctx.isXaTransaction();
-    LOGGER.debug("isXaTransaction: {}", ret);
-    return ret;
+    return ctx != null && ctx.isXaTransaction();
   }
 
   /**
-   * Determine which type of transaction to use.
+   * Pick a transaction type.
    * 
    * @return smart {@link SessionFactory}
    */
   protected SessionFactory pick() {
-    if (normSessionFactory == null) {
+    if (normSessionFactory == null || xaSessionFactory == null) {
       init();
     }
 

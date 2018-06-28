@@ -99,14 +99,16 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.warn("CandaceSessionImpl.beginTransaction");
+    LOGGER.warn("CandaceSessionImpl.beginTransaction: XA: {}",
+        CandaceSessionFactoryImpl.isXaTransaction());
     this.txn = new CandaceTransactionImpl(session.beginTransaction());
     return txn;
   }
 
   @Override
   public Transaction getTransaction() {
-    LOGGER.debug("CandaceSessionImpl.getTransaction");
+    LOGGER.debug("CandaceSessionImpl.getTransaction: XA: {}",
+        CandaceSessionFactoryImpl.isXaTransaction());
     if (this.txn == null) {
       this.txn = new CandaceTransactionImpl(session.getTransaction());
     }
@@ -451,6 +453,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(String entityName, Object object) {
+    LOGGER.warn("CandaceSessionImpl.delete entityName: {}", entityName);
     session.delete(entityName, object);
   }
 
@@ -466,7 +469,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.warn("CandaceSessionImpl.detach");
+    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
     session.detach(entity);
   }
 
@@ -817,8 +820,8 @@ public class CandaceSessionImpl implements Session {
   }
 
   /*
-   * Confusing and contradictory method signatures. After stripping types, method signature is the
-   * same as {@link EntityManager.createNativeQuery(String, Class)};
+   * DRS: confusing and contradictory method signatures. After stripping types, method signature is
+   * the same as {@link EntityManager.createNativeQuery(String, Class)};
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
