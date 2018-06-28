@@ -44,7 +44,6 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
  *
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S00107"})
 @NamedQuery(name = FIND_LEGACY_ID_LIST_BY_SCREENING_ID,
     query = "SELECT legacyId FROM ParticipantEntity WHERE screeningEntity.id = :screeningId")
 @NamedQuery(name = FIND_PARTICIPANTS_BY_SCREENING_IDS,
@@ -56,6 +55,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND id = :participantId")
 @Entity
 @Table(name = "participants")
+@SuppressWarnings({"squid:S00107"})
 public class ParticipantEntity
     implements PersistentObject, HasPaperTrail, Identifiable<String>, Serializable {
 

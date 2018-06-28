@@ -1,15 +1,20 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
+import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
 
 @Entity
 @Table(name = "relationships")
@@ -17,8 +22,9 @@ public class Relationship implements PersistentObject {
 
   @Id
   @GenericGenerator(name = "relationships_id",
-      strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator", parameters = {
-      @org.hibernate.annotations.Parameter(name = "sequence_name", value = "relationships_id_seq")})
+      strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator",
+      parameters = {@org.hibernate.annotations.Parameter(name = "sequence_name",
+          value = "relationships_id_seq")})
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "relationships_id")
 
   @Column(name = "id")
@@ -45,8 +51,7 @@ public class Relationship implements PersistentObject {
   @Column(name = "same_home_status")
   private Boolean sameHomeStatus;
 
-  public Relationship() {
-  }
+  public Relationship() {}
 
   public Relationship(String id, String clientId, String relativeId, int relationshipType,
       Date createdAt, Date updatedAt, boolean absentParentIndicator, Boolean sameHomeStatus) {
@@ -98,19 +103,19 @@ public class Relationship implements PersistentObject {
   }
 
   public Date getCreatedAt() {
-    return createdAt;
+    return freshDate(createdAt);
   }
 
   public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
+    this.createdAt = freshDate(createdAt);
   }
 
   public Date getUpdatedAt() {
-    return updatedAt;
+    return freshDate(updatedAt);
   }
 
   public void setUpdatedAt(Date updatedAt) {
-    this.updatedAt = updatedAt;
+    this.updatedAt = freshDate(updatedAt);
   }
 
   public boolean isAbsentParentIndicator() {
@@ -128,4 +133,5 @@ public class Relationship implements PersistentObject {
   public void setSameHomeStatus(Boolean sameHomeStatus) {
     this.sameHomeStatus = sameHomeStatus;
   }
+
 }
