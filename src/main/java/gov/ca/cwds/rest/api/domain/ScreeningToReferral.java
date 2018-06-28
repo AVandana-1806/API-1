@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -106,7 +107,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
   private String currentLocationOfChildren;
 
   @JsonProperty("name")
-  @NotEmpty
+  @NotNull
   @ApiModelProperty(required = true, readOnly = false, value = "Title/Name of referral",
       example = "a referral name")
   @Size(max = 35)
@@ -321,7 +322,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
     this.locationType = locationType;
     this.communicationMethod = communicationMethod;
     this.currentLocationOfChildren = currentLocationOfChildren;
-    this.name = name;
+    this.name = StringUtils.isBlank(name) ? "" : name;
     this.reportNarrative = reportNarrative;
     this.reference = reference;
     this.responseTime = responseTime;
