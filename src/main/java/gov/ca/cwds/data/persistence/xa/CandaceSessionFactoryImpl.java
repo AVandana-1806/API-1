@@ -86,6 +86,11 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.xaHibernateBundle = xaHibernateBundle;
   }
 
+  protected boolean isXaTransaction() {
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    return ctx != null && ctx.isXaTransaction();
+  }
+
   /**
    * Determine which type of transaction to use.
    * 
@@ -96,8 +101,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
       init();
     }
 
-    final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    return ctx != null && ctx.isXaTransaction() ? xaSessionFactory : normSessionFactory;
+    return isXaTransaction() ? xaSessionFactory : normSessionFactory;
   }
 
   protected synchronized void init() {
