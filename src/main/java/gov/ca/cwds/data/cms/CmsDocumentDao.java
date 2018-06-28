@@ -291,6 +291,10 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
       errorDecompressing(e);
     }
 
+    if (src == null || tgt == null) {
+      throw new ServiceException("LZW DE-COMPRESSION ERROR: source and target cannot be null!");
+    }
+
     try {
       blobSegmentsToFile(doc, src);
 
@@ -311,6 +315,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
     } catch (Exception e) {
       errorDecompressing(e);
     }
+
     return retval;
   }
 
@@ -357,6 +362,10 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
       tgt.deleteOnExit();
     } catch (IOException e) {
       errorCompressing(e);
+    }
+
+    if (src == null || tgt == null) {
+      throw new ServiceException("LZW COMPRESSION ERROR: source and target cannot be null!");
     }
 
     try (FileOutputStream fos = new FileOutputStream(src);) {
