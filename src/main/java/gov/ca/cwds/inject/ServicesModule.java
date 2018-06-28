@@ -10,13 +10,14 @@ import java.util.Properties;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
@@ -29,6 +30,7 @@ import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
@@ -355,10 +357,10 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
-  @Singleton
-  public SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
+  public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
+    SystemCodeService ret;
 
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
@@ -370,8 +372,19 @@ public class ServicesModule extends AbstractModule {
       secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
     }
 
-    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
-        preLoad);
+    try (final Session session = new CandaceSessionImpl(systemCodeDao.grabSession())) {
+      LOGGER.info("Load code cache: preLoad: {}, secondsToRefreshCache: {}", preLoad,
+          secondsToRefreshCache);
+      final Transaction txn = session.beginTransaction();
+      ret = new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
+          preLoad);
+      txn.commit();
+    } catch (Exception e) {
+      LOGGER.error("ERROR LOADING SYSTEM CODE CACHE! {}", e.getMessage(), e);
+      throw e;
+    }
+
+    return ret;
   }
 
   /**

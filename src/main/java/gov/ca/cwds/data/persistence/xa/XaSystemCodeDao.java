@@ -1,10 +1,10 @@
 package gov.ca.cwds.data.persistence.xa;
 
 import org.hibernate.FlushMode;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,29 +35,40 @@ public class XaSystemCodeDao extends SystemCodeDao {
   }
 
   /**
+   * DRS: Don't interfere with transaction management, like XA.
+   * 
    * @param foreignKeyMetaTable meta group
    * @return all keys by meta table
    */
   @Override
   @SuppressWarnings("unchecked")
   public SystemCode[] findByForeignKeyMetaTable(String foreignKeyMetaTable) {
-    LOGGER.info("XaSystemCodeDao.findByForeignKeyMetaTable: foreignKeyMetaTable: {}",
-        foreignKeyMetaTable);
-    final String namedQueryName = SystemCode.class.getName() + ".findByForeignKeyMetaTable";
+    LOGGER.info("XaSystemCodeDao.findByForeignKeyMetaTable: meta: {}", foreignKeyMetaTable);
+    SystemCode[] ret;
 
-    // DRS: Don't interfere with transaction management, like XA.
-    final Session session = grabSession();
-    joinTransaction(session);
+    final String namedQueryName = SystemCode.class.getName() + ".findByForeignKeyMetaTable";
+    final CandaceSessionImpl session = new CandaceSessionImpl(grabSession());
+    final Transaction txn = joinTransaction(session);
 
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
           .setString("foreignKeyMetaTable", foreignKeyMetaTable).setReadOnly(true)
           .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL);
-      return query.list().toArray(new SystemCode[0]);
-    } catch (HibernateException h) {
-      LOGGER.error("XaSystemCodeDao: ERROR! {}", h.getMessage(), h);
+      ret = query.list().toArray(new SystemCode[0]);
+      LOGGER.info("XaSystemCodeDao.findByForeignKeyMetaTable: meta: {}, count: {}",
+          foreignKeyMetaTable, ret.length);
+
+      if (!session.isXaTransaction()) {
+        LOGGER.warn("COMMIT TRANSACTION, CLOSE SESSION");
+        txn.commit();
+      }
+
+    } catch (Exception h) {
+      LOGGER.error("XaSystemCodeDao.findByForeignKeyMetaTable: ERROR! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
+
+    return ret;
   }
 
   @Override
@@ -66,15 +77,15 @@ public class XaSystemCodeDao extends SystemCodeDao {
     LOGGER.info("XaSystemCodeDao.findBySystemCodeId: systemCodeId: {}", systemCodeId);
     final String namedQueryName = SystemCode.class.getName() + ".findBySystemCodeId";
     final Session session = grabSession();
-    joinTransaction(session);
+    final Transaction txn = joinTransaction(session);
 
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
           .setShort("systemId", systemCodeId.shortValue()).setReadOnly(true).setCacheable(false);
       query.setHibernateFlushMode(FlushMode.MANUAL);
       return query.getSingleResult();
-    } catch (HibernateException h) {
-      LOGGER.error("XaSystemCodeDao: ERROR! {}", h.getMessage(), h);
+    } catch (Exception h) {
+      LOGGER.error("XaSystemCodeDao.findBySystemCodeId: ERROR! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }

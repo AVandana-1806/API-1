@@ -25,6 +25,10 @@ public class CandaceTransactionImpl implements Transaction {
     this.txn = txn;
   }
 
+  public boolean isXaTransaction() {
+    return CandaceSessionFactoryImpl.isXaTransaction();
+  }
+
   @Override
   public void begin() {
     LOGGER.info("\n\t****** CandaceTransactionImpl.begin! ****** \n");

@@ -64,6 +64,10 @@ public class CandaceSessionImpl implements Session {
     this.session = session;
   }
 
+  public boolean isXaTransaction() {
+    return CandaceSessionFactoryImpl.isXaTransaction();
+  }
+
   @SuppressWarnings("rawtypes")
   @Override
   public Query getNamedQuery(String queryName) {
