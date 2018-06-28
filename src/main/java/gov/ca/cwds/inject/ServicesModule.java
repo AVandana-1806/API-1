@@ -200,7 +200,7 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      BaseAuthorizationDao.setXaMode(Boolean.TRUE);
+      BaseAuthorizationDao.setXaMode(true);
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
       if (ctx != null) {
         ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);

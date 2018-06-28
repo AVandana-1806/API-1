@@ -150,7 +150,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
     BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, false);
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
     this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
         .forEach(ManagedSessionContext::unbind);
 
