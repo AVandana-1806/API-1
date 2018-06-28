@@ -9,7 +9,6 @@ import java.util.Properties;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +36,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
+import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
@@ -325,13 +325,25 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * @param intakeLovDao - intakeLovDao
+   * @param config - config
    * @return the IntakeCode
    */
   @Provides
-  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao) {
+  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
+      ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
-    final long secondsToRefreshCache = 365L * 24 * 60 * 60; // 365 days
-    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache);
+
+    boolean preLoad = true; // default is true
+    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
+
+    SystemCodeCacheConfiguration intakeCodeCacheConfig =
+        config != null ? config.getIntakeCodeCacheConfiguration() : null;
+    if (intakeCodeCacheConfig != null) {
+      preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
+      secondsToRefreshCache = intakeCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
+    }
+
+    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
 
   /**

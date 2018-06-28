@@ -171,7 +171,14 @@ triggertables:
 
 systemCodeCache:
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
+  # This is 365 days
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+  
+intakeCodeCache:
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
+  # This is 365 days
+  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}
+  
 webSecurity:
   httpResponseSecurityHeaders:
     # Prevent MIMI sniffing
