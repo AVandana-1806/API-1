@@ -60,7 +60,7 @@ public class CachingIntakeCodeServiceTest {
   */
   @Test
   public void instantiation() {
-    CachingIntakeCodeService target = new CachingIntakeCodeService(intakeLovDao, 1);
+    CachingIntakeCodeService target = new CachingIntakeCodeService(intakeLovDao, 1, true);
     assertThat(target, notNullValue());
   }
 
@@ -76,7 +76,7 @@ public class CachingIntakeCodeServiceTest {
     List<IntakeLov> lovList = Arrays.asList(intakeLov, intakeLov1);
 
     when(intakeLovDao.findByLegacyMetaId(any(String.class))).thenReturn(lovList);
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     Short actualLovCode = cachingIntakeCodeService
         .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "Cambodian");
     Assert.assertNotNull(actualLovCode);
@@ -89,7 +89,7 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testToWhenCacheNull() {
     when(intakeLovDao.findByLegacyMetaId(null)).thenReturn(new ArrayList<>());
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     Short actualLovCode = cachingIntakeCodeService
         .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "112kfjn");
     Assert.assertNull(actualLovCode);
@@ -107,7 +107,7 @@ public class CachingIntakeCodeServiceTest {
     List<IntakeLov> lovList = new ArrayList<>(Arrays.asList(intakeLov, intakeLov1));
 
     when(intakeLovDao.findByLegacyMetaId(SystemCodeCategoryId.LANGUAGE_CODE)).thenReturn(lovList);
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     when(intakeLovDao.findByLegacyMetaId(SystemCodeCategoryId.LANGUAGE_CODE)).thenReturn(lovList);
     List<IntakeLov> actualLovCode =
         cachingIntakeCodeService.getAllLegacySystemCodesForMeta(SystemCodeCategoryId.LANGUAGE_CODE);
@@ -121,7 +121,7 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testToGetAllLegacySystemCodesForMetaEmpty() {
     when(intakeLovDao.findAll()).thenReturn(new ArrayList<>());
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     List<IntakeLov> actualLovCode = cachingIntakeCodeService.getAllLegacySystemCodesForMeta("");
     Assert.assertNotNull(actualLovCode);
     assertThat(actualLovCode.size(), is(equalTo(0)));
@@ -132,7 +132,7 @@ public class CachingIntakeCodeServiceTest {
    */
   @Test
   public void testToGetLegacySystemIdForRaceCode() {
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     IntakeRace intakeRace = new IntakeRace("White", "Central American");
     Short sysId = cachingIntakeCodeService
         .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
@@ -144,7 +144,7 @@ public class CachingIntakeCodeServiceTest {
    */
   @Test
   public void testWhenIntakeCodeConverterNull() {
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     IntakeRace intakeRace = new IntakeRace("Asian", "Central Indian");
     Short sysId = cachingIntakeCodeService
         .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
@@ -156,7 +156,7 @@ public class CachingIntakeCodeServiceTest {
    */
   @Test
   public void testWhenIntakeCodeNull() {
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     Short sysId =
         cachingIntakeCodeService.getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, null);
     Assert.assertNull(sysId);
@@ -167,7 +167,7 @@ public class CachingIntakeCodeServiceTest {
    */
   @Test
   public void testWhenMetaNullAndReturnNull() {
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500);
+    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
     IntakeRace intakeRace = new IntakeRace("Asian", "Central American");
     Short sysId = cachingIntakeCodeService.getLegacySystemCodeForRace(null, intakeRace);
     Assert.assertNull(sysId);

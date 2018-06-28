@@ -2,7 +2,9 @@ package gov.ca.cwds.rest.services;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -18,8 +20,8 @@ import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
-import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * Intake code cache Implementation
@@ -31,9 +33,6 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
 
   private transient LoadingCache<CacheKey, Object> intakeCodeCache;
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -51,12 +50,26 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
    * @param secondsToRefreshCache Seconds after which cache entries will be invalidated for refresh.
    */
   @Inject
-  public CachingIntakeCodeService(IntakeLovDao intakeLovDao, long secondsToRefreshCache) {
+  public CachingIntakeCodeService(IntakeLovDao intakeLovDao, long secondsToRefreshCache,
+      boolean preloadCache) {
     super(intakeLovDao);
 
     final IntakeCodeCacheLoader cacheLoader = new IntakeCodeCacheLoader(this);
     intakeCodeCache = CacheBuilder.newBuilder()
         .refreshAfterWrite(secondsToRefreshCache, TimeUnit.SECONDS).build(cacheLoader);
+
+    if (preloadCache) {
+      try {
+        Map<CacheKey, Object> intakeLovs = cacheLoader.loadAll();
+        intakeCodeCache.putAll(intakeLovs);
+      } catch (Exception e) {
+        LOGGER.error("Error loading intake lovs", e);
+        throw new ServiceException(e);
+      }
+
+      LOGGER.info("Intake LOV cache size: {}, pre-loaded: {}, refresh after (seconds): {}",
+          intakeCodeCache.size(), preloadCache, secondsToRefreshCache);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -86,9 +99,9 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
   @Override
   public Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
     Short sysId = null;
-    IntakeCodeConverter.IntakeRaceCode intakeCodeCode = (intakeRace != null)
-        ? IntakeCodeConverter.IntakeRaceCode.lookUpByIntakeRace(intakeRace)
-        : null;
+    IntakeCodeConverter.IntakeRaceCode intakeCodeCode =
+        (intakeRace != null) ? IntakeCodeConverter.IntakeRaceCode.lookUpByIntakeRace(intakeRace)
+            : null;
     if (intakeCodeCode != null && StringUtils.isNotBlank(intakeCodeCode.getLegacyValue())
         && StringUtils.isNotBlank(metaId)) {
       sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeCode.getLegacyValue(), metaId);
@@ -163,6 +176,35 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
       return objectToCache;
     }
 
+    /**
+     * Load all intake LOVs and return.
+     * 
+     * @return All intake LOVs
+     */
+    public Map<CacheKey, Object> loadAll() {
+      Map<CacheKey, Object> intakeLovMap = new HashMap<>();
+
+      List<IntakeLov> intakeLovs = intakeLovService.loadAll();
+      for (IntakeLov intakeLov : intakeLovs) {
+        String metaId = intakeLov.getLegacyMeta();
+        Long sysCodeId = intakeLov.getLegacySystemCodeId();
+
+        CacheKey metaKey = CacheKey.createForMeta(metaId);
+        CacheKey sysCodeKey = CacheKey.createForSystemCode(sysCodeId);
+
+        @SuppressWarnings("unchecked")
+        List<IntakeLov> metaLovs = (List<IntakeLov>) intakeLovMap.get(metaKey);
+        if (metaLovs == null) {
+          metaLovs = new ArrayList<>();
+        }
+
+        metaLovs.add(intakeLov);
+        intakeLovMap.put(metaKey, metaLovs);
+        intakeLovMap.put(sysCodeKey, intakeLov);
+      }
+
+      return intakeLovMap;
+    }
   }
 
   /**

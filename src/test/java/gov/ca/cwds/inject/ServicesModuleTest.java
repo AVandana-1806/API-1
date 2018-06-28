@@ -122,7 +122,7 @@ public class ServicesModuleTest {
 
   @Test
   public void provideIntakeCodeService_A$IntakeLovDao() throws Exception {
-    IntakeLovService actual = target.provideIntakeLovService(intakeLovDao);
+    IntakeLovService actual = target.provideIntakeLovService(intakeLovDao, null);
     assertThat(actual, is(notNullValue()));
   }
 

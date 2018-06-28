@@ -385,13 +385,25 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * @param intakeLovDao - intakeLovDao
+   * @param config - config
    * @return the IntakeCode
    */
   @Provides
-  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao) {
+  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
+      ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
-    final long secondsToRefreshCache = 365L * 24 * 60 * 60; // 365 days
-    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache);
+
+    boolean preLoad = true; // default is true
+    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
+
+    SystemCodeCacheConfiguration intakeCodeCacheConfig =
+        config != null ? config.getIntakeCodeCacheConfiguration() : null;
+    if (intakeCodeCacheConfig != null) {
+      preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
+      secondsToRefreshCache = intakeCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
+    }
+
+    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
 
   /**

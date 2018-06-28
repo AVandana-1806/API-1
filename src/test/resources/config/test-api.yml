@@ -21,7 +21,7 @@ nsDataSourceFactory:
   driverClass: org.h2.Driver
   user: sa
   password:
-  url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
+  url: jdbc:h2:~/ns;INIT=create schema if not exists intakens\;set schema intakens
   validationQuery: "/* MyService Health Check */ SELECT 1"
   logValidationErrors: true
   initialSize: ${DB_NS_CP_INITIAL_SIZE:-2}
@@ -98,38 +98,11 @@ xaCmsDataSourceFactory:
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
+      hibernate.connection.release_mode: auto
+      connection.release_mode: auto
       hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
-
-xaCmsRsDataSourceFactory:
-  autoCommitByDefault: false
-  driverClass: org.h2.Driver
-  user: sa
-  password:
-  url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1}
-  xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
-  validationQuery: "/* MyService Health Check */ SELECT 1"
-  logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
-  minIdleTime: 1 minute
-  properties:
-      hibernate.dialect: org.hibernate.dialect.H2Dialect
-      hibernate.show_sql: false
-      hibernate.default_schema: ${DB_CMSRS_SCHEMA:-cwsrs1}
-      hibernate.connection.autocommit: false
-      hibernate.current_session_context_class: jta
-      hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
-      hibernate.connection.provider_disables_autocommit: true
-  xaProperties:
-      url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsint\;set schema cwsrs1}
 
 xaNsDataSourceFactory:
   driverClass: org.h2.Driver
@@ -152,13 +125,13 @@ xaNsDataSourceFactory:
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
+      hibernate.connection.release_mode: auto
+      connection.release_mode: auto
       # hibernate.temp.use_jdbc_metadata_defaults: false
-      hibernate.cache.use_query_cache: false
       hibernate.cache.use_second_level_cache: false
-      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      hibernate.cache.use_query_cache: false
+      # hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_NS_JDBC_URL:-jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens}
 
@@ -167,7 +140,7 @@ elasticsearch:
   peopleIndex:
     elasticsearch.host: ${ES_HOST_PEOPLE:-127.0.0.1}
     elasticsearch.port: ${ES_PORT_PEOPLE:-9200}
-    elasticsearch.cluster: ${ES_CLUSTER_PEOPLE:-elasticsearch}
+    elasticsearch.cluster: ${ES_CLUSTER_PEOPLE:-taborda-dev-es}
     elasticsearch.alias: ${ES_ALIAS_PEOPLE:-people}
     elasticsearch.doctype: ${ES_DOCTYPE_PEOPLE:-person}
     elasticsearch.xpack.user: ${XPACK_USER_PEOPLE:-}
@@ -175,9 +148,9 @@ elasticsearch:
 
   # Screenings index
   screeningsIndex:
-    elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
-    elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
-    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
+    elasticsearch.host: ${ES_HOST_SCREENINGS:-127.0.0.1}
+    elasticsearch.port: ${ES_PORT_SCREENINGS:-9200}
+    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-taborda-dev-es}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
     elasticsearch.xpack.user: ${XPACK_USER_SCREENINGS:-}
@@ -186,9 +159,13 @@ elasticsearch:
 triggertables:
   laCountySpecificCode: 19
   
-systemCodeCache: 
-  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
+systemCodeCache:
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+  
+intakeCodeCache:
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-false}
+  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}  
 
 webSecurity:
   httpResponseSecurityHeaders:
