@@ -24,6 +24,11 @@ public class CandaceTransactionImpl implements Transaction {
 
   private final Transaction txn;
 
+  /**
+   * Ctor wraps a Hibernate transaction.
+   * 
+   * @param txn Hibernate transaction
+   */
   public CandaceTransactionImpl(Transaction txn) {
     this.txn = txn;
   }

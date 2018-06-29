@@ -45,7 +45,7 @@ public class WorkDB2UserInfo implements Work {
     } catch (Exception e) {
       LOGGER.error("UNABLE TO FIND HOST IP! {}", e.getMessage(), e);
       if (StringUtils.isBlank(hostAddress)) {
-        hostAddress = "unknown server";
+        hostAddress = "Ferb unknown";
       }
     } finally {
       SERVER_IP_ADDRESS = hostAddress;
