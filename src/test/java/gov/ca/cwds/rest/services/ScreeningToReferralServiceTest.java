@@ -185,7 +185,6 @@ public class ScreeningToReferralServiceTest {
   private Validator validator;
   private ExternalInterfaceTables externalInterfaceTables;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private Participant defaultVictim;
   private Participant defaultReporter;
@@ -301,7 +300,6 @@ public class ScreeningToReferralServiceTest {
     defaultPerpetrator = new ParticipantResourceBuilder().createPerpParticipant();
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
-    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     messageBuilder = new MessageBuilder();
 
@@ -310,7 +308,7 @@ public class ScreeningToReferralServiceTest {
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, messageBuilder,
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, referralSatefyAlertsService);
+        clientRelationshipDao);
 
   }
 
@@ -843,8 +841,8 @@ public class ScreeningToReferralServiceTest {
     String relationId = "ZXCV";
     int relationshipType = 123;
 
-    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
-        .setRelationships(null).createScreeningToReferral();
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setRelationships(null).createScreeningToReferral();
 
     when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
         .thenReturn("REFERRALID");
@@ -1281,7 +1279,7 @@ public class ScreeningToReferralServiceTest {
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, referralSatefyAlertsService);
+        clientRelationshipDao);
 
     mockParticipantService(screeningToReferral);
 

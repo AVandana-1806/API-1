@@ -53,7 +53,8 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Referral extends CmsPersistentObject implements AccessLimitationAware {
 
-  public static final String FIND_REFERRALS_WITH_REPORTERS_BY_IDS = "gov.ca.cwds.data.persistence.cms.Referral.findReferralsWithReportersByIds";
+  public static final String FIND_REFERRALS_WITH_REPORTERS_BY_IDS =
+      "gov.ca.cwds.data.persistence.cms.Referral.findReferralsWithReportersByIds";
 
   @Id
   @Column(name = "IDENTIFIER", length = CMS_ID_LEN)
@@ -331,9 +332,9 @@ public class Referral extends CmsPersistentObject implements AccessLimitationAwa
    * @param closureDate closure date
    * @param communicationMethodType communication method type
    * @param currentLocationOfChildren current location of children
-   * @param drmsAllegationDescriptionDoc drms allegation description doc
-   * @param drmsErReferralDoc drms er referral doc
-   * @param drmsInvestigationDoc drms investigation doc
+   * @param drmsAllegationDescriptionDoc DRMS allegation description doc
+   * @param drmsErReferralDoc DRMS er referral doc
+   * @param drmsInvestigationDoc DRMS investigation doc
    * @param filedSuspectedChildAbuseReporttoLawEnforcementIndicator filed suspected child abuse
    *        report to law enforcement indicator
    * @param familyAwarenessIndicator family awareness indicator

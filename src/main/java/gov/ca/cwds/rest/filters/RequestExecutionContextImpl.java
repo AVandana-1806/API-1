@@ -37,18 +37,20 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   /**
    * Context parameters
    */
-  private Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
+  private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
 
   /**
    * Private constructor
    * 
    * @param userIdentity User identity
    */
-  private RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
+  protected RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
     put(Parameter.REQUEST_START_TIME, new Date());
     put(Parameter.USER_IDENTITY, userIdentity);
     put(Parameter.SEQUENCE_EXTERNAL_TABLE, Integer.valueOf(0));
     put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
+    put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
+    put(Parameter.XA_TRANSACTION, Boolean.FALSE);
   }
 
   /**
@@ -131,6 +133,18 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   @Override
   public Date getRequestStartTime() {
     return (Date) get(Parameter.REQUEST_START_TIME);
+  }
+
+  @Override
+  public boolean isResourceReadOnly() {
+    final Boolean readOnly = (Boolean) get(Parameter.RESOURCE_READ_ONLY);
+    return readOnly != null && readOnly.booleanValue();
+  }
+
+  @Override
+  public boolean isXaTransaction() {
+    final Boolean ret = (Boolean) get(Parameter.XA_TRANSACTION);
+    return ret != null && ret.booleanValue();
   }
 
   /**

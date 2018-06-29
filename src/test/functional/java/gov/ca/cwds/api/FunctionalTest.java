@@ -1,34 +1,31 @@
 package gov.ca.cwds.api;
 
-import gov.ca.cwds.config.CwdsAuthenticationClientConfig;
 import java.io.FileNotFoundException;
-
 import java.util.Map;
+
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.authenticate.config.ConfigImpl;
+import gov.ca.cwds.config.CwdsAuthenticationClientConfig;
 import gov.ca.cwds.rest.authenticate.AuthenticationUtils;
 import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.authenticate.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author CWDS API Team
  */
 public class FunctionalTest {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(FunctionalTest.class);
+
   String url;
 
   CwdsAuthenticationClientConfig config;
-  /**
-   * 
-   */
+
   public String token;
 
-  /**
-   * 
-   */
   public UserInfo userInfo;
 
   /**
@@ -45,7 +42,7 @@ public class FunctionalTest {
     userInfo = getStaffpersonInfo(configImpl);
   }
 
-  private void printEnv(){
+  private void printEnv() {
     Map<String, String> env = System.getenv();
     for (String envName : env.keySet()) {
       LOGGER.info("{}={}", envName, env.get(envName));

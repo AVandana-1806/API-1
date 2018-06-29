@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.Dao;
-import gov.ca.cwds.data.cms.XaCmsAddressDao;
 import gov.ca.cwds.data.ns.AddressDao;
-import gov.ca.cwds.data.ns.XaNsAddressDao;
+import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
@@ -32,22 +31,22 @@ public class AddressService implements CrudsService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AddressService.class);
 
   private AddressDao addressDao;
-  private XaNsAddressDao xaNsAddressDao;
-  private XaCmsAddressDao xaCmsAddressDao;
+  private AddressesDao nsAddressDao;
+  private gov.ca.cwds.data.cms.AddressDao cmsAddressDao;
 
   /**
    * Constructor
    * 
    * @param addressDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.ns.Address} objects.
    * @param xaNsAddressDao {@link Dao} for XA (two-phase commit) transactions for PostgreSQL
-   * @param xaCmsAddressDao {@link Dao} for XA (two-phase commit) transactions for CMS (DB2)
+   * @param xaCmsAddressDao {@link Dao} for XA (two-phase commit) transactions for CWS/CMS DB2
    */
   @Inject
-  public AddressService(AddressDao addressDao, XaNsAddressDao xaNsAddressDao,
-      XaCmsAddressDao xaCmsAddressDao) {
+  public AddressService(AddressDao addressDao, AddressesDao xaNsAddressDao,
+      gov.ca.cwds.data.cms.AddressDao xaCmsAddressDao) {
     this.addressDao = addressDao;
-    this.xaNsAddressDao = xaNsAddressDao;
-    this.xaCmsAddressDao = xaCmsAddressDao;
+    this.nsAddressDao = xaNsAddressDao;
+    this.cmsAddressDao = xaCmsAddressDao;
   }
 
   /**
@@ -126,7 +125,7 @@ public class AddressService implements CrudsService {
 
     LOGGER.info("XA for Postgres");
     // Proof of concept only. Don't bother parsing raw street addresses.
-    final gov.ca.cwds.data.persistence.ns.Addresses nsAddr = xaNsAddressDao.find(strNsId);
+    final gov.ca.cwds.data.persistence.ns.Addresses nsAddr = nsAddressDao.find(strNsId);
     nsAddr.setZip(reqAddr.getZip());
     nsAddr.setCity(reqAddr.getCity());
     nsAddr.setLegacyId(reqAddr.getLegacyId());
@@ -137,7 +136,7 @@ public class AddressService implements CrudsService {
       nsAddr.setLegacySourceTable("ADDRS_T");
     }
 
-    final gov.ca.cwds.data.persistence.ns.Addresses ret = xaNsAddressDao.update(nsAddr);
+    final gov.ca.cwds.data.persistence.ns.Addresses ret = nsAddressDao.update(nsAddr);
 
     // ==================
     // DB2:
@@ -145,13 +144,13 @@ public class AddressService implements CrudsService {
 
     LOGGER.info("XA for DB2");
     final gov.ca.cwds.data.persistence.cms.Address cmsAddr =
-        xaCmsAddressDao.find(nsAddr.getLegacyId());
+        cmsAddressDao.find(nsAddr.getLegacyId());
     cmsAddr.setAddressDescription(reqAddr.getStreetAddress());
     cmsAddr.setCity(reqAddr.getCity());
     cmsAddr.setZip(AddressUtils.defaultIfBlank(reqAddr.getZip()));
     cmsAddr.setLastUpdatedId(staffId);
     cmsAddr.setLastUpdatedTime(ctx.getRequestStartTime());
-    xaCmsAddressDao.update(cmsAddr);
+    cmsAddressDao.update(cmsAddr);
 
     ret.setLegacyId(reqAddr.getLegacyId());
     ret.setLegacySourceTable(reqAddr.getLegacySourceTable());

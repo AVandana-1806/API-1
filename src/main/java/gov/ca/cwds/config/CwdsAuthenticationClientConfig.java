@@ -6,7 +6,6 @@ import java.util.List;
  * Get the values of the token credentials.
  * 
  * @author CWDS TPT-4 Team
- *
  */
 public class CwdsAuthenticationClientConfig {
 

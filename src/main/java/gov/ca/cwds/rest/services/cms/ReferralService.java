@@ -240,11 +240,9 @@ public class ReferralService implements
         referral = createReferralWithDefaults(screeningToReferral, dateStarted, timeStarted,
             strsMessageBuilder);
       } catch (ServiceException | NullPointerException e) {
-        String message = e.getMessage();
-        strsMessageBuilder.addMessageAndLog(message, e, LOGGER);
+        strsMessageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
       } catch (Exception e) {
-        String message = e.getMessage();
-        strsMessageBuilder.addMessageAndLog(message, e, LOGGER);
+        strsMessageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
         throw e;
       }
 
@@ -258,6 +256,7 @@ public class ReferralService implements
        * Attach default screener narrative created from template
        */
       referralId = CmsKeyIdGenerator.getNextValue(RequestExecutionContext.instance().getStaffId());
+
       String screenerNarrativeId =
           createDefaultSreenerNarrativeForNewReferral(screeningToReferral, referral, referralId);
       if (!StringUtils.isBlank(screenerNarrativeId)) {
@@ -265,6 +264,7 @@ public class ReferralService implements
         referral.setUiIdentifier(referralId);
         referral.setDrmsAllegationDescriptionDoc(screenerNarrativeId);
       }
+
       PostedReferral postedReferral = this.create(referral);
       referralId = postedReferral.getId();
 
@@ -393,8 +393,8 @@ public class ReferralService implements
     String longTextId = null;
     if (screening.getAlertInformation() != null && !screening.getAlertInformation().isEmpty()) {
       try {
-        longTextId = createLongText(screening.getIncidentCounty(), 
-            screening.getAlertInformation(), mb);
+        longTextId =
+            createLongText(screening.getIncidentCounty(), screening.getAlertInformation(), mb);
       } catch (ServiceException e) {
         mb.addMessageAndLog(e.getMessage(), e, LOGGER);
       }
@@ -503,11 +503,10 @@ public class ReferralService implements
       CmsDocument cmsTemplate = cmsDocumentService.find(drmsTemplate.getCmsDocumentId());
 
       // Make Word doc from Template with new DOC_HANDLE etc.
+      final Date now = new Date();
+      final String docAuth = RequestExecutionContext.instance().getUserId();
 
-      Date now = new Date();
-      String docAuth = RequestExecutionContext.instance().getUserId();
-
-      SecureRandom random = new SecureRandom();
+      final SecureRandom random = new SecureRandom();
       String docHandle = DocUtils.generateDocHandle(now, docAuth);
       Short segments = 1;
       Long docLength = 1L;
@@ -536,8 +535,8 @@ public class ReferralService implements
 
       PostedDrmsDocument posted = drmsDocumentService.create(document);
       screenerNarrativeId = posted.getId();
-
     }
+
     return screenerNarrativeId;
   }
 
@@ -571,6 +570,10 @@ public class ReferralService implements
 
   public RIReferral getRiReferral() {
     return riReferral;
+  }
+
+  public NonLACountyTriggers getNonLaTriggers() {
+    return nonLaTriggers;
   }
 
 }

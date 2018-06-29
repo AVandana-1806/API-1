@@ -126,7 +126,7 @@ public class StaffPerson extends CmsPersistentObject {
    * @param startDate The startDate
    * @param nameSuffix The nameSuffix
    * @param telecommuterIndicator The telecommuterIndicator
-   * @param cwsOffice The cwsoffic
+   * @param cwsOffice CWS office code
    * @param availabilityAndLocationDescription The availabilityAndLocationDescription
    * @param ssrsLicensingWorkerId The ssrsLicensingWorkerId
    * @param countyCode The countyCode

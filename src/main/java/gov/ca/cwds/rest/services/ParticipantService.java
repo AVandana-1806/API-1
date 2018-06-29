@@ -427,10 +427,9 @@ public class ParticipantService implements CrudsService {
     try {
       PostedClient postedClient = this.clientService.create(client);
       clientId = postedClient.getId();
-      incomingParticipant
-          .setLegacyDescriptor(
-              new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
-                  LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription()));
+      incomingParticipant.setLegacyDescriptor(
+          new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
+              LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription()));
       clientScpEthnicityService.createOtherEthnicity(postedClient.getId(), otherRaceCodes);
     } catch (Exception e) {
       throw new ServiceException("Error creating client: " + e.getMessage(), e);

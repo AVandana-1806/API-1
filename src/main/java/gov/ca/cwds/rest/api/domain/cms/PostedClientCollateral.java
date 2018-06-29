@@ -1,23 +1,22 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
-import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.services.ServiceException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.services.ServiceException;
+
 /**
  * {@link Response} adding an id to the {@link ClientRelationship}
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class PostedClientCollateral extends ClientCollateral {
-  /**
-   * Serialization version
-   */
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("thirdId")
@@ -29,7 +28,8 @@ public class PostedClientCollateral extends ClientCollateral {
    * @param clientCollateral The persisted Client Collateral
    * 
    */
-  public PostedClientCollateral(gov.ca.cwds.data.persistence.cms.ClientCollateral clientCollateral) {
+  public PostedClientCollateral(
+      gov.ca.cwds.data.persistence.cms.ClientCollateral clientCollateral) {
     super(clientCollateral);
     if (StringUtils.isBlank(clientCollateral.getThirdId())) {
       throw new ServiceException("ClientCollateral ID cannot be empty");
@@ -44,9 +44,10 @@ public class PostedClientCollateral extends ClientCollateral {
    * @param thirdId The Unique Identifier
    */
   public PostedClientCollateral(ClientCollateral clientCollateral, String thirdId) {
-    super(clientCollateral.getActiveIndicator(), clientCollateral
-        .getCollateralClientReporterRelationshipType(), clientCollateral.getCommentDescription(),
-        clientCollateral.getClientId(), clientCollateral.getCollateralIndividualId());
+    super(clientCollateral.getActiveIndicator(),
+        clientCollateral.getCollateralClientReporterRelationshipType(),
+        clientCollateral.getCommentDescription(), clientCollateral.getClientId(),
+        clientCollateral.getCollateralIndividualId());
     this.thirdId = thirdId;
   }
 

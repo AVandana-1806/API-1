@@ -14,11 +14,11 @@ import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningSubmitServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
 import gov.ca.cwds.rest.resources.ServiceBackedResourceDelegate;
-import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,15 +55,14 @@ public class ScreeningSubmitResource {
     this.resourceDelegate = resourceDelegate;
   }
 
-
   /**
    * Promotes a Screening To A Referral. Creates a Referral From the Screening and Updates the
-   * Screening with the Referral Legacy Id
+   * Screening with the Referral Legacy Id.
    *
    * @param id - the id of the screening
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @XAUnitOfWork
   @POST
   @Path("/{id}/submit")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

@@ -14,6 +14,7 @@ import gov.ca.cwds.rest.api.Response;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class PostedPerson extends Person {
 
   private static final long serialVersionUID = 1L;
@@ -21,7 +22,6 @@ public class PostedPerson extends Person {
   @JsonProperty("id")
   private long id;
 
-  @SuppressWarnings("javadoc")
   public PostedPerson(long id, String firstName, String middleName, String lastName,
       String nameSuffix, String gender, String dateOfBirth, String ssn, Set<Address> address,
       Set<PhoneNumber> phoneNumber, Set<Language> language, Set<Race> race,
@@ -31,7 +31,6 @@ public class PostedPerson extends Person {
     this.id = id;
   }
 
-  @SuppressWarnings("javadoc")
   public PostedPerson(gov.ca.cwds.data.persistence.ns.Person person) {
     super(person);
     this.id = person.getId();

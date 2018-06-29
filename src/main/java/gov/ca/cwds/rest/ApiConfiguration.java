@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.db.DataSourceFactory;
 
 /**
- * 
+ * Container for Ferb API configuration.
  * 
  * @author CWDS API Team
  */

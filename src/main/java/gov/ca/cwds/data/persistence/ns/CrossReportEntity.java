@@ -1,9 +1,8 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,11 +10,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.util.FerbDateUtils;
 
 /**
  * CWDS API Team
@@ -23,21 +26,19 @@ import org.hibernate.annotations.Type;
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.CrossReportEntity.findByScreeningId",
     query = "FROM gov.ca.cwds.data.persistence.ns.CrossReportEntity"
         + " WHERE screeningId = :screeningId")
-
 @Entity
 @Table(name = "cross_reports")
 public class CrossReportEntity implements PersistentObject {
+
+  private static final long serialVersionUID = 1L;
+
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cross_reports_id_seq")
-  @GenericGenerator(
-      name = "cross_reports_id_seq",
+  @GenericGenerator(name = "cross_reports_id_seq",
       strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator",
-      parameters = {
-          @org.hibernate.annotations.Parameter(
-              name = "sequence_name", value = "cross_reports_id_seq")
-      }
-  )
+      parameters = {@org.hibernate.annotations.Parameter(name = "sequence_name",
+          value = "cross_reports_id_seq")})
   private String id;
 
   @Basic
@@ -167,4 +168,5 @@ public class CrossReportEntity implements PersistentObject {
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
+
 }
