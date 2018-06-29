@@ -14,17 +14,20 @@ import gov.ca.cwds.data.legacy.cms.entity.LongText;
 import gov.ca.cwds.data.legacy.cms.entity.SafetyAlert;
 import gov.ca.cwds.data.persistence.cms.Referral;
 import gov.ca.cwds.rest.api.domain.Participant;
+import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.util.ParticipantUtils;
 
 /***
+ * This class is not longer used to save the safety Alerts for {@link Screening}, But can be used
+ * later once we start saving it {@link SafetyAlert} table.
  * 
  * @author CWDS API Team
  *
  */
-public class ReferralSatefyAlertsService {
+public class ReferralSafetyAlertsService {
 
   @Inject
   private ReferralDao referralDao;

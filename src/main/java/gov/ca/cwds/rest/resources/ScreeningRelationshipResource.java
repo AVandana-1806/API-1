@@ -83,7 +83,7 @@ public class ScreeningRelationshipResource {
    * Update an {@link ScreeningRelationship}.
    *
    * @param screeningRelationship The {@link ScreeningRelationship}
-   * @param id primary key
+   * @param id - id
    * @return The {@link Response}
    */
   @UnitOfWork(value = "ns")
@@ -106,6 +106,12 @@ public class ScreeningRelationshipResource {
     return resourceDelegate.update(id, screeningRelationship);
   }
 
+  /**
+   * Get an {@link ScreeningRelationship}.
+   * 
+   * @param id - id
+   * @return The {@link Response}
+   */
   @UnitOfWork(value = "ns")
   @GET
   @Path("/{id}")
@@ -120,5 +126,4 @@ public class ScreeningRelationshipResource {
       value = "The id of the Relationship to find") String id) {
     return resourceDelegate.get(id);
   }
-
 }

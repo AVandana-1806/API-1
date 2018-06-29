@@ -83,7 +83,6 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -145,7 +144,6 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
   private ClientRelationshipDao clientRelationshipDao;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -280,7 +278,6 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
@@ -290,8 +287,7 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
         crossReportService, participantService, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
-        governmentOrganizationCrossReportService, clientRelationshipDao,
-        referralSatefyAlertsService);
+        governmentOrganizationCrossReportService, clientRelationshipDao);
   }
 
   /**
