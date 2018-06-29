@@ -8,8 +8,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * CWDS API Team
@@ -29,8 +27,6 @@ import org.slf4j.LoggerFactory;
  * Date of Birth, Age, and Age Unit are blank, then (set Estimated_DOB_Code and Birth_Date U).
  */
 public class R04880EstimatedDOBCodeSetting implements RuleAction {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(R04880EstimatedDOBCodeSetting.class);
 
   private Client client;
   private ReferralClient referralClient;
@@ -77,13 +73,9 @@ public class R04880EstimatedDOBCodeSetting implements RuleAction {
       chronoUnit = ChronoUnit.DAYS;
     }
     if (chronoUnit != null) {
-      try {
-        estimatedDOB = Date.from(
-            Instant.ofEpochMilli(dateStarted.getTime()).atZone(ZoneId.systemDefault()).toLocalDate()
-                .minus(ageNumber, chronoUnit).atStartOfDay(ZoneId.systemDefault()).toInstant());
-      } catch (NumberFormatException e) {
-        LOGGER.warn("Error estimating DOB. " + e.getMessage());
-      }
+      estimatedDOB = Date.from(
+          Instant.ofEpochMilli(dateStarted.getTime()).atZone(ZoneId.systemDefault()).toLocalDate()
+              .minus(ageNumber, chronoUnit).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
     return estimatedDOB;
   }
