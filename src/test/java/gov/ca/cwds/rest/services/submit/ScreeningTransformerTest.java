@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
@@ -112,8 +111,7 @@ public class ScreeningTransformerTest {
   }
 
   @Test
-  public void transformConvertsScreeningToScreeningToReferralWhenIncidentAddressProvided()
-      throws JsonProcessingException {
+  public void transformConvertsScreeningToScreeningToReferralWhenIncidentAddressProvided() {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptorEntityBuilder().build();
     AddressIntakeApi nsAddress = new AddressIntakeApiResourceBuilder().setType("Day Care")
         .setLegacyDescriptor(legacyDescriptor).build();
@@ -135,9 +133,6 @@ public class ScreeningTransformerTest {
         .createScreeningToReferral();
     Screening screening = new ScreeningResourceBuilder().setIncidentAddress(nsAddress).build();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
-    ObjectMapper mapper = new ObjectMapper();
-    String a = mapper.writeValueAsString(actual);
-    String e = mapper.writeValueAsString(expected);
     assertEquals(actual, expected);
   }
 
