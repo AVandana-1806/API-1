@@ -38,7 +38,7 @@ import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
  * @author CWDS API Team
  *
  */
-public class ReferralSatefyAlertsServiceTest {
+public class ReferralSafetyAlertsServiceTest {
 
   /**
    * Initialize intake code cache
@@ -49,8 +49,8 @@ public class ReferralSatefyAlertsServiceTest {
   private CountiesDao countiesDao;
   private SafetyAlertActivationReasonTypeDao safetyAlertActivationReasonTypeDao;
   private SafetyAlertService safetyAlertService;
-  private ReferralSatefyAlertsService referralSatefyAlertsService =
-      new ReferralSatefyAlertsService();
+  private ReferralSafetyAlertsService referralSafetyAlertsService =
+      new ReferralSafetyAlertsService();
 
   /**
    * 
@@ -88,13 +88,13 @@ public class ReferralSatefyAlertsServiceTest {
     safetyAlertActivationReasonType.setSystemId((short) 6401);
     when(safetyAlertActivationReasonTypeDao.findBySystemId(any(Short.class)))
         .thenReturn(new SafetyAlertActivationReasonType());
-    referralSatefyAlertsService.setReferralDao(referralDao);
-    referralSatefyAlertsService.setCountiesDao(countiesDao);
-    referralSatefyAlertsService
+    referralSafetyAlertsService.setReferralDao(referralDao);
+    referralSafetyAlertsService.setCountiesDao(countiesDao);
+    referralSafetyAlertsService
         .setSafetyAlertActivationReasonTypeDao(safetyAlertActivationReasonTypeDao);
-    referralSatefyAlertsService.setSafetyAlertService(safetyAlertService);
+    referralSafetyAlertsService.setSafetyAlertService(safetyAlertService);
     List<SafetyAlert> safetyAlert =
-        referralSatefyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
     assertThat(safetyAlert, is(notNullValue()));
     assertThat(safetyAlert.size(), is(equalTo(1)));
     assertThat(safetyAlert, containsInAnyOrder(hasProperty("fkClientId", is("098UijH1gf"))));
@@ -113,9 +113,9 @@ public class ReferralSatefyAlertsServiceTest {
     Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
         .setGovtEntityType((short) 1101).setScreenerNoteText("0I61FGt15L").build();
     when(referralDao.find(anyString())).thenReturn(referral);
-    referralSatefyAlertsService.setReferralDao(referralDao);
+    referralSafetyAlertsService.setReferralDao(referralDao);
     List<SafetyAlert> safetyAlert =
-        referralSatefyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
     assertThat(safetyAlert.size(), is(equalTo(0)));
   }
 
