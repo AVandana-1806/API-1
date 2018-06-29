@@ -42,8 +42,10 @@ public class R04880EstimatedDOBCodeSetting implements RuleAction {
 
   @Override
   public void execute() {
-    final Short ageNumber =
-        referralClient.getAgeNumber() == null ? 0 : referralClient.getAgeNumber();
+    Short ageNumber = referralClient.getAgeNumber();
+    if (ageNumber == null) {
+      ageNumber = (short)0;
+    }
     final String agePeriodCode =
         referralClient.getAgePeriodCode() == null ? "" : referralClient.getAgePeriodCode();
 
