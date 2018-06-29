@@ -34,11 +34,7 @@ import gov.ca.cwds.data.std.ApiPhoneAware;
 public class EducationProvider extends CmsPersistentObject
     implements ApiAddressAware, ApiPhoneAware {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
-
 
   @Column(name = "ED_PVDR_NM", length = 35, nullable = false)
   protected String agencyName;
@@ -92,7 +88,6 @@ public class EducationProvider extends CmsPersistentObject
   public EducationProvider() {
     super();
   }
-
 
   public EducationProvider(String lastUpdatedId) {
     super(lastUpdatedId);
@@ -261,61 +256,49 @@ public class EducationProvider extends CmsPersistentObject
     return this.stateCodeType;
   }
 
-
   public void setAgencyName(String agencyName) {
     this.agencyName = agencyName;
   }
-
 
   public void setCityName(String cityName) {
     this.cityName = cityName;
   }
 
-
   public void setWebAddress(String webAddress) {
     this.webAddress = webAddress;
   }
-
 
   public void setFaxNumber(Long faxNumber) {
     this.faxNumber = faxNumber;
   }
 
-
   public void setId(String id) {
     this.id = id;
   }
-
 
   public void setPhoneExtensionNumber(Integer phoneExtensionNumber) {
     this.phoneExtensionNumber = phoneExtensionNumber;
   }
 
-
   public void setPhoneNumber(Long phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
-
 
   public void setStateCodeType(Short stateCodeType) {
     this.stateCodeType = stateCodeType;
   }
 
-
   public void setStreetName(String streetName) {
     this.streetName = streetName;
   }
-
 
   public void setStreetNumber(String streetNumber) {
     this.streetNumber = streetNumber;
   }
 
-
   public void setZipNumber(Integer zipNumber) {
     this.zipNumber = zipNumber;
   }
-
 
   public void setZipSuffixNumber(Short zipSuffixNumber) {
     this.zipSuffixNumber = zipSuffixNumber;
