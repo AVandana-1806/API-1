@@ -351,7 +351,7 @@ public class CmsDocumentDao extends BaseDaoImpl<CmsDocument> {
    * @param base64 base64-encoded String
    * @return base64-encoded String of decompressed document
    */
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN") // There is no path traversal here
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN") // No path traversal here
   protected List<CmsDocumentBlobSegment> compressLZW(CmsDocument doc, String base64) {
     final List<CmsDocumentBlobSegment> blobs = new ArrayList<>();
 

@@ -15,6 +15,7 @@ public class LZWCompressionTest extends Doofenshmirtz<CmsDocument> {
 
   protected static final String TEST_BASE = "/jni/lzw/";
   protected static final String GOOD_LZW = TEST_BASE + "good.lzw";
+  protected static final String GOOD_LZW_BASE64 = TEST_BASE + "good.b64";
   protected static final String GOOD_DOC = TEST_BASE + "good.doc";
 
   protected LZWEncoder lzw;
