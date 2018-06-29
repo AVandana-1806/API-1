@@ -892,6 +892,14 @@ public class Client extends ReportingDomain implements Request, Response {
   }
 
   /**
+   *
+   * @param birthDate
+   */
+  public void setBirthDate(String birthDate) {
+    this.birthDate = birthDate;
+  }
+
+  /**
    * @return the birthFacilityName
    */
   public String getBirthFacilityName() {
