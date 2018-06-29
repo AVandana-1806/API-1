@@ -46,11 +46,12 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
   private static final int MOTHER_CHILD_REL_CODE_END_INDEX = 254;
 
   private static final String UNIDENTIFIED_PERPETRATOR = "U";
-  private static final String PERPETRATIR_IS_A_PARENT = "Y";
+  private static final String PERPETRATOR_IS_A_PARENT = "Y";
   private static final String PERPETRATOR_IS_NOT_A_PARENT = "N";
   private static final String RESIDENTIAL_FACILITY_STAFF_PERPETRATOR = "P";
 
   private ClientRelationshipDao clientRelationshipDao;
+
   private String victimClientId;
   private String perpatratorClientId;
   private Allegation cmsAllegation;
@@ -85,7 +86,7 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
     if (isResFacilityStaff()) {
       return RESIDENTIAL_FACILITY_STAFF_PERPETRATOR;
     } else {
-      return isParent() ? PERPETRATIR_IS_A_PARENT : PERPETRATOR_IS_NOT_A_PARENT;
+      return isParent() ? PERPETRATOR_IS_A_PARENT : PERPETRATOR_IS_NOT_A_PARENT;
     }
   }
 
@@ -94,14 +95,14 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
   }
 
   private boolean isResFacilityStaffByPrimaryClientId() {
-    return Arrays.stream(clientRelationshipDao.findByPrimaryClientId(victimClientId))
+    return Arrays.stream(clientRelationshipDao.findByPrimaryClientId(victimClientId)).sequential()
         .anyMatch(relationship -> relationship.getSecondaryClientId().equals(perpatratorClientId)
             && relationship
                 .getClientRelationshipType() == CHILD_RESIDENTIAL_FACILITY_STAFF_REL_CODE);
   }
 
   private boolean isResFacilityStaffBySecondaryClientId() {
-    return Arrays.stream(clientRelationshipDao.findBySecondaryClientId(victimClientId))
+    return Arrays.stream(clientRelationshipDao.findBySecondaryClientId(victimClientId)).sequential()
         .anyMatch(relationship -> relationship.getPrimaryClientId().equals(perpatratorClientId)
             && relationship
                 .getClientRelationshipType() == RESIDENTIAL_FACILITY_STAFF_REL_CODE_CHILD);
@@ -112,7 +113,7 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
   }
 
   private boolean isParentByPrimaryClientId() {
-    return Arrays.stream(clientRelationshipDao.findByPrimaryClientId(victimClientId))
+    return Arrays.stream(clientRelationshipDao.findByPrimaryClientId(victimClientId)).sequential()
         .anyMatch(relationship -> {
           Short type = relationship.getClientRelationshipType();
           return relationship.getSecondaryClientId().equals(perpatratorClientId)
@@ -121,7 +122,7 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
   }
 
   private boolean isParentBySecondaryClientId() {
-    return Arrays.stream(clientRelationshipDao.findBySecondaryClientId(victimClientId))
+    return Arrays.stream(clientRelationshipDao.findBySecondaryClientId(victimClientId)).sequential()
         .anyMatch(relationship -> {
           Short type = relationship.getClientRelationshipType();
           return relationship.getPrimaryClientId().equals(perpatratorClientId)
@@ -148,4 +149,5 @@ public class R08740SetNonProtectingParentCode implements RuleAction {
             || type == MOTHER_DOUGHTER_PRESUMED || type == MOTHER_SON_PRESUMED_REL_CODE;
     return firstCondition || secondCondition || lastCondition;
   }
+
 }
