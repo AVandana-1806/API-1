@@ -48,6 +48,7 @@ public class ScreeningTransformer {
       String loggedInStaffCounty) {
     Set<Allegation> allegations =
         new AllegationsTransformer().transform(screening.getAllegations());
+    String safetyAlertsInformation = new SafetyAlertsInformation().buildSafetyAlertsInfo(screening);
     Short communicationMethodSysId = setCommunicationMethod(screening);
     Short responseTimeSysId = setReferralResponse(screening);
     String limitedAccessCode = StringUtils.isNotBlank(screening.getAccessRestrictions())
@@ -83,9 +84,9 @@ public class ScreeningTransformer {
         screening.getAdditionalInformation(), screening.getScreeningDecision(),
         screening.getScreeningDecisionDetail(), APPROVAL_STATUS, FAMILY_AWARENESS,
         FILED_WITH_LAW_ENFORCEMENT, RESPONSIBLE_AGENCY, limitedAccessCode,
-        screening.getRestrictionsRationale(), loggedInStaffCounty, limitedAccessDate,
-        convertSafetyAlerts(screening), screening.getSafetyInformation(), address, participants,
-        new HashSet<ScreeningRelationship>(), crossReports, allegations, screening.getReportType());
+        screening.getRestrictionsRationale(), loggedInStaffCounty, limitedAccessDate, null,
+        safetyAlertsInformation, address, participants, new HashSet<ScreeningRelationship>(),
+        crossReports, allegations, screening.getReportType());
   }
 
   private Short setReferralResponse(Screening screening) {
@@ -106,18 +107,6 @@ public class ScreeningTransformer {
     return screening.getRestrictionsDate() != null
         ? java.sql.Date.valueOf(screening.getRestrictionsDate())
         : null;
-  }
-
-  private Set<Short> convertSafetyAlerts(Screening screening) {
-    Set<Short> safetAlerts = new HashSet<>();
-    if (!screening.getSafetyAlerts().isEmpty()) {
-      for (String intakeCode : screening.getSafetyAlerts()) {
-        Short safetyAlert = IntakeCodeCache.global()
-            .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.SAFETY_ALERTS, intakeCode);
-        safetAlerts.add(safetyAlert);
-      }
-    }
-    return safetAlerts;
   }
 
 }
