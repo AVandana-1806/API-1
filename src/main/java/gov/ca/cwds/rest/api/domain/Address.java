@@ -94,11 +94,11 @@ public class Address extends ReportingDomain implements Request, Response {
     super();
     this.legacySourceTable = legacySourceTable;
     this.legacyId = addressId;
-    this.streetAddress = streetAddress;
+    this.streetAddress = streetAddress == null ? "" : streetAddress;
     this.city = city;
-    this.state = state;
+    this.state = state == null ? 0 : state;
     this.zip = zip;
-    this.type = type;
+    this.type = type == null ? 0 : type;
     this.legacyDescriptor = legacyDescriptor;
   }
 
@@ -112,9 +112,9 @@ public class Address extends ReportingDomain implements Request, Response {
     this.legacyId = "";
     this.streetAddress = address.getStreetAddress();
     this.city = address.getCity();
-    this.state = address.getState() != null ? Integer.valueOf(address.getState()) : null;
+    this.state = address.getState() != null ? Integer.valueOf(address.getState()) : 0;
     this.zip = address.getZip();
-    this.type = address.getType() != null ? Integer.valueOf(address.getType()) : null;
+    this.type = address.getType() != null ? Integer.valueOf(address.getType()) : 0;
     this.legacyDescriptor = new LegacyDescriptor();
   }
 
