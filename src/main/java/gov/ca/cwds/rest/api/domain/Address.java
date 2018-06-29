@@ -94,11 +94,11 @@ public class Address extends ReportingDomain implements Request, Response {
     super();
     this.legacySourceTable = legacySourceTable;
     this.legacyId = addressId;
-    this.streetAddress = streetAddress == null ? "" : streetAddress;
+    this.streetAddress = streetAddress != null ? streetAddress : "";
     this.city = city;
-    this.state = state == null ? 0 : state;
+    this.state = state != null ? state : 0;
     this.zip = zip;
-    this.type = type == null ? 0 : type;
+    this.type = type != null ? type : 0;
     this.legacyDescriptor = legacyDescriptor;
   }
 
