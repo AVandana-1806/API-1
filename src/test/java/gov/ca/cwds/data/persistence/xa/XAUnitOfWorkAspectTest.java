@@ -168,10 +168,9 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
         MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
     target.beforeStart(method, xaUnitOfWork);
 
-    String key = null;
+    String key = "xa_cms";
     Session actual = target.grabSession(key, sessionFactory);
-    Session expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
