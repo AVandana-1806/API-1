@@ -112,9 +112,9 @@ public class Address extends ReportingDomain implements Request, Response {
     this.legacyId = "";
     this.streetAddress = address.getStreetAddress();
     this.city = address.getCity();
-    this.state = address.getState() != null ? Integer.valueOf(address.getState()) : 0;
+    this.state = address.getState() != null ? Integer.parseInt(address.getState()) : 0;
     this.zip = address.getZip();
-    this.type = address.getType() != null ? Integer.valueOf(address.getType()) : 0;
+    this.type = address.getType() != null ? Integer.parseInt(address.getType()) : 0;
     this.legacyDescriptor = new LegacyDescriptor();
   }
 
