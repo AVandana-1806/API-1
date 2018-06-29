@@ -22,7 +22,6 @@ import gov.ca.cwds.rest.business.RuleValidator;
  * <p>
  * 
  * @author CWDS API Team
- *
  */
 public class R00824SetDispositionCode implements RuleValidator {
 
@@ -62,7 +61,8 @@ public class R00824SetDispositionCode implements RuleValidator {
 
   @Override
   public boolean isValid() {
-    if (StringUtils.isNotBlank(incomingParticipant.getDateOfBirth())) {
+    if (StringUtils.isNotBlank(incomingParticipant.getDateOfBirth()) && screeningToReferral != null
+        && screeningToReferral.getResponseTime() != null) {
       return clientAge() < ADULT && screeningToReferral.getResponseTime() == EVALUATE_OUT
           && screeningToReferral.getApprovalStatus() == APPROVED;
     }

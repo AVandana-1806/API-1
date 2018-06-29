@@ -62,7 +62,7 @@ cmsDataSourceFactory:
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
-      hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.current_session_context_class: thread
 
 rsDataSourceFactory:
