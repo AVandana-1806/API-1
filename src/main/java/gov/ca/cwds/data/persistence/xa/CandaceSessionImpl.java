@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hibernate session facade.
+ * Hibernate session facade. Adds logging and facilitates XA transactions.
  * 
  * @author CWDS API Team
  */
