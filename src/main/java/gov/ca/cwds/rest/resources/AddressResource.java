@@ -18,6 +18,7 @@ import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.AddressServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Address;
 import gov.ca.cwds.rest.api.domain.PostedAddress;
@@ -118,7 +119,7 @@ public class AddressResource {
    * @param address - {@link Address}
    * @return The {@link Response}
    */
-  // @XAUnitOfWork
+  @XAUnitOfWork
   @PUT
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

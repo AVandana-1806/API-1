@@ -48,7 +48,6 @@ public class LongTextService implements
    */
   @Override
   public gov.ca.cwds.rest.api.domain.cms.LongText find(String primaryKey) {
-
     gov.ca.cwds.data.persistence.cms.LongText persistedLongText = longTextDao.find(primaryKey);
     if (persistedLongText != null) {
       return new gov.ca.cwds.rest.api.domain.cms.LongText(persistedLongText);
@@ -77,7 +76,6 @@ public class LongTextService implements
    */
   @Override
   public PostedLongText create(gov.ca.cwds.rest.api.domain.cms.LongText request) {
-
     gov.ca.cwds.rest.api.domain.cms.LongText longText = request;
 
     try {
@@ -87,7 +85,7 @@ public class LongTextService implements
       managed = longTextDao.create(managed);
       return new PostedLongText(managed);
     } catch (EntityExistsException e) {
-      LOGGER.info("LongText already exists : {}", longText);
+      LOGGER.warn("LongText already exists : {}", longText);
       throw new ServiceException(e);
     }
   }
@@ -109,7 +107,7 @@ public class LongTextService implements
       managed = longTextDao.update(managed);
       return new gov.ca.cwds.rest.api.domain.cms.LongText(managed);
     } catch (EntityNotFoundException e) {
-      LOGGER.info("LongText not found : {}", longText);
+      LOGGER.warn("LongText not found : {}", longText);
       throw new ServiceException(e);
     }
   }

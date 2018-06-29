@@ -39,7 +39,8 @@ import gov.ca.cwds.logging.LoggingContext.LogParameter;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 
 /**
- * 
+ * Log key variables from {@link RequestExecutionContext} for audit purposes, including user id,
+ * request start time, and unique request id.
  * 
  * @author CWDS API Team
  */
@@ -66,7 +67,7 @@ public class RequestResponseLoggingFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    String uniqueId = loggingContext.initialize();
+    final String uniqueId = loggingContext.initialize();
 
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -86,7 +87,7 @@ public class RequestResponseLoggingFilter implements Filter {
       auditLogger.audit(requestContent(wrappedRequest));
 
       final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-      RequestResponseLoggingHttpServletResponseWrapper wrappedResponse =
+      final RequestResponseLoggingHttpServletResponseWrapper wrappedResponse =
           new RequestResponseLoggingHttpServletResponseWrapper(httpServletResponse);
       try {
         chain.doFilter(wrappedRequest, wrappedResponse);
@@ -95,8 +96,7 @@ public class RequestResponseLoggingFilter implements Filter {
         auditLogger
             .audit(reponseStringBuilder.toString().replaceAll("\n", " ").replaceAll("\r", ""));
       } catch (Exception e) {
-        String msg = "Unable to handle request: " + uniqueId;
-        LOGGER.error(msg, e);
+        LOGGER.error("Unable to handle request: {}", uniqueId, e);
         throw e;
       } finally {
         loggingContext.close();
@@ -124,7 +124,7 @@ public class RequestResponseLoggingFilter implements Filter {
         sb.append(headerName).append(": ").append(request.getHeader(headerName));
       }
     }
-    InputStream bodyInputStream = request.getInputStream();
+    final InputStream bodyInputStream = request.getInputStream();
     sb.append(new String(IOUtils.toByteArray(bodyInputStream), StandardCharsets.UTF_8.name()));
 
     return sb.toString().replace('\n', ' ');
@@ -205,7 +205,6 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-
       if (this.teeWriter == null) {
         this.teeWriter =
             new PrintWriter(new OutputStreamWriter(getOutputStream(), StandardCharsets.UTF_8));
@@ -215,7 +214,6 @@ public class RequestResponseLoggingFilter implements Filter {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-
       if (teeStream == null) {
         bos = new ByteArrayOutputStream();
         teeStream = new TeeServletOutputStream(getResponse().getOutputStream(), bos);

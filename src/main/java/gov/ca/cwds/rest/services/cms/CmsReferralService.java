@@ -30,7 +30,6 @@ import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * @author CWDS API Team
- *
  */
 public class CmsReferralService implements CrudsService {
 

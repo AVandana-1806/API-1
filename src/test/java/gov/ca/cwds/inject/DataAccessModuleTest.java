@@ -77,23 +77,26 @@ public class DataAccessModuleTest {
 
   @Test
   public void cmsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.cmsSessionFactory();
-    SessionFactory expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final HibernateBundle<ApiConfiguration> bundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.cmsSessionFactory(bundle, xaBundle);
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void nsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.nsSessionFactory();
-    SessionFactory expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final HibernateBundle<ApiConfiguration> nsBundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaNsBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.nsSessionFactory(nsBundle, xaNsBundle);
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void rsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.rsSessionFactory();
-    SessionFactory expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final HibernateBundle<ApiConfiguration> bundle = mock(HibernateBundle.class);
+    final FerbHibernateBundle xaBundle = mock(FerbHibernateBundle.class);
+    SessionFactory actual = target.rsSessionFactory(bundle, xaBundle);
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
@@ -116,27 +119,13 @@ public class DataAccessModuleTest {
 
   @Test
   public void getXaCmsHibernateBundle_A$() throws Exception {
-    HibernateBundle<ApiConfiguration> actual = target.getXaCmsHibernateBundle();
+    HibernateBundle<ApiConfiguration> actual = target.getXaCmsHibernateBundle(null);
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
-  public void xaNsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.xaNsSessionFactory();
-    SessionFactory expected = null;
-    assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
-  public void xaCmsSessionFactory_A$() throws Exception {
-    SessionFactory actual = target.xaCmsSessionFactory();
-    SessionFactory expected = null;
-    assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
   public void getXaNsHibernateBundle_A$() throws Exception {
-    HibernateBundle<ApiConfiguration> actual = target.getXaNsHibernateBundle();
+    HibernateBundle<ApiConfiguration> actual = target.getXaNsHibernateBundle(null);
     assertThat(actual, is(notNullValue()));
   }
 

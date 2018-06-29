@@ -49,7 +49,7 @@ public class DrmsDocumentTemplateServiceTest extends Doofenshmirtz<DrmsDocumentT
     docs = new DrmsDocumentTemplate[1];
     docs[0] = doc;
 
-    when(drmsDocumentTemplateDao.findByApplicationContextAndGovermentEntity(any(Short.class),
+    when(drmsDocumentTemplateDao.findByApplicationContextAndGovernmentEntity(any(Short.class),
         any(Short.class))).thenReturn(docs);
     when(drmsDocumentTemplateDao.find(any(DrmsDocumentTemplate.class))).thenReturn(doc);
     when(drmsDocumentTemplateDao.find(any(String.class))).thenReturn(doc);

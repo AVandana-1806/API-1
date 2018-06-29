@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.data.persistence.cms.Address;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.data.std.ApiAddressAware;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
@@ -22,7 +23,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
  * {@link AddressIntakeApi}, From legacy find the recent open address residence for the client.
  * 
  * @author CWDS API Team
- *
  */
 public class IntakeAddressConverter {
 
@@ -61,7 +61,7 @@ public class IntakeAddressConverter {
         getZip(address), type, legacyDescriptor);
   }
 
-  private String getZip(Address address) {
+  private String getZip(ApiAddressAware address) {
     return address.getZip();
     /**
      * This line can be added once the referrals started accepting zip suffix
@@ -70,4 +70,5 @@ public class IntakeAddressConverter {
      * zip;
      */
   }
+
 }

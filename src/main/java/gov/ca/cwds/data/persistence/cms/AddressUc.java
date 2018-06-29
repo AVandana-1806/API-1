@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * {@link CmsPersistentObject} representing a Address Uppercase
+ * {@link CmsPersistentObject} representing an uppercase Address.
  * 
  * @author CWDS API Team
  */
@@ -66,7 +66,6 @@ public class AddressUc extends CmsPersistentObject {
     this.streetName = streetName;
     this.streetNumber = streetNumber;
   }
-
 
   @Override
   public Serializable getPrimaryKey() {

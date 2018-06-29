@@ -28,4 +28,5 @@ public class IntegratedResourceTestSuiteIT {
   @ClassRule
   public static BaseDropwizardApplication<ApiConfiguration> application =
       ApiApplicationTestSupport.getApplication();
+
 }

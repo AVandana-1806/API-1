@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import com.pkware.deflate.DeflateOutputStream;
 import com.pkware.deflate.InflateInputStream;
 
+import gov.ca.cwds.rest.services.ServiceException;
+
 /**
  * Compresses (deflates) and decompresses (inflates) PK archives created by the Windows PKWare
  * library.
@@ -84,14 +86,12 @@ public class CmsPKCompressor {
       throw new IOException("REQUIRED: file names cannot be null");
     }
 
-    try (
-      final FileInputStream fis = new FileInputStream(createFile(inputFileName));
-      final InputStream iis = new InflateInputStream(fis, true);
-      final FileOutputStream fos = new FileOutputStream(createFile(outputFileName));
-    ){
+    try (final FileInputStream fis = new FileInputStream(createFile(inputFileName));
+        final InputStream iis = new InflateInputStream(fis, true);
+        final FileOutputStream fos = new FileOutputStream(createFile(outputFileName));) {
       IOUtils.copy(iis, fos);
-    } catch (Exception e){
-      throw new RuntimeException("Error copying file", e);
+    } catch (Exception e) {
+      throw new ServiceException("Error copying file", e);
     }
   }
 
@@ -190,14 +190,12 @@ public class CmsPKCompressor {
       throw new IOException("REQUIRED: file names cannot be null");
     }
 
-    try(
-       final FileInputStream fis = new FileInputStream(createFile(inputFileName));
-       final OutputStream fos = new DeflateOutputStream(
-         new FileOutputStream(createFile(outputFileName)), DEFAULT_COMPRESSION_LEVEL, true);
-       ){
+    try (final FileInputStream fis = new FileInputStream(createFile(inputFileName));
+        final OutputStream fos = new DeflateOutputStream(
+            new FileOutputStream(createFile(outputFileName)), DEFAULT_COMPRESSION_LEVEL, true);) {
       IOUtils.copy(fis, fos);
-    }catch(RuntimeException e){
-      throw new RuntimeException("Unable to copy file", e);
+    } catch (Exception e) {
+      throw new ServiceException("Unable to copy file", e);
     }
   }
 
@@ -230,7 +228,7 @@ public class CmsPKCompressor {
   }
 
   private File createFile(String file) {
-    return new File(FilenameUtils.getFullPath(file), FilenameUtils.getName(file)); //NOSONAR
+    return new File(FilenameUtils.getFullPath(file), FilenameUtils.getName(file)); // NOSONAR
   }
 
 }

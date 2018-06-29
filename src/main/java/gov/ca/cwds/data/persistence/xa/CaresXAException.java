@@ -1,7 +1,7 @@
 package gov.ca.cwds.data.persistence.xa;
 
 /**
- * Checked exception for XA transaction errors.
+ * Generic, checked exception for XA transaction errors.
  * 
  * @author CWDS API Team
  */

@@ -137,10 +137,7 @@ public class DeliveredService {
     }
 
     return primaryDeliveredServiceId;
-
   }
-
-
 
   /**
    * Construct the DeliveredService object for create
@@ -197,16 +194,12 @@ public class DeliveredService {
         ? longTextHelper.createLongText(noteContinuation, countySpecificCode)
         : null;
 
-
-
     return DeliveredServiceDomain.createWithDefaultsForFieldsNotPopulatedByUI(
         Integer.valueOf(contactRequest.getCommunicationMethod()),
         Integer.valueOf(contactRequest.getLocation()), countySpecificCode, longTextId,
         longTextContinuationId, endDate, endTime, serviceContactType, startDate, startTime,
         contactRequest.getStatus());
   }
-
-
 
   /**
    * Update a record in DeliveredService and return the DeliveredServiceDomain object
@@ -236,8 +229,6 @@ public class DeliveredService {
     }
 
   }
-
-
 
   /**
    * Construct the DeliveredService object for update
@@ -295,8 +286,6 @@ public class DeliveredService {
         : null;
   }
 
-
-
   /**
    * 
    * @param longNote - complete full long text which comes from UI.
@@ -342,14 +331,13 @@ public class DeliveredService {
     // changing endIndex if full long text is smaller than estimated count.
     endIndex = (note.length() < endIndex) ? note.length() : endIndex;
     return note.substring(beginIndex, endIndex);
-
   }
 
   /**
    * determining end index count based on last period(.) or space (" ") or can fit entire text.
    * 
    * @param temptext - temp text to create longText
-   * @param endIndex - end inex
+   * @param endIndex - end of index
    * @param count - count of chars to be stored
    * @param note - complete full long text which comes from UI.
    * @return - end index
@@ -367,10 +355,9 @@ public class DeliveredService {
     // if space (" ") found, then consider that position as end point
     else if (temptext.lastIndexOf(' ') > -1) {
       tempEndIndex = temptext.lastIndexOf(' ');
-
     }
-    return tempEndIndex > 0 ? tempEndIndex : endIndex;
 
+    return tempEndIndex > 0 ? tempEndIndex : endIndex;
   }
 
   /**
@@ -382,8 +369,6 @@ public class DeliveredService {
    */
   private String getNextText(int index, List<String> splitNotes) {
     return (splitNotes.size() > index) ? splitNotes.get(index) : null;
-
   }
-
 
 }

@@ -26,9 +26,7 @@ import gov.ca.cwds.rest.validation.StartDateTimeValidator;
  * <p>
  * 
  * @author CWS-NS2
- * 
  * @see Assignment
- *
  */
 public class R02473DefaultReferralAssignment implements RuleAction {
 
@@ -102,8 +100,7 @@ public class R02473DefaultReferralAssignment implements RuleAction {
         assignmentService.getMessageBuilder().merge(strsMessageBuilder);
         assignmentService.create(defaultAssignment);
       } catch (ServiceException e) {
-        String message = e.getMessage();
-        strsMessageBuilder.addMessageAndLog(message, e, LOGGER);
+        strsMessageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
       }
     }
 

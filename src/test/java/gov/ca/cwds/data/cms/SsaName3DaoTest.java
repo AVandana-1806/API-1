@@ -17,6 +17,7 @@ import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class SsaName3DaoTest extends Doofenshmirtz<Client> {
+
   SsaName3Dao target;
   Query<Client> q;
 

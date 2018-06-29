@@ -18,9 +18,6 @@ import io.dropwizard.jackson.JsonSnakeCase;
 @JsonInclude(Include.ALWAYS)
 public class PostedScreeningToReferral extends ScreeningToReferral implements Response {
 
-  /**
-   * Serialization version
-   */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -114,4 +111,5 @@ public class PostedScreeningToReferral extends ScreeningToReferral implements Re
         referral.getRelationships(), resultCrossReports, resultAllegations,
         referral.getReportType());
   }
+
 }

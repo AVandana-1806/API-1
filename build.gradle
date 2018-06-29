@@ -29,7 +29,7 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    coreApiVersion = '1.7.3_821-RC'
+    coreApiVersion = '1.7.4_826-RC'
     apiVersion = '0.8.1'
     cwdsModelVersion = '0.7.4_615-RC'
     configPath = '$rootProject.projectDir/config/'
@@ -140,9 +140,11 @@ dependencies {
 	compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
 	compile group: "org.glassfish.web", name: "javax.el", version: "2.2.4"
 	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
+
+	compile group: 'org.apache.poi', name: 'poi', version: '3.17'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 	compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
-	compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+
     compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: mapstructVersion
 
     // ES 5.x:
@@ -154,6 +156,8 @@ dependencies {
 	// Exclude transitive dependencies.
     compile (group: 'gov.ca.cwds.api', name: 'api-core', version: coreApiVersion) {
 	    exclude group: 'org.glassfish.jersey.core'
+	    exclude group: 'org.apache.poi'
+	    exclude group: 'org.hibernate'
 	}
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
@@ -182,7 +186,9 @@ dependencies {
     compile group: 'com.atomikos', name: 'atomikos-util', version: '4.0.6'
     compile group: 'com.atomikos', name: 'transactions-jta', version: '4.0.6'
     compile group: 'com.atomikos', name: 'transactions-hibernate4', version: '4.0.6'
-    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.8.Final'
+
+	compile group: 'org.hibernate', name: 'hibernate-core',    version: '5.2.17.Final'
+    compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.17.Final'
     
 	// testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
     testCompile group: 'gov.ca.cwds.api', name: 'api-core-test-support', version: coreApiVersion

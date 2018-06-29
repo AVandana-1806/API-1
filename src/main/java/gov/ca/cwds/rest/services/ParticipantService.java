@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services;
 
-import gov.ca.cwds.data.persistence.ns.IntakeLov;
-import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,6 +44,7 @@ import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparator;
 import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparatorInterface;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
+import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import gov.ca.cwds.rest.business.rules.R00824SetDispositionCode;
 import gov.ca.cwds.rest.business.rules.R00832SetStaffPersonAddedInd;
 import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
@@ -431,10 +430,9 @@ public class ParticipantService implements CrudsService {
     try {
       PostedClient postedClient = this.clientService.create(client);
       clientId = postedClient.getId();
-      incomingParticipant
-          .setLegacyDescriptor(
-              new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
-                  LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription()));
+      incomingParticipant.setLegacyDescriptor(
+          new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
+              LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription()));
       clientScpEthnicityService.createOtherEthnicity(postedClient.getId(), otherRaceCodes);
     } catch (Exception e) {
       throw new ServiceException("Error creating client: " + e.getMessage(), e);

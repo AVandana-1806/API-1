@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnTransformer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.persistence.TypedPersistentObject;
 
@@ -28,6 +30,7 @@ import gov.ca.cwds.data.persistence.TypedPersistentObject;
  */
 @Entity
 @Table(name = "TSBLOBT")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrimaryKey>,
     Comparator<CmsDocumentBlobSegment>, Comparable<CmsDocumentBlobSegment> {
 
@@ -73,7 +76,9 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     super();
     this.docHandle = docHandle;
     this.segmentSequence = segmentSequence;
-    this.docBlob = docBlob;
+
+    // Don't blindly accept a externally mutable byte array.
+    this.docBlob = docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
@@ -99,7 +104,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     result = prime * result + ((docHandle == null) ? 0 : docHandle.hashCode());
     result = prime * result + ((segmentSequence == null) ? 0 : segmentSequence.hashCode());
 
-    // 1) NOT part of unique key, 2) potentially large waste of processing to compute.
+    // DRS: 1) NOT part of unique key, 2) waste of processing to compute,
     // 3) if you got this far, well ... ;)
     return prime * result + ((docBlob == null) ? 0 : Arrays.hashCode(docBlob));
   }
@@ -141,7 +146,8 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
     // 3) if you got this far, well ... ;)
     if (docBlob == null) {
       return other.docBlob == null;
-    } else return Arrays.equals(docBlob, other.docBlob);
+    } else
+      return Arrays.equals(docBlob, other.docBlob);
 
   }
 
@@ -174,7 +180,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
    * @return hex string of segment data
    */
   public byte[] getDocBlob() {
-    return docBlob;
+    return docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
@@ -183,7 +189,7 @@ public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrima
    * @param docBlob hex of binary, compressed data for this segment
    */
   public void setDocBlob(byte[] docBlob) {
-    this.docBlob = docBlob;
+    this.docBlob = docBlob != null ? Arrays.copyOf(docBlob, docBlob.length) : null;
   }
 
   /**
