@@ -13,12 +13,12 @@ import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class LZWCompressionTest extends Doofenshmirtz<CmsDocument> {
 
-  protected static final String TEST_BASE = "/jni/lzw/";
-  protected static final String GOOD_LZW = TEST_BASE + "good.lzw";
-  protected static final String GOOD_LZW_BASE64 = TEST_BASE + "good.b64";
-  protected static final String GOOD_DOC = TEST_BASE + "good.doc";
+  public static final String TEST_BASE = "/jni/lzw/";
+  public static final String GOOD_LZW = TEST_BASE + "good.lzw";
+  public static final String GOOD_LZW_BASE64 = TEST_BASE + "good.b64";
+  public static final String GOOD_DOC = TEST_BASE + "good.doc";
 
-  protected LZWEncoder lzw;
+  public LZWEncoder lzw;
 
   @Before
   public void setUpBeforeTest() throws Exception {

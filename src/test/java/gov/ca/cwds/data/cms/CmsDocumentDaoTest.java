@@ -35,22 +35,24 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 import gov.ca.cwds.rest.util.jni.LZWCompressionTest;
 import gov.ca.cwds.rest.util.jni.LZWEncoder;
 import gov.ca.cwds.rest.util.jni.PKCompressionTest;
 import gov.ca.cwds.utils.JsonUtils;
 
-public class CmsDocumentDaoTest extends LZWCompressionTest {
+public class CmsDocumentDaoTest extends Doofenshmirtz<CmsDocument> {
 
   CmsDocument doc;
   CmsDocumentDao target;
+  LZWEncoder lzw;
 
   String docHandle = "7759421009100220*ADMINOA 00006";
 
   @Override
   @Before
   public void setup() throws Exception {
-    super.setUpBeforeTest();
+    super.setup();
 
     target = new CmsDocumentDao(sessionFactory);
     target.setLzwSupplier(() -> lzw);
@@ -165,8 +167,8 @@ public class CmsDocumentDaoTest extends LZWCompressionTest {
 
   @Test
   public void compressDoc_A$CmsDocument$String() throws Exception {
-    final String base64 = DatatypeConverter.printBase64Binary(
-        Files.readAllBytes(Paths.get(getClass().getResource(GOOD_DOC).getPath())));
+    final String base64 = DatatypeConverter.printBase64Binary(Files
+        .readAllBytes(Paths.get(getClass().getResource(LZWCompressionTest.GOOD_DOC).getPath())));
     doc.setCompressionMethod("01");
     final List<CmsDocumentBlobSegment> actual = target.compressDoc(doc, base64);
     assertThat(actual, is(notNullValue()));
