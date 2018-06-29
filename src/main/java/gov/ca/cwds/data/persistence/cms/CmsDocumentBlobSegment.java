@@ -13,8 +13,11 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnTransformer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.persistence.TypedPersistentObject;
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 
 /**
  * {@link PersistentObject} represents a document blob record in TSBLOBT.
@@ -28,8 +31,10 @@ import gov.ca.cwds.data.persistence.TypedPersistentObject;
  */
 @Entity
 @Table(name = "TSBLOBT")
-public class CmsDocumentBlobSegment implements TypedPersistentObject<VarargPrimaryKey>,
-    Comparator<CmsDocumentBlobSegment>, Comparable<CmsDocumentBlobSegment> {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CmsDocumentBlobSegment extends ApiObjectIdentity
+    implements TypedPersistentObject<VarargPrimaryKey>, Comparator<CmsDocumentBlobSegment>,
+    Comparable<CmsDocumentBlobSegment> {
 
   private static final long serialVersionUID = -6101861394294752291L;
 
