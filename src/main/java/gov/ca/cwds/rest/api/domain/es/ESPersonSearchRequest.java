@@ -1,5 +1,10 @@
 package gov.ca.cwds.rest.api.domain.es;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -129,39 +134,18 @@ public final class ESPersonSearchRequest extends DomainObject implements Request
   }
 
   @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true);
+  }
+
+  @Override
   public int hashCode() {
-    int prime = 31;
-    int result = 1;
-    result = prime * result + ((birthDate == null) ? 0 : birthDate.hashCode());
-    result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-    return prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+    return HashCodeBuilder.reflectionHashCode(this, false);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    ESPersonSearchRequest other = (ESPersonSearchRequest) obj;
-    if (birthDate == null) {
-      if (other.birthDate != null)
-        return false;
-    } else if (!birthDate.equals(other.birthDate))
-      return false;
-    if (firstName == null) {
-      if (other.firstName != null)
-        return false;
-    } else if (!firstName.equals(other.firstName))
-      return false;
-    if (lastName == null) {
-      if (other.lastName != null)
-        return false;
-    } else if (!lastName.equals(other.lastName))
-      return false;
-    return true;
+    return EqualsBuilder.reflectionEquals(this, obj, false);
   }
 
 }
