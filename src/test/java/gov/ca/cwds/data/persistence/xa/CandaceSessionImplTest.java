@@ -1100,7 +1100,7 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
   @Test(expected = UnknownProfileException.class)
   public void isFetchProfileEnabled_A$String_T$UnknownProfileException() throws Exception {
     String name = null;
-    doThrow(UnknownProfileException.class).when(session).isFetchProfileEnabled(any(String.class));
+    doThrow(UnknownProfileException.class).when(session).isFetchProfileEnabled(any());
     target.isFetchProfileEnabled(name);
   }
 
@@ -1110,10 +1110,10 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
     target.enableFetchProfile(name);
   }
 
-  @Test(expected = HibernateException.class)
+  @Test(expected = UnknownProfileException.class)
   public void enableFetchProfile_A$String_T$UnknownProfileException() throws Exception {
     String name = null;
-    doThrow(HibernateException.class).when(session).enableFetchProfile(any(String.class));
+    doThrow(UnknownProfileException.class).when(session).enableFetchProfile(any());
     target.enableFetchProfile(name);
   }
 
@@ -1126,7 +1126,7 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
   @Test(expected = UnknownProfileException.class)
   public void disableFetchProfile_A$String_T$UnknownProfileException() throws Exception {
     String name = null;
-    doThrow(UnknownProfileException.class).when(session).disableFetchProfile(any(String.class));
+    doThrow(UnknownProfileException.class).when(session).disableFetchProfile(any());
     target.disableFetchProfile(name);
   }
 
