@@ -9,39 +9,13 @@ import javax.persistence.Id;
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.NamedNativeQuery;
 
+import gov.ca.cwds.data.std.ApiMarker;
+
 @Entity
+//@formatter:off
 @NamedNativeQuery(name = FIND_ALL_RELATED_CLIENTS_BY_CLIENT_ID,
     resultClass = RelationshipWrapper.class, readOnly = true,
-    query = "SELECT DISTINCT \n" + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
-        + "    CLNS.COM_FST_NM        AS Primary_FIRST_NAME, \n"
-        + "    CLNS.COM_LST_NM        AS Primary_LAST_NAME, \n"
-        + "    CLNS.SUFX_TLDSC        AS Primary_NAME_SUFFIX, \n"
-        + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
-        + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
-        + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
-        + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
-        + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
-        + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
-        + "    sc2.SYS_ID             AS Secondary_REL_CODE, \n"
-        + "    CLNP.IDENTIFIER        AS Secondary_LEGACY_ID, \n"
-        + "    CLNP.COM_FST_NM        AS Secondary_FIRST_NAME, \n"
-        + "    CLNP.COM_LST_NM        AS Secondary_LAST_NAME, \n"
-        + "    CLNP.SUFX_TLDSC        AS Secondary_NAME_SUFFIX, \n"
-        + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
-        + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
-        + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
-        + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
-        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
-        + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
-        + "    CLNR.END_DT            AS Relationship_END_DATE \n"
-        + "FROM  {h-schema}CLIENT_T  GT \n"
-        + "JOIN {h-schema}CLN_RELT CLNR  ON GT.IDENTIFIER   = CLNR.FKCLIENT_T \n"
-        + "JOIN {h-schema}CLIENT_T CLNS  ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
-        + "JOIN {h-schema}CLIENT_T CLNP  ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
-        + "JOIN {h-schema}SYS_CD_C SC  ON SC.SYS_ID         = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
-        + "JOIN {h-schema}SYS_CD_C SC2 ON SC2.SYS_ID        = CAST(SC.LONG_DSC AS SMALLINT) \n"
-        + "WHERE \n" + "    CLNR.FKCLIENT_0 = :clientId \n"
-        + "    OR CLNR.FKCLIENT_T = :clientId \n" + "UNION \n" + "SELECT DISTINCT \n"
+    query = "SELECT DISTINCT \n" 
         + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
         + "    CLNS.COM_FST_NM        AS Primary_FIRST_NAME, \n"
         + "    CLNS.COM_LST_NM        AS Primary_LAST_NAME, \n"
@@ -64,15 +38,50 @@ import org.hibernate.annotations.NamedNativeQuery;
         + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
         + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
         + "    CLNR.END_DT            AS Relationship_END_DATE \n"
-        + "FROM  {h-schema}CLIENT_T GT \n"
+        + "FROM {h-schema}CLIENT_T  GT \n"
+        + "JOIN {h-schema}CLN_RELT CLNR ON GT.IDENTIFIER   = CLNR.FKCLIENT_T \n"
+        + "JOIN {h-schema}CLIENT_T CLNS ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
+        + "JOIN {h-schema}CLIENT_T CLNP ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
+        + "JOIN {h-schema}SYS_CD_C SC   ON SC.SYS_ID       = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
+        + "JOIN {h-schema}SYS_CD_C SC2  ON SC2.SYS_ID      = CAST(SC.LONG_DSC AS SMALLINT) \n"
+        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" 
+        + "UNION \n" 
+        + "SELECT DISTINCT \n"
+        + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
+        + "    CLNS.COM_FST_NM        AS Primary_FIRST_NAME, \n"
+        + "    CLNS.COM_LST_NM        AS Primary_LAST_NAME, \n"
+        + "    CLNS.SUFX_TLDSC        AS Primary_NAME_SUFFIX, \n"
+        + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
+        + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
+        + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
+        + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
+        + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
+        + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
+        + "    sc2.SYS_ID             AS Secondary_REL_CODE, \n"
+        + "    CLNP.IDENTIFIER        AS Secondary_LEGACY_ID, \n"
+        + "    CLNP.COM_FST_NM        AS Secondary_FIRST_NAME, \n"
+        + "    CLNP.COM_LST_NM        AS Secondary_LAST_NAME, \n"
+        + "    CLNP.SUFX_TLDSC        AS Secondary_NAME_SUFFIX, \n"
+        + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
+        + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
+        + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
+        + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
+        + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
+        + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
+        + "    CLNR.END_DT            AS Relationship_END_DATE \n"
+        + "FROM {h-schema}CLIENT_T GT \n"
         + "JOIN {h-schema}CLN_RELT CLNR ON GT.IDENTIFIER   = CLNR.FKCLIENT_0 \n"
         + "JOIN {h-schema}CLIENT_T CLNS ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
         + "JOIN {h-schema}CLIENT_T CLNP ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
-        + "JOIN {h-schema}SYS_CD_C SC  ON SC.SYS_ID        = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
-        + "JOIN {h-schema}SYS_CD_C SC2 ON SC2.SYS_ID       = CAST(SC.LONG_DSC AS SMALLINT) \n"
-        + "WHERE \n" + "    CLNR.FKCLIENT_0 =  :clientId \n"
-        + "    OR CLNR.FKCLIENT_T = :clientId \n" + "WITH UR")
-public class RelationshipWrapper {
+        + "JOIN {h-schema}SYS_CD_C SC   ON SC.SYS_ID       = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
+        + "JOIN {h-schema}SYS_CD_C SC2  ON SC2.SYS_ID      = CAST(SC.LONG_DSC AS SMALLINT) \n"
+        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" 
+        + "WITH UR")
+//@formatter:on
+@SuppressWarnings({"squid:S00107"})
+public class RelationshipWrapper implements ApiMarker {
+
+  private static final long serialVersionUID = 1L;
 
   public static final String FIND_ALL_RELATED_CLIENTS_BY_CLIENT_ID =
       "gov.ca.cwds.data.persistence.cms.RelationshipWrapper.findAllRelatedClientsByClientId";
