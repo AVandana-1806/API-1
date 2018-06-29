@@ -155,17 +155,19 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
 
   @Test(expected = CaresXAException.class)
   public void afterEnd_A$_T$CaresXAException() throws Exception {
-    sessionFactories = mock(ImmutableMap.class);
-    when(sessionFactories.isEmpty()).thenThrow(IllegalStateException.class);
-    target = new XAUnitOfWorkAspect(sessionFactories);
-    target.setXaUnitOfWork(xaUnitOfWork);
-
     when(xaUnitOfWork.transactional()).thenThrow(CaresXAException.class);
+    final Method method =
+        MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
+    target.beforeStart(method, xaUnitOfWork);
     target.afterEnd();
   }
 
   @Test
   public void grabSession_A$String$SessionFactory() throws Exception {
+    final Method method =
+        MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
+    target.beforeStart(method, xaUnitOfWork);
+
     String key = null;
     Session actual = target.grabSession(key, sessionFactory);
     Session expected = null;
@@ -187,6 +189,9 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
   @Test(expected = CaresXAException.class)
   public void beginXaTransaction_A$_T$CaresXAException() throws Exception {
     when(xaUnitOfWork.transactional()).thenThrow(CaresXAException.class);
+    final Method method =
+        MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
+    target.beforeStart(method, xaUnitOfWork);
     target.beginXaTransaction();
   }
 
@@ -204,6 +209,9 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
   @Test(expected = CaresXAException.class)
   public void rollback_A$_T$CaresXAException() throws Exception {
     when(xaUnitOfWork.transactional()).thenThrow(CaresXAException.class);
+    final Method method =
+        MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
+    target.beforeStart(method, xaUnitOfWork);
     target.rollback();
   }
 
