@@ -10,12 +10,15 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import com.google.inject.Inject;
+
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.submit.Gender;
 
 /**
@@ -24,8 +27,13 @@ import gov.ca.cwds.rest.services.submit.Gender;
  */
 public class ClientTransformer implements ParticipantMapper<Client> {
 
+  @Inject
+  private AuthorizationService authorizationService;
+
   @Override
   public ParticipantIntakeApi tranform(Client client) {
+    // Ensure Client are authorized
+    authorizationService.ensureClientAccessAuthorized(client.getId());
     IntakeRaceAndEthnicityConverter intakeRaceAndEthnicityConverter =
         new IntakeRaceAndEthnicityConverter();
     IntakeAddressConverter intakeAddressConverter = new IntakeAddressConverter();
@@ -92,6 +100,13 @@ public class ClientTransformer implements ParticipantMapper<Client> {
       return Boolean.TRUE;
     }
     return sensitive;
+  }
+
+  /**
+   * @param authorizationService - authorizationService
+   */
+  public void setAuthorizationService(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
   }
 
 }
