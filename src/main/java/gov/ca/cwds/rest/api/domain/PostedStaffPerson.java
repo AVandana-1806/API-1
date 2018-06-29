@@ -1,28 +1,26 @@
 package gov.ca.cwds.rest.api.domain;
 
-import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.services.ServiceException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.services.ServiceException;
+
 /**
  * {@link Response} adding an id to the {@link StaffPerson}
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class PostedStaffPerson extends StaffPerson {
-  /**
-   * Serialization version
-   */
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("county")
   private String county;
-
 
   @JsonProperty("staff_id")
   private String id;
@@ -40,7 +38,6 @@ public class PostedStaffPerson extends StaffPerson {
     }
     this.county = GovernmentEntityType.findByCountyCd(staffPerson.getCountyCode()).getDescription();
     this.id = staffPerson.getId();
-
   }
 
   /**
@@ -54,16 +51,16 @@ public class PostedStaffPerson extends StaffPerson {
     super(staffPerson.getEndDate(), staffPerson.getFirstName(), staffPerson.getJobTitle(),
         staffPerson.getLastName(), staffPerson.getMiddleInitial(), staffPerson.getNamePrefix(),
         staffPerson.getPhoneNumber(), staffPerson.getPhoneExt(), staffPerson.getStartDate(),
-        staffPerson.getNameSuffix(), staffPerson.getTelecommuterIndicator(), staffPerson
-            .getCwsOffice(),
+        staffPerson.getNameSuffix(), staffPerson.getTelecommuterIndicator(),
+        staffPerson.getCwsOffice(),
 
-        staffPerson.getAvailabilityAndLocationDescription(),
-        staffPerson.getSsrsLicensingWorkerId(), staffPerson.getCountyCode(), staffPerson
-            .getDutyWorkerIndicator(), staffPerson.getCwsOfficeAddress(), staffPerson
-            .getEmailAddress());
+        staffPerson.getAvailabilityAndLocationDescription(), staffPerson.getSsrsLicensingWorkerId(),
+        staffPerson.getCountyCode(), staffPerson.getDutyWorkerIndicator(),
+        staffPerson.getCwsOfficeAddress(), staffPerson.getEmailAddress());
     if (StringUtils.isBlank(id)) {
       throw new ServiceException("StaffPerson ID cannot be empty");
     }
+
     this.county = GovernmentEntityType.findByCountyCd(staffPerson.getCountyCode()).getDescription();
     this.id = id;
   }
@@ -101,4 +98,5 @@ public class PostedStaffPerson extends StaffPerson {
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
+
 }

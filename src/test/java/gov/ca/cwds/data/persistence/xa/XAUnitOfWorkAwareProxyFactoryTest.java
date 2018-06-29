@@ -90,10 +90,4 @@ public class XAUnitOfWorkAwareProxyFactoryTest extends Doofenshmirtz<Addresses> 
     assertThat(actual, is(notNullValue()));
   }
 
-  @Test
-  public void newAspect_A$ImmutableMap() throws Exception {
-    XAUnitOfWorkAspect actual = target.newAspect(sessionFactories);
-    assertThat(actual, is(notNullValue()));
-  }
-
 }

@@ -1,16 +1,19 @@
 package gov.ca.cwds.data.persistence.hibernate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.jackson.Jackson;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.dropwizard.jackson.Jackson;
 
 /**
  * Plagiarized from <a href=
@@ -19,12 +22,13 @@ import org.hibernate.usertype.UserType;
  * @author CWDS API Team
  */
 public class StringArrayType implements UserType {
+
   private final ObjectMapper objectMapper = Jackson.newObjectMapper();
   private static final int[] arrayTypes = new int[] {Types.ARRAY};
 
   @Override
   public int[] sqlTypes() {
-    return arrayTypes;
+    return Arrays.copyOf(arrayTypes, arrayTypes.length);
   }
 
   @Override
@@ -42,6 +46,7 @@ public class StringArrayType implements UserType {
     return x == null ? 0 : x.hashCode();
   }
 
+  @Override
   public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session,
       Object owner) throws SQLException {
     String[] results = null;
@@ -49,14 +54,13 @@ public class StringArrayType implements UserType {
     if (names != null && names.length > 0 && rs != null && rs.getArray(names[0]) != null) {
 
       Object array = rs.getArray(names[0]).getArray();
-      if (array instanceof String[]) { //postgres
+      if (array instanceof String[]) { // postgres
         results = (String[]) array;
-      } else if (array instanceof Object[]) { //h2
-        Object[] objArray = (Object[]) array;
-//        results = Arrays.copyOf(objArray, objArray.length, String[].class); NOSONAR
+      } else if (array instanceof Object[]) { // h2
+        final Object[] objArray = (Object[]) array;
         try {
-          results = objectMapper.readValue(((String) objArray[0]).replace('{', '[')
-              .replace('}', ']'), String[].class);
+          results = objectMapper.readValue(
+              ((String) objArray[0]).replace('{', '[').replace('}', ']'), String[].class);
         } catch (Exception e) {
           throw new SQLException("Cannot convert " + objArray[0] + " to String[]", e);
         }
@@ -70,8 +74,8 @@ public class StringArrayType implements UserType {
       SharedSessionContractImplementor session) throws SQLException {
     // Set the column with string array,
     if (value != null && st != null) {
-      String[] castObject = (String[]) value;
-      Array array = session.connection().createArrayOf("text", castObject);
+      final String[] castObject = (String[]) value;
+      final Array array = session.connection().createArrayOf("text", castObject);
       st.setArray(index, array);
     } else {
       st.setNull(index, arrayTypes[0]); // NOSONAR

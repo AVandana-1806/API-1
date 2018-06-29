@@ -16,4 +16,5 @@ public class DataAccessServicesModule extends AbstractDataAccessServicesModule {
   protected SessionFactory getDataAccessServicesSessionFactory(Injector injector) {
     return injector.getInstance(Key.get(SessionFactory.class, CmsSessionFactory.class));
   }
+
 }

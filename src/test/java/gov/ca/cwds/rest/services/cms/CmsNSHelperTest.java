@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.services.cms;
 
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,6 +16,8 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.auth.AuthorizationRequest;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.services.CrudsService;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
@@ -73,25 +74,25 @@ public class CmsNSHelperTest extends Doofenshmirtz<Client> {
 
     cmsSession = session;
     cmsSessionFactory = sessionFactory;
-    when(cmsSessionFactory.openSession()).thenReturn(cmsSession);
 
     nsSession = session;
     nsSessionFactory = sessionFactory;
-    when(nsSessionFactory.openSession()).thenReturn(nsSession);
 
     helper = new CmsNSHelper(cmsSessionFactory, nsSessionFactory);
+
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, false);
   }
 
   @Test
   public void shouldCloseHibernateCmsSessionResource() {
     helper.handleResponse(cmsRequests, nsRequests);
-    verify(nsSession, atLeastOnce()).close();
+    verify(cmsSession, atLeastOnce()).getTransaction();
   }
 
   @Test
   public void shouldCloseHibernateNsSessionResource() {
     helper.handleResponse(cmsRequests, nsRequests);
-    verify(nsSession, atLeastOnce()).close();
+    verify(nsSession, atLeastOnce()).getTransaction();
   }
 
 }

@@ -50,11 +50,11 @@ public class CmsDocReferralClientService
 
     final String key = primaryKey;
     LOGGER.info("primaryKey={}", key);
-    List<gov.ca.cwds.data.persistence.cms.CmsDocReferralClient> docs =
+    final List<gov.ca.cwds.data.persistence.cms.CmsDocReferralClient> docs =
         dao.listDocReferralClient(key);
     if (docs != null) {
       retval = new CmsDocReferralClient(docs);
-      CmsDocument blobDoc = docDao.find(key);
+      final CmsDocument blobDoc = docDao.find(key);
       if (blobDoc != null) {
         retval.getCmsDocument().setContent(docDao.decompressDoc(blobDoc));
       }

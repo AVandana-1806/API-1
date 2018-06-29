@@ -29,7 +29,7 @@ public class DB2Database implements Pingable {
   public boolean ping() {
     boolean connectionOK = true;
     try (Session session = sessionFactory.openSession()) {
-      Query query = session.createNativeQuery("select 1 from sysibm.sysdummy1");
+      final Query<?> query = session.createNativeQuery("SELECT 1 FROM SYSIBM.SYSDUMMY1 WITH UR");
       if (query.list().get(0) == null) {
         connectionOK = false;
         message = "Unable to retrieve test query";

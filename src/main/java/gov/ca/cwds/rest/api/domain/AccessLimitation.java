@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.api.domain;
 
+import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,7 +50,7 @@ public class AccessLimitation extends ApiObjectIdentity {
       String limitedAccessDescription, SystemCodeDescriptor limitedAccessGovernmentEntity) {
     super();
     this.limitedAccessCode = limitedAccessCode;
-    this.limitedAccessDate = limitedAccessDate;
+    this.limitedAccessDate = freshDate(limitedAccessDate);
     this.limitedAccessDescription = limitedAccessDescription;
     this.limitedAccessGovernmentEntity = limitedAccessGovernmentEntity;
   }

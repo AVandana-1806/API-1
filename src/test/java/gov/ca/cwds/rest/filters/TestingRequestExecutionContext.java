@@ -32,6 +32,7 @@ public class TestingRequestExecutionContext implements RequestExecutionContext {
     put(Parameter.USER_IDENTITY, userIdentity);
     put(Parameter.SEQUENCE_EXTERNAL_TABLE, new Integer(0));
     put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
+    put(Parameter.RESOURCE_READ_ONLY, false);
 
     RequestExecutionContextRegistry.register(this);
   }
@@ -79,6 +80,16 @@ public class TestingRequestExecutionContext implements RequestExecutionContext {
   @Override
   public MessageBuilder getMessageBuilder() {
     return (MessageBuilder) contextParameters.get(Parameter.MESSAGE_BUILDER);
+  }
+
+  @Override
+  public boolean isResourceReadOnly() {
+    return false;
+  }
+
+  @Override
+  public boolean isXaTransaction() {
+    return false;
   }
 
 }

@@ -47,8 +47,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @NamedQuery(
     name = "gov.ca.cwds.data.persistence.cms.Reporter.findInvestigationReportersByReferralId",
     query = "FROM Reporter WHERE confidentialWaiverIndicator = 'Y' AND referralId = :referralId")
-@NamedQuery(
-    name = "gov.ca.cwds.data.persistence.cms.Reporter.findByReferralIds",
+@NamedQuery(name = "gov.ca.cwds.data.persistence.cms.Reporter.findByReferralIds",
     query = "FROM Reporter WHERE referralId IN :referralIds")
 @NamedNativeQuery(name = "gov.ca.cwds.data.persistence.cms.Reporter.findPartitionedBuckets",
     query = "select trim(z.RPTR_BDGNO) as RPTR_BDGNO, trim(z.RPTR_CTYNM) as RPTR_CTYNM, "
@@ -65,7 +64,8 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
         + "WHERE c.FKREFERL_T >= :min_id and c.FKREFERL_T < :max_id "
         + ") x ) y ) z where z.bucket = :bucket_num for read only",
     resultClass = Reporter.class)
-@SuppressWarnings({"serial", "squid:S3437", "squid:S2160"})
+@SuppressWarnings({"serial", "squid:S3437", "squid:S2160",
+    "fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 @Entity
 @Table(name = "REPTR_T")
 @JsonPropertyOrder(alphabetic = true)

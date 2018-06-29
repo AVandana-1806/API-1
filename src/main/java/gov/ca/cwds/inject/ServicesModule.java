@@ -4,11 +4,14 @@ import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibern
 import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
 import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,20 +22,26 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
+import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
+import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
+import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
@@ -93,6 +102,8 @@ public class ServicesModule extends AbstractModule {
   private static final Logger LOGGER = LoggerFactory.getLogger(ServicesModule.class);
 
   /**
+   * AOP method interceptor manages database transactions outside of DropWizard resource classes.
+   * 
    * @author CWDS API Team
    */
   public static class UnitOfWorkInterceptor implements org.aopalliance.intercept.MethodInterceptor {
@@ -110,11 +121,20 @@ public class ServicesModule extends AbstractModule {
     @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
+      final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
+        final Method m = mi.getMethod();
+        LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
+            m.getDeclaringClass(), m.getName());
+        return mi.proceed();
+      }
+
       proxyFactory =
           UnitOfWorkModule.getUnitOfWorkProxyFactory(cmsHibernateBundle, nsHibernateBundle);
       final UnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        UnitOfWork unitOfWorkAnnotation = mi.getMethod().getAnnotation(UnitOfWork.class);
+        BaseAuthorizationDao.clearXaMode();
+        final UnitOfWork unitOfWorkAnnotation = mi.getMethod().getAnnotation(UnitOfWork.class);
         aspect.beforeStart(unitOfWorkAnnotation);
         clearHibernateStatistics(unitOfWorkAnnotation.value());
         final Object result = mi.proceed();
@@ -122,6 +142,7 @@ public class ServicesModule extends AbstractModule {
         aspect.afterEnd();
         return result;
       } catch (Exception e) {
+        LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
@@ -129,7 +150,7 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    private void clearHibernateStatistics(String bundleTag) {
+    protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         cmsHibernateBundle.getSessionFactory().getStatistics().clear();
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
@@ -137,7 +158,7 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    private void collectAndProvideHibernateStatistics(String bundleTag) {
+    protected void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         provideHibernateStatistics(bundleTag,
             cmsHibernateBundle.getSessionFactory().getStatistics());
@@ -170,26 +191,79 @@ public class ServicesModule extends AbstractModule {
     FerbHibernateBundle xaCmsHibernateBundle;
 
     @Inject
+    @XaCmsRsHibernateBundle
+    FerbHibernateBundle xaCmsRsHibernateBundle;
+
+    @Inject
     @XaNsHibernateBundle
     FerbHibernateBundle xaNsHibernateBundle;
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      proxyFactory =
-          UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle, xaNsHibernateBundle);
+      BaseAuthorizationDao.setXaMode(true);
+      final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      if (ctx != null) {
+        ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
+      }
+
+      proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
+          xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        LOGGER.info("Before XA annotation");
-        aspect.beforeStart(mi.getMethod().getAnnotation(XAUnitOfWork.class));
+        LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
+        BaseAuthorizationDao.setXaMode(true);
+        final Method method = mi.getMethod();
+        aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
         aspect.afterEnd();
-        LOGGER.info("After XA annotation");
+        LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
+        LOGGER.error("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
+        LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
+        BaseAuthorizationDao.clearXaMode();
+      }
+    }
+
+  }
+
+  /**
+   * Construct an interceptor to stack traces for any injected class.
+   * 
+   * <blockquote>
+   * 
+   * <pre>
+   * final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+   * bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
+   * requestInjection(daoInterceptor);
+   * </pre>
+   * 
+   * </blockquote>
+   * 
+   * @author CWDS API Team
+   */
+  public static class PhineasMethodLoggerInterceptor
+      implements org.aopalliance.intercept.MethodInterceptor {
+
+    @Override
+    public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
+      try {
+        final Method m = mi.getMethod();
+        LOGGER.info("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
+            m.getName());
+        CaresStackUtils.logStack();
+
+        LOGGER.info("Phineas interceptor: before method: {}", m);
+        final Object result = mi.proceed();
+        LOGGER.info("Phineas interceptor: after  method: {}", m);
+        return result;
+      } catch (Exception e) {
+        LOGGER.error("Phineas interceptor: ERROR PRINTING STACK TRACE! {}", e.getMessage(), e);
+        throw e;
       }
     }
 
@@ -258,8 +332,9 @@ public class ServicesModule extends AbstractModule {
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(XAUnitOfWork.class), xaInterceptor);
     requestInjection(xaInterceptor);
 
+    // No Hibernate managed transactions when using XA.
     final Properties p = new Properties();
-    p.setProperty("something", "Some String");
+    p.setProperty("managed", "N");
     Names.bindProperties(binder(), p);
 
     // @Singleton does not work with DropWizard Guice.
@@ -289,26 +364,38 @@ public class ServicesModule extends AbstractModule {
   /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
-   * @param config - config
+   * @param config Ferb API configuration
    * @return the systemCodes
    */
   @Provides
-  public SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
+  public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
+    SystemCodeService ret;
 
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
 
-    SystemCodeCacheConfiguration systemCodeCacheConfig =
+    final SystemCodeCacheConfiguration systemCodeCacheConfig =
         config != null ? config.getSystemCodeCacheConfiguration() : null;
     if (systemCodeCacheConfig != null) {
       preLoad = systemCodeCacheConfig.getPreLoad(preLoad);
       secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
     }
 
-    return new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
-        preLoad);
+    try (final Session session = new CandaceSessionImpl(systemCodeDao.grabSession())) {
+      LOGGER.info("Load code cache: preLoad: {}, secondsToRefreshCache: {}", preLoad,
+          secondsToRefreshCache);
+      final Transaction txn = session.beginTransaction();
+      ret = new CachingSystemCodeService(systemCodeDao, systemMetaDao, secondsToRefreshCache,
+          preLoad);
+      txn.commit();
+    } catch (Exception e) {
+      LOGGER.error("ERROR LOADING SYSTEM CODE CACHE! {}", e.getMessage(), e);
+      throw e;
+    }
+
+    return ret;
   }
 
   /**
@@ -318,7 +405,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
-    SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
+    final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
     systemCodeCache.register();
     return systemCodeCache;
   }
@@ -336,7 +423,7 @@ public class ServicesModule extends AbstractModule {
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
 
-    SystemCodeCacheConfiguration intakeCodeCacheConfig =
+    final SystemCodeCacheConfiguration intakeCodeCacheConfig =
         config != null ? config.getIntakeCodeCacheConfiguration() : null;
     if (intakeCodeCacheConfig != null) {
       preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
@@ -353,7 +440,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
-    IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
+    final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
     intakeCodeCache.register();
     return intakeCodeCache;
   }
@@ -367,4 +454,5 @@ public class ServicesModule extends AbstractModule {
     LOGGER.debug("provide syscode serializer");
     return new CmsSystemCodeSerializer(systemCodeCache);
   }
+
 }

@@ -8,17 +8,22 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LZWCompressionTest {
+import gov.ca.cwds.data.persistence.cms.CmsDocument;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
-  protected static final String TEST_BASE = "/jni/lzw/";
-  protected static final String GOOD_LZW = TEST_BASE + "good.lzw";
-  protected static final String GOOD_DOC = TEST_BASE + "good.doc";
+public class LZWCompressionTest extends Doofenshmirtz<CmsDocument> {
 
-  protected LZWEncoder inst;
+  public static final String TEST_BASE = "/jni/lzw/";
+  public static final String GOOD_LZW = TEST_BASE + "good.lzw";
+  public static final String GOOD_LZW_BASE64 = TEST_BASE + "good.b64";
+  public static final String GOOD_DOC = TEST_BASE + "good.doc";
+
+  public LZWEncoder lzw;
 
   @Before
   public void setUpBeforeTest() throws Exception {
-    this.inst = new LZWEncoder();
+    super.setup();
+    this.lzw = new LZWEncoder();
   }
 
   // ===================
@@ -27,7 +32,7 @@ public class LZWCompressionTest {
 
   @Test
   public void testDecompressGood() {
-    if (this.inst == null || !LZWEncoder.isClassloaded()) {
+    if (this.lzw == null || !LZWEncoder.isClassloaded()) {
       // Build platform does not yet support this test.
       return;
     }
@@ -37,10 +42,10 @@ public class LZWCompressionTest {
       final String src = LZWCompressionTest.class.getResource(GOOD_LZW).getPath();
       final String good = LZWCompressionTest.class.getResource(GOOD_DOC).getPath();
 
-      File tgt = File.createTempFile("tgt", ".lzw");
+      final File tgt = File.createTempFile("tgt", ".lzw");
       tgt.deleteOnExit();
 
-      inst.fileCopyUncompress(src, tgt.getAbsolutePath());
+      lzw.fileCopyUncompress(src, tgt.getAbsolutePath());
 
       final String chkTgt = CWDSCompressionUtils.checksum(tgt);
       final String chkGood = CWDSCompressionUtils.checksum(new File(good));
@@ -57,7 +62,7 @@ public class LZWCompressionTest {
 
   @Test
   public void testCompressGood() {
-    if (this.inst == null || !LZWEncoder.isClassloaded()) {
+    if (this.lzw == null || !LZWEncoder.isClassloaded()) {
       // Build platform does not yet support this test.
       return;
     }
@@ -66,10 +71,10 @@ public class LZWCompressionTest {
       final String src = LZWCompressionTest.class.getResource(GOOD_DOC).getPath();
       final String good = LZWCompressionTest.class.getResource(GOOD_LZW).getPath();
 
-      File tgt = File.createTempFile("tgt", ".doc");
+      final File tgt = File.createTempFile("tgt", ".doc");
       tgt.deleteOnExit();
 
-      inst.fileCopyCompress(src, tgt.getAbsolutePath());
+      lzw.fileCopyCompress(src, tgt.getAbsolutePath());
 
       final String chkTgt = CWDSCompressionUtils.checksum(tgt);
       final String chkGood = CWDSCompressionUtils.checksum(new File(good));

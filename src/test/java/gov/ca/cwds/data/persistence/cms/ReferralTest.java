@@ -5,12 +5,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.validation.Validator;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -21,28 +29,34 @@ import gov.ca.cwds.data.persistence.junit.template.PersistentTestTemplate;
 import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.DomainChef;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 /**
  * @author CWDS API Team
- *
  */
-public class ReferralTest implements PersistentTestTemplate {
+public class ReferralTest extends Doofenshmirtz<Referral> implements PersistentTestTemplate {
 
   private static final ObjectMapper MAPPER = SystemCodeTestHarness.MAPPER;
+  private final static String STATE_OF_CALIFORNIA_COUNTY_ID = "1126";
 
-  private final static DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+  private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   @SuppressWarnings("unused")
-  private final static DateFormat tf = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.SSS");
-  private final static DateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
+
+  private final DateFormat tf = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss.SSS");
+  private final DateFormat timeOnlyFormat = new SimpleDateFormat("HH:mm:ss");
+
   private String id = "1234567ABC";
   private String lastUpdatedId = "0X5";
   private Validator validator;
-  private final static String STATE_OF_CALIFORNIA_COUNTY_ID = "1126";
 
+  Referral target;
+
+  @Override
+  @Before
+  public void setup() throws Exception {
+    super.setup();
+    target = new Referral();
+  }
 
   /*
    * Constructor test
@@ -58,7 +72,6 @@ public class ReferralTest implements PersistentTestTemplate {
   public void testConstructorUsingDomain() throws Exception {
     gov.ca.cwds.rest.api.domain.cms.Referral domainReferral = new ReferralResourceBuilder().build();
     Referral persistent = new Referral(id, domainReferral, "0X5");
-
     assertThat(persistent.getId(), is(equalTo(id)));
     assertThat(DomainChef.uncookBooleanString(persistent.getAdditionalInfoIncludedCode()),
         is(equalTo(domainReferral.getAdditionalInfoIncludedCode())));
@@ -158,7 +171,6 @@ public class ReferralTest implements PersistentTestTemplate {
   @Override
   @Test
   public void testPersistentConstructor() throws Exception {
-
     Referral validReferral = new ReferralEntityBuilder().build();
     Referral persistentReferral = new Referral(validReferral.getId(),
         validReferral.getAdditionalInfoIncludedCode(),
@@ -190,7 +202,6 @@ public class ReferralTest implements PersistentTestTemplate {
         validReferral.getLimitedAccessGovtAgencyType(), validReferral.getLimitedAccessDate(),
         validReferral.getLimitedAccessDesc(), validReferral.getOriginalClosureDate(), null, null,
         null, null);
-
     assertThat(persistentReferral.getId(), is(equalTo(validReferral.getId())));
     assertThat(persistentReferral.getAdditionalInfoIncludedCode(),
         is(equalTo(validReferral.getAdditionalInfoIncludedCode())));
@@ -312,10 +323,8 @@ public class ReferralTest implements PersistentTestTemplate {
         vr.getFirstEvaluatedOutApprovalDate(), vr.getResponsibleAgencyCode(),
         vr.getLimitedAccessGovtAgencyType(), vr.getLimitedAccessDate(), vr.getLimitedAccessDesc(),
         vr.getOriginalClosureDate(), null, null, null, null);
-
     final String expected = MAPPER.writeValueAsString((MAPPER.readValue(
         fixture("fixtures/persistent/Referral/valid/validWithSysCodes.json"), Referral.class)));
-
     assertThat(MAPPER.writeValueAsString(pr)).isEqualTo(expected);
   }
 
@@ -323,6 +332,452 @@ public class ReferralTest implements PersistentTestTemplate {
     Referral vr =
         MAPPER.readValue(fixture("fixtures/persistent/Referral/valid/valid.json"), Referral.class);
     return vr;
+  }
+
+  @Test
+  public void type() throws Exception {
+    assertThat(Referral.class, notNullValue());
+  }
+
+  @Test
+  public void instantiation() throws Exception {
+    assertThat(target, notNullValue());
+  }
+
+  @Test
+  public void getPrimaryKey_A$() throws Exception {
+    String actual = target.getPrimaryKey();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getId_A$() throws Exception {
+    String actual = target.getId();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getAdditionalInfoIncludedCode_A$() throws Exception {
+    String actual = target.getAdditionalInfoIncludedCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getAnonymousReporterIndicator_A$() throws Exception {
+    String actual = target.getAnonymousReporterIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getApplicationForPetitionIndicator_A$() throws Exception {
+    String actual = target.getApplicationForPetitionIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getApprovalNumber_A$() throws Exception {
+    String actual = target.getApprovalNumber();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getApprovalStatusType_A$() throws Exception {
+    Short actual = target.getApprovalStatusType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getCaretakersPerpetratorCode_A$() throws Exception {
+    String actual = target.getCaretakersPerpetratorCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getClosureDate_A$() throws Exception {
+    Date actual = target.getClosureDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getCommunicationMethodType_A$() throws Exception {
+    Short actual = target.getCommunicationMethodType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getCurrentLocationOfChildren_A$() throws Exception {
+    String actual = target.getCurrentLocationOfChildren();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getDrmsAllegationDescriptionDoc_A$() throws Exception {
+    String actual = target.getDrmsAllegationDescriptionDoc();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getDrmsErReferralDoc_A$() throws Exception {
+    String actual = target.getDrmsErReferralDoc();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getDrmsInvestigationDoc_A$() throws Exception {
+    String actual = target.getDrmsInvestigationDoc();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getFiledSuspectedChildAbuseReporttoLawEnforcementIndicator_A$() throws Exception {
+    String actual = target.getFiledSuspectedChildAbuseReporttoLawEnforcementIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getFamilyAwarenessIndicator_A$() throws Exception {
+    String actual = target.getFamilyAwarenessIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getGovtEntityType_A$() throws Exception {
+    Short actual = target.getGovtEntityType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setGovtEntityType_A$Short() throws Exception {
+    Short govtEntityType = null;
+    target.setGovtEntityType(govtEntityType);
+  }
+
+  @Test
+  public void getLegalDefinitionCode_A$() throws Exception {
+    String actual = target.getLegalDefinitionCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLegalRightsNoticeIndicator_A$() throws Exception {
+    String actual = target.getLegalRightsNoticeIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLimitedAccessCode_A$() throws Exception {
+    String actual = target.getLimitedAccessCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setLimitedAccessCode_A$String() throws Exception {
+    String limitedAccessCode = null;
+    target.setLimitedAccessCode(limitedAccessCode);
+  }
+
+  @Test
+  public void getMandatedCrossReportReceivedDate_A$() throws Exception {
+    Date actual = target.getMandatedCrossReportReceivedDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReferralName_A$() throws Exception {
+    String actual = target.getReferralName();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getOpenAdequateCaseCode_A$() throws Exception {
+    String actual = target.getOpenAdequateCaseCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReceivedDate_A$() throws Exception {
+    Date actual = target.getReceivedDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReceivedTime_A$() throws Exception {
+    Date actual = target.getReceivedTime();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReferralResponseType_A$() throws Exception {
+    Short actual = target.getReferralResponseType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReferredToResourceType_A$() throws Exception {
+    Short actual = target.getReferredToResourceType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getResponseDeterminationDate_A$() throws Exception {
+    Date actual = target.getResponseDeterminationDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getResponseDeterminationTime_A$() throws Exception {
+    Date actual = target.getResponseDeterminationTime();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getResponseRationaleText_A$() throws Exception {
+    String actual = target.getResponseRationaleText();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getScreenerNoteText_A$() throws Exception {
+    String actual = target.getScreenerNoteText();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getSpecificsIncludedCode_A$() throws Exception {
+    String actual = target.getSpecificsIncludedCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getSufficientInformationCode_A$() throws Exception {
+    String actual = target.getSufficientInformationCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getUnfoundedSeriesCode_A$() throws Exception {
+    String actual = target.getUnfoundedSeriesCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLinkToPrimaryReferralId_A$() throws Exception {
+    String actual = target.getLinkToPrimaryReferralId();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getAllegesAbuseOccurredAtAddressId_A$() throws Exception {
+    String actual = target.getAllegesAbuseOccurredAtAddressId();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getFirstResponseDeterminedByStaffPersonId_A$() throws Exception {
+    String actual = target.getFirstResponseDeterminedByStaffPersonId();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getPrimaryContactStaffPersonId_A$() throws Exception {
+    String actual = target.getPrimaryContactStaffPersonId();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getCountySpecificCode_A$() throws Exception {
+    String actual = target.getCountySpecificCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getSpecialProjectReferralIndicator_A$() throws Exception {
+    String actual = target.getSpecialProjectReferralIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getZippyCreatedIndicator_A$() throws Exception {
+    String actual = target.getZippyCreatedIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getHomelessIndicator_A$() throws Exception {
+    String actual = target.getHomelessIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getFamilyRefusedServicesIndicator_A$() throws Exception {
+    String actual = target.getFamilyRefusedServicesIndicator();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getFirstEvaluatedOutApprovalDate_A$() throws Exception {
+    Date actual = target.getFirstEvaluatedOutApprovalDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getResponsibleAgencyCode_A$() throws Exception {
+    String actual = target.getResponsibleAgencyCode();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLimitedAccessGovtAgencyType_A$() throws Exception {
+    Short actual = target.getLimitedAccessGovtAgencyType();
+    Short expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLimitedAccessDate_A$() throws Exception {
+    Date actual = target.getLimitedAccessDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLimitedAccessDesc_A$() throws Exception {
+    String actual = target.getLimitedAccessDesc();
+    String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getOriginalClosureDate_A$() throws Exception {
+    Date actual = target.getOriginalClosureDate();
+    Date expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getStaffPerson_A$() throws Exception {
+    StaffPerson actual = target.getStaffPerson();
+    StaffPerson expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setStaffPerson_A$StaffPerson() throws Exception {
+    StaffPerson staffPerson = mock(StaffPerson.class);
+    target.setStaffPerson(staffPerson);
+  }
+
+  @Test
+  public void getAddresses_A$() throws Exception {
+    Address actual = target.getAddresses();
+    Address expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getAllegations_A$() throws Exception {
+    Set<Allegation> actual = target.getAllegations();
+    Set<Allegation> expected = new HashSet<>();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setAllegations_A$Set() throws Exception {
+    Set<Allegation> allegations = new HashSet<>();
+    target.setAllegations(allegations);
+  }
+
+  @Test
+  public void getCrossReports_A$() throws Exception {
+    Set<CrossReport> actual = target.getCrossReports();
+    Set<CrossReport> expected = new HashSet<>();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getReporter_A$() throws Exception {
+    Reporter actual = target.getReporter();
+    Reporter expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setReporter_A$Reporter() throws Exception {
+    Reporter reporter = mock(Reporter.class);
+    target.setReporter(reporter);
+  }
+
+  @Test
+  public void getReferralClients_A$() throws Exception {
+    Set<ReferralClient> actual = target.getReferralClients();
+    Set<ReferralClient> expected = new HashSet<>();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void toString_A$() throws Exception {
+    String actual = target.toString();
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void hashCode_A$() throws Exception {
+    int actual = target.hashCode();
+    int expected = 0;
+    assertThat(actual, is(not(expected)));
+  }
+
+  @Test
+  public void equals_A$Object() throws Exception {
+    Object obj = null;
+    boolean actual = target.equals(obj);
+    boolean expected = false;
+    assertThat(actual, is(equalTo(expected)));
   }
 
 }

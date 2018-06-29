@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -32,10 +34,11 @@ import nl.jqno.equalsverifier.Warning;
  */
 public class ClientTest implements PersistentTestTemplate {
 
+  private static final ObjectMapper MAPPER = SystemCodeTestHarness.MAPPER;
+
   private String id = "1234567ABC";
   private String lastUpdatedId = "0X5";
   private Date lastUpdatedTime = new Date();
-  private static final ObjectMapper MAPPER = SystemCodeTestHarness.MAPPER;
 
   /*
    * Constructor test
@@ -366,8 +369,10 @@ public class ClientTest implements PersistentTestTemplate {
     }
 
     final String json = baos.toString(java.nio.charset.StandardCharsets.UTF_8.name());
+
     // Deserialize from JSON just written.
     final Client actual = MAPPER.readValue(json, Client.class);
+
     // Does it match exactly?
     assertThat(actual, is(equalTo(validBean())));
   }
@@ -440,7 +445,8 @@ public class ClientTest implements PersistentTestTemplate {
 
   @Test
   public void testConstructorWithNullSuffixTitleDescription() throws Exception {
-    gov.ca.cwds.rest.api.domain.cms.Client vc = new ClientResourceBuilder().setSuffixTitleDescription(null).build();
+    gov.ca.cwds.rest.api.domain.cms.Client vc =
+        new ClientResourceBuilder().setSuffixTitleDescription(null).build();
     Client pers = new Client(id, vc, lastUpdatedId, lastUpdatedTime);
     assertThat(pers.getSuffixTitleDescription(), is(equalTo("")));
   }
@@ -460,6 +466,60 @@ public class ClientTest implements PersistentTestTemplate {
   public void testEqualsHashCodeWorks() throws Exception {
     EqualsVerifier.forClass(gov.ca.cwds.data.persistence.cms.ClientRelationship.class)
         .suppress(Warning.STRICT_INHERITANCE).withRedefinedSuperclass().verify();
+  }
+
+  @Test
+  public void getClientAddress_A$() throws Exception {
+    Client target = new Client();
+    Set<ClientAddress> actual = target.getClientAddress();
+    Set<ClientAddress> expected = new HashSet<>();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getClientScpEthnicities_A$() throws Exception {
+    Client target = new Client();
+    Set<ClientScpEthnicity> actual = target.getClientScpEthnicities();
+    Set<ClientScpEthnicity> expected = new HashSet<>();
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void setClientScpEthnicities_A$Set() throws Exception {
+    Client target = new Client();
+    Set<ClientScpEthnicity> clientScpEthnicities = new HashSet<>();
+    target.setClientScpEthnicities(clientScpEthnicities);
+  }
+
+  @Test
+  public void setClientAddress_A$Set() throws Exception {
+    Client target = new Client();
+    Set<ClientAddress> clientAddress = new HashSet<>();
+    target.setClientAddress(clientAddress);
+  }
+
+  @Test
+  public void toString_A$() throws Exception {
+    Client target = new Client();
+    String actual = target.toString();
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void hashCode_A$() throws Exception {
+    Client target = new Client();
+    int actual = target.hashCode();
+    int expected = 0;
+    assertThat(actual, is(not(expected)));
+  }
+
+  @Test
+  public void equals_A$Object() throws Exception {
+    Client target = new Client();
+    Object obj = null;
+    boolean actual = target.equals(obj);
+    boolean expected = false;
+    assertThat(actual, is(equalTo(expected)));
   }
 
 }

@@ -12,7 +12,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import javax.xml.bind.DatatypeConverter;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -141,7 +140,8 @@ public class CmsDocumentBlobSegmentTest {
 
   @Test
   public void testConstraintBlobMinSize() throws Exception {
-    CmsDocumentBlobSegment blob = new CmsDocumentBlobSegment(docHandle, segmentSequence, "".getBytes());
+    CmsDocumentBlobSegment blob =
+        new CmsDocumentBlobSegment(docHandle, segmentSequence, "".getBytes());
     Set<ConstraintViolation<CmsDocumentBlobSegment>> violations = validator.validate(blob);
 
     assertEquals(1, violations.size());
