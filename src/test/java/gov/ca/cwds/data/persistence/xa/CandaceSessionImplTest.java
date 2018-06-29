@@ -1086,8 +1086,7 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
 
   @Test
   public void reconnect_A$Connection() throws Exception {
-    Connection connection = mock(Connection.class);
-    target.reconnect(connection);
+    target.reconnect(con);
   }
 
   @Test
@@ -1101,7 +1100,7 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
   @Test(expected = UnknownProfileException.class)
   public void isFetchProfileEnabled_A$String_T$UnknownProfileException() throws Exception {
     String name = null;
-    doThrow(HibernateException.class).when(session).isFetchProfileEnabled(any(String.class));
+    doThrow(UnknownProfileException.class).when(session).isFetchProfileEnabled(any(String.class));
     target.isFetchProfileEnabled(name);
   }
 
