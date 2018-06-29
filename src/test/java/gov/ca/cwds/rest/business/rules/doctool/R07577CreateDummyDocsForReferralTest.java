@@ -83,7 +83,6 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -143,7 +142,6 @@ public class R07577CreateDummyDocsForReferralTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -278,7 +276,6 @@ public class R07577CreateDummyDocsForReferralTest {
     participantService = mock(ParticipantService.class);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
@@ -289,7 +286,7 @@ public class R07577CreateDummyDocsForReferralTest {
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, referralSatefyAlertsService);
+        clientRelationshipDao);
   }
 
   /**
