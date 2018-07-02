@@ -1,6 +1,17 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
@@ -11,13 +22,6 @@ import gov.ca.cwds.rest.services.ParticipantService;
 import gov.ca.cwds.rest.services.RelationshipsService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.cms.ClientService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author CWDS TPT-3 Team
@@ -37,13 +41,10 @@ public class RelationshipFacade {
   private final RelationshipDao nsRelationshipDao;
 
   @Inject
-  public RelationshipFacade(
-      ScreeningRelationshipService screeningRelationshipService,
-      RelationshipsService relationshipsService,
-      ParticipantService participantService,
+  public RelationshipFacade(ScreeningRelationshipService screeningRelationshipService,
+      RelationshipsService relationshipsService, ParticipantService participantService,
       ClientService clientService, ParticipantDao participantDao,
-      ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao) {
+      ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao) {
     this.screeningRelationshipService = screeningRelationshipService;
     this.relationshipsService = relationshipsService;
     this.participantService = participantService;
@@ -55,11 +56,11 @@ public class RelationshipFacade {
 
   public List<ScreeningRelationship> getRelationshipsByScreeningId(String screeningId) {
     if (StringUtils.isEmpty(screeningId)) {
-      return null;
+      return Collections.emptyList();
     }
 
     // DELETE it (just for sonar)
-    LOGGER.info("screeningId {}", screeningId.replaceAll("[\r\n]",""));
+    LOGGER.info("screeningId {}", screeningId.replaceAll("[\r\n]", ""));
     LOGGER.info("clientService {}", clientService);
     LOGGER.info("participantService {}", participantService);
     LOGGER.info("relationshipsService {}", relationshipsService);
@@ -73,10 +74,10 @@ public class RelationshipFacade {
     List<Relationship> nsRelationships = getNsRelationships(screeningId);
 
     // compare
-    List<ClientRelationship> shouldBeUpdated = getRelationshipsThatShouldBeUpdated(
-        lagacyRelationships, nsRelationships);
-    List<ClientRelationship> shouldBeCreated = getRelationshipsThatShouldBeCreated(
-        lagacyRelationships, nsRelationships);
+    List<ClientRelationship> shouldBeUpdated =
+        getRelationshipsThatShouldBeUpdated(lagacyRelationships, nsRelationships);
+    List<ClientRelationship> shouldBeCreated =
+        getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
     createRelationships(shouldBeCreated);
     updateRelationships(shouldBeUpdated);
 
@@ -145,7 +146,7 @@ public class RelationshipFacade {
       return new ArrayList<>();
     }
 
-//    lagacyRelationships.stream().filter(e->e.getId().equals())
+    // lagacyRelationships.stream().filter(e->e.getId().equals())
     return new ArrayList<>();
   }
 
