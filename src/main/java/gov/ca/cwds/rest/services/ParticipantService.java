@@ -1,21 +1,6 @@
 package gov.ca.cwds.rest.services;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.PersistenceException;
-import javax.validation.Validator;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.Inject;
-
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.cms.CaseDao;
 import gov.ca.cwds.data.cms.ReferralClientDao;
@@ -61,6 +46,17 @@ import gov.ca.cwds.rest.services.cms.ReferralClientService;
 import gov.ca.cwds.rest.services.cms.ReporterService;
 import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
 import gov.ca.cwds.rest.validation.ParticipantValidator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.PersistenceException;
+import javax.validation.Validator;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Business layer object to work on {@link Address}
@@ -190,7 +186,7 @@ public class ParticipantService implements CrudsService {
     for (String role : roles) {
       boolean isRegularReporter = ParticipantValidator.roleIsReporterType(role)
           && (!ParticipantValidator.roleIsAnonymousReporter(role)
-              && !ParticipantValidator.selfReported(incomingParticipant));
+          && !ParticipantValidator.selfReported(incomingParticipant));
       if (isRegularReporter) {
         saveRegularReporter(screeningToReferral, referralId, messageBuilder, incomingParticipant,
             role);
@@ -311,10 +307,11 @@ public class ParticipantService implements CrudsService {
 
     Client client = this.clientService.find(clientId);
 
-    // set the Estimated DOB code of CLIENT before setting the Referral Client age and age unit
+    // set the Estimated DOB code and estimate DOB if needed of CLIENT before setting
+    // the Referral Client age and age unit
     if (!isErrorMessagesExist(messageBuilder)) {
       R04880EstimatedDOBCodeSetting r04880EstimatedDOBCodeSetting =
-          new R04880EstimatedDOBCodeSetting(client, referralClient);
+          new R04880EstimatedDOBCodeSetting(client, referralClient, dateStarted);
       r04880EstimatedDOBCodeSetting.execute();
       this.clientService.update(clientId, client);
     }
