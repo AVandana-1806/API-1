@@ -125,6 +125,7 @@ import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
@@ -181,6 +182,7 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
+    bind(RelationshipFacade.class);
   }
 
   @Provides
