@@ -15,13 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.IntakeLovServiceResource;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
 import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.es.ESPersons;
 import gov.ca.cwds.rest.services.IntakeLovService;
-import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -101,7 +101,7 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @UnitOfWork(value = "ns")
+  @XAUnitOfWork
   @GET
   // @Path("/all")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
