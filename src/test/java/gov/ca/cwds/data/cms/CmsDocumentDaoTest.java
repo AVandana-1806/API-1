@@ -11,24 +11,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.commons.lang3.StringUtils;
-import org.flywaydb.core.internal.util.FileCopyUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import gov.ca.cwds.data.persistence.cms.CmsDocument;
 import gov.ca.cwds.data.persistence.cms.CmsDocumentBlobSegment;
 import gov.ca.cwds.rest.api.domain.DomainChef;
@@ -40,6 +22,20 @@ import gov.ca.cwds.rest.util.jni.LZWCompressionTest;
 import gov.ca.cwds.rest.util.jni.LZWEncoder;
 import gov.ca.cwds.rest.util.jni.PKCompressionTest;
 import gov.ca.cwds.utils.JsonUtils;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.lang3.StringUtils;
+import org.flywaydb.core.internal.util.FileCopyUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class CmsDocumentDaoTest extends Doofenshmirtz<CmsDocument> {
 
@@ -168,7 +164,8 @@ public class CmsDocumentDaoTest extends Doofenshmirtz<CmsDocument> {
   @Test
   public void compressDoc_A$CmsDocument$String() throws Exception {
     final String base64 = DatatypeConverter.printBase64Binary(Files
-        .readAllBytes(Paths.get(getClass().getResource(LZWCompressionTest.GOOD_DOC).getPath())));
+        .readAllBytes(
+            new File(getClass().getResource(LZWCompressionTest.GOOD_DOC).getPath()).toPath()));
     doc.setCompressionMethod("01");
     final List<CmsDocumentBlobSegment> actual = target.compressDoc(doc, base64);
     assertThat(actual, is(notNullValue()));
