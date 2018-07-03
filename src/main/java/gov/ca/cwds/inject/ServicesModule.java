@@ -144,6 +144,7 @@ public class ServicesModule extends AbstractModule {
       final String name = annotation.value().trim();
       SessionFactory currentSessionFactory;
 
+      // Find the right session factory.
       switch (name) {
         case Api.DS_CMS:
           proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
@@ -165,7 +166,7 @@ public class ServicesModule extends AbstractModule {
           throw new IllegalStateException("Unknown datasource! " + annotation.value());
       }
 
-      // AOP:
+      // Build the aspect with our wrapped session factory, not a hibernate bundle:
       final UnitOfWorkAspect aspect =
           proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
 
@@ -175,10 +176,14 @@ public class ServicesModule extends AbstractModule {
         RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
 
         aspect.beforeStart(annotation);
-        clearHibernateStatistics(annotation.value());
+        final Session session = currentSessionFactory.getCurrentSession();
+
+        // clearHibernateStatistics(annotation.value());
         final Object result = mi.proceed();
-        collectAndProvideHibernateStatistics(annotation.value());
+        // collectAndProvideHibernateStatistics(annotation.value());
         aspect.afterEnd();
+
+        LOGGER.info("session stats: {}", session.getStatistics());
         return result;
       } catch (Exception e) {
         LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
@@ -189,6 +194,8 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
+    // WARNING: check **session** stats, not session factory stats.
+    // At minimum this is a race condition across request threads.
     protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         cmsSessionFactory.getStatistics().clear();
@@ -416,7 +423,6 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
-  // @Singleton
   public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
