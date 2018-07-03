@@ -114,20 +114,6 @@ public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
   }
 
   @Test
-  public void provideSystemCodeService_A$SystemCodeDao$SystemMetaDao() throws Exception {
-    final ApiConfiguration apiConfiguration = mock(ApiConfiguration.class);
-    SystemCodeService actual =
-        target.provideSystemCodeService(systemCodeDao, systemMetaDao, apiConfiguration);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
-  public void provideIntakeCodeService_A$IntakeLovDao() throws Exception {
-    IntakeLovService actual = target.provideIntakeLovService(intakeLovDao, null);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
   public void provideCmsSystemCodeSerializer_A$SystemCodeCache() throws Exception {
     gov.ca.cwds.rest.api.domain.cms.SystemCodeCache systemCodeCache =
         mock(gov.ca.cwds.rest.api.domain.cms.SystemCodeCache.class);

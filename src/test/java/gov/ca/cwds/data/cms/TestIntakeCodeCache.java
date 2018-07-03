@@ -30,7 +30,8 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {
     if (SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN.equals(metaId)) {
       List<IntakeLov> lovs = new ArrayList<>();
-      lovs.add(new IntakeLov(0L, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN, null, null, false, null, null, null, null, "At Risk", null));
+      lovs.add(new IntakeLov(0L, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN,
+          null, null, false, null, null, null, null, "At Risk", null));
       return lovs;
     }
     return null;
@@ -119,4 +120,8 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
     return null;
   }
 
+  @Override
+  public List<IntakeLov> getAll() {
+    return new ArrayList<>();
+  }
 }
