@@ -64,6 +64,7 @@ public class CandaceSessionImpl implements Session {
   protected CandaceTransactionImpl txn;
 
   public CandaceSessionImpl(Session session) {
+    LOGGER.trace("CandaceSessionImpl.ctor");
     this.session = session;
   }
 
@@ -73,6 +74,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Query getNamedQuery(String queryName) {
+    LOGGER.trace("CandaceSessionImpl.getNamedQuery: {}", queryName);
     return session.getNamedQuery(queryName);
   }
 
@@ -91,17 +93,19 @@ public class CandaceSessionImpl implements Session {
     LOGGER.info("CandaceSessionImpl.close");
     if (session != null) {
       session.close();
-      session = null;
+      session = null; // release session references
     }
   }
 
   @Override
   public boolean isOpen() {
+    LOGGER.trace("CandaceSessionImpl.isOpen");
     return session.isOpen();
   }
 
   @Override
   public boolean isConnected() {
+    LOGGER.trace("CandaceSessionImpl.isConnected");
     return session.isConnected();
   }
 
@@ -125,16 +129,19 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Query createNamedQuery(String name) {
+    LOGGER.trace("CandaceSessionImpl.createNamedQuery: {}", name);
     return session.createNamedQuery(name);
   }
 
   @Override
   public ProcedureCall getNamedProcedureCall(String name) {
+    LOGGER.trace("CandaceSessionImpl.getNamedProcedureCall: {}", name);
     return session.getNamedProcedureCall(name);
   }
 
   @Override
   public ProcedureCall createStoredProcedureCall(String procedureName) {
+    LOGGER.trace("CandaceSessionImpl.createStoredProcedureCall: {}", procedureName);
     return session.createStoredProcedureCall(procedureName);
   }
 
@@ -151,11 +158,13 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public NativeQuery createSQLQuery(String queryString) {
+    LOGGER.trace("CandaceSessionImpl.createSQLQuery: {}", queryString);
     return session.createSQLQuery(queryString);
   }
 
   @Override
   public void remove(Object entity) {
+    LOGGER.trace("CandaceSessionImpl.remove");
     session.remove(entity);
   }
 
@@ -166,11 +175,13 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public NativeQuery createNativeQuery(String sqlString) {
+    LOGGER.trace("CandaceSessionImpl.createNativeQuery: {}", sqlString);
     return session.createNativeQuery(sqlString);
   }
 
   @Override
   public SharedSessionBuilder sessionWithOptions() {
+    LOGGER.trace("CandaceSessionImpl.sessionWithOptions");
     return session.sessionWithOptions();
   }
 

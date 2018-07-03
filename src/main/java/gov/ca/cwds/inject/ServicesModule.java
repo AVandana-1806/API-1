@@ -16,6 +16,7 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
@@ -141,25 +142,34 @@ public class ServicesModule extends AbstractModule {
 
       // Use our wrapped session factories.
       final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-      switch (annotation.value().trim()) {
+      final String name = annotation.value().trim();
+      SessionFactory currentSessionFactory;
+
+      switch (name) {
         case Api.DS_CMS:
           proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
+          currentSessionFactory = cmsSessionFactory;
           break;
 
         case Api.DATASOURCE_CMS_REP:
           proxyFactory =
               UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DATASOURCE_CMS_REP, rsSessionFactory);
+          currentSessionFactory = rsSessionFactory;
           break;
 
         case Api.DS_NS:
           proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
+          currentSessionFactory = nsSessionFactory;
           break;
 
         default:
           throw new IllegalStateException("Unknown datasource! " + annotation.value());
       }
 
-      final UnitOfWorkAspect aspect = proxyFactory.newAspect();
+      // AOP:
+      final UnitOfWorkAspect aspect =
+          proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
+
       try {
         // Not XA, so clear XA flags.
         BaseAuthorizationDao.clearXaMode();
@@ -192,7 +202,7 @@ public class ServicesModule extends AbstractModule {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
         provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
+        provideHibernateStatistics(bundleTag, nsSessionFactory.getStatistics());
       }
     }
 
