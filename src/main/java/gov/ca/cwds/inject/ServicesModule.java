@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
@@ -414,7 +413,7 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
-  @Singleton
+  // @Singleton
   public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
@@ -450,7 +449,7 @@ public class ServicesModule extends AbstractModule {
    * @return the SystemCodeCache
    */
   @Provides
-  @Singleton
+  // @Singleton
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
     final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
@@ -464,7 +463,7 @@ public class ServicesModule extends AbstractModule {
    * @return the IntakeCode
    */
   @Provides
-  @Singleton
+  // @Singleton
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
@@ -487,7 +486,7 @@ public class ServicesModule extends AbstractModule {
    * @return IntakeCodeCache
    */
   @Provides
-  @Singleton
+  // @Singleton
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
     final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
