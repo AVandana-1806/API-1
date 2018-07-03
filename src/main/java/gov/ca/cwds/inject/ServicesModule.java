@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
@@ -126,6 +125,10 @@ public class ServicesModule extends AbstractModule {
     SessionFactory cmsSessionFactory;
 
     @Inject
+    @CwsRsSessionFactory
+    SessionFactory rsSessionFactory;
+
+    @Inject
     @NsSessionFactory
     SessionFactory nsSessionFactory;
 
@@ -134,22 +137,39 @@ public class ServicesModule extends AbstractModule {
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
       final Method m = mi.getMethod();
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      LOGGER.debug("Regular unit of work: class: {}, method: {}", m.getDeclaringClass(),
+      LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
           m.getName());
 
+      // If already in an XA transaction, skip this @UnitOfWork.
       if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-        LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
+        LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
 
+      // Use our wrapped session factories.
       final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-      proxyFactory = annotation.value().equals(Api.DS_CMS)
-          ? UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory)
-          : UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
+      switch (annotation.value().trim()) {
+        case Api.DS_CMS:
+          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
+          break;
+
+        case Api.DATASOURCE_CMS_REP:
+          proxyFactory =
+              UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DATASOURCE_CMS_REP, rsSessionFactory);
+          break;
+
+        case Api.DS_NS:
+          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown datasource! " + annotation.value());
+      }
+
       final UnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        // Clear XA flags.
+        // Not XA, so clear XA flags.
         BaseAuthorizationDao.clearXaMode();
         RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
 
@@ -218,25 +238,20 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      BaseAuthorizationDao.setXaMode(true);
-      final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      if (ctx != null) {
-        ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
-      }
-
+      LOGGER.info("XAUnitOfWorkInterceptor: intercept!");
       proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
           xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
+        LOGGER.debug("XAUnitOfWorkInterceptor: Before XA annotation");
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
         aspect.afterEnd();
-        LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
+        LOGGER.debug("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
-        LOGGER.error("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
+        LOGGER.error("XAUnitOfWorkInterceptor: XA UNIT OF WORK FAILED! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
@@ -384,7 +399,7 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
-  @Singleton
+  // @Singleton
   public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
@@ -420,7 +435,7 @@ public class ServicesModule extends AbstractModule {
    * @return the SystemCodeCache
    */
   @Provides
-  @Singleton
+  // @Singleton
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
     final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
@@ -434,7 +449,7 @@ public class ServicesModule extends AbstractModule {
    * @return the IntakeCode
    */
   @Provides
-  @Singleton
+  // @Singleton
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
@@ -457,7 +472,7 @@ public class ServicesModule extends AbstractModule {
    * @return IntakeCodeCache
    */
   @Provides
-  @Singleton
+  // @Singleton
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
     final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
