@@ -7,7 +7,7 @@ import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProvid
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.ca.cwds.data.persistence.xa.WorkDB2UserInfo;
+import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
 
 public class CaresDB2DatasourceConnectionProviderImpl extends DatasourceConnectionProviderImpl {
 
@@ -20,7 +20,7 @@ public class CaresDB2DatasourceConnectionProviderImpl extends DatasourceConnecti
   public Connection getConnection() throws SQLException {
     LOGGER.info("CaresDB2DatasourceConnectionProviderImpl.getConnection");
     final Connection con = super.getConnection();
-    new WorkDB2UserInfo().execute(con);
+    new WorkFerbUserInfo().execute(con);
     return con;
   }
 

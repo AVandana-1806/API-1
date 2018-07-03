@@ -169,7 +169,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Get the current Hibernate session, if open, or open a new session.
    * 
    * <p>
-   * For DB2 sessions, this method calls {@link WorkDB2UserInfo} to populate user information fields
+   * For DB2 sessions, this method calls {@link WorkFerbUserInfo} to populate user information fields
    * on the JDBC connection.
    * </p>
    * 
@@ -198,7 +198,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       sessions.put(key, session);
 
       // Add user info to DB2 connections. Harmless for other connections.
-      session.doWork(new WorkDB2UserInfo());
+      session.doWork(new WorkFerbUserInfo());
     }
 
     return session;
