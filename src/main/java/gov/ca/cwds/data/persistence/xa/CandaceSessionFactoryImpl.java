@@ -62,7 +62,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
-  // Only works for the same datasource.
+  // Only works for the same datasource, for which this class is a facade.
   private final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
 
   private String sessionFactoryName;

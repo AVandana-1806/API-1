@@ -88,7 +88,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.warn("CandaceSessionImpl.close");
+    LOGGER.info("CandaceSessionImpl.close");
     session.close();
   }
 
@@ -104,7 +104,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.warn("CandaceSessionImpl.beginTransaction: XA: {}",
+    LOGGER.info("CandaceSessionImpl.beginTransaction: XA: {}",
         CandaceSessionFactoryImpl.isXaTransaction());
     this.txn = new CandaceTransactionImpl(session.beginTransaction());
     return txn;
@@ -445,7 +445,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(String entityName, Object object) {
-    LOGGER.warn("CandaceSessionImpl.delete entityName: {}", entityName);
+    LOGGER.info("CandaceSessionImpl.delete entityName: {}", entityName);
     session.delete(entityName, object);
   }
 
@@ -461,7 +461,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
+    LOGGER.info("CandaceSessionImpl.detach entity: {}", entity);
     session.detach(entity);
   }
 

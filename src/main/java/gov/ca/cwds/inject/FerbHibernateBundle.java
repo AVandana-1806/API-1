@@ -6,11 +6,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import gov.ca.cwds.rest.ApiConfiguration;
+import gov.ca.cwds.rest.core.Api;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.SessionFactoryFactory;
 
 /**
- * Extension of DropWizard's {@link HibernateBundle} increases the visibility of {@link #name()}.
+ * Ferb extension of DropWizard's {@link HibernateBundle} increases the visibility of
+ * {@link #name()} to public.
  * 
  * @author CWDS API Team
  */
@@ -18,10 +20,10 @@ public abstract class FerbHibernateBundle extends HibernateBundle<ApiConfigurati
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FerbHibernateBundle.class);
 
-  public static final String CMS_BUNDLE_TAG = "cms";
-  public static final String NS_BUNDLE_TAG = "ns";
+  public static final String CMS_BUNDLE_TAG = Api.DATASOURCE_CMS;
+  public static final String NS_BUNDLE_TAG = Api.DATASOURCE_NS;
 
-  FerbHibernateBundle(ImmutableList<Class<?>> entities,
+  public FerbHibernateBundle(ImmutableList<Class<?>> entities,
       SessionFactoryFactory sessionFactoryFactory) {
     super(entities, sessionFactoryFactory);
     LOGGER.info("FerbHibernateBundle ctor");

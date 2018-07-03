@@ -110,8 +110,8 @@ public class IntakeLovResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})
-  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
-      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
+  @ApiOperation(value = "Get Intake list-of-values (LOV)", code = HttpStatus.SC_OK,
+      response = IntakeLovEntry[].class)
   public Response getAll() {
     Response ret;
     try {

@@ -11,6 +11,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
@@ -119,27 +121,42 @@ public class ServicesModule extends AbstractModule {
     @NsHibernateBundle
     HibernateBundle<ApiConfiguration> nsHibernateBundle;
 
+    @Inject
+    @CmsSessionFactory
+    SessionFactory cmsSessionFactory;
+
+    @Inject
+    @NsSessionFactory
+    SessionFactory nsSessionFactory;
+
     @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
+      final Method m = mi.getMethod();
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      LOGGER.debug("Regular unit of work: class: {}, method: {}", m.getDeclaringClass(),
+          m.getName());
+
       if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-        final Method m = mi.getMethod();
         LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
 
-      proxyFactory =
-          UnitOfWorkModule.getUnitOfWorkProxyFactory(cmsHibernateBundle, nsHibernateBundle);
+      final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
+      proxyFactory = annotation.value().equals(Api.DS_CMS)
+          ? UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory)
+          : UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
       final UnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
+        // Clear XA flags.
         BaseAuthorizationDao.clearXaMode();
-        final UnitOfWork unitOfWorkAnnotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-        aspect.beforeStart(unitOfWorkAnnotation);
-        clearHibernateStatistics(unitOfWorkAnnotation.value());
+        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+
+        aspect.beforeStart(annotation);
+        clearHibernateStatistics(annotation.value());
         final Object result = mi.proceed();
-        collectAndProvideHibernateStatistics(unitOfWorkAnnotation.value());
+        collectAndProvideHibernateStatistics(annotation.value());
         aspect.afterEnd();
         return result;
       } catch (Exception e) {
@@ -212,7 +229,6 @@ public class ServicesModule extends AbstractModule {
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
         LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
-        BaseAuthorizationDao.setXaMode(true);
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
@@ -226,7 +242,6 @@ public class ServicesModule extends AbstractModule {
       } finally {
         LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
-        BaseAuthorizationDao.clearXaMode();
       }
     }
 

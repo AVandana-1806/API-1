@@ -81,7 +81,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void setTimeout(int seconds) {
-    LOGGER.debug("*** CandaceTransactionImpl.setTimeout ***");
+    LOGGER.debug("CandaceTransactionImpl.setTimeout: seconds: {}", seconds);
     txn.setTimeout(seconds);
   }
 
@@ -105,7 +105,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   protected void finalize() throws Throwable {
-    LOGGER.warn("*** CandaceTransactionImpl.finalize ***");
+    LOGGER.info("*** CandaceTransactionImpl.finalize ***");
     super.finalize();
   }
 

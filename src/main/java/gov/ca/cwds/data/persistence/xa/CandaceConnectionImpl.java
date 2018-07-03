@@ -89,21 +89,21 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public void commit() throws SQLException {
-    LOGGER.warn("******** CandaceConnectionImpl.commit ********");
+    LOGGER.info("*** CandaceConnectionImpl.commit ***");
     CaresStackUtils.logStack();
     con.commit();
   }
 
   @Override
   public void rollback() throws SQLException {
-    LOGGER.warn("******** CandaceConnectionImpl.rollback ********");
+    LOGGER.info("*** CandaceConnectionImpl.rollback ***");
     CaresStackUtils.logStack();
     con.rollback();
   }
 
   @Override
   public void close() throws SQLException {
-    LOGGER.warn("******** CandaceConnectionImpl.close ********");
+    LOGGER.info("*** CandaceConnectionImpl.close ***");
     CaresStackUtils.logStack();
     con.close();
   }
