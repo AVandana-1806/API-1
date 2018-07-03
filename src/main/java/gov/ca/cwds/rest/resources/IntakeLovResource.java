@@ -57,8 +57,6 @@ public class IntakeLovResource {
 
   /**
    * Constructor
-   * 
-   * @param resourceDelegate The resourceDelegate to delegate to.
    */
   @Inject
   public IntakeLovResource() {
