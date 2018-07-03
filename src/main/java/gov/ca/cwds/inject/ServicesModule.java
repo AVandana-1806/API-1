@@ -11,12 +11,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
@@ -42,7 +40,6 @@ import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
-import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
@@ -89,6 +86,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
+import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.hibernate.UnitOfWorkAspect;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
@@ -113,77 +111,35 @@ public class ServicesModule extends AbstractModule {
     UnitOfWorkAwareProxyFactory proxyFactory;
 
     @Inject
-    @CmsSessionFactory
-    SessionFactory cmsSessionFactory;
+    @CmsHibernateBundle
+    HibernateBundle<ApiConfiguration> cmsHibernateBundle;
 
     @Inject
-    @CwsRsSessionFactory
-    SessionFactory rsSessionFactory;
-
-    @Inject
-    @NsSessionFactory
-    SessionFactory nsSessionFactory;
+    @NsHibernateBundle
+    HibernateBundle<ApiConfiguration> nsHibernateBundle;
 
     @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      final Method m = mi.getMethod();
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
-          m.getName());
-
-      // If already in an XA transaction, skip this @UnitOfWork.
       if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-        LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
+        final Method m = mi.getMethod();
+        LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
 
-      // Use our wrapped session factories.
-      final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-      final String name = annotation.value().trim();
-      SessionFactory currentSessionFactory;
-
-      // Find the right session factory.
-      switch (name) {
-        case Api.DS_CMS:
-          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
-          currentSessionFactory = cmsSessionFactory;
-          break;
-
-        case Api.DATASOURCE_CMS_REP:
-          proxyFactory =
-              UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DATASOURCE_CMS_REP, rsSessionFactory);
-          currentSessionFactory = rsSessionFactory;
-          break;
-
-        case Api.DS_NS:
-          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
-          currentSessionFactory = nsSessionFactory;
-          break;
-
-        default:
-          throw new IllegalStateException("Unknown datasource! " + annotation.value());
-      }
-
-      // Build the aspect with our wrapped session factory, not a hibernate bundle:
-      final UnitOfWorkAspect aspect =
-          proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
-
+      proxyFactory =
+          UnitOfWorkModule.getUnitOfWorkProxyFactory(cmsHibernateBundle, nsHibernateBundle);
+      final UnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        // Not XA, so clear XA flags.
         BaseAuthorizationDao.clearXaMode();
-        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-
-        aspect.beforeStart(annotation);
-        final Session session = currentSessionFactory.getCurrentSession();
-
-        // clearHibernateStatistics(annotation.value());
+        final UnitOfWork unitOfWorkAnnotation = mi.getMethod().getAnnotation(UnitOfWork.class);
+        aspect.beforeStart(unitOfWorkAnnotation);
+        clearHibernateStatistics(unitOfWorkAnnotation.value());
         final Object result = mi.proceed();
-        // collectAndProvideHibernateStatistics(annotation.value());
+        collectAndProvideHibernateStatistics(unitOfWorkAnnotation.value());
         aspect.afterEnd();
-
-        LOGGER.info("session stats: {}", session.getStatistics());
         return result;
       } catch (Exception e) {
         LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
@@ -194,24 +150,23 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    // WARNING: check **session** stats, NOT session factory stats.
-    // At minimum this is a race condition across request threads.
     protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        cmsSessionFactory.getStatistics().clear();
+        cmsHibernateBundle.getSessionFactory().getStatistics().clear();
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        nsSessionFactory.getStatistics().clear();
+        nsHibernateBundle.getSessionFactory().getStatistics().clear();
       }
     }
 
     protected void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
+        provideHibernateStatistics(bundleTag,
+            cmsHibernateBundle.getSessionFactory().getStatistics());
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, nsSessionFactory.getStatistics());
+        provideHibernateStatistics(bundleTag,
+            nsHibernateBundle.getSessionFactory().getStatistics());
       }
     }
-
   }
 
   /**
@@ -245,25 +200,32 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      LOGGER.info("XAUnitOfWorkInterceptor: intercept!");
+      BaseAuthorizationDao.setXaMode(true);
+      final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      if (ctx != null) {
+        ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
+      }
+
       proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
           xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        LOGGER.debug("XAUnitOfWorkInterceptor: Before XA annotation");
+        LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
+        BaseAuthorizationDao.setXaMode(true);
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
         aspect.afterEnd();
-        LOGGER.debug("XAUnitOfWorkInterceptor: After XA annotation");
+        LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
-        LOGGER.error("XAUnitOfWorkInterceptor: XA UNIT OF WORK FAILED! {}", e.getMessage(), e);
+        LOGGER.error("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
         LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
+        BaseAuthorizationDao.clearXaMode();
       }
     }
 
@@ -304,7 +266,6 @@ public class ServicesModule extends AbstractModule {
         throw e;
       }
     }
-
   }
 
   private IntakeCodeCache intakeCodeCache;
@@ -325,43 +286,43 @@ public class ServicesModule extends AbstractModule {
     bind(AddressService.class);
     bind(AllegationService.class);
     bind(AssignmentService.class);
-    bind(AuthorizationService.class);
     bind(ClientCollateralService.class);
     bind(ClientRelationshipService.class);
-    bind(ClientTransformer.class);
     bind(CmsDocReferralClientService.class);
     bind(CmsDocumentService.class);
     bind(CmsNSReferralService.class);
     bind(CmsReferralService.class);
-    bind(ContactIntakeApiService.class);
     bind(ContactService.class);
     bind(CrossReportService.class);
-    bind(CsecHistoryService.class);
     bind(DeliveredService.class);
     bind(DeliveredToIndividualService.class);
     bind(DrmsDocumentService.class);
     bind(DrmsDocumentTemplateService.class);
-    bind(GovernmentOrganizationCrossReportService.class);
-    bind(HOICaseService.class);
-    bind(HOIReferralService.class);
-    bind(InvolvementHistoryService.class);
-    bind(LegacyKeyService.class);
     bind(OtherCaseReferralDrmsDocumentService.class);
-    bind(ParticipantDaoFactoryImpl.class);
-    bind(ParticipantMapperFactoryImpl.class);
+    bind(GovernmentOrganizationCrossReportService.class);
+    bind(LegacyKeyService.class);
     bind(PersonService.class);
     bind(ReferralClientService.class);
     bind(ReferralService.class);
     bind(ReporterService.class);
-    bind(ScreeningParticipantService.class);
-    bind(ScreeningRelationshipService.class);
     bind(ScreeningService.class);
     bind(ScreeningSubmitService.class);
     bind(ScreeningToReferral.class);
-    bind(SpecialProjectReferralService.class);
     bind(StaffPersonIdRetriever.class);
     bind(StaffPersonService.class);
     bind(TickleService.class);
+    bind(HOIReferralService.class);
+    bind(InvolvementHistoryService.class);
+    bind(HOICaseService.class);
+    bind(AuthorizationService.class);
+    bind(ScreeningRelationshipService.class);
+    bind(CsecHistoryService.class);
+    bind(ScreeningParticipantService.class);
+    bind(ParticipantDaoFactoryImpl.class);
+    bind(ParticipantMapperFactoryImpl.class);
+    bind(SpecialProjectReferralService.class);
+    bind(ClientTransformer.class);
+    bind(ContactIntakeApiService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();
@@ -403,6 +364,46 @@ public class ServicesModule extends AbstractModule {
   }
 
   /**
+   * Provides SystemCodeCache.
+   * 
+   * @param systemCodeDao
+   * @param systemMetaDao
+   * @param config
+   * @return SystemCodeCache
+   */
+  @Provides
+  public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
+      SystemMetaDao systemMetaDao, ApiConfiguration config) {
+    LOGGER.debug("provide syscode cache");
+    if (systemCodeCache == null) {
+      SystemCodeService systemCodeService =
+          createSystemCodeService(systemCodeDao, systemMetaDao, config);
+      systemCodeCache = (SystemCodeCache) systemCodeService;
+      systemCodeCache.register();
+    }
+    return systemCodeCache;
+  }
+
+  /**
+   * Provides IntakeCodeCache.
+   * 
+   * @param intakeLovDao
+   * @param config
+   * @return IntakeCodeCache
+   */
+  @Provides
+  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
+      ApiConfiguration config) {
+    LOGGER.debug("provide intakeCode cache");
+    if (intakeCodeCache == null) {
+      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
+      intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      intakeCodeCache.register();
+    }
+    return intakeCodeCache;
+  }
+
+  /**
    * @param systemCodeCache - systemCodeCache
    * @return the CmsSystemCodeSerializer
    */
@@ -412,20 +413,12 @@ public class ServicesModule extends AbstractModule {
     return new CmsSystemCodeSerializer(systemCodeCache);
   }
 
-  // ==========================
-  // Code caches:
-  // ==========================
+  //////////////////////////////////////////////////////////////
+  // Private
+  //////////////////////////////////////////////////////////////
 
-  /**
-   * @param systemCodeDao - systemCodeDao
-   * @param systemMetaDao - systemMetaDao
-   * @param config Ferb API configuration
-   * @return the systemCodes
-   */
-  @Provides
-  public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
+  private SystemCodeService createSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
-    LOGGER.debug("provide syscode service");
     SystemCodeService ret;
 
     boolean preLoad = true; // default is true
@@ -453,35 +446,7 @@ public class ServicesModule extends AbstractModule {
     return ret;
   }
 
-  /**
-   * @param systemCodeService - systemCodeService
-   * @return the SystemCodeCache
-   */
-  @Provides
-  public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
-    LOGGER.debug("provide syscode cache");
-    if (systemCodeCache == null) {
-      makeSystemCodeCache(systemCodeService);
-    }
-    return systemCodeCache;
-  }
-
-  public SystemCodeCache makeSystemCodeCache(SystemCodeService systemCodeService) {
-    LOGGER.debug("make syscode cache");
-    if (systemCodeCache == null) {
-      systemCodeCache = (SystemCodeCache) systemCodeService;
-      systemCodeCache.register();
-    }
-    return systemCodeCache;
-  }
-
-  /**
-   * @param intakeLovDao - intakeLovDao
-   * @param config - config
-   * @return the IntakeCode
-   */
-  @Provides
-  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
+  private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
 
@@ -497,26 +462,4 @@ public class ServicesModule extends AbstractModule {
 
     return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
-
-  /**
-   * @param intakeLovService - intakeLovService
-   * @return IntakeCodeCache
-   */
-  @Provides
-  public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
-    LOGGER.debug("provide intakeCode cache");
-    if (intakeCodeCache == null) {
-      makeIntakeLovCodeCache(intakeLovService);
-    }
-    return intakeCodeCache;
-  }
-
-  protected synchronized IntakeCodeCache makeIntakeLovCodeCache(IntakeLovService intakeLovService) {
-    if (intakeCodeCache == null) {
-      final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
-      intakeCodeCache.register();
-    }
-    return intakeCodeCache;
-  }
-
 }

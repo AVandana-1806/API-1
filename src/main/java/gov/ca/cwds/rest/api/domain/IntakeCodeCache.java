@@ -71,4 +71,11 @@ public interface IntakeCodeCache extends ApiMarker {
    */
   String getIntakeCodeForLegacySystemCode(Number systemCodeId);
 
+  /**
+   * Retrieve all intake codes.
+   * 
+   * @return All intake codes.
+   */
+  List<IntakeLov> getAll();
+
 }
