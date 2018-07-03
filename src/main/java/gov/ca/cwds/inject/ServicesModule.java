@@ -375,8 +375,9 @@ public class ServicesModule extends AbstractModule {
   public SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode cache");
+    SystemCodeCache systemCodeCache = null;
     if (systemCodeCache == null) {
-      makeSystemCodeCache(systemCodeDao, systemMetaDao, config);
+      systemCodeCache = makeSystemCodeCache(systemCodeDao, systemMetaDao, config);
     }
     return systemCodeCache;
   }
@@ -392,8 +393,9 @@ public class ServicesModule extends AbstractModule {
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode cache");
+    IntakeCodeCache intakeCodeCache = null;
     if (intakeCodeCache == null) {
-      makeIntakeCodeCache(intakeLovDao, config);
+      intakeCodeCache = makeIntakeCodeCache(intakeLovDao, config);
     }
     return intakeCodeCache;
   }
