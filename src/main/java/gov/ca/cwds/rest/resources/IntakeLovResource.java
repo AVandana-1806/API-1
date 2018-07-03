@@ -1,7 +1,7 @@
 package gov.ca.cwds.rest.resources;
 
-import static gov.ca.cwds.rest.core.Api.DS_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_LOV;
+import static gov.ca.cwds.rest.core.Api.Datasource.NS;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -104,14 +104,15 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @UnitOfWork(value = DS_NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
-      readOnly = true, transactional = false)
+  @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
+      readOnly = true, transactional = true)
   @GET
+  // @Path("/all")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})
-  @ApiOperation(value = "Get Intake list-of-values (LOV)", code = HttpStatus.SC_OK,
-      response = IntakeLovEntry[].class)
+  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
+      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
   public Response getAll() {
     Response ret;
     try {
