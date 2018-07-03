@@ -17,6 +17,7 @@
       <column name="ethnicity" value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
       <column name="sensitive" valueBoolean="false"/>
       <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
     </insert>
     <insert tableName="participants">
       <column name="id" value="42"/>
