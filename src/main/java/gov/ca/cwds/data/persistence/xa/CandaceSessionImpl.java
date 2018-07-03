@@ -59,7 +59,7 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  protected final Session session;
+  protected Session session;
 
   protected CandaceTransactionImpl txn;
 
@@ -89,7 +89,10 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void close() throws HibernateException {
     LOGGER.info("CandaceSessionImpl.close");
-    session.close();
+    if (session != null) {
+      session.close();
+      session = null;
+    }
   }
 
   @Override
