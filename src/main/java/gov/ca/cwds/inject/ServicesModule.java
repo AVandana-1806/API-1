@@ -372,12 +372,14 @@ public class ServicesModule extends AbstractModule {
    * @return SystemCodeCache
    */
   @Provides
-  public SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
+  public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode cache");
-    SystemCodeCache systemCodeCache = null;
     if (systemCodeCache == null) {
-      systemCodeCache = makeSystemCodeCache(systemCodeDao, systemMetaDao, config);
+      SystemCodeService systemCodeService =
+          createSystemCodeService(systemCodeDao, systemMetaDao, config);
+      systemCodeCache = (SystemCodeCache) systemCodeService;
+      systemCodeCache.register();
     }
     return systemCodeCache;
   }
@@ -390,12 +392,13 @@ public class ServicesModule extends AbstractModule {
    * @return IntakeCodeCache
    */
   @Provides
-  public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
+  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode cache");
-    IntakeCodeCache intakeCodeCache = null;
     if (intakeCodeCache == null) {
-      intakeCodeCache = makeIntakeCodeCache(intakeLovDao, config);
+      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
+      intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      intakeCodeCache.register();
     }
     return intakeCodeCache;
   }
@@ -443,17 +446,6 @@ public class ServicesModule extends AbstractModule {
     return ret;
   }
 
-  private synchronized SystemCodeCache makeSystemCodeCache(SystemCodeDao systemCodeDao,
-      SystemMetaDao systemMetaDao, ApiConfiguration config) {
-    if (systemCodeCache == null) {
-      SystemCodeService systemCodeService =
-          createSystemCodeService(systemCodeDao, systemMetaDao, config);
-      systemCodeCache = (SystemCodeCache) systemCodeService;
-      systemCodeCache.register();
-    }
-    return systemCodeCache;
-  }
-
   private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
@@ -470,15 +462,4 @@ public class ServicesModule extends AbstractModule {
 
     return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
-
-  private synchronized IntakeCodeCache makeIntakeCodeCache(IntakeLovDao intakeLovDao,
-      ApiConfiguration config) {
-    if (intakeCodeCache == null) {
-      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
-      intakeCodeCache = (IntakeCodeCache) intakeLovService;
-      intakeCodeCache.register();
-    }
-    return intakeCodeCache;
-  }
-
 }
