@@ -192,7 +192,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.relatedTo = relationships;
   }
 
-  private Short calculatedAge(String birthDate) {
+  public Short calculatedAge(String birthDate) {
     LocalDate currentDate = LocalDate.now();
     LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
     if (dob != null) {
@@ -213,7 +213,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
 
   }
 
-  private String calculatedAgeUnit(String birthDate) {
+  public String calculatedAgeUnit(String birthDate) {
     LocalDate currentDate = LocalDate.now();
     LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
     if (dob != null) {
