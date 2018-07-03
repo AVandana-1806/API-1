@@ -8,8 +8,6 @@ import com.google.inject.name.Named;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import gov.ca.cwds.rest.api.contact.DeliveredServiceDomain;
-import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
-import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.StaffPerson;
 import gov.ca.cwds.rest.api.domain.auth.AuthorizationRequest;
@@ -49,6 +47,7 @@ import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntake;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactReferralRequest;
 import gov.ca.cwds.rest.resources.AddressResource;
 import gov.ca.cwds.rest.resources.ApplicationResource;
+import gov.ca.cwds.rest.resources.IntakeLovResource;
 import gov.ca.cwds.rest.resources.ParticipantIntakeApiResource;
 import gov.ca.cwds.rest.resources.PersonResource;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
@@ -85,7 +84,6 @@ import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResou
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
-import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
@@ -183,6 +181,7 @@ public class ResourcesModule extends AbstractModule {
     bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
     bind(RelationshipFacade.class);
+    bind(IntakeLovResource.class);
   }
 
   @Provides
@@ -396,8 +395,10 @@ public class ResourcesModule extends AbstractModule {
 
   @Provides
   @ParticipantServiceBackedResource
-  public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ParticipantIntakeApiService.class));
+  public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
+      Injector injector) {
+    return new TypedServiceBackedResourceDelegate<>(
+        injector.getInstance(ParticipantIntakeApiService.class));
   }
 
   @Provides
@@ -405,13 +406,6 @@ public class ResourcesModule extends AbstractModule {
   public TypedResourceDelegate<String, Assignment> assignmentServiceBackedResource(
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(injector.getInstance(AssignmentService.class));
-  }
-
-  @Provides
-  @IntakeLovServiceResource
-  public SimpleResourceDelegate<String, IntakeLovEntry, IntakeLovResponse, IntakeLovService> intakeLovResource(
-      Injector injector) {
-    return new SimpleResourceDelegate<>(injector.getInstance(IntakeLovService.class));
   }
 
   @Provides

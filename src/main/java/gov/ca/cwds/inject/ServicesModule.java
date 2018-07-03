@@ -266,8 +266,10 @@ public class ServicesModule extends AbstractModule {
         throw e;
       }
     }
-
   }
+
+  private IntakeCodeCache intakeCodeCache;
+  private SystemCodeCache systemCodeCache;
 
   /**
    * Default, no-op constructor.
@@ -362,15 +364,61 @@ public class ServicesModule extends AbstractModule {
   }
 
   /**
-   * @param systemCodeDao - systemCodeDao
-   * @param systemMetaDao - systemMetaDao
-   * @param config Ferb API configuration
-   * @return the systemCodes
+   * Provides SystemCodeCache.
+   * 
+   * @param systemCodeDao
+   * @param systemMetaDao
+   * @param config
+   * @return SystemCodeCache
    */
   @Provides
-  public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
+  public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
-    LOGGER.debug("provide syscode service");
+    LOGGER.debug("provide syscode cache");
+    if (systemCodeCache == null) {
+      SystemCodeService systemCodeService =
+          createSystemCodeService(systemCodeDao, systemMetaDao, config);
+      systemCodeCache = (SystemCodeCache) systemCodeService;
+      systemCodeCache.register();
+    }
+    return systemCodeCache;
+  }
+
+  /**
+   * Provides IntakeCodeCache.
+   * 
+   * @param intakeLovDao
+   * @param config
+   * @return IntakeCodeCache
+   */
+  @Provides
+  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
+      ApiConfiguration config) {
+    LOGGER.debug("provide intakeCode cache");
+    if (intakeCodeCache == null) {
+      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
+      intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      intakeCodeCache.register();
+    }
+    return intakeCodeCache;
+  }
+
+  /**
+   * @param systemCodeCache - systemCodeCache
+   * @return the CmsSystemCodeSerializer
+   */
+  @Provides
+  public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
+    LOGGER.debug("provide syscode serializer");
+    return new CmsSystemCodeSerializer(systemCodeCache);
+  }
+
+  //////////////////////////////////////////////////////////////
+  // Private
+  //////////////////////////////////////////////////////////////
+
+  private SystemCodeService createSystemCodeService(SystemCodeDao systemCodeDao,
+      SystemMetaDao systemMetaDao, ApiConfiguration config) {
     SystemCodeService ret;
 
     boolean preLoad = true; // default is true
@@ -398,25 +446,7 @@ public class ServicesModule extends AbstractModule {
     return ret;
   }
 
-  /**
-   * @param systemCodeService - systemCodeService
-   * @return the SystemCodeCache
-   */
-  @Provides
-  public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
-    LOGGER.debug("provide syscode cache");
-    final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
-    systemCodeCache.register();
-    return systemCodeCache;
-  }
-
-  /**
-   * @param intakeLovDao - intakeLovDao
-   * @param config - config
-   * @return the IntakeCode
-   */
-  @Provides
-  public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
+  private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
 
@@ -432,27 +462,4 @@ public class ServicesModule extends AbstractModule {
 
     return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
-
-  /**
-   * @param intakeLovService - intakeLovService
-   * @return IntakeCodeCache
-   */
-  @Provides
-  public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
-    LOGGER.debug("provide intakeCode cache");
-    final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
-    intakeCodeCache.register();
-    return intakeCodeCache;
-  }
-
-  /**
-   * @param systemCodeCache - systemCodeCache
-   * @return the CmsSystemCodeSerializer
-   */
-  @Provides
-  public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
-    LOGGER.debug("provide syscode serializer");
-    return new CmsSystemCodeSerializer(systemCodeCache);
-  }
-
 }
