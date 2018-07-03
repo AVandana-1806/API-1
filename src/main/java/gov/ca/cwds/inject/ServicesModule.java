@@ -194,7 +194,7 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    // WARNING: check **session** stats, not session factory stats.
+    // WARNING: check **session** stats, NOT session factory stats.
     // At minimum this is a race condition across request threads.
     protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
