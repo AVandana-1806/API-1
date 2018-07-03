@@ -89,7 +89,6 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
-import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.hibernate.UnitOfWorkAspect;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
@@ -112,14 +111,6 @@ public class ServicesModule extends AbstractModule {
   public static class UnitOfWorkInterceptor implements org.aopalliance.intercept.MethodInterceptor {
 
     UnitOfWorkAwareProxyFactory proxyFactory;
-
-    @Inject
-    @CmsHibernateBundle
-    HibernateBundle<ApiConfiguration> cmsHibernateBundle;
-
-    @Inject
-    @NsHibernateBundle
-    HibernateBundle<ApiConfiguration> nsHibernateBundle;
 
     @Inject
     @CmsSessionFactory
@@ -191,21 +182,20 @@ public class ServicesModule extends AbstractModule {
 
     protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        cmsHibernateBundle.getSessionFactory().getStatistics().clear();
+        cmsSessionFactory.getStatistics().clear();
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        nsHibernateBundle.getSessionFactory().getStatistics().clear();
+        nsSessionFactory.getStatistics().clear();
       }
     }
 
     protected void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag,
-            cmsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag,
-            nsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
       }
     }
+
   }
 
   /**
@@ -394,6 +384,20 @@ public class ServicesModule extends AbstractModule {
   }
 
   /**
+   * @param systemCodeCache - systemCodeCache
+   * @return the CmsSystemCodeSerializer
+   */
+  @Provides
+  public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
+    LOGGER.debug("provide syscode serializer");
+    return new CmsSystemCodeSerializer(systemCodeCache);
+  }
+
+  // ==========================
+  // Code caches:
+  // ==========================
+
+  /**
    * @param systemCodeDao - systemCodeDao
    * @param systemMetaDao - systemMetaDao
    * @param config Ferb API configuration
@@ -479,16 +483,6 @@ public class ServicesModule extends AbstractModule {
     final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
     intakeCodeCache.register();
     return intakeCodeCache;
-  }
-
-  /**
-   * @param systemCodeCache - systemCodeCache
-   * @return the CmsSystemCodeSerializer
-   */
-  @Provides
-  public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
-    LOGGER.debug("provide syscode serializer");
-    return new CmsSystemCodeSerializer(systemCodeCache);
   }
 
 }
