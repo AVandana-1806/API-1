@@ -15,6 +15,8 @@ public class RelationshipToEntityBuilder {
   protected String relationshipToPerson = "Sister";
   protected String relationshipContext = "step";
   protected String relatedDateOfBirth = "2000-10-01";
+  protected Short relatedAge = 17;
+  protected String relatedAgeUnit = "Y";
   protected String relatedDateOfDeath = "2001-10-01";
   protected String relationshipStartDate = "2000-10-01";
   protected String relationshipEndDate = "2001-10-01";
@@ -26,9 +28,9 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipTo build() {
     return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
-        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate,
-        relationshipEndDate, absentParentCode, sameHomeCode, relationship, relationshipContext,
-        relationshipToPerson, cmsRecordDescriptor);
+        relatedGenderCode, relatedDateOfBirth, relatedAge, relatedAgeUnit, relatedDateOfDeath,
+        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
+        relationshipContext, relationshipToPerson, cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {

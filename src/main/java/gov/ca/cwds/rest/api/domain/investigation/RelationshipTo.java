@@ -1,10 +1,13 @@
 package gov.ca.cwds.rest.api.domain.investigation;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
@@ -31,9 +34,10 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 @JsonPropertyOrder({"related_person_first_name", "related_person_last_name",
     "related_person_name_suffix", "related_person_gender", "related_person_date_of_birth",
-    "related_person_date_of_death", "relationship_start_date", "relationship_end_date",
-    "absent_parent_code", "same_home_code", "relationship_context", "indexed_person_relationship",
-    "related_person_relationship", "legacy_description"})
+    "related_person_age", "related_person_age_unit", "related_person_date_of_death",
+    "relationship_start_date", "relationship_end_date", "absent_parent_code", "same_home_code",
+    "relationship_context", "indexed_person_relationship", "related_person_relationship",
+    "legacy_description"})
 public final class RelationshipTo implements Serializable {
 
   /**
@@ -70,6 +74,17 @@ public final class RelationshipTo implements Serializable {
   @ApiModelProperty(required = false, readOnly = false, value = "date of birth",
       example = "1999-10-01")
   private String relatedDateOfBirth;
+
+  @JsonProperty("related_person_age")
+  @ApiModelProperty(required = false, readOnly = false, example = "12")
+  private Short relatedAge;
+
+  @JsonProperty("related_person_age_unit")
+  @NotNull
+  @Size(max = 1)
+  @ApiModelProperty(required = true, readOnly = false, value = "Age Unit", example = "M")
+  @OneOf(value = {"Y", "M", "D"}, ignoreCase = false, ignoreWhitespace = true)
+  private String relatedAgeUnit;
 
   @JsonProperty("related_person_date_of_death")
   @gov.ca.cwds.rest.validation.Date(format = gov.ca.cwds.rest.api.domain.DomainObject.DATE_FORMAT,
@@ -148,7 +163,8 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth,
+      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, Short relatedAge,
+      String relatedAgeUnit,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
@@ -161,6 +177,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedNameSuffix = relatedNameSuffix;
     this.relatedGender = relatedGender;
     this.relatedDateOfBirth = relatedDateOfBirth;
+    this.relatedAge = calculatedAge(relatedDateOfBirth);
+    this.relatedAgeUnit = calculatedAgeUnit(relatedDateOfBirth);
     this.relatedDateOfDeath = relatedDateOfDeath;
     this.relationshipStartDate = relationshipStartDate;
     this.relationshipEndDate = relationshipEndDate;
@@ -190,15 +208,17 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth,
+      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, Short relatedAge,
+      String relatedAgeUnit,
       @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship, String clientId) {
     this(relatedFirstName, relatedLastName, relatedNameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
-        sameHomeCode, relationshipToPerson, relationshipContext, relatedPersonRelationship,
+        relatedAge, relatedAgeUnit, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
+        absentParentCode, sameHomeCode, relationshipToPerson, relationshipContext,
+        relatedPersonRelationship,
         CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
@@ -214,6 +234,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedNameSuffix = client.getNameSuffix();
     this.relatedGender = client.getGender();
     this.relatedDateOfBirth = DomainChef.cookDate(client.getBirthDate());
+    this.relatedAge = calculatedAge(relatedDateOfBirth);
+    this.relatedAgeUnit = calculatedAgeUnit(relatedDateOfBirth);
     this.relatedDateOfDeath = DomainChef.cookDate(client.getDeathDate());
     this.relationshipStartDate = DomainChef.cookDate(clientRelationship.getStartDate());
     this.relationshipEndDate = DomainChef.cookDate(clientRelationship.getEndDate());
@@ -224,6 +246,48 @@ public final class RelationshipTo implements Serializable {
     this.sameHomeCode = clientRelationship.getSameHomeCode();
     this.cmsRecordDescriptor = CmsRecordUtils.createLegacyDescriptor(clientRelationship.getId(),
         LegacyTable.CLIENT_RELATIONSHIP);
+  }
+
+  private Short calculatedAge(String birthDate) {
+    LocalDate currentDate = LocalDate.now();
+    LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
+    if (dob != null) {
+      int ageInYears = Period.between(dob, currentDate).getYears();
+      if (ageInYears > 0)
+        return (short) ageInYears;
+      else {
+        int ageInMonths = Period.between(dob, currentDate).getMonths();
+        if (ageInMonths > 0)
+          return (short) ageInMonths;
+        else {
+          return (short) Period.between(dob, currentDate).getDays();
+        }
+      }
+    } else {
+      return 0;
+    }
+
+  }
+
+  private String calculatedAgeUnit(String birthDate) {
+    LocalDate currentDate = LocalDate.now();
+    LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
+    if (dob != null) {
+      int ageInYears = Period.between(dob, currentDate).getYears();
+      if (ageInYears > 0)
+        return "Y";
+      else {
+        int ageInMonths = Period.between(dob, currentDate).getMonths();
+        if (ageInMonths > 0)
+          return "M";
+        else {
+          return "D";
+        }
+      }
+    } else {
+      return "";
+    }
+
   }
 
   /**
@@ -293,6 +357,14 @@ public final class RelationshipTo implements Serializable {
    */
   public String getrelatedDateOfBirth() {
     return relatedDateOfBirth;
+  }
+
+
+  /**
+   * @return the relatedAge
+   */
+  public Short getRelatedAge() {
+    return relatedAge;
   }
 
   /**
