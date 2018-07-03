@@ -41,6 +41,7 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,11 @@ public class CandaceSessionImpl implements Session {
   public Transaction beginTransaction() {
     LOGGER.info("CandaceSessionImpl.beginTransaction: XA: {}",
         CandaceSessionFactoryImpl.isXaTransaction());
-    this.txn = new CandaceTransactionImpl(session.beginTransaction());
+
+    if (txn == null || txn.getStatus() != TransactionStatus.ACTIVE) {
+      this.txn = new CandaceTransactionImpl(session.beginTransaction());
+    }
+
     return txn;
   }
 
