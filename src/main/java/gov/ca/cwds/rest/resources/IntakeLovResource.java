@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DS_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_LOV;
 
 import javax.ws.rs.Consumes;
@@ -15,13 +16,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.IntakeLovServiceResource;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
 import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.es.ESPersons;
 import gov.ca.cwds.rest.services.IntakeLovService;
+import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -101,9 +102,8 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @XAUnitOfWork
+  @UnitOfWork(DS_NS)
   @GET
-  // @Path("/all")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})

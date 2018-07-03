@@ -260,6 +260,8 @@ logging:
       level: ${LOGLEVEL_HIBERNATE_INTERCEPTOR:-DEBUG}
     "com.atomikos.jdbc":
       level: ${LOGLEVEL_XA_TRANSACTION:-DEBUG}
+    "org.eclipse.jetty":
+      level: ${LOGLEVEL_JETTY:-DEBUG}
     "io.dropwizard.server":
       level: INFO
     "io.dropwizard.jersey.DropwizardResourceConfig":
