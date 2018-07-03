@@ -141,8 +141,6 @@ public final class RelationshipTo implements Serializable {
     super();
   }
 
-  Relationship getAge = new Relationship();
-
   /**
    * @param relatedFirstName - related person's first name
    * @param relatedLastName - related person's last name
@@ -176,8 +174,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedNameSuffix = relatedNameSuffix;
     this.relatedGender = relatedGender;
     this.relatedDateOfBirth = relatedDateOfBirth;
-    this.relatedAge = getAge.calculatedAge(relatedDateOfBirth);
-    this.relatedAgeUnit = getAge.calculatedAgeUnit(relatedDateOfBirth);
+    this.relatedAge = Relationship.calculatedAge(relatedDateOfBirth);
+    this.relatedAgeUnit = Relationship.calculatedAgeUnit(relatedDateOfBirth);
     this.relatedDateOfDeath = relatedDateOfDeath;
     this.relationshipStartDate = relationshipStartDate;
     this.relationshipEndDate = relationshipEndDate;
@@ -233,8 +231,8 @@ public final class RelationshipTo implements Serializable {
     this.relatedNameSuffix = client.getNameSuffix();
     this.relatedGender = client.getGender();
     this.relatedDateOfBirth = DomainChef.cookDate(client.getBirthDate());
-    this.relatedAge = getAge.calculatedAge(relatedDateOfBirth);
-    this.relatedAgeUnit = getAge.calculatedAgeUnit(relatedDateOfBirth);
+    this.relatedAge = Relationship.calculatedAge(relatedDateOfBirth);
+    this.relatedAgeUnit = Relationship.calculatedAgeUnit(relatedDateOfBirth);
     this.relatedDateOfDeath = DomainChef.cookDate(client.getDeathDate());
     this.relationshipStartDate = DomainChef.cookDate(clientRelationship.getStartDate());
     this.relationshipEndDate = DomainChef.cookDate(clientRelationship.getEndDate());
