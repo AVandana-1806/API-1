@@ -128,6 +128,19 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
     return intakeCode;
   }
 
+  @Override
+  public List<IntakeLov> getAll() {
+    List<IntakeLov> ret = new ArrayList<>();
+    Map<CacheKey, Object> intakeLovs = intakeCodeCache.asMap();
+
+    for (CacheKey key : intakeLovs.keySet()) {
+      if (CacheKey.SYSTEM_CODE_ID_TYPE.equals(key.getType())) {
+        ret.add((IntakeLov) intakeLovs.get(key));
+      }
+    }
+    return ret;
+  }
+
   /**
    * Get cached object identified by given cache key.
    * 
@@ -217,8 +230,8 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
 
     private static final long serialVersionUID = 1L;
 
-    private static final String META_ID_TYPE = "META_ID";
-    private static final String SYSTEM_CODE_ID_TYPE = "SYSTEM_CODE_ID";
+    static final String META_ID_TYPE = "META_ID";
+    static final String SYSTEM_CODE_ID_TYPE = "SYSTEM_CODE_ID";
 
     private Serializable value;
     private String type;
