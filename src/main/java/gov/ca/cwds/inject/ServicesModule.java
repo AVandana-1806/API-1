@@ -452,11 +452,20 @@ public class ServicesModule extends AbstractModule {
    * @return the SystemCodeCache
    */
   @Provides
-  // @Singleton
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
-    final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
-    systemCodeCache.register();
+    if (systemCodeCache == null) {
+      makeSystemCodeCache(systemCodeService);
+    }
+    return systemCodeCache;
+  }
+
+  public SystemCodeCache makeSystemCodeCache(SystemCodeService systemCodeService) {
+    LOGGER.debug("make syscode cache");
+    if (systemCodeCache == null) {
+      systemCodeCache = (SystemCodeCache) systemCodeService;
+      systemCodeCache.register();
+    }
     return systemCodeCache;
   }
 
@@ -466,7 +475,6 @@ public class ServicesModule extends AbstractModule {
    * @return the IntakeCode
    */
   @Provides
-  // @Singleton
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
@@ -491,11 +499,9 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
-
     if (intakeCodeCache == null) {
       makeIntakeLovCodeCache(intakeLovService);
     }
-
     return intakeCodeCache;
   }
 
