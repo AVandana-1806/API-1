@@ -125,7 +125,6 @@ public class ServicesModule extends AbstractModule {
     @NsSessionFactory
     SessionFactory nsSessionFactory;
 
-    @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
       final Method m = mi.getMethod();
@@ -140,7 +139,7 @@ public class ServicesModule extends AbstractModule {
         return mi.proceed();
       }
 
-      // Use our wrapped session factories.
+      // Use our wrapped (Candace) session factories and related wrappers.
       final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
       final String name = annotation.value().trim();
       SessionFactory currentSessionFactory;

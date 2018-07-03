@@ -169,8 +169,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Get the current Hibernate session, if open, or open a new session.
    * 
    * <p>
-   * For DB2 sessions, this method calls {@link WorkFerbUserInfo} to populate user information fields
-   * on the JDBC connection.
+   * For DB2 sessions, this method calls {@link WorkFerbUserInfo} to populate user information
+   * fields on the JDBC connection.
    * </p>
    * 
    * @param key datasource name
@@ -238,6 +238,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       try {
         session.flush();
         session.clear();
+      } catch (javax.persistence.TransactionRequiredException tre) {
+        LOGGER.debug("No transaction to flush session. All good.");
       } catch (Exception e) {
         LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
       }

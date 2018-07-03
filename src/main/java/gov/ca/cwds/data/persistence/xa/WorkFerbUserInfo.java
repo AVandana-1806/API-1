@@ -35,6 +35,7 @@ public class WorkFerbUserInfo implements Work {
   public static final String SERVER_IP_ADDRESS;
   public static final String SERVER_IP_NAME;
 
+  // Find host and IP address up front.
   static {
     String hostAddress = null;
     String hostName = null;
@@ -44,7 +45,7 @@ public class WorkFerbUserInfo implements Work {
       hostName = i.getHostName();
       LOGGER.info("Host name: {}, IP address: {}", hostAddress, hostName);
     } catch (Exception e) {
-      LOGGER.error("UNABLE TO FIND HOST IP! {}", e.getMessage(), e);
+      LOGGER.error("FAILED TO FIND HOST IP! {}", e.getMessage(), e);
       if (StringUtils.isBlank(hostAddress)) {
         hostAddress = "Ferb unknown";
       }
