@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
@@ -284,43 +285,43 @@ public class ServicesModule extends AbstractModule {
     bind(AddressService.class);
     bind(AllegationService.class);
     bind(AssignmentService.class);
+    bind(AuthorizationService.class);
     bind(ClientCollateralService.class);
     bind(ClientRelationshipService.class);
+    bind(ClientTransformer.class);
     bind(CmsDocReferralClientService.class);
     bind(CmsDocumentService.class);
     bind(CmsNSReferralService.class);
     bind(CmsReferralService.class);
+    bind(ContactIntakeApiService.class);
     bind(ContactService.class);
     bind(CrossReportService.class);
+    bind(CsecHistoryService.class);
     bind(DeliveredService.class);
     bind(DeliveredToIndividualService.class);
     bind(DrmsDocumentService.class);
     bind(DrmsDocumentTemplateService.class);
-    bind(OtherCaseReferralDrmsDocumentService.class);
     bind(GovernmentOrganizationCrossReportService.class);
+    bind(HOICaseService.class);
+    bind(HOIReferralService.class);
+    bind(InvolvementHistoryService.class);
     bind(LegacyKeyService.class);
+    bind(OtherCaseReferralDrmsDocumentService.class);
+    bind(ParticipantDaoFactoryImpl.class);
+    bind(ParticipantMapperFactoryImpl.class);
     bind(PersonService.class);
     bind(ReferralClientService.class);
     bind(ReferralService.class);
     bind(ReporterService.class);
+    bind(ScreeningParticipantService.class);
+    bind(ScreeningRelationshipService.class);
     bind(ScreeningService.class);
     bind(ScreeningSubmitService.class);
     bind(ScreeningToReferral.class);
+    bind(SpecialProjectReferralService.class);
     bind(StaffPersonIdRetriever.class);
     bind(StaffPersonService.class);
     bind(TickleService.class);
-    bind(HOIReferralService.class);
-    bind(InvolvementHistoryService.class);
-    bind(HOICaseService.class);
-    bind(AuthorizationService.class);
-    bind(ScreeningRelationshipService.class);
-    bind(CsecHistoryService.class);
-    bind(ScreeningParticipantService.class);
-    bind(ParticipantDaoFactoryImpl.class);
-    bind(ParticipantMapperFactoryImpl.class);
-    bind(SpecialProjectReferralService.class);
-    bind(ClientTransformer.class);
-    bind(ContactIntakeApiService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();
@@ -368,6 +369,7 @@ public class ServicesModule extends AbstractModule {
    * @return the systemCodes
    */
   @Provides
+  @Singleton
   public synchronized SystemCodeService provideSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
     LOGGER.debug("provide syscode service");
@@ -403,6 +405,7 @@ public class ServicesModule extends AbstractModule {
    * @return the SystemCodeCache
    */
   @Provides
+  @Singleton
   public SystemCodeCache provideSystemCodeCache(SystemCodeService systemCodeService) {
     LOGGER.debug("provide syscode cache");
     final SystemCodeCache systemCodeCache = (SystemCodeCache) systemCodeService;
@@ -416,6 +419,7 @@ public class ServicesModule extends AbstractModule {
    * @return the IntakeCode
    */
   @Provides
+  @Singleton
   public IntakeLovService provideIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
     LOGGER.debug("provide intakeCode service");
@@ -438,6 +442,7 @@ public class ServicesModule extends AbstractModule {
    * @return IntakeCodeCache
    */
   @Provides
+  @Singleton
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
     final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
