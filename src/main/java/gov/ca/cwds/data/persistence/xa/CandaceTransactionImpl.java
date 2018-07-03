@@ -81,16 +81,19 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void setTimeout(int seconds) {
+    LOGGER.debug("*** CandaceTransactionImpl.setTimeout ***");
     txn.setTimeout(seconds);
   }
 
   @Override
   public boolean isActive() {
+    LOGGER.debug("*** CandaceTransactionImpl.isActive ***");
     return txn.isActive();
   }
 
   @Override
   public int getTimeout() {
+    LOGGER.debug("*** CandaceTransactionImpl.getTimeout ***");
     return txn.getTimeout();
   }
 
@@ -98,6 +101,12 @@ public class CandaceTransactionImpl implements Transaction {
   public void markRollbackOnly() {
     LOGGER.info("*** CandaceTransactionImpl.markRollbackOnly ***");
     txn.markRollbackOnly();
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    LOGGER.warn("*** CandaceTransactionImpl.finalize ***");
+    super.finalize();
   }
 
 }

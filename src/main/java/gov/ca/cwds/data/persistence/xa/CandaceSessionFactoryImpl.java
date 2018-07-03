@@ -88,6 +88,11 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.xaHibernateBundle = xaHibernateBundle;
   }
 
+  /**
+   * Is this request currently in an XA transaction?
+   * 
+   * @return true = request is using XA
+   */
   public static boolean isXaTransaction() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
     return ctx != null && ctx.isXaTransaction();
@@ -183,7 +188,15 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Session openSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.openSession");
-    return new CandaceSessionImpl(pick().openSession());
+
+    CandaceSessionImpl session = local.get();
+    if (session == null) {
+      LOGGER.info("CandaceSessionFactoryImpl.openSession: opening a new session");
+      session = new CandaceSessionImpl(pick().openSession());
+      local.set(session);
+    }
+
+    return session;
   }
 
   @Override
@@ -199,7 +212,14 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Session getCurrentSession() throws HibernateException {
     LOGGER.debug("CandaceSessionFactoryImpl.getCurrentSession");
-    return new CandaceSessionImpl(pick().getCurrentSession());
+
+    Session session = local.get();
+    if (session == null) {
+      LOGGER.info("CandaceSessionFactoryImpl.getCurrentSession: opening a new session");
+      session = openSession();
+    }
+
+    return session;
   }
 
   @Override
@@ -214,13 +234,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSession openStatelessSession() {
-    LOGGER.debug("CandaceSessionFactoryImpl.openStatelessSession");
+    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession");
     return pick().openStatelessSession();
   }
 
   @Override
   public StatelessSession openStatelessSession(Connection connection) {
-    LOGGER.debug("CandaceSessionFactoryImpl.openStatelessSession(con)");
+    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession(con)");
     return pick().openStatelessSession(connection);
   }
 
@@ -262,10 +282,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.warn("\n\t******** CandaceSessionFactoryImpl.close ********\n");
-    CaresStackUtils.logStack();
+    LOGGER.info("******** CandaceSessionFactoryImpl.close ********");
     local.set(null);
     pick().close();
+    CaresStackUtils.logStack();
   }
 
   @Override

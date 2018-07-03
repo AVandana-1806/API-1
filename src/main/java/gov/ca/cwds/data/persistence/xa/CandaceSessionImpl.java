@@ -121,7 +121,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
   public Query createNamedQuery(String name) {
     return session.createNamedQuery(name);
   }
@@ -604,7 +603,6 @@ public class CandaceSessionImpl implements Session {
     session.joinTransaction();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
     return session.byMultipleIds(entityName);

@@ -11,6 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +104,8 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @UnitOfWork(DS_NS)
+  @UnitOfWork(value = DS_NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
+      readOnly = true, transactional = false)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
