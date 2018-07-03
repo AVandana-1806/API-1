@@ -300,6 +300,9 @@ public class ServicesModule extends AbstractModule {
 
   }
 
+  private IntakeCodeCache intakeCodeCache;
+  private SystemCodeCache systemCodeCache;
+
   /**
    * Default, no-op constructor.
    */
@@ -486,11 +489,21 @@ public class ServicesModule extends AbstractModule {
    * @return IntakeCodeCache
    */
   @Provides
-  // @Singleton
   public IntakeCodeCache provideIntakeLovCodeCache(IntakeLovService intakeLovService) {
     LOGGER.debug("provide intakeCode cache");
-    final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
-    intakeCodeCache.register();
+
+    if (intakeCodeCache == null) {
+      makeIntakeLovCodeCache(intakeLovService);
+    }
+
+    return intakeCodeCache;
+  }
+
+  protected synchronized IntakeCodeCache makeIntakeLovCodeCache(IntakeLovService intakeLovService) {
+    if (intakeCodeCache == null) {
+      final IntakeCodeCache intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      intakeCodeCache.register();
+    }
     return intakeCodeCache;
   }
 

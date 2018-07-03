@@ -39,21 +39,21 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void begin() {
-    LOGGER.info("*** CandaceTransactionImpl.begin ***");
+    LOGGER.info("CandaceTransactionImpl.begin");
     CaresStackUtils.logStack();
     txn.begin();
   }
 
   @Override
   public void commit() {
-    LOGGER.info("*** CandaceTransactionImpl.commit ***");
+    LOGGER.info("CandaceTransactionImpl.commit");
     CaresStackUtils.logStack();
     txn.commit();
   }
 
   @Override
   public void rollback() {
-    LOGGER.info("*** CandaceTransactionImpl.rollback ***");
+    LOGGER.info("CandaceTransactionImpl.rollback");
     CaresStackUtils.logStack();
     txn.rollback();
   }
@@ -65,7 +65,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void setRollbackOnly() {
-    LOGGER.info("*** CandaceTransactionImpl.setRollbackOnly ***");
+    LOGGER.info("CandaceTransactionImpl.setRollbackOnly");
     txn.setRollbackOnly();
   }
 
@@ -87,25 +87,25 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public boolean isActive() {
-    LOGGER.debug("*** CandaceTransactionImpl.isActive ***");
+    LOGGER.trace("CandaceTransactionImpl.isActive");
     return txn.isActive();
   }
 
   @Override
   public int getTimeout() {
-    LOGGER.debug("*** CandaceTransactionImpl.getTimeout ***");
+    LOGGER.debug("CandaceTransactionImpl.getTimeout");
     return txn.getTimeout();
   }
 
   @Override
   public void markRollbackOnly() {
-    LOGGER.info("*** CandaceTransactionImpl.markRollbackOnly ***");
+    LOGGER.info("CandaceTransactionImpl.markRollbackOnly");
     txn.markRollbackOnly();
   }
 
   @Override
   protected void finalize() throws Throwable {
-    LOGGER.info("*** CandaceTransactionImpl.finalize ***");
+    LOGGER.info("CandaceTransactionImpl.finalize");
     super.finalize();
   }
 
