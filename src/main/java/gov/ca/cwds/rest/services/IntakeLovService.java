@@ -53,7 +53,7 @@ public class IntakeLovService
   }
 
   /**
-   * @return All intake lovs
+   * @return All intake LOV's
    */
   protected List<IntakeLov> loadAll() {
     return intakeLovDao.findAll();
