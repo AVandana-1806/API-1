@@ -11,10 +11,12 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
@@ -40,6 +42,7 @@ import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
@@ -86,7 +89,6 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
-import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.hibernate.UnitOfWorkAspect;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
@@ -111,35 +113,77 @@ public class ServicesModule extends AbstractModule {
     UnitOfWorkAwareProxyFactory proxyFactory;
 
     @Inject
-    @CmsHibernateBundle
-    HibernateBundle<ApiConfiguration> cmsHibernateBundle;
+    @CmsSessionFactory
+    SessionFactory cmsSessionFactory;
 
     @Inject
-    @NsHibernateBundle
-    HibernateBundle<ApiConfiguration> nsHibernateBundle;
+    @CwsRsSessionFactory
+    SessionFactory rsSessionFactory;
+
+    @Inject
+    @NsSessionFactory
+    SessionFactory nsSessionFactory;
 
     @SuppressWarnings("unchecked")
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
+      final Method m = mi.getMethod();
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
+          m.getName());
+
+      // If already in an XA transaction, skip this @UnitOfWork.
       if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-        final Method m = mi.getMethod();
-        LOGGER.warn("******* XA TRANSACTION: IGNORE @UnitOfWork. class: {}, method: {}******* ",
+        LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
             m.getDeclaringClass(), m.getName());
         return mi.proceed();
       }
 
-      proxyFactory =
-          UnitOfWorkModule.getUnitOfWorkProxyFactory(cmsHibernateBundle, nsHibernateBundle);
-      final UnitOfWorkAspect aspect = proxyFactory.newAspect();
+      // Use our wrapped session factories.
+      final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
+      final String name = annotation.value().trim();
+      SessionFactory currentSessionFactory;
+
+      // Find the right session factory.
+      switch (name) {
+        case Api.DS_CMS:
+          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
+          currentSessionFactory = cmsSessionFactory;
+          break;
+
+        case Api.DATASOURCE_CMS_REP:
+          proxyFactory =
+              UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DATASOURCE_CMS_REP, rsSessionFactory);
+          currentSessionFactory = rsSessionFactory;
+          break;
+
+        case Api.DS_NS:
+          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
+          currentSessionFactory = nsSessionFactory;
+          break;
+
+        default:
+          throw new IllegalStateException("Unknown datasource! " + annotation.value());
+      }
+
+      // Build the aspect with our wrapped session factory, not a hibernate bundle:
+      final UnitOfWorkAspect aspect =
+          proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
+
       try {
+        // Not XA, so clear XA flags.
         BaseAuthorizationDao.clearXaMode();
-        final UnitOfWork unitOfWorkAnnotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-        aspect.beforeStart(unitOfWorkAnnotation);
-        clearHibernateStatistics(unitOfWorkAnnotation.value());
+        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+
+        aspect.beforeStart(annotation);
+        final Session session = currentSessionFactory.getCurrentSession();
+
+        // clearHibernateStatistics(annotation.value());
         final Object result = mi.proceed();
-        collectAndProvideHibernateStatistics(unitOfWorkAnnotation.value());
+        // collectAndProvideHibernateStatistics(annotation.value());
         aspect.afterEnd();
+
+        LOGGER.info("session stats: {}", session.getStatistics());
         return result;
       } catch (Exception e) {
         LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
@@ -150,23 +194,24 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
+    // WARNING: check **session** stats, not session factory stats.
+    // At minimum this is a race condition across request threads.
     protected void clearHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        cmsHibernateBundle.getSessionFactory().getStatistics().clear();
+        cmsSessionFactory.getStatistics().clear();
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        nsHibernateBundle.getSessionFactory().getStatistics().clear();
+        nsSessionFactory.getStatistics().clear();
       }
     }
 
     protected void collectAndProvideHibernateStatistics(String bundleTag) {
       if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag,
-            cmsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
       } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag,
-            nsHibernateBundle.getSessionFactory().getStatistics());
+        provideHibernateStatistics(bundleTag, nsSessionFactory.getStatistics());
       }
     }
+
   }
 
   /**
@@ -200,32 +245,25 @@ public class ServicesModule extends AbstractModule {
 
     @Override
     public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      BaseAuthorizationDao.setXaMode(true);
-      final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      if (ctx != null) {
-        ctx.put(Parameter.XA_TRANSACTION, Boolean.TRUE);
-      }
-
+      LOGGER.info("XAUnitOfWorkInterceptor: intercept!");
       proxyFactory = UnitOfWorkModule.getXAUnitOfWorkProxyFactory(xaCmsHibernateBundle,
           xaNsHibernateBundle, xaCmsRsHibernateBundle);
       final XAUnitOfWorkAspect aspect = proxyFactory.newAspect();
       try {
-        LOGGER.info("XAUnitOfWorkInterceptor: Before XA annotation");
-        BaseAuthorizationDao.setXaMode(true);
+        LOGGER.debug("XAUnitOfWorkInterceptor: Before XA annotation");
         final Method method = mi.getMethod();
         aspect.beforeStart(method, method.getAnnotation(XAUnitOfWork.class));
         final Object result = mi.proceed();
         aspect.afterEnd();
-        LOGGER.info("XAUnitOfWorkInterceptor: After XA annotation");
+        LOGGER.debug("XAUnitOfWorkInterceptor: After XA annotation");
         return result;
       } catch (Exception e) {
-        LOGGER.error("XAUnitOfWorkInterceptor: BOOM! {}", e.getMessage(), e);
+        LOGGER.error("XAUnitOfWorkInterceptor: XA UNIT OF WORK FAILED! {}", e.getMessage(), e);
         aspect.onError();
         throw e;
       } finally {
         LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
-        BaseAuthorizationDao.clearXaMode();
       }
     }
 
@@ -266,6 +304,7 @@ public class ServicesModule extends AbstractModule {
         throw e;
       }
     }
+
   }
 
   private IntakeCodeCache intakeCodeCache;
@@ -280,49 +319,48 @@ public class ServicesModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(gov.ca.cwds.rest.services.cms.AddressService.class);
-    bind(gov.ca.cwds.rest.services.StaffPersonService.class);
-
     bind(AddressService.class);
     bind(AllegationService.class);
     bind(AssignmentService.class);
+    bind(AuthorizationService.class);
     bind(ClientCollateralService.class);
     bind(ClientRelationshipService.class);
+    bind(ClientTransformer.class);
     bind(CmsDocReferralClientService.class);
     bind(CmsDocumentService.class);
     bind(CmsNSReferralService.class);
     bind(CmsReferralService.class);
+    bind(ContactIntakeApiService.class);
     bind(ContactService.class);
     bind(CrossReportService.class);
+    bind(CsecHistoryService.class);
     bind(DeliveredService.class);
     bind(DeliveredToIndividualService.class);
     bind(DrmsDocumentService.class);
     bind(DrmsDocumentTemplateService.class);
-    bind(OtherCaseReferralDrmsDocumentService.class);
+    bind(gov.ca.cwds.rest.services.cms.AddressService.class);
+    bind(gov.ca.cwds.rest.services.StaffPersonService.class);
     bind(GovernmentOrganizationCrossReportService.class);
+    bind(HOICaseService.class);
+    bind(HOIReferralService.class);
+    bind(InvolvementHistoryService.class);
     bind(LegacyKeyService.class);
+    bind(OtherCaseReferralDrmsDocumentService.class);
+    bind(ParticipantDaoFactoryImpl.class);
+    bind(ParticipantMapperFactoryImpl.class);
     bind(PersonService.class);
     bind(ReferralClientService.class);
     bind(ReferralService.class);
     bind(ReporterService.class);
+    bind(ScreeningParticipantService.class);
+    bind(ScreeningRelationshipService.class);
     bind(ScreeningService.class);
     bind(ScreeningSubmitService.class);
     bind(ScreeningToReferral.class);
+    bind(SpecialProjectReferralService.class);
     bind(StaffPersonIdRetriever.class);
     bind(StaffPersonService.class);
     bind(TickleService.class);
-    bind(HOIReferralService.class);
-    bind(InvolvementHistoryService.class);
-    bind(HOICaseService.class);
-    bind(AuthorizationService.class);
-    bind(ScreeningRelationshipService.class);
-    bind(CsecHistoryService.class);
-    bind(ScreeningParticipantService.class);
-    bind(ParticipantDaoFactoryImpl.class);
-    bind(ParticipantMapperFactoryImpl.class);
-    bind(SpecialProjectReferralService.class);
-    bind(ClientTransformer.class);
-    bind(ContactIntakeApiService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();

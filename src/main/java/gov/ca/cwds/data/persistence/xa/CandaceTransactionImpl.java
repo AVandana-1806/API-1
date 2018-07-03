@@ -30,6 +30,7 @@ public class CandaceTransactionImpl implements Transaction {
    * @param txn Hibernate transaction
    */
   public CandaceTransactionImpl(Transaction txn) {
+    LOGGER.trace("CandaceTransactionImpl.ctor");
     this.txn = txn;
   }
 
@@ -60,6 +61,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public TransactionStatus getStatus() {
+    LOGGER.trace("CandaceTransactionImpl.getStatus");
     return txn.getStatus();
   }
 
@@ -76,6 +78,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public boolean getRollbackOnly() {
+    LOGGER.trace("CandaceTransactionImpl.getRollbackOnly");
     return txn.getRollbackOnly();
   }
 
@@ -105,7 +108,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   protected void finalize() throws Throwable {
-    LOGGER.info("CandaceTransactionImpl.finalize");
+    LOGGER.debug("CandaceTransactionImpl.finalize");
     super.finalize();
   }
 
