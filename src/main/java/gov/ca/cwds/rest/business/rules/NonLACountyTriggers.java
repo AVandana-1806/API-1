@@ -75,8 +75,7 @@ public class NonLACountyTriggers {
   }
 
   /**
-   * @param managed referralClient creates or updates the countyOwnership with the client foreign
-   *        key
+   * @param managed referralClient create/update the countyOwnership with client FK
    */
   public void createAndUpdateReferralClientCoutyOwnership(ReferralClient managed) {
     LOGGER.info("NonLACountyTriggers.createAndUpdateReferralClientCoutyOwnership");
@@ -93,8 +92,7 @@ public class NonLACountyTriggers {
   }
 
   /**
-   * @param managedClientAddress clientAddress creates or updates the countyOwnership with the
-   *        Address foreign key
+   * @param managedClientAddress clientAddress create/update the countyOwnership with the Address FK
    */
   public void createAndUpdateClientAddressCoutyOwnership(ClientAddress managedClientAddress) {
     LOGGER.info("NonLACountyTriggers.createAndUpdateClientAddressCoutyOwnership");
@@ -131,8 +129,8 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managed.getEstablishedForId());
       countyOwnership.setEntityCode(REFERRAL_ENTITY_CODE);
     }
-    Referral referral = referralDao.find(managed.getEstablishedForId());
-    String methodName = SET_COUNTY + referral.getCountySpecificCode() + FLAG;
+    final Referral referral = referralDao.find(managed.getEstablishedForId());
+    final String methodName = SET_COUNTY + referral.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);
   }
 

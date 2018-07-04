@@ -147,6 +147,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - name suffix of related person
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
+   * @param relatedAge related person's age
+   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
@@ -155,8 +157,7 @@ public final class RelationshipTo implements Serializable {
    * @param relationshipToPerson - relation of owning person
    * @param relationshipContext - context information
    * @param relatedPersonRelationship - relation to owning person
-   * @param cmsRecordDescriptor - The record descriptor containing meta data about legacy
-   *        information
+   * @param cmsRecordDescriptor - record descriptor containing meta data about legacy information
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
@@ -244,7 +245,6 @@ public final class RelationshipTo implements Serializable {
     this.cmsRecordDescriptor = CmsRecordUtils.createLegacyDescriptor(clientRelationship.getId(),
         LegacyTable.CLIENT_RELATIONSHIP);
   }
-
 
   /**
    * @return - related first name

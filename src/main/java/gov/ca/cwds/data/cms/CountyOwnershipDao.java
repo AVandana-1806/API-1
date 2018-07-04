@@ -39,9 +39,8 @@ public class CountyOwnershipDao extends CrudsDaoImpl<CountyOwnership> {
   public CountyOwnership update(CountyOwnership object) {
     CountyOwnership databaseObject = find(object.getPrimaryKey());
     if (databaseObject == null) {
-      String msg =
-          MessageFormat.format("Unable to find entity with id={0}", object.getPrimaryKey());
-      throw new EntityNotFoundException(msg);
+      throw new EntityNotFoundException(
+          MessageFormat.format("Unable to find entity with id={0}", object.getPrimaryKey()));
     }
     return persist(object);
   }

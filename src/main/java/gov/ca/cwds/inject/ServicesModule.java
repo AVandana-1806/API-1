@@ -405,10 +405,10 @@ public class ServicesModule extends AbstractModule {
   /**
    * Provides SystemCodeCache.
    * 
-   * @param systemCodeDao
-   * @param systemMetaDao
-   * @param config
-   * @return SystemCodeCache
+   * @param systemCodeDao system code DAO
+   * @param systemMetaDao system meta (category) DAO
+   * @param config Ferb API configuration
+   * @return SystemCodeCache initialized CMS system code cache
    */
   @Provides
   public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
@@ -426,9 +426,9 @@ public class ServicesModule extends AbstractModule {
   /**
    * Provides IntakeCodeCache.
    * 
-   * @param intakeLovDao
-   * @param config
-   * @return IntakeCodeCache
+   * @param intakeLovDao Intake list of values (LOV) DAO
+   * @param config Ferb API configuration
+   * @return IntakeCodeCache initialized Intake LOV code cache
    */
   @Provides
   public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
