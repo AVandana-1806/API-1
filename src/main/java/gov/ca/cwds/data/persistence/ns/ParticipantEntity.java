@@ -24,6 +24,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.apache.commons.collections4.comparators.BooleanComparator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -137,6 +138,9 @@ public class ParticipantEntity
   @Column(name = "sealed")
   private Boolean sealed;
 
+  @Column(name = "probation_youth")
+  private Boolean probationYouth;
+
   @Column(name = "approximate_age")
   private String approximateAge;
 
@@ -169,7 +173,7 @@ public class ParticipantEntity
   public ParticipantEntity(String id, Date dateOfBirth, Date dateOfDeath, String firstName,
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
-      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
+      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed, Boolean probationYouth,
       String approximateAge, String approximateAgeUnits) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
@@ -188,6 +192,7 @@ public class ParticipantEntity
     this.ethnicity = ethnicity;
     this.legacySourceTable = legacySourceTable;
     this.sensitive = sensitive;
+    this.probationYouth = probationYouth;
     this.sealed = sealed;
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
@@ -212,6 +217,7 @@ public class ParticipantEntity
     legacySourceTable = participantIntakeApi.getLegacySourceTable();
     sensitive = participantIntakeApi.isSensitive();
     sealed = participantIntakeApi.isSealed();
+    probationYouth = participantIntakeApi.isProbationYouth();
     approximateAge = participantIntakeApi.getApproximateAge();
     approximateAgeUnits = participantIntakeApi.getApproximateAgeUnits();
     return this;
@@ -414,6 +420,14 @@ public class ParticipantEntity
 
   public void setSealed(Boolean sealed) {
     this.sealed = sealed;
+  }
+
+  public Boolean getProbationYouth() {
+    return probationYouth;
+  }
+
+  public void setProbationYouth(Boolean probationYouth) {
+    this.probationYouth = probationYouth;
   }
 
   public void setApproximateAge(String approximateAge) {
