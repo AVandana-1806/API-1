@@ -327,7 +327,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
     assertThat(countyOwnership, is(notNullValue()));
     assertThat(countyOwnership.getEntityCode(), is(equalTo("R")));
     assertThat(countyOwnership.getCounty55Flag(), is(equalTo("Y")));
@@ -364,7 +364,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
     assertThat(countyOwnership, is(nullValue()));
   }
 
@@ -399,7 +399,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
     assertThat(countyOwnership, is(nullValue()));
   }
 
@@ -460,7 +460,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
     assertThat(countyOwnership, is(notNullValue()));
     assertThat(countyOwnership.getEntityCode(), is(equalTo("R")));
   }
@@ -493,7 +493,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
   }
 
   /**
@@ -527,7 +527,7 @@ public class NonLACountyTriggersTest {
             return report;
           }
         });
-    nonLaCountyTriggers.createAndUpdateReferralCoutyOwnership(toCreate);
+    nonLaCountyTriggers.createAndUpdateReferralCountyOwnership(toCreate);
     assertThat(countyOwnership, is(notNullValue()));
     assertThat(countyOwnership.getCounty54Flag(), is(equalTo("Y")));
   }

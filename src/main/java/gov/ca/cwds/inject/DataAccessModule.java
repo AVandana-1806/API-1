@@ -492,7 +492,6 @@ public class DataAccessModule extends AbstractModule {
     bind(RIGovernmentOrganizationCrossReport.class);
   }
 
-
   // ==========================
   // HIBERNATE BUNDLES
   // ==========================

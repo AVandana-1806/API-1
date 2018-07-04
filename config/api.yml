@@ -207,10 +207,10 @@ elasticsearch:
 
 testConfig:
   path: ${TEST_FILE_PATH:-config/testConfig.yml}
-    
+
 triggertables:
   laCountySpecificCode: 19
- 
+
 systemCodeCache: 
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
@@ -233,7 +233,7 @@ webSecurity:
     
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
-     
+
 server:
   applicationConnectors:
   - type: http 
