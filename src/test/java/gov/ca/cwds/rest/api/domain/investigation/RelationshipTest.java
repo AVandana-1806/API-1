@@ -38,6 +38,8 @@ public class RelationshipTest {
   private String middleName = "R";
   private String lastName = "Greene";
   private String dateOfBirth = "2000-10-01";
+  private Short age = 17;
+  protected String ageUnit = "Y";
   private String suffixTitle = "";
   private String gender = "M";
   private String dateOfDeath = "2001-10-01";
@@ -60,8 +62,9 @@ public class RelationshipTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    Relationship relationship = new Relationship(id, dateOfBirth, firstName, middleName, lastName,
-        suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+    Relationship relationship = new Relationship(id, dateOfBirth, age, ageUnit, firstName,
+        middleName, lastName, suffixTitle, gender, dateOfDeath, sensitive, sealed,
+        cmsRecordDescriptor, relationshipsTo);
 
     assertThat(id, is(equalTo(relationship.getId())));
     assertThat(firstName, is(equalTo(relationship.getFirstName())));
