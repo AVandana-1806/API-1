@@ -37,9 +37,6 @@ import io.swagger.annotations.ApiModelProperty;
     "legacy_description"})
 public final class RelationshipTo implements Serializable {
 
-  /**
-   * Serialization version
-   */
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("related_person_first_name")
@@ -194,6 +191,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - related persons name suffix
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
+   * @param relatedAge related person's age
+   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
