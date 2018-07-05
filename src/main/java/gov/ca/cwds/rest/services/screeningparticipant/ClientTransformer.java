@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -48,8 +47,8 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     List<String> languages = getLanguages(client);
     String races = intakeRaceAndEthnicityConverter.createRace(client);
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
-    Set<AddressIntakeApi> addresses = new HashSet<>(intakeAddressConverter.convert(client));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = intakeAddressConverter.convert(client);
+    addresses = Collections.unmodifiableList(addresses);
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
         client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, null, null,

@@ -212,7 +212,7 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Create Participant Addresses & PhoneNumbers
-    Set<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiSet =
         createParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet =
@@ -277,7 +277,7 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Update Participant Addresses & PhoneNumbers
-    Set<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiSet =
         updateParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet =
@@ -293,9 +293,9 @@ public class ParticipantIntakeApiService implements
     return participantIntakeApiPosted;
   }
 
-  private Set<AddressIntakeApi> createParticipantAddresses(
-      Set<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    Set<AddressIntakeApi> addressIntakeApiSetPosted = new HashSet<>();
+  private List<AddressIntakeApi> createParticipantAddresses(
+      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
     addressIntakeApiSet.stream().map(this::createAddresses).forEach(addressesWrapper -> {
       addressIntakeApiSetPosted.add(addressesWrapper.addressIntakeApi);
       participantAddressesDao
@@ -304,9 +304,9 @@ public class ParticipantIntakeApiService implements
     return addressIntakeApiSetPosted;
   }
 
-  private Set<AddressIntakeApi> updateParticipantAddresses(
-      Set<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    Set<AddressIntakeApi> addressIntakeApiSetPosted = new HashSet<>();
+  private List<AddressIntakeApi> updateParticipantAddresses(
+      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
 
     Map<String, ParticipantAddresses> participantAddressesOldMap = new HashMap<>();
     participantAddressesDao.findByParticipantId(participantEntityManaged.getId())
