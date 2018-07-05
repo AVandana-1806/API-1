@@ -24,7 +24,7 @@ import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * {@link DomainObject} representing a ClientRelationship
+ * {@link DomainObject} representing a ClientRelationship.
  * 
  * @author CWDS API Team
  */
@@ -267,14 +267,12 @@ public final class RelationshipTo implements Serializable {
     return relatedLastName;
   }
 
-
   /**
    * @return - relationship to person
    */
   public String getRelationshipToPerson() {
     return relationshipToPerson;
   }
-
 
   /**
    * @return - relationship context
@@ -283,7 +281,6 @@ public final class RelationshipTo implements Serializable {
     return relationshipContext;
   }
 
-
   /**
    * @return - related person relationship
    */
@@ -291,15 +288,12 @@ public final class RelationshipTo implements Serializable {
     return relatedPersonRelationship;
   }
 
-
   /**
    * @return - CMS record description
    */
   public CmsRecordDescriptor getCmsRecordDescriptor() {
     return cmsRecordDescriptor;
   }
-
-
 
   /**
    * @return the relatedGender
@@ -315,7 +309,6 @@ public final class RelationshipTo implements Serializable {
     return relatedDateOfBirth;
   }
 
-
   /**
    * @return the relatedAge
    */
@@ -330,7 +323,6 @@ public final class RelationshipTo implements Serializable {
     return relatedDateOfDeath;
   }
 
-
   /**
    * @return the absentParentCode
    */
@@ -344,7 +336,6 @@ public final class RelationshipTo implements Serializable {
   public String getSameHomeCode() {
     return sameHomeCode;
   }
-
 
   /**
    * @return the relationshipStartDate
