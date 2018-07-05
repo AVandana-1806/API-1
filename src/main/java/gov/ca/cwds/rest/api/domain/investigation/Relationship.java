@@ -31,7 +31,7 @@ import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * {@link DomainObject} representing a Relationship
+ * {@link DomainObject} representing a Relationship.
  * 
  * @author CWDS API Team
  */
@@ -121,7 +121,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   private Set<RelationshipTo> relatedTo;
 
   /**
-   * 
+   * Default constructor.
    */
   public Relationship() {
     super();
@@ -130,6 +130,8 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   /**
    * @param id - id
    * @param dateOfBirth - date of birth
+   * @param age age
+   * @param ageUnit age time unit
    * @param firstName - first name
    * @param middleName - middle name
    * @param lastName - last name
@@ -248,16 +250,12 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     return dateOfBirth;
   }
 
-
-
   /**
    * @return the age
    */
   public Short getAge() {
     return age;
   }
-
-
 
   /**
    * @param age the age to set
@@ -355,6 +353,5 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
-
 
 }
