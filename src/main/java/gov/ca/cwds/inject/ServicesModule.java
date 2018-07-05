@@ -182,9 +182,12 @@ public class ServicesModule extends AbstractModule {
         // clearHibernateStatistics(annotation.value());
         final Object result = mi.proceed();
         // collectAndProvideHibernateStatistics(annotation.value());
+
+        if (session != null && session.getStatistics() != null) {
+          LOGGER.info("session stats: {}", session.getStatistics());
+        }
         aspect.afterEnd();
 
-        LOGGER.info("session stats: {}", session.getStatistics());
         return result;
       } catch (Exception e) {
         LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
