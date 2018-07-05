@@ -142,7 +142,7 @@ xaCmsRsDataSourceFactory:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
       hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
-      hibernate.default_schema: ${DB_CMSRS_SCHEMA}
+      hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
