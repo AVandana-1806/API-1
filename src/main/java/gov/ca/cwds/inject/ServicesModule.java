@@ -182,10 +182,6 @@ public class ServicesModule extends AbstractModule {
         // clearHibernateStatistics(annotation.value());
         final Object result = mi.proceed();
         // collectAndProvideHibernateStatistics(annotation.value());
-
-        if (session != null && session.getStatistics() != null) {
-          LOGGER.info("session stats: {}", session.getStatistics());
-        }
         aspect.afterEnd();
 
         return result;
