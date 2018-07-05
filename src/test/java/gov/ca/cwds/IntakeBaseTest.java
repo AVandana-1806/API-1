@@ -10,8 +10,8 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -30,15 +30,16 @@ import gov.ca.cwds.rest.ApiApplicationTestSupport;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.test.support.BaseApiTest;
 import gov.ca.cwds.test.support.BaseDropwizardApplication;
+import io.dropwizard.jackson.Jackson;
 
 /**
  * CWDS API Team
  */
 public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
 
-  private Map<String, Statistics> hibernateStatisticsMap = new HashMap<>();
+  private Map<String, Statistics> hibernateStatisticsMap = new ConcurrentHashMap<>();
 
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  protected ObjectMapper objectMapper = Jackson.newObjectMapper();
 
   @ClassRule
   public static BaseDropwizardApplication<ApiConfiguration> application =
