@@ -246,7 +246,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Statistics getStatistics() {
-    LOGGER.debug("CandaceSessionFactoryImpl.getStatistics");
+    // IDEA: separate and store statistics by request.
+    LOGGER.info("CandaceSessionFactoryImpl.getStatistics");
     return pick().getStatistics();
   }
 
