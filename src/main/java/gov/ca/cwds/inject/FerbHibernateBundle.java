@@ -22,6 +22,7 @@ public abstract class FerbHibernateBundle extends HibernateBundle<ApiConfigurati
 
   public static final String CMS_BUNDLE_TAG = Api.DATASOURCE_CMS;
   public static final String NS_BUNDLE_TAG = Api.DATASOURCE_NS;
+  public static final String RS_BUNDLE_TAG = Api.DATASOURCE_CMS_REP;
 
   public FerbHibernateBundle(ImmutableList<Class<?>> entities,
       SessionFactoryFactory sessionFactoryFactory) {
