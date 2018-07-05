@@ -53,7 +53,8 @@ public class ScreeningResource {
   /**
    * Constructor
    * 
-   * @param resourceDelegate The resourceDelegate to delegate to.
+   * @param resourceDelegate the resourceDelegate to delegate to
+   * @param relationshipFacade the relationshipFacade to delegate to
    */
   @Inject
   public ScreeningResource(@ScreeningServiceBackedResource ResourceDelegate resourceDelegate,
