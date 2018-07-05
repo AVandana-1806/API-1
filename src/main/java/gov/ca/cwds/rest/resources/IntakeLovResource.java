@@ -50,9 +50,6 @@ import io.swagger.annotations.ApiResponses;
 @Consumes(MediaType.TEXT_PLAIN)
 public class IntakeLovResource {
 
-  /**
-   * Class logger.
-   */
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResource.class);
 
   /**
@@ -71,7 +68,6 @@ public class IntakeLovResource {
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
       readOnly = true, transactional = true)
   @GET
-  // @Path("/all")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})

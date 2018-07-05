@@ -24,7 +24,7 @@ import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * {@link DomainObject} representing a ClientRelationship
+ * {@link DomainObject} representing a ClientRelationship.
  * 
  * @author CWDS API Team
  */
@@ -37,9 +37,6 @@ import io.swagger.annotations.ApiModelProperty;
     "legacy_description"})
 public final class RelationshipTo implements Serializable {
 
-  /**
-   * Serialization version
-   */
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("related_person_first_name")
@@ -147,6 +144,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - name suffix of related person
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
+   * @param relatedAge related person's age
+   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
@@ -155,8 +154,7 @@ public final class RelationshipTo implements Serializable {
    * @param relationshipToPerson - relation of owning person
    * @param relationshipContext - context information
    * @param relatedPersonRelationship - relation to owning person
-   * @param cmsRecordDescriptor - The record descriptor containing meta data about legacy
-   *        information
+   * @param cmsRecordDescriptor - record descriptor containing meta data about legacy information
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
@@ -193,6 +191,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - related persons name suffix
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
+   * @param relatedAge related person's age
+   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
@@ -245,7 +245,6 @@ public final class RelationshipTo implements Serializable {
         LegacyTable.CLIENT_RELATIONSHIP);
   }
 
-
   /**
    * @return - related first name
    */
@@ -267,14 +266,12 @@ public final class RelationshipTo implements Serializable {
     return relatedLastName;
   }
 
-
   /**
    * @return - relationship to person
    */
   public String getRelationshipToPerson() {
     return relationshipToPerson;
   }
-
 
   /**
    * @return - relationship context
@@ -283,7 +280,6 @@ public final class RelationshipTo implements Serializable {
     return relationshipContext;
   }
 
-
   /**
    * @return - related person relationship
    */
@@ -291,15 +287,12 @@ public final class RelationshipTo implements Serializable {
     return relatedPersonRelationship;
   }
 
-
   /**
    * @return - CMS record description
    */
   public CmsRecordDescriptor getCmsRecordDescriptor() {
     return cmsRecordDescriptor;
   }
-
-
 
   /**
    * @return the relatedGender
@@ -315,7 +308,6 @@ public final class RelationshipTo implements Serializable {
     return relatedDateOfBirth;
   }
 
-
   /**
    * @return the relatedAge
    */
@@ -330,7 +322,6 @@ public final class RelationshipTo implements Serializable {
     return relatedDateOfDeath;
   }
 
-
   /**
    * @return the absentParentCode
    */
@@ -344,7 +335,6 @@ public final class RelationshipTo implements Serializable {
   public String getSameHomeCode() {
     return sameHomeCode;
   }
-
 
   /**
    * @return the relationshipStartDate

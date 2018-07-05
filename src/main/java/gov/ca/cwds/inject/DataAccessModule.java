@@ -102,8 +102,6 @@ import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
-import gov.ca.cwds.data.persistence.xa.XaSystemCodeDao;
-import gov.ca.cwds.data.persistence.xa.XaSystemMetaDao;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.ElasticUtils;
@@ -436,36 +434,35 @@ public class DataAccessModule extends AbstractModule {
     bind(SpecialProjectReferralDao.class);
     bind(StaffPersonDao.class);
     bind(StateIdDao.class);
-    bind(SystemCodeDao.class).to(XaSystemCodeDao.class);
-    bind(SystemMetaDao.class).to(XaSystemMetaDao.class);
+    bind(SystemCodeDao.class);
+    bind(SystemMetaDao.class);
     bind(TickleDao.class);
 
     // NS:
     bind(AddressDao.class);
     bind(AddressesDao.class);
-    bind(CsecDao.class);
-
-    bind(PersonDao.class);
-    bind(ScreeningDao.class);
-    bind(ScreeningAddressDao.class);
     bind(AgencyDao.class);
-    bind(gov.ca.cwds.data.ns.CrossReportDao.class);
     bind(AllegationIntakeDao.class);
-    bind(ParticipantDao.class);
-    bind(PhoneNumberDao.class);
-    bind(LanguageDao.class);
-    bind(PersonAddressDao.class);
-    bind(PersonPhoneDao.class);
-    bind(PersonLanguageDao.class);
-    bind(PersonEthnicityDao.class);
+    bind(ContactDao.class);
+    bind(CsecDao.class);
     bind(EthnicityDao.class);
-    bind(PersonRaceDao.class);
-    bind(RaceDao.class);
+    bind(gov.ca.cwds.data.ns.CrossReportDao.class);
     bind(IntakeLOVCodeDao.class);
     bind(IntakeLovDao.class);
+    bind(LanguageDao.class);
     bind(PaperTrailDao.class);
     bind(PaperTrailInterceptor.class);
-    bind(ContactDao.class);
+    bind(ParticipantDao.class);
+    bind(PersonAddressDao.class);
+    bind(PersonDao.class);
+    bind(PersonEthnicityDao.class);
+    bind(PersonLanguageDao.class);
+    bind(PersonPhoneDao.class);
+    bind(PersonRaceDao.class);
+    bind(PhoneNumberDao.class);
+    bind(RaceDao.class);
+    bind(ScreeningAddressDao.class);
+    bind(ScreeningDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);
@@ -494,7 +491,6 @@ public class DataAccessModule extends AbstractModule {
     bind(RIReferralClient.class);
     bind(RIGovernmentOrganizationCrossReport.class);
   }
-
 
   // ==========================
   // HIBERNATE BUNDLES

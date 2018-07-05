@@ -1,10 +1,9 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.io.Serializable;
 import java.util.Arrays;
-
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,12 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.util.FerbDateUtils;
 
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.AllegationEntity.findByScreeningId",
     query = "FROM gov.ca.cwds.data.persistence.ns.AllegationEntity"
@@ -27,6 +28,8 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @Entity
 @Table(name = "allegations")
 public class AllegationEntity implements PersistentObject {
+
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "id")
