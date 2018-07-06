@@ -1,10 +1,8 @@
 package gov.ca.cwds.rest.services.relationship;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import gov.ca.cwds.rest.api.domain.Screening;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -118,6 +116,17 @@ public class RelationshipFacade {
       return;
     }
     LOGGER.info("shouldBeUpdated {}", shouldBeUpdated);
+    for(ClientRelationship clientRelationship : shouldBeUpdated){
+        Relationship managed = nsRelationshipDao.getByLegacyId(clientRelationship.getId());
+        if(managed != null){
+            managed.setRelationshipType(clientRelationship.getClientRelationshipType());
+            managed.setStartDate(clientRelationship.getStartDate());
+            managed.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
+            managed.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
+            managed.setEndDate(clientRelationship.getEndDate());
+            nsRelationshipDao.update(managed);
+        }
+    }
 
   }
 
@@ -126,14 +135,32 @@ public class RelationshipFacade {
       return;
     }
     LOGGER.info("shouldBeCreated {}", shouldBeCreated);
+//    for(ClientRelationship clientRelationship : shouldBeCreated ) {
+//        Relationship newRelationship = new Relationship(
+//                null,  **create participants for clients**
+//
+//        )
+//    }
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
       List<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
     LOGGER.info("lagacyRelationships {}", lagacyRelationships);
     LOGGER.info("nsRelationships {}", nsRelationships);
-
-    return new ArrayList<>();
+    List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
+    for (ClientRelationship clientRelationship : lagacyRelationships) {
+        boolean exist = false;
+        for(Relationship relationship : nsRelationships) {
+            if (clientRelationship.getId().equals(relationship.getLegacyId())) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            relationshipsToCreate.add(clientRelationship);
+        }
+    }
+    return relationshipsToCreate;
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeUpdated(
@@ -147,7 +174,28 @@ public class RelationshipFacade {
     }
 
     // lagacyRelationships.stream().filter(e->e.getId().equals())
-    return new ArrayList<>();
+      List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
+      for (ClientRelationship clientRelationship : lagacyRelationships) {
+          boolean update = false;
+          for(Relationship relationship : nsRelationships) {
+              if (clientRelationship.getId().equals(relationship.getLegacyId())) {
+                  if( "Y".equals(clientRelationship.getAbsentParentCode())!= relationship.isAbsentParentIndicator()
+                          || "Y".equals(clientRelationship.getSameHomeCode()) != relationship.getSameHomeStatus()
+                          || clientRelationship.getClientRelationshipType() != relationship.getRelationshipType()
+                          || clientRelationship.getStartDate() != relationship.getStartDate()
+                          || clientRelationship.getEndDate() != relationship.getEndDate()){
+                      update = true;
+                  }
+                  break;
+              }
+
+          }
+          if (update) {
+
+              relationshipsToUpdate.add(clientRelationship);
+          }
+      }
+      return relationshipsToUpdate;
   }
 
   private Set<String> getLegacyClientIdsByScreeningId(String screeningId) {
@@ -160,7 +208,14 @@ public class RelationshipFacade {
 
   private List<ClientRelationship> getCmsRelationships(Set<String> legacyClientIds) {
     LOGGER.info("legacyClientIds {}", legacyClientIds);
-
-    return new ArrayList<>();
+        List<ClientRelationship> relationshipListcms = new ArrayList<>();
+      Map<String, Collection<ClientRelationship>> relationshipMap =
+              cmsRelationshipDao.findByPrimaryClientIds(legacyClientIds);
+      for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : relationshipMap.entrySet()) {
+          String clientId = relationshipMapEntry.getKey();
+          relationshipListcms.addAll(relationshipMapEntry.getValue());
+      };
+    return relationshipListcms;
   }
+
 }

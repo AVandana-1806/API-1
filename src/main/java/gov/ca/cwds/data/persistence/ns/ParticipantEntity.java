@@ -45,7 +45,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
  * @author CWDS API Team
  */
 @NamedQuery(name = FIND_LEGACY_ID_LIST_BY_SCREENING_ID,
-    query = "SELECT legacyId FROM ParticipantEntity WHERE screeningEntity.id = :screeningId")
+    query = "SELECT legacyId FROM ParticipantEntity WHERE screeningEntity.id = :screeningId AND NOT NULL legacyId")
 @NamedQuery(name = FIND_PARTICIPANTS_BY_SCREENING_IDS,
     query = "FROM ParticipantEntity WHERE screeningId IN :screeningIds")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningId",
