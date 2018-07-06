@@ -421,21 +421,29 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Serializable save(Object object) {
+    LOGGER.debug("CandaceSessionImpl.save(object)");
+    logStack(object, "save(object)");
     return session.save(object);
   }
 
   @Override
   public Serializable save(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.save(String,Object): entityName: {}", entityName);
+    logStack(object, "save(String,Object)");
     return session.save(entityName, object);
   }
 
   @Override
   public void saveOrUpdate(Object object) {
+    LOGGER.debug("CandaceSessionImpl.saveOrUpdate(Object)");
+    logStack(object, "saveOrUpdate(Object)");
     session.saveOrUpdate(object);
   }
 
   @Override
   public void saveOrUpdate(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.saveOrUpdate(String,Object): entityName: {}", entityName);
+    logStack(object, "saveOrUpdate(String,Object)");
     session.saveOrUpdate(entityName, object);
   }
 
@@ -446,11 +454,15 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void update(Object object) {
+    LOGGER.debug("CandaceSessionImpl.update(Object)");
+    logStack(object, "update(Object)");
     session.update(object);
   }
 
   @Override
   public void update(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.persist(String,Object): entityName: {}", entityName);
+    logStack(object, "persist(String,Object)");
     session.update(entityName, object);
   }
 
@@ -466,6 +478,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Object merge(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.merge(String,Object): entityName: {}", entityName);
+    logStack(object, "merge(String,Object)");
     return session.merge(entityName, object);
   }
 
@@ -475,13 +489,15 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-    session.refresh(entity, lockMode, properties);
+  public void persist(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.persist(String,Object): entityName: {}", entityName);
+    logStack(object, "persist(String,Object)");
+    session.persist(entityName, object);
   }
 
   @Override
-  public void persist(String entityName, Object object) {
-    session.persist(entityName, object);
+  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+    session.refresh(entity, lockMode, properties);
   }
 
   @Override
@@ -492,7 +508,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(String entityName, Object object) {
-    LOGGER.info("CandaceSessionImpl.delete entityName: {}", entityName);
+    LOGGER.debug("CandaceSessionImpl.delete(String,Object): entityName: {}", entityName);
+    logStack(object, "delete(String,Object)");
     session.delete(entityName, object);
   }
 
@@ -508,7 +525,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
+    LOGGER.debug("CandaceSessionImpl.delete(String,Object)");
+    logStack("detach(Object)");
     session.detach(entity);
   }
 
@@ -529,6 +547,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void refresh(Object object) {
+    LOGGER.debug("CandaceSessionImpl.refresh(Object)");
+    logStack("refresh(Object)");
     session.refresh(object);
   }
 
@@ -574,7 +594,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void clear() {
-    LOGGER.debug("CandaceSessionImpl.clear");
+    LOGGER.debug("CandaceSessionImpl.clear()");
+    logStack("clear()");
     session.clear();
   }
 

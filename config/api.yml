@@ -116,8 +116,10 @@ xaCmsDataSourceFactory:
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
       hibernate.connection.isolation: 1
-      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_query_cache: true
       # hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -150,8 +152,10 @@ xaCmsRsDataSourceFactory:
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
       hibernate.connection.isolation: 1
-      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_query_cache: true
       # hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -183,7 +187,7 @@ xaNsDataSourceFactory:
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
-      hibernate.temp.use_jdbc_metadata_defaults: false
+      hibernate.temp.use_jdbc_metadata_defaults: true
       # hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_query_cache: false
       hibernate.cache.use_second_level_cache: false
