@@ -120,7 +120,7 @@ public class SsaName3Dao {
   protected void callStoredProc(String tableName, String crudOper, String identifier, String nameCd,
       String firstName, String middleName, String lastName, String streettNumber, String streetName,
       Short gvrEntc, Date updateTimeStamp, String updateId) {
-    Session session = sessionFactory.getCurrentSession();
+    final Session session = sessionFactory.getCurrentSession();
     final String STORED_PROC_NAME = "SPSSANAME3";
     final String schema =
         (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
@@ -169,7 +169,8 @@ public class SsaName3Dao {
        * procedure 3=SQL failed, 4=Call to SSANAME3 DLL failed
        */
       if (returnCode != 0 && returnCode != 1) {
-        String msg = "Stored Procedure " + STORED_PROC_NAME + " returned with ERROR: " + returnMessage;
+        String msg =
+            "Stored Procedure " + STORED_PROC_NAME + " returned with ERROR: " + returnMessage;
         LOGGER.error(msg);
         throw new DaoException(msg);
       }

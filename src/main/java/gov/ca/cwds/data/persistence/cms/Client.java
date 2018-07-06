@@ -51,8 +51,9 @@ public class Client extends BaseClient {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToMany(
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+  // @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,
+  // CascadeType.REMOVE})
+  @OneToMany(cascade = CascadeType.DETACH)
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 

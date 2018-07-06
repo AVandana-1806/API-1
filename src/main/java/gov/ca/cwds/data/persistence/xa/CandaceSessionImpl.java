@@ -46,6 +46,9 @@ import org.hibernate.stat.SessionStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.ca.cwds.data.CaresStackUtils;
+import gov.ca.cwds.data.persistence.PersistentObject;
+
 /**
  * Hibernate session facade. Adds logging and facilitates XA transactions.
  * 
@@ -324,8 +327,11 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void evict(Object object) {
-    LOGGER.debug("CandaceSessionImpl.evict");
-    // CaresStackUtils.logStack();
+    if (object instanceof PersistentObject) {
+      final PersistentObject po = (PersistentObject) object;
+      LOGGER.warn("CandaceSessionImpl.evict: {}", object);
+      CaresStackUtils.logStack();
+    }
     session.evict(object);
   }
 
