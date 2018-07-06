@@ -51,21 +51,19 @@ public class Client extends BaseClient {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToMany(cascade = CascadeType.DETACH)
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 
   @ToStringExclude
   @Fetch(FetchMode.SELECT)
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = {CascadeType.ALL})
   @JoinColumn(name = "ESTBLSH_ID", referencedColumnName = "IDENTIFIER", nullable = false,
       updatable = false, insertable = false)
   private Set<ClientScpEthnicity> clientScpEthnicities = new HashSet<>();
 
   /**
-   * Default constructor
-   * 
-   * Required for Hibernate
+   * Default constructor, often required for some frameworks.
    */
   public Client() {
     super();
