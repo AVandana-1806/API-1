@@ -359,7 +359,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       final int status = txn.getStatus();
       if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
         LOGGER.warn("XA COMMIT TRANSACTION!");
-        sessions.values().stream().sequential().forEach(Session::flush);
+        // sessions.values().stream().sequential().forEach(Session::flush);
         txn.commit();
       }
     } catch (Exception e) {

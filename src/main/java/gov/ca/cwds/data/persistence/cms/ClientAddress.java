@@ -5,6 +5,7 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -49,7 +50,8 @@ public class ClientAddress extends BaseClientAddress {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,
+      CascadeType.REMOVE, CascadeType.DETACH}, optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKADDRS_T", nullable = false, insertable = false, updatable = false)
   private Address addresses;
 
