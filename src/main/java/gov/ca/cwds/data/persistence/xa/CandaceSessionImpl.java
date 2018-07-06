@@ -324,6 +324,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void evict(Object object) {
+    LOGGER.debug("CandaceSessionImpl.evict");
+    // CaresStackUtils.logStack();
     session.evict(object);
   }
 
@@ -459,6 +461,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(Object object) {
+    LOGGER.info("CandaceSessionImpl.delete");
     session.delete(object);
   }
 
@@ -480,7 +483,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.info("CandaceSessionImpl.detach entity: {}", entity);
+    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
     session.detach(entity);
   }
 

@@ -12,15 +12,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * @author CWS-NS2
- *
+ * @author CWDS API Team
  */
 @Embeddable
 public class PersonEthnicityId implements Serializable {
 
-  /**
-   * Base serialization value. Increment by version
-   */
   private static final long serialVersionUID = 1L;
 
   @ManyToOne(cascade = CascadeType.ALL)
