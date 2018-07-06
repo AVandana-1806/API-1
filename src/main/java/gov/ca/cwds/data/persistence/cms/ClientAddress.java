@@ -55,7 +55,7 @@ public class ClientAddress extends BaseClientAddress {
   private Address addresses;
 
   /**
-   * referential integrity check.
+   * Referential integrity check.
    * <p>
    * Doesn't actually load the data. Just checks the existence of the parent address, client and
    * referral records.

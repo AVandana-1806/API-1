@@ -235,14 +235,14 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     LOGGER.info("XaUnitOfWorkAspect.closeSession()");
     if (session != null) {
       LOGGER.info("XA CLOSE SESSION!");
-      try {
-        session.flush();
-        session.clear();
-      } catch (javax.persistence.TransactionRequiredException tre) {
-        LOGGER.debug("No transaction to flush session. All good.");
-      } catch (Exception e) {
-        LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
-      }
+      // try {
+      // session.flush();
+      // session.clear();
+      // } catch (javax.persistence.TransactionRequiredException tre) {
+      // LOGGER.debug("No transaction to flush session. All good.");
+      // } catch (Exception e) {
+      // LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
+      // }
 
       try {
         session.close();
@@ -333,7 +333,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       LOGGER.info("XA ROLLBACK TRANSACTION!");
       sessions.values().stream().forEach(this::rollbackSessionTransaction);
-      txn.rollback(); // wrapping XA transaction
+      txn.rollback(); // wrap XA transaction
     } catch (Exception e) {
       LOGGER.error("XA ROLLBACK FAILED! {}", e.getMessage(), e);
       throw new CaresXAException("XA ROLLBACK FAILED!", e);
@@ -357,11 +357,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     try {
       final int status = txn.getStatus();
-      if (status == Status.STATUS_ROLLING_BACK || status == Status.STATUS_MARKED_ROLLBACK) {
-        LOGGER.warn("XA ROLLBACK TRANSACTION!");
-        txn.rollback();
-      } else {
+      if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
         LOGGER.warn("XA COMMIT TRANSACTION!");
+        sessions.values().stream().sequential().forEach(Session::flush);
         txn.commit();
       }
     } catch (Exception e) {
