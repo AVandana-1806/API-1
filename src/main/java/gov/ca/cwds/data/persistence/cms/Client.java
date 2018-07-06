@@ -48,12 +48,12 @@ public class Client extends BaseClient {
 
   private static final long serialVersionUID = 1L;
 
+  // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  // @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,
-  // CascadeType.REMOVE})
-  @OneToMany(cascade = CascadeType.DETACH)
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 
