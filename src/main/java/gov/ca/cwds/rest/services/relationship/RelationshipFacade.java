@@ -2,7 +2,11 @@ package gov.ca.cwds.rest.services.relationship;
 
 import java.util.*;
 
-import gov.ca.cwds.rest.api.domain.Screening;
+import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,12 +41,14 @@ public class RelationshipFacade {
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
+  private final ClientDao cmsClientDao;
+  private final ScreeningDao nsScreeningDao;
 
   @Inject
   public RelationshipFacade(ScreeningRelationshipService screeningRelationshipService,
-      RelationshipsService relationshipsService, ParticipantService participantService,
-      ClientService clientService, ParticipantDao participantDao,
-      ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao) {
+                            RelationshipsService relationshipsService, ParticipantService participantService,
+                            ClientService clientService, ParticipantDao participantDao,
+                            ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao, ClientDao cmsClientDao, ScreeningDao nsScreeningDao) {
     this.screeningRelationshipService = screeningRelationshipService;
     this.relationshipsService = relationshipsService;
     this.participantService = participantService;
@@ -50,6 +56,8 @@ public class RelationshipFacade {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
+    this.cmsClientDao = cmsClientDao;
+    this.nsScreeningDao = nsScreeningDao;
   }
 
   public List<ScreeningRelationship> getRelationshipsByScreeningId(String screeningId) {
@@ -76,7 +84,7 @@ public class RelationshipFacade {
         getRelationshipsThatShouldBeUpdated(lagacyRelationships, nsRelationships);
     List<ClientRelationship> shouldBeCreated =
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
-    createRelationships(shouldBeCreated);
+    createRelationships(shouldBeCreated, screeningId);
     updateRelationships(shouldBeUpdated);
 
     // select and return
@@ -130,17 +138,77 @@ public class RelationshipFacade {
 
   }
 
-  private void createRelationships(List<ClientRelationship> shouldBeCreated) {
+  private void createRelationships(List<ClientRelationship> shouldBeCreated, String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
       return;
     }
     LOGGER.info("shouldBeCreated {}", shouldBeCreated);
-//    for(ClientRelationship clientRelationship : shouldBeCreated ) {
-//        Relationship newRelationship = new Relationship(
-//                null,  **create participants for clients**
-//
-//        )
-//    }
+    Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
+    for(ClientRelationship clientRelationship : shouldBeCreated ) {
+        ParticipantEntity participantEntity1 = null;
+        ParticipantEntity participantEntity2 = null;
+        if(!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
+            Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
+            ScreeningEntity screening = new ScreeningEntity();
+            participantEntity1 = participantDao.create(new ParticipantEntity(
+                    null,
+                    client.getBirthDate(),
+                    client.getDeathDate(),
+                    client.getFirstName(),
+                    client.getGender(),
+                    client.getLastName(),
+                    client.getSsn(),
+                    screening,
+                    client.getId(),
+                    null,
+                    null,
+                    client.getMiddleName(),
+                    client.getNameSuffix(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            ));
+        }else{
+            participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,clientRelationship.getPrimaryClientId());
+        }
+        if(!clientIdSet.contains(clientRelationship.getSecondaryClientId())){
+            Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
+            ScreeningEntity screening = new ScreeningEntity();
+            participantEntity2 = participantDao.create(new ParticipantEntity(
+                    null,
+                    client.getBirthDate(),
+                    client.getDeathDate(),
+                    client.getFirstName(),
+                    client.getGender(),
+                    client.getLastName(),
+                    client.getSsn(),
+                    screening,
+                    client.getId(),
+                    null,
+                    null,
+                    client.getMiddleName(),
+                    client.getNameSuffix(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            ));
+        }else{
+            participantEntity2 = participantDao.findByScreeningIdAndLegacyId(screeningId,clientRelationship.getSecondaryClientId());
+        }
+        Date now = new Date();
+        Relationship newRelationship = new Relationship(   null, participantEntity1.getId(), participantEntity2.getId()
+                , clientRelationship.getClientRelationshipType(), now, now, "Y".equals(clientRelationship.getAbsentParentCode()), "Y".equals(clientRelationship.getSameHomeCode()),
+                clientRelationship.getId(),clientRelationship.getStartDate(), clientRelationship.getEndDate());
+        nsRelationshipDao.create(newRelationship);
+    }
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(

@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.ns;
 
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 
 import gov.ca.cwds.data.BaseDaoImpl;
@@ -87,6 +88,15 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
         .getNamedQuery(constructNamedQueryName("findByScreeningIdAndParticipantId"))
         .setParameter(PathParam.SCREENING_ID, screeningId)
         .setParameter(PathParam.PARTICIPANT_ID, participantId);
+    return query.uniqueResult();
+  }
+
+  public ParticipantEntity findByScreeningIdAndLegacyId(String screeningId, String legacyId){
+    @SuppressWarnings("unchecked")
+    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
+            .getNamedQuery(constructNamedQueryName(FIND_BY_SCREENING_ID_AND_LEGACY_ID))
+            .setParameter(PathParam.SCREENING_ID, screeningId)
+            .setParameter(PathParam.LEGACY_ID, legacyId);
     return query.uniqueResult();
   }
 }

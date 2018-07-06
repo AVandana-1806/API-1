@@ -46,6 +46,8 @@ public final class Api {
 
     public static final String SCREENING_ID = "screeningId";
     public static final String PARTICIPANT_ID = "participantId";
+    public static final String LEGACY_ID = "legacyId";
+
 
     private PathParam() {}
   }

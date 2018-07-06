@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.persistence.ns;
 
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
@@ -53,6 +54,9 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 @NamedQuery(
     name = "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIdAndParticipantId",
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND id = :participantId")
+@NamedQuery(
+    name = FIND_BY_SCREENING_ID_AND_LEGACY_ID,
+    query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND legacyId = :legacyId")
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
@@ -65,6 +69,8 @@ public class ParticipantEntity
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findLegacyIdListByScreeningId";
   public static final String FIND_PARTICIPANTS_BY_SCREENING_IDS =
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIds";
+  public static final String FIND_BY_SCREENING_ID_AND_LEGACY_ID =
+      "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIdAndLegacyId";
 
   @Id
   @Column(name = "id")
