@@ -43,14 +43,14 @@ public class Relationship implements PersistentObject {
   private String clientId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "clientId", nullable = false, insertable = false, updatable = false)
+  @JoinColumn(name = "client", nullable = false, insertable = false, updatable = false)
   private ParticipantEntity participantFrom;
 
   @Column(name = "relative")
   private String relativeId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "relativeId", nullable = false, insertable = false, updatable = false)
+  @JoinColumn(name = "relative", nullable = false, insertable = false, updatable = false)
   private ParticipantEntity participantTo;
 
   @Column(name = "relation")

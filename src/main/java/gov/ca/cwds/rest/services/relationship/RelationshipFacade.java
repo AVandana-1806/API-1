@@ -7,6 +7,7 @@ import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
+import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class RelationshipFacade {
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
   private final ScreeningDao nsScreeningDao;
+  private final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
 
   @Inject
   public RelationshipFacade(ScreeningRelationshipService screeningRelationshipService,
@@ -79,51 +81,56 @@ public class RelationshipFacade {
     // get relationships from pgsql
     List<Relationship> nsRelationships = getNsRelationships(screeningId);
 
+    List<ScreeningRelationship> result = new ArrayList<>();
+
     // compare
     List<ClientRelationship> shouldBeUpdated =
         getRelationshipsThatShouldBeUpdated(lagacyRelationships, nsRelationships);
     List<ClientRelationship> shouldBeCreated =
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
-    createRelationships(shouldBeCreated, screeningId);
-    updateRelationships(shouldBeUpdated);
+    result.addAll(createRelationships(shouldBeCreated, screeningId));
+      result.addAll(updateRelationships(shouldBeUpdated));
+      result= (getRelationshipsThatShouldNotBeUpdated(result, nsRelationships));
 
     // select and return
-    return getRelationshipsFromNs(screeningId);
+    return result;
   }
 
   // Mocked Data
-  private List<ScreeningRelationship> getRelationshipsFromNs(String screeningId) {
-    return getMockedData();
-  }
+//  private List<ScreeningRelationship> getRelationshipsFromNs(String screeningId) {
+//    return getMockedData();
+//  }
+//
+//  private List<ScreeningRelationship> getMockedData() {
+//    List<ScreeningRelationship> list = new ArrayList<>();
+//    ScreeningRelationship relationship1 = new ScreeningRelationship();
+//    relationship1.setId("123123");
+//    relationship1.setClientId("111111");
+//    relationship1.setRelativeId("222222");
+//    relationship1.setRelationshipType(190);
+//    relationship1.setAbsentParentIndicator(false);
+//    relationship1.setSameHomeStatus("U");
+//    list.add(relationship1);
+//
+//    ScreeningRelationship relationship2 = new ScreeningRelationship();
+//    relationship1.setId("123123");
+//    relationship1.setClientId("222222");
+//    relationship1.setRelativeId("333333");
+//    relationship1.setRelationshipType(189);
+//    relationship1.setAbsentParentIndicator(true);
+//    relationship1.setSameHomeStatus("Y");
+//    list.add(relationship1);
+//
+//    return list;
+//  }
 
-  private List<ScreeningRelationship> getMockedData() {
-    List<ScreeningRelationship> list = new ArrayList<>();
-    ScreeningRelationship relationship1 = new ScreeningRelationship();
-    relationship1.setId("123123");
-    relationship1.setClientId("111111");
-    relationship1.setRelativeId("222222");
-    relationship1.setRelationshipType(190);
-    relationship1.setAbsentParentIndicator(false);
-    relationship1.setSameHomeStatus("U");
-    list.add(relationship1);
-
-    ScreeningRelationship relationship2 = new ScreeningRelationship();
-    relationship1.setId("123123");
-    relationship1.setClientId("222222");
-    relationship1.setRelativeId("333333");
-    relationship1.setRelationshipType(189);
-    relationship1.setAbsentParentIndicator(true);
-    relationship1.setSameHomeStatus("Y");
-    list.add(relationship1);
-
-    return list;
-  }
-
-  private void updateRelationships(List<ClientRelationship> shouldBeUpdated) {
+  private List<ScreeningRelationship> updateRelationships(List<ClientRelationship> shouldBeUpdated) {
     if (CollectionUtils.isEmpty(shouldBeUpdated)) {
-      return;
+      return new ArrayList<>();
     }
     LOGGER.info("shouldBeUpdated {}", shouldBeUpdated);
+        RelationshipMapper mapper = RelationshipMapper.INSTANCE;
+      List<ScreeningRelationship> result = new ArrayList<>();
     for(ClientRelationship clientRelationship : shouldBeUpdated){
         Relationship managed = nsRelationshipDao.getByLegacyId(clientRelationship.getId());
         if(managed != null){
@@ -132,17 +139,20 @@ public class RelationshipFacade {
             managed.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
             managed.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
             managed.setEndDate(clientRelationship.getEndDate());
-            nsRelationshipDao.update(managed);
+            managed = nsRelationshipDao.update(managed);
+            result.add(mapper.map(managed));
         }
     }
-
+    return result;
   }
 
-  private void createRelationships(List<ClientRelationship> shouldBeCreated, String screeningId) {
+  private List<ScreeningRelationship>  createRelationships(List<ClientRelationship> shouldBeCreated, String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
-      return;
+      return new ArrayList<>();
     }
     LOGGER.info("shouldBeCreated {}", shouldBeCreated);
+    RelationshipMapper mapper = RelationshipMapper.INSTANCE;
+    List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
     for(ClientRelationship clientRelationship : shouldBeCreated ) {
         ParticipantEntity participantEntity1 = null;
@@ -164,6 +174,7 @@ public class RelationshipFacade {
                     null,
                     client.getMiddleName(),
                     client.getNameSuffix(),
+                    null,
                     null,
                     null,
                     null,
@@ -198,6 +209,7 @@ public class RelationshipFacade {
                     null,
                     null,
                     null,
+                    null,
                     null
             ));
         }else{
@@ -207,8 +219,10 @@ public class RelationshipFacade {
         Relationship newRelationship = new Relationship(   null, participantEntity1.getId(), participantEntity2.getId()
                 , clientRelationship.getClientRelationshipType(), now, now, "Y".equals(clientRelationship.getAbsentParentCode()), "Y".equals(clientRelationship.getSameHomeCode()),
                 clientRelationship.getId(),clientRelationship.getStartDate(), clientRelationship.getEndDate());
-        nsRelationshipDao.create(newRelationship);
+        newRelationship = nsRelationshipDao.create(newRelationship);
+        result.add(mapper.map(newRelationship));
     }
+    return result;
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
@@ -286,4 +300,20 @@ public class RelationshipFacade {
     return relationshipListcms;
   }
 
+  private List<ScreeningRelationship> getRelationshipsThatShouldNotBeUpdated(List<ScreeningRelationship> list1, List<Relationship> list2 ) {
+      List<ScreeningRelationship> result = new ArrayList<>(list1);
+      for (Relationship relationship : list2) {
+          boolean exist = false;
+          for (ScreeningRelationship screeningRelationship : list1) {
+              if (screeningRelationship.getId().equals(relationship.getId())) {
+                  exist = true;
+                  break;
+              }
+          }
+          if (!exist) {
+              result.add(mapper.map(relationship));
+          }
+      }
+      return result;
+  }
 }
