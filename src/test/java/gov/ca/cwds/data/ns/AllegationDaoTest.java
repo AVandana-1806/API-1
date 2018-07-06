@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.persistence.ns.Allegation;
+import gov.ca.cwds.data.persistence.ns.AllegationEntity;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class AllegationDaoTest extends Doofenshmirtz<Allegation> {
@@ -41,7 +42,7 @@ public class AllegationDaoTest extends Doofenshmirtz<Allegation> {
   @Test
   public void findByVictimId_A$String() throws Exception {
     String id = "10";
-    final List<Allegation> actual = target.findByVictimId(id);
+    final List<AllegationEntity> actual = target.findByVictimId(id);
     final List<Allegation> expected = new ArrayList<>();
     assertThat(actual, is(equalTo(expected)));
   }
@@ -49,7 +50,7 @@ public class AllegationDaoTest extends Doofenshmirtz<Allegation> {
   @Test
   public void findByPerpetratorId_A$String() throws Exception {
     String id = "10";
-    final List<Allegation> actual = target.findByPerpetratorId(id);
+    final List<AllegationEntity> actual = target.findByPerpetratorId(id);
     final List<Allegation> expected = new ArrayList<>();
     assertThat(actual, is(equalTo(expected)));
   }
@@ -57,15 +58,15 @@ public class AllegationDaoTest extends Doofenshmirtz<Allegation> {
   @Test
   public void findByVictimOrPerpetratorId_A$String() throws Exception {
     String id = "10";
-    final List<Allegation> actual = target.findByVictimOrPerpetratorId(id);
+    final List<AllegationEntity> actual = target.findByVictimOrPerpetratorId(id);
     final List<Allegation> expected = new ArrayList<>();
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void deleteByIdList_A$List() throws Exception {
-    final List<String> idList = new ArrayList<String>();
-    idList.add(DEFAULT_CLIENT_ID);
+    final List<Integer> idList = new ArrayList<Integer>();
+    idList.add(123);
     target.deleteByIdList(idList);
   }
 
