@@ -202,7 +202,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.debug("CandaceSessionImpl.flush");
+    LOGGER.warn("***** CandaceSessionImpl.flush *****");
     session.flush();
   }
 

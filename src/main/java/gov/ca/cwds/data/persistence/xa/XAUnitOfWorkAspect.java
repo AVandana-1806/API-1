@@ -235,15 +235,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     LOGGER.info("XaUnitOfWorkAspect.closeSession()");
     if (session != null) {
       LOGGER.info("XA CLOSE SESSION!");
-      // try {
-      // session.flush();
-      // session.clear();
-      // } catch (javax.persistence.TransactionRequiredException tre) {
-      // LOGGER.debug("No transaction to flush session. All good.");
-      // } catch (Exception e) {
-      // LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
-      // }
-
       try {
         session.close();
       } catch (Exception e) {
