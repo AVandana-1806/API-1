@@ -232,11 +232,15 @@ public class Referral extends CmsPersistentObject implements AccessLimitationAwa
   @JoinColumn(name = "FKADDRS_T", nullable = true, updatable = false, insertable = false)
   private Address addresses;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      fetch = FetchType.LAZY)
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<Allegation> allegations = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      fetch = FetchType.LAZY)
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<CrossReport> crossReports = new HashSet<>();
 
@@ -246,7 +250,9 @@ public class Referral extends CmsPersistentObject implements AccessLimitationAwa
   private Reporter reporter;
 
   @ToStringExclude
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      fetch = FetchType.LAZY)
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<ReferralClient> referralClients = new HashSet<>();
 

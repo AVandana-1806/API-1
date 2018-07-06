@@ -51,15 +51,15 @@ public class Client extends BaseClient {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,
-      CascadeType.REMOVE, CascadeType.DETACH})
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 
   @ToStringExclude
   @Fetch(FetchMode.SELECT)
-  @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,
-      CascadeType.REMOVE, CascadeType.DETACH})
+  @OneToMany(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
   @JoinColumn(name = "ESTBLSH_ID", referencedColumnName = "IDENTIFIER", nullable = false,
       updatable = false, insertable = false)
   private Set<ClientScpEthnicity> clientScpEthnicities = new HashSet<>();
