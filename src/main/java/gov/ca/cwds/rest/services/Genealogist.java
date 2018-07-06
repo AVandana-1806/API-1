@@ -53,15 +53,16 @@ public class Genealogist {
           relationship.getPrimaryRelationshipCode(), relationship.getSecondaryRelationshipCode(),
           relationship.getSecondaryFirstName(), relationship.getSecondaryLastName(),
           relationship.getSecondaryNameSuffix(), relationship.getSecondaryGenderCode(),
-          relationship.getSecondaryDateOfBirth(), relationship.getSecondaryDateOfDeath(),
-          relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
-          relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
+          relationship.getSecondaryDateOfBirth(), (short) 0, "",
+          relationship.getSecondaryDateOfDeath(), relationship.getRelationshipStartDate(),
+          relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
+          relationship.getSameHomeCode(), "");
     } else {
       relationshipTo = createRelationShipTo(relationship.getPrimaryLegacyId(),
           relationship.getSecondaryRelationshipCode(), relationship.getPrimaryRelationshipCode(),
           relationship.getPrimaryFirstName(), relationship.getPrimaryLastName(),
           relationship.getPrimaryNameSuffix(), relationship.getPrimaryGenderCode(),
-          relationship.getPrimaryDateOfBirth(), relationship.getPrimaryDateOfDeath(),
+          relationship.getPrimaryDateOfBirth(), (short) 0, "", relationship.getPrimaryDateOfDeath(),
           relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
           relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
     }
@@ -70,13 +71,14 @@ public class Genealogist {
 
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
       String secondaryRelation, String secondaryFirstname, String secodnaryLastName,
-      String nameSuffix, String relatedGender, String relatedDateOfBirth, String relatedDateOfDeath,
-      String relationshipStartDate, String relationshipEndDate, String absentParentCode,
-      String sameHomeCode, String relationContext) {
+      String nameSuffix, String relatedGender, String relatedDateOfBirth, Short relatedAge,
+      String relatedAgeUnit, String relatedDateOfDeath, String relationshipStartDate,
+      String relationshipEndDate, String absentParentCode, String sameHomeCode,
+      String relationContext) {
     return new RelationshipTo(secondaryFirstname, secodnaryLastName, nameSuffix, relatedGender,
-        relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
-        absentParentCode, sameHomeCode, secondaryRelation, relationContext, primaryRelationCode,
-        relationId);
+        relatedDateOfBirth, relatedAge, relatedAgeUnit, relatedDateOfDeath, relationshipStartDate,
+        relationshipEndDate, absentParentCode, sameHomeCode, secondaryRelation, relationContext,
+        primaryRelationCode, relationId);
 
   }
 

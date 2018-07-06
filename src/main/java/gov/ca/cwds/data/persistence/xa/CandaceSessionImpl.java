@@ -41,12 +41,13 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hibernate session facade.
+ * Hibernate session facade. Adds logging and facilitates XA transactions.
  * 
  * @author CWDS API Team
  */
@@ -59,11 +60,12 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  protected final Session session;
+  protected Session session;
 
   protected CandaceTransactionImpl txn;
 
   public CandaceSessionImpl(Session session) {
+    LOGGER.trace("CandaceSessionImpl.ctor");
     this.session = session;
   }
 
@@ -73,6 +75,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Query getNamedQuery(String queryName) {
+    LOGGER.trace("CandaceSessionImpl.getNamedQuery: {}", queryName);
     return session.getNamedQuery(queryName);
   }
 
@@ -88,25 +91,34 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.warn("CandaceSessionImpl.close");
-    session.close();
+    LOGGER.info("CandaceSessionImpl.close");
+    if (session != null) {
+      session.close();
+      session = null; // release session references
+    }
   }
 
   @Override
   public boolean isOpen() {
+    LOGGER.trace("CandaceSessionImpl.isOpen");
     return session.isOpen();
   }
 
   @Override
   public boolean isConnected() {
+    LOGGER.trace("CandaceSessionImpl.isConnected");
     return session.isConnected();
   }
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.warn("CandaceSessionImpl.beginTransaction: XA: {}",
+    LOGGER.info("CandaceSessionImpl.beginTransaction: XA: {}",
         CandaceSessionFactoryImpl.isXaTransaction());
-    this.txn = new CandaceTransactionImpl(session.beginTransaction());
+
+    if (txn == null || txn.getStatus() != TransactionStatus.ACTIVE) {
+      this.txn = new CandaceTransactionImpl(session.beginTransaction());
+    }
+
     return txn;
   }
 
@@ -121,22 +133,23 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
   public Query createNamedQuery(String name) {
+    LOGGER.trace("CandaceSessionImpl.createNamedQuery: {}", name);
     return session.createNamedQuery(name);
   }
 
   @Override
   public ProcedureCall getNamedProcedureCall(String name) {
+    LOGGER.trace("CandaceSessionImpl.getNamedProcedureCall: {}", name);
     return session.getNamedProcedureCall(name);
   }
 
   @Override
   public ProcedureCall createStoredProcedureCall(String procedureName) {
+    LOGGER.trace("CandaceSessionImpl.createStoredProcedureCall: {}", procedureName);
     return session.createStoredProcedureCall(procedureName);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
     return session.createStoredProcedureCall(procedureName, resultClasses);
@@ -148,31 +161,32 @@ public class CandaceSessionImpl implements Session {
     return session.createStoredProcedureCall(procedureName, resultSetMappings);
   }
 
-  @SuppressWarnings({"rawtypes", "deprecation"})
   @Override
   public NativeQuery createSQLQuery(String queryString) {
+    LOGGER.trace("CandaceSessionImpl.createSQLQuery: {}", queryString);
     return session.createSQLQuery(queryString);
   }
 
   @Override
   public void remove(Object entity) {
+    LOGGER.trace("CandaceSessionImpl.remove");
     session.remove(entity);
   }
 
-  @SuppressWarnings({"deprecation", "rawtypes"})
   @Override
   public Criteria createCriteria(Class persistentClass) {
     return session.createCriteria(persistentClass);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NativeQuery createNativeQuery(String sqlString) {
+    LOGGER.trace("CandaceSessionImpl.createNativeQuery: {}", sqlString);
     return session.createNativeQuery(sqlString);
   }
 
   @Override
   public SharedSessionBuilder sessionWithOptions() {
+    LOGGER.trace("CandaceSessionImpl.sessionWithOptions");
     return session.sessionWithOptions();
   }
 
@@ -450,7 +464,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(String entityName, Object object) {
-    LOGGER.warn("CandaceSessionImpl.delete entityName: {}", entityName);
+    LOGGER.info("CandaceSessionImpl.delete entityName: {}", entityName);
     session.delete(entityName, object);
   }
 
@@ -466,7 +480,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
+    LOGGER.info("CandaceSessionImpl.detach entity: {}", entity);
     session.detach(entity);
   }
 
@@ -525,7 +539,6 @@ public class CandaceSessionImpl implements Session {
     return session.getCurrentLockMode(object);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createFilter(Object collection, String queryString) {
     return session.createFilter(collection, queryString);
@@ -572,7 +585,6 @@ public class CandaceSessionImpl implements Session {
     return session.get(entityName, id, lockMode);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       Class... resultClasses) {
@@ -595,7 +607,6 @@ public class CandaceSessionImpl implements Session {
     return session.getEntityName(object);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public IdentifierLoadAccess byId(String entityName) {
     return session.byId(entityName);
@@ -611,7 +622,6 @@ public class CandaceSessionImpl implements Session {
     session.joinTransaction();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
     return session.byMultipleIds(entityName);
@@ -632,7 +642,6 @@ public class CandaceSessionImpl implements Session {
     return session.unwrap(cls);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NaturalIdLoadAccess byNaturalId(String entityName) {
     return session.byNaturalId(entityName);
@@ -648,7 +657,6 @@ public class CandaceSessionImpl implements Session {
     return session.byNaturalId(entityClass);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public SimpleNaturalIdLoadAccess bySimpleNaturalId(String entityName) {
     return session.bySimpleNaturalId(entityName);
@@ -778,7 +786,6 @@ public class CandaceSessionImpl implements Session {
     session.addEventListeners(listeners);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(String queryString) {
     LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}", queryString);
@@ -797,13 +804,11 @@ public class CandaceSessionImpl implements Session {
     return session.createQuery(criteriaQuery);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(CriteriaUpdate updateQuery) {
     return session.createQuery(updateQuery);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(CriteriaDelete deleteQuery) {
     return session.createQuery(deleteQuery);
@@ -822,7 +827,6 @@ public class CandaceSessionImpl implements Session {
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
     LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,

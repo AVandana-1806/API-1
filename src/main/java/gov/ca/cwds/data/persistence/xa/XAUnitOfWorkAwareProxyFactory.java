@@ -45,7 +45,7 @@ public class XAUnitOfWorkAwareProxyFactory {
   }
 
   /**
-   * Alternate ctor takes session factory name and session factory itself.
+   * Alternate ctor takes the session factory name and the session factory itself.
    * 
    * @param factories session factories
    */

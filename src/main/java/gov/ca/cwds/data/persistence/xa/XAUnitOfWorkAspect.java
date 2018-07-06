@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.FlushMode;
@@ -139,8 +140,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     } catch (Exception e) {
       LOGGER.error("XaUnitOfWorkAspect.onError(): ROLLBACK FAILED! {} ", e.getMessage(), e);
       throw e;
-    } finally {
-      // nix
     }
   }
 
@@ -151,18 +150,27 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
     BaseAuthorizationDao.clearXaMode();
     RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-    this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
-        .forEach(ManagedSessionContext::unbind);
+    RequestExecutionContext.instance().put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
 
-    closeSessions();
+    try {
+      closeSessions();
+      this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
+          .forEach(ManagedSessionContext::unbind);
+    } catch (Exception e) {
+      LOGGER.warn("XaUnitOfWorkAspect.onFinish(): FAILED TO UNBIND SESSION FACTORY! {} ",
+          e.getMessage(), e);
+    }
+
+    sessionFactories.clear();
+    units.clear();
   }
 
   /**
    * Get the current Hibernate session, if open, or open a new session.
    * 
    * <p>
-   * For DB2 sessions, this method calls {@link WorkDB2UserInfo} to populate user information fields
-   * on the JDBC connection.
+   * For DB2 sessions, this method calls {@link WorkFerbUserInfo} to populate user information
+   * fields on the JDBC connection.
    * </p>
    * 
    * @param key datasource name
@@ -190,7 +198,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       sessions.put(key, session);
 
       // Add user info to DB2 connections. Harmless for other connections.
-      session.doWork(new WorkDB2UserInfo());
+      session.doWork(new WorkFerbUserInfo());
     }
 
     return session;
@@ -220,6 +228,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   protected void closeSessions() {
     LOGGER.info("XaUnitOfWorkAspect.closeSessions()");
     sessions.values().stream().forEach(this::closeSession);
+    sessions.clear();
   }
 
   protected void closeSession(Session session) {
@@ -228,6 +237,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       LOGGER.info("XA CLOSE SESSION!");
       try {
         session.flush();
+        session.clear();
+      } catch (javax.persistence.TransactionRequiredException tre) {
+        LOGGER.debug("No transaction to flush session. All good.");
       } catch (Exception e) {
         LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
       }
@@ -280,6 +292,13 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       transactionStarted = true;
     } catch (Exception e) {
       LOGGER.error("XA BEGIN FAILED! {}", e.getMessage(), e);
+      try {
+        txn.setRollbackOnly();
+        txn.rollback();
+      } catch (SystemException e2) {
+        LOGGER.warn("XA: ROLLBACK FAILED! {}", e.getMessage(), e);
+      }
+
       throw new CaresXAException("XA BEGIN FAILED!", e);
     }
   }

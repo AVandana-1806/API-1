@@ -190,14 +190,19 @@ public final class Api {
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
 
   /**
-   * Identifer for CMS DB2 datasources.
+   * Identifer for CMS DB2 datasource.
    */
   public static final String DATASOURCE_CMS = Datasource.CMS;
 
   /**
-   * Identifer for CMS DB2 datasources.
+   * Shortcut identifer for CMS DB2 datasource.
    */
   public static final String DS_CMS = Datasource.CMS;
+
+  /**
+   * Shortcut identifer for CARES PostgreSQL datasource.
+   */
+  public static final String DS_NS = Datasource.NS;
 
   /**
    * Identifer for CMS DB2 replicated datasources.

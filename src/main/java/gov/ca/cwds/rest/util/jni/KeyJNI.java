@@ -34,6 +34,7 @@ import gov.ca.cwds.data.persistence.cms.StaffPerson;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findbugs:UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"})
 public final class KeyJNI {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KeyJNI.class);

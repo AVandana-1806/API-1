@@ -3,6 +3,9 @@ package gov.ca.cwds.rest.business.rules;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.cms.CountyOwnershipDao;
@@ -18,17 +21,19 @@ import gov.ca.cwds.data.persistence.cms.ReferralClient.PrimaryKey;
 import gov.ca.cwds.data.rules.TriggerTableException;
 
 /**
- * Business layer object to work on Non LA Triggers
+ * Business layer object to work on non-LA Triggers.
  * 
  * <p>
- * If the staffPerson is from the Non-LA County, it will trigger the countyOwnership table with the
+ * If the staffPerson is from the non-LA County, it will trigger the countyOwnership table with the
  * associated foreign key and updates the trigger table if the record is existing. This
- * countyOwnerhip table helps to check how many county useres can access a single record.
+ * countyOwnerhip table helps to check how many county users can access a single record.
  * <p>
  *
  * @author CWDS API Team
  */
 public class NonLACountyTriggers {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(NonLACountyTriggers.class);
 
   private static final String COUNTY_SPECIFIC_CODE_DEFAULT_CODE = "99";
   private static final String COUNTY_OWNERSHIP_UNABLE_TO_TRIGGER =
@@ -63,17 +68,17 @@ public class NonLACountyTriggers {
    * @param managed Client creates the countyOwnership with the client foreign key
    */
   public void createClientCountyTrigger(Client managed) {
-    CountyOwnership countyOwnership = new CountyOwnership();
+    final CountyOwnership countyOwnership = new CountyOwnership();
     countyOwnership.setEntityId(managed.getPrimaryKey());
     countyOwnership.setEntityCode(CLIENT_ENTITY_CODE);
     countyOwnershipDao.create(countyOwnership);
   }
 
   /**
-   * @param managed referralClient creates or updates the countyOwnership with the client foreign
-   *        key
+   * @param managed referralClient create/update the countyOwnership with client FK
    */
   public void createAndUpdateReferralClientCoutyOwnership(ReferralClient managed) {
+    LOGGER.info("NonLACountyTriggers.createAndUpdateReferralClientCoutyOwnership");
     Boolean countyExists = Boolean.TRUE;
     CountyOwnership countyOwnership = countyOwnershipDao.find(managed.getClientId());
     if (countyOwnership == null) {
@@ -82,15 +87,15 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managed.getClientId());
       countyOwnership.setEntityCode(CLIENT_ENTITY_CODE);
     }
-    String methodName = SET_COUNTY + managed.getCountySpecificCode() + FLAG;
+    final String methodName = SET_COUNTY + managed.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);
   }
 
   /**
-   * @param managedClientAddress clientAddress creates or updates the countyOwnership with the
-   *        Address foreign key
+   * @param managedClientAddress clientAddress create/update the countyOwnership with the Address FK
    */
   public void createAndUpdateClientAddressCoutyOwnership(ClientAddress managedClientAddress) {
+    LOGGER.info("NonLACountyTriggers.createAndUpdateClientAddressCoutyOwnership");
     Boolean countyExists = Boolean.TRUE;
     CountyOwnership countyOwnership = countyOwnershipDao.find(managedClientAddress.getFkAddress());
     if (countyOwnership == null) {
@@ -99,9 +104,9 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managedClientAddress.getFkAddress());
       countyOwnership.setEntityCode(ADDRESS_ENTITY_CODE);
     }
-    ReferralClient referralClient = referralClientDao.find(
+    final ReferralClient referralClient = referralClientDao.find(
         new PrimaryKey(managedClientAddress.getFkReferral(), managedClientAddress.getFkClient()));
-    String methodName = SET_COUNTY + referralClient.getCountySpecificCode() + FLAG;
+    final String methodName = SET_COUNTY + referralClient.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);
   }
 
@@ -109,7 +114,8 @@ public class NonLACountyTriggers {
    * @param managed referral creates or updates the countyOwnership bases on the Assignment
    *        establishedCode with the referral foreign key
    */
-  public void createAndUpdateReferralCoutyOwnership(Assignment managed) {
+  public void createAndUpdateReferralCountyOwnership(Assignment managed) {
+    LOGGER.info("NonLACountyTriggers.createAndUpdateReferralCountyOwnership");
     Boolean countyExists = Boolean.TRUE;
     if (managed.getTypeOfAssignmentCode() != TYPE_OF_ASSIGNMENT_CODE
         || managed.getEstablishedForCode() != REFERRAL_ESTABLISHED_CODE) {
@@ -123,19 +129,23 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managed.getEstablishedForId());
       countyOwnership.setEntityCode(REFERRAL_ENTITY_CODE);
     }
-    Referral referral = referralDao.find(managed.getEstablishedForId());
-    String methodName = SET_COUNTY + referral.getCountySpecificCode() + FLAG;
+    final Referral referral = referralDao.find(managed.getEstablishedForId());
+    final String methodName = SET_COUNTY + referral.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);
   }
 
   /**
    * 
+   * @param countyOwnership county ownership
+   * @param methodName method
+   * @param countyExists whether the county exists
    */
   private void createOrUpdateCountyOwnership(CountyOwnership countyOwnership, String methodName,
       Boolean countyExists) {
+    LOGGER.info("NonLACountyTriggers.createOrUpdateCountyOwnership");
     Method method = null;
     try {
-    	  if (!(SET_COUNTY + COUNTY_SPECIFIC_CODE_DEFAULT_CODE + FLAG).equals(methodName)) {
+      if (!(SET_COUNTY + COUNTY_SPECIFIC_CODE_DEFAULT_CODE + FLAG).equals(methodName)) {
         method = countyOwnership.getClass().getMethod(methodName, String.class);
         method.invoke(countyOwnership, SET_FLAG);
       }

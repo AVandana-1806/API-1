@@ -14,7 +14,8 @@ import com.ibm.db2.jcc.DB2Connection;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * Set DB2 user information on the active connection, including user logon and staff id.
+ * Set user information on the active connection, including user logon and staff id. Also, DB2
+ * specific information, for DB2 connections.
  * 
  * <p>
  * Shockingly, SonarQube complains about vendor-specific JDBC methods, thus the SuppressWarnings
@@ -25,15 +26,16 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  */
 @SuppressWarnings({"fb-contrib:JVR_JDBC_VENDOR_RELIANCE", "squid:CallToDeprecatedMethod",
     "fb-contrib:MDM_INETADDRESS_GETLOCALHOST"})
-public class WorkDB2UserInfo implements Work {
+public class WorkFerbUserInfo implements Work {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkDB2UserInfo.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WorkFerbUserInfo.class);
 
   public static final String PROGRAM_NAME = "CARES Ferb";
 
   public static final String SERVER_IP_ADDRESS;
   public static final String SERVER_IP_NAME;
 
+  // Find host and IP address up front.
   static {
     String hostAddress = null;
     String hostName = null;
@@ -43,9 +45,9 @@ public class WorkDB2UserInfo implements Work {
       hostName = i.getHostName();
       LOGGER.info("Host name: {}, IP address: {}", hostAddress, hostName);
     } catch (Exception e) {
-      LOGGER.error("UNABLE TO FIND HOST IP! {}", e.getMessage(), e);
+      LOGGER.error("FAILED TO FIND HOST IP! {}", e.getMessage(), e);
       if (StringUtils.isBlank(hostAddress)) {
-        hostAddress = "unknown server";
+        hostAddress = "Ferb unknown";
       }
     } finally {
       SERVER_IP_ADDRESS = hostAddress;

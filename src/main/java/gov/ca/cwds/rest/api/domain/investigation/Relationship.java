@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.api.domain.investigation;
 
 import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -29,13 +31,14 @@ import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * {@link DomainObject} representing a Relationship
+ * {@link DomainObject} representing a Relationship.
  * 
  * @author CWDS API Team
  */
 @JsonSnakeCase
-@JsonPropertyOrder({"id", "date_of_birth", "first_name", "middle_name", "last_name", "name_suffix",
-    "gender", "date_of_death", "sensitive", "sealed", "legacy_descriptor", "relationship_to"})
+@JsonPropertyOrder({"id", "date_of_birth", "age", "age_unit", "first_name", "middle_name",
+    "last_name", "name_suffix", "gender", "date_of_death", "sensitive", "sealed",
+    "legacy_descriptor", "relationship_to"})
 public final class Relationship extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
@@ -52,6 +55,17 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   @ApiModelProperty(required = true, readOnly = false, value = "date of birth",
       example = "1999-10-01")
   private String dateOfBirth;
+
+  @JsonProperty("age")
+  @ApiModelProperty(required = false, readOnly = false, example = "12")
+  private Short age;
+
+  @JsonProperty("age_unit")
+  @NotNull
+  @Size(max = 1)
+  @ApiModelProperty(required = true, readOnly = false, value = "Age Unit", example = "M")
+  @OneOf(value = {"Y", "M", "D"}, ignoreCase = false, ignoreWhitespace = true)
+  private String ageUnit;
 
   @JsonProperty("first_name")
   @ApiModelProperty(required = false, readOnly = false, value = "first name", example = "joe")
@@ -107,7 +121,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   private Set<RelationshipTo> relatedTo;
 
   /**
-   * 
+   * Default constructor.
    */
   public Relationship() {
     super();
@@ -116,6 +130,8 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   /**
    * @param id - id
    * @param dateOfBirth - date of birth
+   * @param age age
+   * @param ageUnit age time unit
    * @param firstName - first name
    * @param middleName - middle name
    * @param lastName - last name
@@ -128,12 +144,15 @@ public final class Relationship extends ReportingDomain implements Request, Resp
    * @param relatedTo - people related to this person
    */
   public Relationship(String id, @Date(format = "yyyy-MM-dd", required = false) String dateOfBirth,
-      String firstName, String middleName, String lastName, String suffixName, String gender,
+      Short age, String ageUnit, String firstName, String middleName, String lastName,
+      String suffixName, String gender,
       @Date(format = "yyyy-MM-dd", required = false) String dateOfDeath, Boolean sensitive,
       Boolean sealed, CmsRecordDescriptor cmsRecordDescriptor, Set<RelationshipTo> relatedTo) {
     super();
     this.id = id;
     this.dateOfBirth = dateOfBirth;
+    this.age = calculatedAge(dateOfBirth);
+    this.ageUnit = calculatedAgeUnit(dateOfBirth);
     this.firstName = firstName;
     this.middleName = middleName;
     this.lastName = lastName;
@@ -156,6 +175,8 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.id = client.getId();
     this.dateOfBirth =
         client.getBirthDate() != null ? DomainChef.cookDate(client.getBirthDate()) : null;
+    this.age = calculatedAge(dateOfBirth);
+    this.ageUnit = calculatedAgeUnit(dateOfBirth);
     this.firstName = client.getFirstName();
     this.middleName = client.getMiddleName();
     this.lastName = client.getLastName();
@@ -173,6 +194,48 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.relatedTo = relationships;
   }
 
+  public static Short calculatedAge(String birthDate) {
+    LocalDate currentDate = LocalDate.now();
+    LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
+    if (dob != null) {
+      int ageInYears = Period.between(dob, currentDate).getYears();
+      if (ageInYears > 0)
+        return (short) ageInYears;
+      else {
+        int ageInMonths = Period.between(dob, currentDate).getMonths();
+        if (ageInMonths > 0)
+          return (short) ageInMonths;
+        else {
+          return (short) Period.between(dob, currentDate).getDays();
+        }
+      }
+    } else {
+      return 0;
+    }
+
+  }
+
+  public static String calculatedAgeUnit(String birthDate) {
+    LocalDate currentDate = LocalDate.now();
+    LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
+    if (dob != null) {
+      int ageInYears = Period.between(dob, currentDate).getYears();
+      if (ageInYears > 0)
+        return "Y";
+      else {
+        int ageInMonths = Period.between(dob, currentDate).getMonths();
+        if (ageInMonths > 0)
+          return "M";
+        else {
+          return "D";
+        }
+      }
+    } else {
+      return "";
+    }
+
+  }
+
   /**
    * @return id
    */
@@ -185,6 +248,20 @@ public final class Relationship extends ReportingDomain implements Request, Resp
    */
   public String getDateOfBirth() {
     return dateOfBirth;
+  }
+
+  /**
+   * @return the age
+   */
+  public Short getAge() {
+    return age;
+  }
+
+  /**
+   * @param age the age to set
+   */
+  public void setAge(Short age) {
+    this.age = age;
   }
 
   /**

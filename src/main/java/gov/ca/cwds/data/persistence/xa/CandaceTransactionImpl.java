@@ -24,7 +24,13 @@ public class CandaceTransactionImpl implements Transaction {
 
   private final Transaction txn;
 
+  /**
+   * Ctor wraps a Hibernate transaction.
+   * 
+   * @param txn Hibernate transaction
+   */
   public CandaceTransactionImpl(Transaction txn) {
+    LOGGER.trace("CandaceTransactionImpl.ctor");
     this.txn = txn;
   }
 
@@ -34,33 +40,34 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void begin() {
-    LOGGER.info("\n\t****** CandaceTransactionImpl.begin! ****** \n");
+    LOGGER.info("CandaceTransactionImpl.begin");
     CaresStackUtils.logStack();
     txn.begin();
   }
 
   @Override
   public void commit() {
-    LOGGER.info("\n\t****** CandaceTransactionImpl.commit! ****** \n");
+    LOGGER.info("CandaceTransactionImpl.commit");
     CaresStackUtils.logStack();
     txn.commit();
   }
 
   @Override
   public void rollback() {
-    LOGGER.warn("\n\t****** CandaceTransactionImpl.rollback! ****** \n");
+    LOGGER.info("CandaceTransactionImpl.rollback");
     CaresStackUtils.logStack();
     txn.rollback();
   }
 
   @Override
   public TransactionStatus getStatus() {
+    LOGGER.trace("CandaceTransactionImpl.getStatus");
     return txn.getStatus();
   }
 
   @Override
   public void setRollbackOnly() {
-    LOGGER.warn("\n\t****** CandaceTransactionImpl.setRollbackOnly! ****** \n");
+    LOGGER.info("CandaceTransactionImpl.setRollbackOnly");
     txn.setRollbackOnly();
   }
 
@@ -71,28 +78,38 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public boolean getRollbackOnly() {
+    LOGGER.trace("CandaceTransactionImpl.getRollbackOnly");
     return txn.getRollbackOnly();
   }
 
   @Override
   public void setTimeout(int seconds) {
+    LOGGER.debug("CandaceTransactionImpl.setTimeout: seconds: {}", seconds);
     txn.setTimeout(seconds);
   }
 
   @Override
   public boolean isActive() {
+    LOGGER.trace("CandaceTransactionImpl.isActive");
     return txn.isActive();
   }
 
   @Override
   public int getTimeout() {
+    LOGGER.debug("CandaceTransactionImpl.getTimeout");
     return txn.getTimeout();
   }
 
   @Override
   public void markRollbackOnly() {
-    LOGGER.warn("\n\t****** CandaceTransactionImpl.markRollbackOnly! ****** \n");
+    LOGGER.info("CandaceTransactionImpl.markRollbackOnly");
     txn.markRollbackOnly();
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    LOGGER.debug("CandaceTransactionImpl.finalize");
+    super.finalize();
   }
 
 }

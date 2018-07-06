@@ -22,14 +22,14 @@ public class CaresStackUtils {
 
   public static void logStack() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    if (ctx != null && ctx.isXaTransaction() && LOGGER.isDebugEnabled()) {
+    if (ctx != null && ctx.isXaTransaction() && LOGGER.isTraceEnabled()) {
       try {
         final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         Arrays.stream(stack, 0, stack.length - 1)
             .filter(e -> e.getClassName().startsWith("gov.ca.cwds")
                 && !e.getClassName().startsWith("gov.ca.cwds.rest.filters")
                 && !e.getClassName().contains("$$"))
-            .forEach(e -> LOGGER.debug("\t{}", e));
+            .forEach(e -> LOGGER.trace("\t{}", e));
       } catch (Exception e) {
         LOGGER.error("FAILED TO PRINT STACK! {}", e);
         throw e;

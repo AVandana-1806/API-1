@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
- * {@link PersistentObject} Class representing an CountyOwnership.
+ * {@link PersistentObject} Class representing a CountyOwnership record.
  * 
  * @author CWDS API Team
  */
@@ -28,7 +28,6 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @Table(name = "CNTYOWNT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SuppressWarnings("javadoc")
 public class CountyOwnership implements PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;

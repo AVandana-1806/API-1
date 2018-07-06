@@ -160,7 +160,7 @@ public class AssignmentService implements
     StaffPerson staffperson = staffpersonDao.find(managed.getLastUpdatedId());
     if (staffperson != null
         && !(triggerTablesDao.getLaCountySpecificCode().equals(staffperson.getCountyCode()))) {
-      nonLACountyTriggers.createAndUpdateReferralCoutyOwnership(managed);
+      nonLACountyTriggers.createAndUpdateReferralCountyOwnership(managed);
     }
     externalInterfaceTables.createExtInterAssignment(managed, "N");
   }

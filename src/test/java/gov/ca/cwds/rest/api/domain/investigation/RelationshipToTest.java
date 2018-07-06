@@ -30,6 +30,8 @@ public class RelationshipToTest {
   private String relatednameSuffix = "Jr";
   private String relatedGender = "M";
   private String relatedDateOfBirth = "2000-10-01";
+  private Short relatedAge = 17;
+  private String relatedAgeUnit = "Y";
   private String relatedDateOfDeath = "2001-10-01";
   private String relationshipStartDate = "2000-10-01";
   private String relationshipEndDate = "2001-10-01";
@@ -54,9 +56,9 @@ public class RelationshipToTest {
   @Test
   public void testDomainConstructorSuccess() throws Exception {
     RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedLastName,
-        relatednameSuffix, relatedGender, relatedDateOfBirth, relatedDateOfDeath,
-        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
-        relationshipContext, relationshipToPerson, id);
+        relatednameSuffix, relatedGender, relatedDateOfBirth, relatedAge, relatedAgeUnit,
+        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
+        sameHomeCode, relationship, relationshipContext, relationshipToPerson, id);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));

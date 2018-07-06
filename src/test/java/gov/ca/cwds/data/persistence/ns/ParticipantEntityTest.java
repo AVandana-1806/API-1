@@ -38,6 +38,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
   private String legacySourceTable = "REFERL_T";
   private Boolean sensitivity = false;
   private Boolean sealed = false;
+  private Boolean probationYouth = false;
   private String approximateAge = "24";
   private String approximateAgeUnits = "YR";
   private ScreeningEntity screeningEntity;
@@ -60,7 +61,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
     screeningEntity = new ScreeningEntityBuilder().build();
     ParticipantEntity pe = new ParticipantEntity(id, birthDate, deathDate, firstName, gender,
         lastName, ssn, screeningEntity, legacyId, roles, languages, middleName, nameSuffix, races,
-        ethnicity, legacySourceTable, sensitivity, sealed, approximateAge, approximateAgeUnits);
+        ethnicity, legacySourceTable, sensitivity, sealed, probationYouth, approximateAge, approximateAgeUnits);
     assertThat(pe.getId(), is(equalTo(id)));
     assertThat(pe.getPrimaryKey(), is(equalTo(id)));
     assertThat(pe.getDateOfBirth(), is(equalTo(birthDate)));
@@ -80,6 +81,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
     assertThat(pe.getLegacySourceTable(), is(equalTo(legacySourceTable)));
     assertThat(pe.getSensitive(), is(equalTo(sensitivity)));
     assertThat(pe.getSealed(), is(equalTo(sealed)));
+    assertThat(pe.getProbationYouth(), is(equalTo(probationYouth)));
     assertThat(pe.getApproximateAge(), is(equalTo(approximateAge)));
     assertThat(pe.getApproximateAgeUnits(), is(equalTo(approximateAgeUnits)));
   }
