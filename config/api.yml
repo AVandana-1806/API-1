@@ -115,7 +115,7 @@ xaCmsDataSourceFactory:
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
       hibernate.cache.use_query_cache: false
       # hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_second_level_cache: false
@@ -151,7 +151,7 @@ xaCmsRsDataSourceFactory:
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
       hibernate.cache.use_query_cache: false
       # hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_second_level_cache: false
@@ -187,6 +187,7 @@ xaNsDataSourceFactory:
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: on_close
       connection.release_mode: on_close
+      hibernate.connection.isolation: 2
       hibernate.temp.use_jdbc_metadata_defaults: true
       # hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_query_cache: false
