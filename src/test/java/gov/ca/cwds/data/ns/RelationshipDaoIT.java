@@ -8,6 +8,7 @@ import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 
 import java.util.Date;
+import java.util.List;
 
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.fixture.ParticipantEntityBuilder;
@@ -30,8 +31,9 @@ public class RelationshipDaoIT implements DaoTestTemplate {
     private static SessionFactory sessionFactory;
     private static ParticipantDao participantDao;
     private static ScreeningDao screeningDao;
-    private static String screeningId;
+    private String screeningId;
     private Session session;
+    private Relationship existingRelationship;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -65,8 +67,9 @@ public class RelationshipDaoIT implements DaoTestTemplate {
         ParticipantEntity participant2 = new ParticipantEntityBuilder().setId(null).setScreeningEntity(screeningEntity).build();
         participant1 = participantDao.create(participant1);
         participant2 = participantDao.create(participant2);
-        Relationship existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
-                new Date(), new Date(), true, false, "111111", new Date(), new Date());
+        existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
+                new Date(), new Date(), true, false, "222", new Date(), new Date());
+        existingRelationship = relationshipDao.create(existingRelationship);
     }
 
     @Override
@@ -101,7 +104,7 @@ public class RelationshipDaoIT implements DaoTestTemplate {
     @Override
     public void testCreate() throws Exception {
         Relationship relationship = new Relationship(null, "ClientId", "RelationId", 190, new Date(),
-                new Date(), true, false, "11111", new Date(),  new Date());
+                new Date(), true, false, "111", new Date(),  new Date());
         Relationship created = relationshipDao.create(relationship);
         assertThat(created, is(relationship));
         assertNotNull(created.getId());
@@ -130,6 +133,18 @@ public class RelationshipDaoIT implements DaoTestTemplate {
     @Override
     public void testUpdateEntityNotFoundException() throws Exception {
         throw new NotImplementedException("Test not implemented until Entity implements update method");
+    }
+
+    @Test
+    public void testGetRelationshipsByLegacyId() throws Exception {
+        Relationship actualRelationship = relationshipDao.getByLegacyId("222");
+        assertEquals(existingRelationship, actualRelationship);
+    }
+
+    @Test
+    public void testGetRelationshipsByScreeningId() throws Exception {
+       List<Relationship> actualRelationships = relationshipDao.getRelationshipsByScreeningId(screeningId);
+        assertEquals(existingRelationship, actualRelationships.get(0));
     }
 }
 
