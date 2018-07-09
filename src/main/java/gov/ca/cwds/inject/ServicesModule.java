@@ -4,6 +4,7 @@ import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibern
 import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
 import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -326,6 +327,7 @@ public class ServicesModule extends AbstractModule {
     bind(ClientCollateralService.class);
     bind(ClientRelationshipService.class);
     bind(ClientTransformer.class);
+    bind(IntakeAddressConverter.class);
     bind(CmsDocReferralClientService.class);
     bind(CmsDocumentService.class);
     bind(CmsNSReferralService.class);

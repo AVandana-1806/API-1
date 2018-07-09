@@ -7,6 +7,7 @@ import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -463,6 +464,7 @@ public class DataAccessModule extends AbstractModule {
     bind(RaceDao.class);
     bind(ScreeningAddressDao.class);
     bind(ScreeningDao.class);
+    bind(PlacementEpisodeDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);
