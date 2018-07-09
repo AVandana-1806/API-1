@@ -94,7 +94,7 @@ public class CmsRecordDescriptor implements ApiMarker {
    * @param id - the CMS id
    * @param uiId - the CMS user interface Id
    * @param tableName - the physical table name
-   * @param tableDescription - the table Descrption
+   * @param tableDescription - the table description
    */
   public CmsRecordDescriptor(String id, String uiId, String tableName, String tableDescription) {
     this.id = id;

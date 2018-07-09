@@ -12,7 +12,7 @@ import gov.ca.cwds.rest.services.ServiceException;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S3437", "squid:S2160"})
+@SuppressWarnings({"squid:S3437", "squid:S2160", "findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
 public class PostedLongText extends LongText {
 
   private static final long serialVersionUID = 1L;

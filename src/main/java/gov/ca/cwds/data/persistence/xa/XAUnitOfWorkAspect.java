@@ -42,7 +42,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1166"})
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
@@ -334,6 +334,11 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   /**
    * Commit XA transaction.
    * 
+   * <p>
+   * Commit automatically flushes session. No need for
+   * {@code sessions.values().stream().sequential().forEach(Session::flush);}
+   * </p>
+   * 
    * @throws CaresXAException on database error
    */
   protected void commit() throws CaresXAException {
@@ -350,7 +355,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       final int status = txn.getStatus();
       if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
         LOGGER.warn("XA COMMIT TRANSACTION!");
-        // sessions.values().stream().sequential().forEach(Session::flush);
         txn.commit();
       }
     } catch (Exception e) {

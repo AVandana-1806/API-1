@@ -218,7 +218,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.gender = gender;
     this.ssn = ssn;
     this.dateOfBirth = dateOfBirth != null ? new Date(dateOfBirth.getTime()) : null;
-    this.dateOfDeath = dateOfDeath;
+    this.dateOfDeath = freshDate(dateOfDeath);
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
     this.roles = roles;
