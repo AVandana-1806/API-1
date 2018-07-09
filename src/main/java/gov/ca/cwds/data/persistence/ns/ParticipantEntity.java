@@ -3,6 +3,14 @@ package gov.ca.cwds.data.persistence.ns;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,7 +18,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,17 +27,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import org.apache.commons.collections4.comparators.BooleanComparator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
@@ -147,7 +153,8 @@ public class ParticipantEntity
   @Column(name = "approximate_age_units")
   private String approximateAgeUnits;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "participant_id", insertable = false, updatable = false)
   @OrderBy("id")
   private List<CsecEntity> csecs = new ArrayList<>();
@@ -155,7 +162,8 @@ public class ParticipantEntity
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "id", insertable = false, updatable = false)
   private SafelySurrenderedBabiesEntity safelySurrenderedBabies;
 
@@ -173,8 +181,8 @@ public class ParticipantEntity
   public ParticipantEntity(String id, Date dateOfBirth, Date dateOfDeath, String firstName,
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
-      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed, Boolean probationYouth,
-      String approximateAge, String approximateAgeUnits) {
+      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
+      Boolean probationYouth, String approximateAge, String approximateAgeUnits) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
     this.dateOfDeath = freshDate(dateOfDeath);

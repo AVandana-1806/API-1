@@ -1,12 +1,21 @@
 package gov.ca.cwds.data.persistence.ns;
 
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,12 +23,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
+
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
@@ -117,11 +129,13 @@ public class ScreeningEntity implements PersistentObject {
   private String currentLocationOfChildren;
 
   @HashCodeExclude
-  @OneToMany(mappedBy = "screeningEntity", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "screeningEntity")
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   private Set<Allegation> allegations = new HashSet<>();
 
   @HashCodeExclude
-  @OneToMany(mappedBy = "screeningEntity", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "screeningEntity")
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   private Set<ParticipantEntity> participants = new HashSet<>();
 
   @Column(name = "report_type")
@@ -175,10 +189,10 @@ public class ScreeningEntity implements PersistentObject {
    * @param screeningContactReference The case or referral that this screening contact references
    */
   public ScreeningEntity(String id, String reference, Date startedAt, Date endedAt,
-      String incidentCounty, LocalDate incidentDate, String locationType, String communicationMethod,
-      String name, String responseTime, String screeningDecision, String screeningDecisionDetail,
-      String narrative, Address contactAddress, String assigneeStaffId,
-      Set<ParticipantEntity> participants, String reportType,
+      String incidentCounty, LocalDate incidentDate, String locationType,
+      String communicationMethod, String name, String responseTime, String screeningDecision,
+      String screeningDecisionDetail, String narrative, Address contactAddress,
+      String assigneeStaffId, Set<ParticipantEntity> participants, String reportType,
       String screeningStatus, String screeningContactReference) {
     super();
     this.id = id;
