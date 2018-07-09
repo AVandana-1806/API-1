@@ -61,8 +61,8 @@ public class RelationshipDaoIT implements DaoTestTemplate {
         ScreeningEntity screeningEntity =new ScreeningEntityBuilder().build();
         screeningEntity = screeningDao.create(screeningEntity);
         screeningId = screeningEntity.getId();
-        ParticipantEntity participant1 = new ParticipantEntityBuilder().setScreeningEntity(screeningEntity).build();
-        ParticipantEntity participant2 = new ParticipantEntityBuilder().setScreeningEntity(screeningEntity).build();
+        ParticipantEntity participant1 = new ParticipantEntityBuilder().setId(null).setScreeningEntity(screeningEntity).build();
+        ParticipantEntity participant2 = new ParticipantEntityBuilder().setId(null).setScreeningEntity(screeningEntity).build();
         participant1 = participantDao.create(participant1);
         participant2 = participantDao.create(participant2);
         Relationship existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
