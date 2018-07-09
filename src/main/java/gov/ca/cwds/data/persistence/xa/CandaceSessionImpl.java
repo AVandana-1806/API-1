@@ -65,7 +65,7 @@ public class CandaceSessionImpl implements Session {
 
   protected Session session;
 
-  protected CandaceTransactionImpl txn;
+  protected transient CandaceTransactionImpl txn;
 
   public CandaceSessionImpl(Session session) {
     LOGGER.debug("CandaceSessionImpl.ctor");
@@ -73,7 +73,7 @@ public class CandaceSessionImpl implements Session {
   }
 
   protected void logStack(Object obj, String methodMsg) {
-    if (LOGGER.isDebugEnabled()) {
+    if (LOGGER.isTraceEnabled()) {
       if (obj != null && obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
         LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
