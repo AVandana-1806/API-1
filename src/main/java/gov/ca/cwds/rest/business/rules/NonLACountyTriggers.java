@@ -87,6 +87,7 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managed.getClientId());
       countyOwnership.setEntityCode(CLIENT_ENTITY_CODE);
     }
+
     final String methodName = SET_COUNTY + managed.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);
   }
@@ -104,6 +105,7 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managedClientAddress.getFkAddress());
       countyOwnership.setEntityCode(ADDRESS_ENTITY_CODE);
     }
+
     final ReferralClient referralClient = referralClientDao.find(
         new PrimaryKey(managedClientAddress.getFkReferral(), managedClientAddress.getFkClient()));
     final String methodName = SET_COUNTY + referralClient.getCountySpecificCode() + FLAG;
@@ -129,6 +131,7 @@ public class NonLACountyTriggers {
       countyOwnership.setEntityId(managed.getEstablishedForId());
       countyOwnership.setEntityCode(REFERRAL_ENTITY_CODE);
     }
+
     final Referral referral = referralDao.find(managed.getEstablishedForId());
     final String methodName = SET_COUNTY + referral.getCountySpecificCode() + FLAG;
     createOrUpdateCountyOwnership(countyOwnership, methodName, countyExists);

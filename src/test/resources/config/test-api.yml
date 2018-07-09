@@ -84,7 +84,7 @@ xaCmsDataSourceFactory:
   password:
   url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
-  validationQuery: "/* MyService Health Check */ SELECT 1"
+  validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
   initialSize: 2
   minSize: 2
@@ -92,15 +92,20 @@ xaCmsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
-      hibernate.show_sql: false
-      hibernate.default_schema: ${DB_CMS_SCHEMA:-cwsint}
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
+      hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
-      hibernate.connection.provider_disables_autocommit: true
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
+      hibernate.connection.isolation: 2
+      hibernate.cache.use_query_cache: false
+      # hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
 
@@ -111,7 +116,7 @@ xaCmsRsDataSourceFactory:
   password:
   url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1}
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
-  validationQuery: "/* MyService Health Check */ SELECT 1"
+  validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
   initialSize: 2
   minSize: 2
@@ -119,15 +124,20 @@ xaCmsRsDataSourceFactory:
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
-      hibernate.show_sql: false
-      hibernate.default_schema: ${DB_CMSRS_SCHEMA:-cwsrs1}
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
+      hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
-      hibernate.connection.provider_disables_autocommit: true
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
+      hibernate.connection.isolation: 2
+      # hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_second_level_cache: false
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1}
 
@@ -146,19 +156,21 @@ xaNsDataSourceFactory:
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
       hibernate.id.new_generator_mappings: false
-      hibernate.show_sql: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
-      # hibernate.temp.use_jdbc_metadata_defaults: false
+      hibernate.connection.release_mode: on_close
+      connection.release_mode: on_close
+      hibernate.connection.isolation: 2
+      hibernate.temp.use_jdbc_metadata_defaults: true
+      # hibernate.connection.provider_disables_autocommit: true
       hibernate.cache.use_query_cache: false
       hibernate.cache.use_second_level_cache: false
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-      hibernate.connection.provider_disables_autocommit: true
   xaProperties:
       url: ${DB_NS_JDBC_URL:-jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens}
 

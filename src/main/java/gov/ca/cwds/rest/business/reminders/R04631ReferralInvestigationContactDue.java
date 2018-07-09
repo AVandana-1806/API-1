@@ -21,7 +21,6 @@ import gov.ca.cwds.rest.services.cms.TickleService;
 import gov.ca.cwds.rest.validation.ParticipantValidator;
 
 /**
- * 
  * <p>
  * BUSINESS RULE: "R - 04631" - TICKLE for Referral Investigation Contact Due reminder
  * 
@@ -30,7 +29,6 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
  * <p>
  * 
  * @author CWDS API Team
- *
  */
 public class R04631ReferralInvestigationContactDue {
 

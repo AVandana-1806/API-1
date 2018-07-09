@@ -2,12 +2,19 @@ package gov.ca.cwds.data.persistence.cms;
 
 import static gov.ca.cwds.data.persistence.cms.Referral.FIND_REFERRALS_WITH_REPORTERS_BY_IDS;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +33,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
@@ -232,11 +240,13 @@ public class Referral extends CmsPersistentObject implements AccessLimitationAwa
   @JoinColumn(name = "FKADDRS_T", nullable = true, updatable = false, insertable = false)
   private Address addresses;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<Allegation> allegations = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<CrossReport> crossReports = new HashSet<>();
 
@@ -246,7 +256,8 @@ public class Referral extends CmsPersistentObject implements AccessLimitationAwa
   private Reporter reporter;
 
   @ToStringExclude
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "FKREFERL_T", referencedColumnName = "IDENTIFIER")
   private Set<ReferralClient> referralClients = new HashSet<>();
 

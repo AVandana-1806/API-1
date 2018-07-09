@@ -95,8 +95,8 @@ public class Relationship implements PersistentObject {
     this.clientId = clientId;
     this.relativeId = relativeId;
     this.relationshipType = relationshipType;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this.createdAt = freshDate(createdAt);
+    this.updatedAt = freshDate(updatedAt);
     this.sameHomeStatus = sameHomeStatus;
     this.absentParentIndicator = absentParentIndicator;
     this.startDate = startDate;

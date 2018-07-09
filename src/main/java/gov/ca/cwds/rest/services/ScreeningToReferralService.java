@@ -200,7 +200,6 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-
     return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
   }

@@ -10,11 +10,9 @@ import gov.ca.cwds.rest.api.domain.LimitedAccessType;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
 public class HOIPerpetrator extends HOIPerson {
 
-  /**
-   * Default serialization version.
-   */
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("limited_access_code")
@@ -46,5 +44,5 @@ public class HOIPerpetrator extends HOIPerson {
   public void setLimitedAccessType(LimitedAccessType limitedAccessType) {
     this.limitedAccessType = limitedAccessType;
   }
-}
 
+}

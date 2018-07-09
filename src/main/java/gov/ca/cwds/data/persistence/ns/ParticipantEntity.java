@@ -25,7 +25,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import org.apache.commons.collections4.comparators.BooleanComparator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -179,8 +178,8 @@ public class ParticipantEntity
   public ParticipantEntity(String id, Date dateOfBirth, Date dateOfDeath, String firstName,
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
-      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed, Boolean probationYouth,
-      String approximateAge, String approximateAgeUnits) {
+      String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
+      Boolean probationYouth, String approximateAge, String approximateAgeUnits) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
     this.dateOfDeath = freshDate(dateOfDeath);

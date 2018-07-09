@@ -77,7 +77,6 @@ public class ChildClientService implements
    */
   @Override
   public gov.ca.cwds.rest.api.domain.cms.ChildClient find(String primaryKey) {
-
     gov.ca.cwds.data.persistence.cms.ChildClient persistedChildClient =
         childClientDao.find(primaryKey);
     if (persistedChildClient != null) {
