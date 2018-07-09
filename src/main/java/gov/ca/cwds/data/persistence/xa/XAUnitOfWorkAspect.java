@@ -42,7 +42,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1166"})
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
@@ -236,15 +236,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     if (session != null) {
       LOGGER.info("XA CLOSE SESSION!");
       try {
-        session.flush();
-        session.clear();
-      } catch (javax.persistence.TransactionRequiredException tre) {
-        LOGGER.debug("No transaction to flush session. All good.");
-      } catch (Exception e) {
-        LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
-      }
-
-      try {
         session.close();
       } catch (Exception e) {
         LOGGER.error("FAILED TO CLOSE SESSION! {}", e.getMessage(), e);
@@ -333,7 +324,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       LOGGER.info("XA ROLLBACK TRANSACTION!");
       sessions.values().stream().forEach(this::rollbackSessionTransaction);
-      txn.rollback(); // wrapping XA transaction
+      txn.rollback(); // wrap XA transaction
     } catch (Exception e) {
       LOGGER.error("XA ROLLBACK FAILED! {}", e.getMessage(), e);
       throw new CaresXAException("XA ROLLBACK FAILED!", e);
@@ -342,6 +333,11 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
   /**
    * Commit XA transaction.
+   * 
+   * <p>
+   * Commit automatically flushes session. No need for
+   * {@code sessions.values().stream().sequential().forEach(Session::flush);}
+   * </p>
    * 
    * @throws CaresXAException on database error
    */
@@ -357,10 +353,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     try {
       final int status = txn.getStatus();
-      if (status == Status.STATUS_ROLLING_BACK || status == Status.STATUS_MARKED_ROLLBACK) {
-        LOGGER.warn("XA ROLLBACK TRANSACTION!");
-        txn.rollback();
-      } else {
+      if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
         LOGGER.warn("XA COMMIT TRANSACTION!");
         txn.commit();
       }

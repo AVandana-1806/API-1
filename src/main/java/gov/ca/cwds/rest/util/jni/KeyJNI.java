@@ -27,7 +27,7 @@ import gov.ca.cwds.data.persistence.cms.StaffPerson;
  * </p>
  * 
  * <p>
- * You break it, you buy it. :-)
+ * <strong>"You break it, you buy it." :-)</strong>
  * </p>
  * 
  * <h2>Steps to build and run</h2>
@@ -88,7 +88,7 @@ public final class KeyJNI {
    * in shared library. <strong>DO NOT CHANGE!</strong>
    * </p>
    */
-  @SuppressWarnings("javadoc")
+  @SuppressWarnings({"findbugs:UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"})
   public static final class KeyDetail {
     public String key; // NOSONAR
     public String staffId; // NOSONAR
