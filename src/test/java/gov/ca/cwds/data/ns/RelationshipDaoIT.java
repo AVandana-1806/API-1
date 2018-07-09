@@ -4,10 +4,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 import gov.ca.cwds.data.junit.template.DaoTestTemplate;
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 
 import java.util.Date;
 
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
+import gov.ca.cwds.fixture.ParticipantEntityBuilder;
+import gov.ca.cwds.fixture.ScreeningEntityBuilder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,6 +28,9 @@ public class RelationshipDaoIT implements DaoTestTemplate {
 
     private static RelationshipDao relationshipDao;
     private static SessionFactory sessionFactory;
+    private static ParticipantDao participantDao;
+    private static ScreeningDao screeningDao;
+    private static String screeningId;
     private Session session;
 
     @Rule
@@ -36,6 +43,8 @@ public class RelationshipDaoIT implements DaoTestTemplate {
         System.out.println(System.getenv("DB_NS_PASSWORD"));
         sessionFactory = new Configuration().configure("ns-hibernate.cfg.xml").buildSessionFactory();
         relationshipDao = new RelationshipDao(sessionFactory);
+        participantDao = new ParticipantDao(sessionFactory);
+        screeningDao = new ScreeningDao(sessionFactory);
     }
 
     @SuppressWarnings("javadoc")
@@ -49,7 +58,14 @@ public class RelationshipDaoIT implements DaoTestTemplate {
     public void setup() {
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        Relationship existingRelationship = new Relationship(null, "ClientId", "RelationId", 190,
+        ScreeningEntity screeningEntity =new ScreeningEntityBuilder().build();
+        screeningEntity = screeningDao.create(screeningEntity);
+        screeningId = screeningEntity.getId();
+        ParticipantEntity participant1 = new ParticipantEntityBuilder().setScreeningEntity(screeningEntity).build();
+        ParticipantEntity participant2 = new ParticipantEntityBuilder().setScreeningEntity(screeningEntity).build();
+        participant1 = participantDao.create(participant1);
+        participant2 = participantDao.create(participant2);
+        Relationship existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
                 new Date(), new Date(), true, false, "111111", new Date(), new Date());
     }
 
