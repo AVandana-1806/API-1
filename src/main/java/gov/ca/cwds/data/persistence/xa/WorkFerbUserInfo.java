@@ -62,7 +62,7 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
-    // con.setNetworkTimeout(executor, milliseconds);
+    // con.setNetworkTimeout(Executors.newFixedThreadPool(1), 90); // NEXT: soft-code timeout
 
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");
@@ -76,7 +76,6 @@ public class WorkFerbUserInfo implements Work {
       db2conn.setDB2ClientProgramId(userId);
       db2conn.setDB2ClientUser(staffId);
       db2conn.setDB2ClientWorkstation(SERVER_IP_NAME);
-      // db2conn.setNetworkTimeout(executor, milliseconds);
 
       // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
     }

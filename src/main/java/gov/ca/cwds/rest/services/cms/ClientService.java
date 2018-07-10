@@ -169,8 +169,8 @@ public class ClientService implements
   public gov.ca.cwds.rest.api.domain.cms.Client update(String primaryKey,
       gov.ca.cwds.rest.api.domain.cms.Client request) {
     gov.ca.cwds.rest.api.domain.cms.Client client = request;
-
     gov.ca.cwds.rest.api.domain.cms.Client savedEntity;
+
     try {
       // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
       final RequestExecutionContext ctx = RequestExecutionContext.instance();
@@ -179,13 +179,8 @@ public class ClientService implements
       managed.setLastUpdatedId(ctx.getStaffId());
       managed.setLastUpdatedTime(ctx.getRequestStartTime());
 
-      // Client managed =
-      // new Client(primaryKey, client, RequestExecutionContext.instance().getStaffId(),
-      // RequestExecutionContext.instance().getRequestStartTime());
-
-      validateByRuleR04966(existingClient);
-
-      // managed.setClientAddress(existingClient.getClientAddress());
+      validateByRuleR04966(managed);
+      managed.setClientAddress(existingClient.getClientAddress());
       managed = clientDao.update(managed);
       savedEntity = new gov.ca.cwds.rest.api.domain.cms.Client(managed, true);
       ssaname3Dao.clientSsaname3("U", managed);
