@@ -1,6 +1,10 @@
 package gov.ca.cwds.rest.resources;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_LOV;
+import static gov.ca.cwds.rest.core.Api.Datasource.NS;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,17 +14,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.inject.IntakeLovServiceResource;
+import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.ApiException;
+import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
 import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.es.ESPersons;
-import gov.ca.cwds.rest.services.IntakeLovService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,56 +50,14 @@ import io.swagger.annotations.ApiResponses;
 @Consumes(MediaType.TEXT_PLAIN)
 public class IntakeLovResource {
 
-  /**
-   * Class logger.
-   */
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResource.class);
 
   /**
-   * Java lacks short-hand notation for typed interfaces and classes, such as C++ "typedef" or
-   * "using alias", resulting in verbose type declarations.
-   * 
-   * <h4>Resource Delegate Type Parameters</h4>
-   * 
-   * <table>
-   * <tr>
-   * <th>Param</th>
-   * <th>Purpose</th>
-   * <th>Class</th>
-   * </tr>
-   * <tr>
-   * <td>K</td>
-   * <td>Key</td>
-   * <td>String</td>
-   * </tr>
-   * <tr>
-   * <td>Q</td>
-   * <td>API Request</td>
-   * <td>IntakeLov</td>
-   * </tr>
-   * <tr>
-   * <td>P</td>
-   * <td>API Response</td>
-   * <td>IntakeLovResponse</td>
-   * </tr>
-   * <tr>
-   * <td>S</td>
-   * <td>Service</td>
-   * <td>IntakeLovService</td>
-   * </tr>
-   * </table>
-   */
-  private SimpleResourceDelegate<String, IntakeLovEntry, IntakeLovResponse, IntakeLovService> resourceDelegate;
-
-  /**
    * Constructor
-   * 
-   * @param resourceDelegate The resourceDelegate to delegate to.
    */
   @Inject
-  public IntakeLovResource(
-      @IntakeLovServiceResource SimpleResourceDelegate<String, IntakeLovEntry, IntakeLovResponse, IntakeLovService> resourceDelegate) {
-    this.resourceDelegate = resourceDelegate;
+  public IntakeLovResource() {
+    // Default
   }
 
   /**
@@ -101,9 +65,9 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
+      readOnly = true, transactional = true)
   @GET
-  // @Path("/all")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})
@@ -112,7 +76,15 @@ public class IntakeLovResource {
   public Response getAll() {
     Response ret;
     try {
-      ret = resourceDelegate.handle(new IntakeLovEntry());
+      List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAll();
+      List<IntakeLovEntry> intakeLovEntries = new ArrayList<>();
+      for (IntakeLov lov : intakeLovs) {
+        IntakeLovEntry intakeLovEntry = new IntakeLovEntry(lov);
+        intakeLovEntries.add(intakeLovEntry);
+      }
+
+      IntakeLovResponse intakeLovResponse = new IntakeLovResponse(intakeLovEntries);
+      ret = Response.status(Response.Status.OK).entity(intakeLovResponse).build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
       throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);

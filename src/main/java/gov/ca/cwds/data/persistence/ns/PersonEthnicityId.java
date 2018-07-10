@@ -1,32 +1,39 @@
 package gov.ca.cwds.data.persistence.ns;
 
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
+
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * @author CWS-NS2
- *
+ * @author CWDS API Team
  */
 @Embeddable
 public class PersonEthnicityId implements Serializable {
 
-  /**
-   * Base serialization value. Increment by version
-   */
   private static final long serialVersionUID = 1L;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   private Person person;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   private Ethnicity ethnicity;
 
   /**
@@ -65,7 +72,6 @@ public class PersonEthnicityId implements Serializable {
     this.ethnicity = ethnicity;
   }
 
-  @SuppressWarnings("javadoc")
   public Serializable getPrimaryKey() {
     return null;
   }

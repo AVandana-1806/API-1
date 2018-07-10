@@ -1,10 +1,13 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.rest.util.FerbDateUtils;
+import static gov.ca.cwds.data.persistence.ns.AllegationEntity.FIND_BY_PERPETRATOR_ID;
+import static gov.ca.cwds.data.persistence.ns.AllegationEntity.FIND_BY_VICTIM_ID;
+import static gov.ca.cwds.data.persistence.ns.AllegationEntity.FIND_BY_VICTIM_OR_PERPETRATOR_ID;
+
 import java.io.Serializable;
 import java.util.Arrays;
-
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,19 +17,42 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.util.FerbDateUtils;
 
+/**
+ * {@link PersistentObject} representing a AllegationEntity.
+ * 
+ * @author CWDS API Team
+ *
+ */
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.AllegationEntity.findByScreeningId",
     query = "FROM gov.ca.cwds.data.persistence.ns.AllegationEntity"
         + " WHERE screeningId = :screeningId")
+@NamedQuery(name = FIND_BY_VICTIM_ID,
+    query = "FROM AllegationEntity a WHERE a.victimId = :victimId")
+@NamedQuery(name = FIND_BY_PERPETRATOR_ID,
+    query = "FROM AllegationEntity a WHERE a.perpetratorId = :perpetratorId")
+@NamedQuery(name = FIND_BY_VICTIM_OR_PERPETRATOR_ID,
+    query = "FROM AllegationEntity a WHERE a.victimId = :id OR a.perpetratorId = :id")
 @Entity
 @Table(name = "allegations")
 public class AllegationEntity implements PersistentObject {
+
+  public static final String FIND_BY_VICTIM_ID =
+      "gov.ca.cwds.data.persistence.ns.AllegationEntity.findByVictimId";
+  public static final String FIND_BY_PERPETRATOR_ID =
+      "gov.ca.cwds.data.persistence.ns.AllegationEntity.findByPerpetratorId";
+  public static final String FIND_BY_VICTIM_OR_PERPETRATOR_ID =
+      "gov.ca.cwds.data.persistence.ns.AllegationEntity.findByVictimOrPerpetratorId";
+
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "id")

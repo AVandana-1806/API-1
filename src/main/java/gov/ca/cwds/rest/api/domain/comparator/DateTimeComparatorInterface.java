@@ -11,8 +11,8 @@ import org.joda.time.DateTime;
  * 
  * @author CWDS API Team
  * @see DateTimeComparator
- *
  */
+@FunctionalInterface
 public interface DateTimeComparatorInterface {
 
   /**

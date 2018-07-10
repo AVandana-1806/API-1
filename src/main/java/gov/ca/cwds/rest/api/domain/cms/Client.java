@@ -820,14 +820,13 @@ public class Client extends ReportingDomain implements Request, Response {
         DEFAULT_CODE, Boolean.FALSE, childClientIndicatorVar, "", "", participant.getFirstName(),
         participant.getMiddleName(), participant.getLastName(), "", Boolean.FALSE, dateStarted,
         Boolean.FALSE, "", Boolean.FALSE, "", Boolean.FALSE, "", "", "", DEFAULT_CODE, "",
-        ESTIMATED_DOB_CODE_NO, unableToDetermineCode, "", genderCode,
-        DEFAULT_GENDER_IDENTITY_TYPE, null, DEFAULT_GENDER_EXPRESSION_TYPE, "",
-        hispanicUnableToDetermineCode, hispanicOriginCode, DEFAULT_CODE, DEFAULT_CODE,
-        DEFAULT_INCAPCITATED_PARENT_CODE, Boolean.FALSE, Boolean.FALSE, DEFAULT_LITERATE_CODE,
-        Boolean.FALSE, DEFAULT_CODE, DEFAULT_MILITARY_STATUS_CODE, "", "", DEFAULT_NAME_TYPE,
-        Boolean.FALSE, Boolean.FALSE, "", Boolean.FALSE, raceCode, participant.getPrimaryLanguage(),
-        DEFAULT_CODE, participant.getSecondaryLanguage(), Boolean.FALSE,
-        DEFAULT_SENSITIVITY_INDICATOR, DEFAULT_SEXUAL_ORIENTATION_TYPE,
+        ESTIMATED_DOB_CODE_NO, unableToDetermineCode, "", genderCode, DEFAULT_GENDER_IDENTITY_TYPE,
+        null, DEFAULT_GENDER_EXPRESSION_TYPE, "", hispanicUnableToDetermineCode, hispanicOriginCode,
+        DEFAULT_CODE, DEFAULT_CODE, DEFAULT_INCAPCITATED_PARENT_CODE, Boolean.FALSE, Boolean.FALSE,
+        DEFAULT_LITERATE_CODE, Boolean.FALSE, DEFAULT_CODE, DEFAULT_MILITARY_STATUS_CODE, "", "",
+        DEFAULT_NAME_TYPE, Boolean.FALSE, Boolean.FALSE, "", Boolean.FALSE, raceCode,
+        participant.getPrimaryLanguage(), DEFAULT_CODE, participant.getSecondaryLanguage(),
+        Boolean.FALSE, DEFAULT_SENSITIVITY_INDICATOR, DEFAULT_SEXUAL_ORIENTATION_TYPE,
         DEFAULT_SO_UNABLE_TO_DETERMINE_CODE, null, DEFAULT_SOC158_PLACEMENT_CODE, Boolean.FALSE,
         DEFAULT_SOCIAL_SECURITY_NUM_CHANGE_CODE, participant.getSsn(), participant.getNameSuffix(),
         Boolean.FALSE, Boolean.FALSE, DEFAULT_UNEMPLOYED_PARENT_CODE,
@@ -840,7 +839,7 @@ public class Client extends ReportingDomain implements Request, Response {
   public DateTime getLastUpdatedTime() {
     return lastUpdatedTime;
   }
- 
+
 
   /**
    * @return the existingClientId
@@ -889,6 +888,14 @@ public class Client extends ReportingDomain implements Request, Response {
    */
   public String getBirthDate() {
     return birthDate;
+  }
+
+  /**
+   *
+   * @param birthDate birth date
+   */
+  public void setBirthDate(String birthDate) {
+    this.birthDate = birthDate;
   }
 
   /**
@@ -1051,7 +1058,7 @@ public class Client extends ReportingDomain implements Request, Response {
   public String getEstimatedDobCode() {
     return estimatedDobCode;
   }
-  
+
   /**
    * @param estimatedDobCode - estimated date of birth code
    */

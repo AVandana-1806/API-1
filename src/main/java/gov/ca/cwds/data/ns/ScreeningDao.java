@@ -50,7 +50,7 @@ public class ScreeningDao extends BaseDaoImpl<ScreeningEntity> {
   /**
    * Find HOI ScreeningEntity objects by screening id.
    *
-   * @param clientIds - Legacy Client Id-s
+   * @param clientIds - Legacy Client Id's
    * @return list of ScreeningEntity objects
    */
   public Set<ScreeningEntity> findScreeningsByClientIds(Collection<String> clientIds) {

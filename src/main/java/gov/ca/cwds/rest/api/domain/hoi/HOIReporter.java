@@ -1,12 +1,12 @@
 package gov.ca.cwds.rest.api.domain.hoi;
 
-import gov.ca.cwds.rest.validation.ParticipantValidator;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import gov.ca.cwds.rest.validation.ParticipantValidator;
 
 /**
  * Reporter person.
@@ -14,6 +14,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author CWDS API Team
  */
 @JsonPropertyOrder({"id", "first_name", "last_name", "name_suffix", "role", "legacy_descriptor"})
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class HOIReporter extends HOIPerson {
 
   private static final long serialVersionUID = 1L;
@@ -134,4 +135,5 @@ public class HOIReporter extends HOIPerson {
       throw new IllegalArgumentException("Role '" + role + "' is not a Reporter role");
     }
   }
+
 }

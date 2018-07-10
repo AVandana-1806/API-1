@@ -41,4 +41,5 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
         .accept(MediaType.APPLICATION_JSON).get();
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
+
 }

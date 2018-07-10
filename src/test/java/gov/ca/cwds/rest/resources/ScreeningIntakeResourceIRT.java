@@ -3,12 +3,8 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_SCREENINGS;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 
-import gov.ca.cwds.rest.api.domain.Csec;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -21,6 +17,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.Screening;
 
 /**
+ *
  * CWDS API Team
  */
 public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
@@ -80,4 +77,5 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
+
 }

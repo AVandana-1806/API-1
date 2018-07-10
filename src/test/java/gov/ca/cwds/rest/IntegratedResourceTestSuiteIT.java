@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest;
 
+import gov.ca.cwds.rest.resources.ScreeningParticipantResourceIRT;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,10 +23,12 @@ import gov.ca.cwds.test.support.BaseDropwizardApplication;
     HoiCaseResourceIRT.class, HoiReferralResourceIRT.class, HoiScreeningResourceIRT.class,
     HoiUsingClientIdResourceIRT.class, InvolvementHistoryResourceIRT.class,
     ScreeningIntakeResourceIRT.class, ParticipantIntakeApiResourceIRT.class,
-    ScreeningRelationshipResourceIRT.class, ContactResourceIRT.class})
+    ScreeningRelationshipResourceIRT.class, ContactResourceIRT.class,
+    ScreeningParticipantResourceIRT.class})
 public class IntegratedResourceTestSuiteIT {
 
   @ClassRule
   public static BaseDropwizardApplication<ApiConfiguration> application =
       ApiApplicationTestSupport.getApplication();
+
 }

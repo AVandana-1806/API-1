@@ -45,6 +45,7 @@
   "phone_numbers": [],
   "sealed": false,
   "sensitive": false,
+  "probation_youth": true,
   "csec": [
     {
       "id": "2501",

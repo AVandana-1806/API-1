@@ -1,9 +1,25 @@
 package gov.ca.cwds.rest.services;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.rest.RestStatus;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+
 import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.ns.AddressesDao;
@@ -38,19 +54,6 @@ import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.NotImplementedException;
-import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.rest.RestStatus;
 
 /**
  * Business layer object to work on {@link Screening}
@@ -157,7 +160,7 @@ public class ScreeningService implements CrudsService {
    * {@inheritDoc}
    *
    * @see gov.ca.cwds.rest.services.CrudsService#update(java.io.Serializable,
-   * gov.ca.cwds.rest.api.Request)
+   *      gov.ca.cwds.rest.api.Request)
    */
   @Override
   public Screening update(Serializable primaryKey, Request request) {
@@ -258,8 +261,8 @@ public class ScreeningService implements CrudsService {
         participantIntakeApiService.getByScreeningId(screeningId);
 
     for (ParticipantEntity participantEntity : participantEntities) {
-      ParticipantIntakeApi participantIntakeApi =
-          participantIntakeApiService.find(new ParticipantResourceParameters(id, participantEntity.getId()));
+      ParticipantIntakeApi participantIntakeApi = participantIntakeApiService
+          .find(new ParticipantResourceParameters(id, participantEntity.getId()));
       screening.getParticipantIntakeApis().add(participantIntakeApi);
     }
 
@@ -335,6 +338,8 @@ public class ScreeningService implements CrudsService {
               "Cannot update allegation that doesn't exist. id = " + allegationEntity.getId());
         }
         allegationEntity.setCreatedAt(managedAllegationEntity.getCreatedAt());
+
+        // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
         allegationDao.getSessionFactory().getCurrentSession().detach(managedAllegationEntity);
         allegationDao.update(allegationEntity);
         allegationIdsOld.remove(allegationEntity.getId());
@@ -365,6 +370,8 @@ public class ScreeningService implements CrudsService {
               "Cannot update cross report that doesn't exist. id = " + crossReportEntity.getId());
         }
         crossReportEntity.setCreatedAt(managedCrossReportEntity.getCreatedAt());
+
+        // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
         crossReportDao.getSessionFactory().getCurrentSession().detach(managedCrossReportEntity);
         crossReportDao.update(crossReportEntity);
         crossReportIdsOld.remove(crossReportEntity.getId());
@@ -394,6 +401,8 @@ public class ScreeningService implements CrudsService {
               "Cannot update agency that doesn't exist. id = " + agency.getId());
         }
         agencyEntity.setCreatedAt(managedAgencyEntity.getCreatedAt());
+
+        // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
         agencyDao.getSessionFactory().getCurrentSession().detach(managedAgencyEntity);
         agencyDao.update(agencyEntity);
       }
@@ -431,16 +440,16 @@ public class ScreeningService implements CrudsService {
             participantIntakeApiService.create(participantIntakeApi);
         participantIntakeApis.add(createdParticipantIntakeApi);
       } else {
-        ParticipantIntakeApi updatedParticipantIntakeApi =
-            participantIntakeApiService.update(
-                new ParticipantResourceParameters(screening.getId(), participantIntakeApiId), participantIntakeApi);
+        ParticipantIntakeApi updatedParticipantIntakeApi = participantIntakeApiService.update(
+            new ParticipantResourceParameters(screening.getId(), participantIntakeApiId),
+            participantIntakeApi);
         participantIntakeApis.add(updatedParticipantIntakeApi);
         participantIdsOld.remove(participantIntakeApiId);
       }
     }
     // Delete old ones that are not in the new.
-    participantIdsOld.forEach(participantId ->
-        participantIntakeApiService.delete(new ParticipantResourceParameters(screening.getId(), participantId)));
+    participantIdsOld.forEach(participantId -> participantIntakeApiService
+        .delete(new ParticipantResourceParameters(screening.getId(), participantId)));
 
     screening.setParticipantIntakeApis(participantIntakeApis);
   }

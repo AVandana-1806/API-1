@@ -47,4 +47,5 @@ public class SystemCodeCacheConfiguration {
   public void setRefreshAfter(Long refreshAfter) {
     this.refreshAfter = refreshAfter;
   }
+
 }

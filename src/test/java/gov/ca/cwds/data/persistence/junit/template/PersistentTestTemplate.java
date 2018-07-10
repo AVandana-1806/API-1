@@ -15,14 +15,14 @@ import gov.ca.cwds.data.persistence.cms.SystemCodeTestHarness;
  * Persistent Entity JUnits abstract class.
  * 
  * <p>
- * These JUnit test must be included with any persistent classes.
+ * These JUnit tests must be included with any persistent classes.
  * </p>
  * 
  * @author CWDS API Team
  */
 public interface PersistentTestTemplate {
 
-  @SuppressWarnings({"javadoc", "unchecked"})
+  @SuppressWarnings({"unchecked"})
   static <T> T valid(T t) throws JsonParseException, JsonMappingException, IOException {
     final String pkgClassName =
         t.getClass().getName().substring(t.getClass().getName().lastIndexOf('.') + 1);
@@ -30,15 +30,12 @@ public interface PersistentTestTemplate {
         fixture("fixtures/persistent/" + pkgClassName + "/valid/valid.json"), t.getClass());
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void testEmptyConstructor() throws Exception;
 
-  @SuppressWarnings("javadoc")
   @Test
   public void testPersistentConstructor() throws Exception;
 
-  @SuppressWarnings("javadoc")
   @Test
   public void testConstructorUsingDomain() throws Exception;
 

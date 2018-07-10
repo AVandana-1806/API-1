@@ -22,7 +22,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.business.rules.ExternalInterfaceTables;
 import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
-import gov.ca.cwds.rest.business.rules.R04880EstimatedDOBCodeSetting;
 import gov.ca.cwds.rest.business.rules.R04966NamesMustHaveAtLeastOneAlphaChar;
 import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
@@ -173,14 +172,20 @@ public class ClientService implements
 
     gov.ca.cwds.rest.api.domain.cms.Client savedEntity;
     try {
-      Client existingClient = clientDao.find(primaryKey);
-      Client managed =
-          new Client(primaryKey, client, RequestExecutionContext.instance().getStaffId(),
-              RequestExecutionContext.instance().getRequestStartTime());
+      // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
+      final RequestExecutionContext ctx = RequestExecutionContext.instance();
+      final Client existingClient = clientDao.find(primaryKey);
+      Client managed = existingClient;
+      managed.setLastUpdatedId(ctx.getStaffId());
+      managed.setLastUpdatedTime(ctx.getRequestStartTime());
+
+      // Client managed =
+      // new Client(primaryKey, client, RequestExecutionContext.instance().getStaffId(),
+      // RequestExecutionContext.instance().getRequestStartTime());
 
       validateByRuleR04966(existingClient);
 
-      managed.setClientAddress(existingClient.getClientAddress());
+      // managed.setClientAddress(existingClient.getClientAddress());
       managed = clientDao.update(managed);
       savedEntity = new gov.ca.cwds.rest.api.domain.cms.Client(managed, true);
       ssaname3Dao.clientSsaname3("U", managed);
@@ -200,4 +205,5 @@ public class ClientService implements
           + "in at least one of the name fields (first, middle, last)");
     }
   }
+
 }

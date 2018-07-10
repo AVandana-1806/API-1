@@ -11,7 +11,6 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.business.RuleValidator;
 
 /**
- * 
  * <p>
  * BUSINESS RULE: "R - 00824"
  * 
@@ -22,7 +21,6 @@ import gov.ca.cwds.rest.business.RuleValidator;
  * <p>
  * 
  * @author CWDS API Team
- *
  */
 public class R00824SetDispositionCode implements RuleValidator {
 
@@ -62,7 +60,8 @@ public class R00824SetDispositionCode implements RuleValidator {
 
   @Override
   public boolean isValid() {
-    if (StringUtils.isNotBlank(incomingParticipant.getDateOfBirth())) {
+    if (screeningToReferral != null && screeningToReferral.getResponseTime() != null
+        && StringUtils.isNotBlank(incomingParticipant.getDateOfBirth())) {
       return clientAge() < ADULT && screeningToReferral.getResponseTime() == EVALUATE_OUT
           && screeningToReferral.getApprovalStatus() == APPROVED;
     }

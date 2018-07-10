@@ -1,7 +1,7 @@
 package gov.ca.cwds.rest.business.reminders;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,9 +25,13 @@ import gov.ca.cwds.data.cms.CrossReportDao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.cms.ReporterDao;
 import gov.ca.cwds.fixture.AddressResourceBuilder;
+import gov.ca.cwds.fixture.AllegationEntityBuilder;
 import gov.ca.cwds.fixture.AllegationResourceBuilder;
+import gov.ca.cwds.fixture.ClientEntityBuilder;
+import gov.ca.cwds.fixture.CrossReportEntityBuilder;
 import gov.ca.cwds.fixture.CrossReportResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
+import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ReferralResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.Address;
@@ -637,8 +641,8 @@ public class R04464CrossReportLawEnforcementDueTest {
         new gov.ca.cwds.data.persistence.cms.Allegation("123ABC1236", cmsAllegation, "0X5",
             new Date());
 
-    Reporter reporterDomain = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter reporterDomain =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
 
     gov.ca.cwds.data.persistence.cms.Reporter savedReporter =
         new gov.ca.cwds.data.persistence.cms.Reporter(reporterDomain, "0X5", new Date());
@@ -662,6 +666,48 @@ public class R04464CrossReportLawEnforcementDueTest {
 
     r04464CrossReportLawEnforcementDue.crossReportForLawEnforcmentDue(postedScreeningToReferral);
     verify(tickleService, times(1)).create(any());
+  }
+
+  /**
+   * Test when reminder is not created when Reporter type is Anonymous Reporter
+   */
+  @Test
+  public void reminderNotCreatedWhenAnonymousReporterIsSelected() {
+    Participant victim =
+        new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().createPerpParticipant();
+
+    Participant reporter = new ParticipantResourceBuilder().setMiddleName("A")
+        .setRoles(new HashSet<>(Arrays.asList("Anonymous Reporter"))).createParticipant();
+    Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
+    CrossReport crossReport = new CrossReportResourceBuilder().createCrossReport();
+    Allegation allegation = new AllegationResourceBuilder().createAllegation();
+    Set<CrossReport> crossReports = new HashSet<>(Arrays.asList(crossReport));
+    Set<Allegation> allegations = new HashSet<>(Arrays.asList(allegation));
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).createScreeningToReferral();
+    PostedScreeningToReferral postedScreeningToReferral = PostedScreeningToReferral
+        .createWithDefaults("123ABC1234", referral, participants, crossReports, allegations);
+
+    gov.ca.cwds.data.persistence.cms.Referral savedReferral = new ReferralEntityBuilder().build();
+    gov.ca.cwds.data.persistence.cms.Client savedClient = new ClientEntityBuilder().build();
+
+    gov.ca.cwds.data.persistence.cms.Allegation savedAllegation =
+        new AllegationEntityBuilder().build();
+
+    gov.ca.cwds.data.persistence.cms.CrossReport savedCrossReport =
+        new CrossReportEntityBuilder().build();
+
+    when(referralDao.find(any(String.class))).thenReturn(savedReferral);
+    when(clientDao.find(any(String.class))).thenReturn(savedClient);
+    when(allegationDao.find(any(String.class))).thenReturn(savedAllegation);
+    when(crossReportDao.find(any(String.class))).thenReturn(savedCrossReport);
+    R04464CrossReportLawEnforcementDue r04464CrossReportLawEnforcementDue =
+        new R04464CrossReportLawEnforcementDue(referralDao, allegationDao, reporterDao,
+            crossReportDao, tickleService);
+
+    r04464CrossReportLawEnforcementDue.crossReportForLawEnforcmentDue(postedScreeningToReferral);
+    verify(tickleService, times(0)).create(any());
   }
 
   /**

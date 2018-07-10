@@ -12,9 +12,9 @@ import gov.ca.cwds.rest.services.mapper.ContactIntakeMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.LegacyDescriptorMapper;
+import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
-import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 
 /**
  * CWDS API Team
@@ -29,16 +29,15 @@ public class MappingModule extends AbstractModule {
     bind(AllegationTypeMapper.class).to(AllegationTypeMapper.INSTANCE.getClass())
         .asEagerSingleton();
     bind(ClientMapper.class).to(ClientMapperImpl.INSTANCE.getClass()).asEagerSingleton();
-    bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass())
-            .asEagerSingleton();
+    bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CsecMapper.class).to(CsecMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CrossReportMapper.class).to(CrossReportMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(LegacyDescriptorMapper.class).to(LegacyDescriptorMapper.INSTANCE.getClass())
         .asEagerSingleton();
-    bind(RelationshipMapper.class).to(RelationshipMapper.INSTANCE.getClass())
-        .asEagerSingleton();
+    bind(RelationshipMapper.class).to(RelationshipMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(SafelySurrenderedBabiesMapper.class).to(SafelySurrenderedBabiesMapper.INSTANCE.getClass())
         .asEagerSingleton();
     bind(ScreeningMapper.class).to(ScreeningMapper.INSTANCE.getClass()).asEagerSingleton();
   }
+
 }

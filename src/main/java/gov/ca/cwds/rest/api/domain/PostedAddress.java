@@ -14,6 +14,7 @@ import io.dropwizard.jackson.JsonSnakeCase;
  * @author CWDS API Team
  */
 @JsonSnakeCase
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class PostedAddress extends Address {
 
   private static final long serialVersionUID = 1L;

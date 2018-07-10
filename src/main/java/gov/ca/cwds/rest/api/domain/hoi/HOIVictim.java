@@ -10,6 +10,7 @@ import gov.ca.cwds.rest.api.domain.LimitedAccessType;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
 public class HOIVictim extends HOIPerson {
 
   private static final long serialVersionUID = 1L;

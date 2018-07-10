@@ -1,0 +1,18 @@
+[
+  {
+    "id": "123123",
+    "client_id": "222222",
+    "relative_id": "333333",
+    "relationship_type": 189,
+    "absent_parent_indicator": true,
+    "same_home_status": "Y"
+  },
+  {
+    "id": "123123",
+    "client_id": "222222",
+    "relative_id": "333333",
+    "relationship_type": 189,
+    "absent_parent_indicator": true,
+    "same_home_status": "Y"
+  }
+]

@@ -48,6 +48,7 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
    * 
    * @param intakeLovDao Intake Lov Dao
    * @param secondsToRefreshCache Seconds after which cache entries will be invalidated for refresh.
+   * @param preloadCache If true then preload all system code cache
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao, long secondsToRefreshCache,
@@ -125,6 +126,19 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
       intakeCode = intakeLov.getIntakeCode();
     }
     return intakeCode;
+  }
+
+  @Override
+  public List<IntakeLov> getAll() {
+    List<IntakeLov> ret = new ArrayList<>();
+    Map<CacheKey, Object> intakeLovs = intakeCodeCache.asMap();
+
+    for (CacheKey key : intakeLovs.keySet()) {
+      if (CacheKey.SYSTEM_CODE_ID_TYPE.equals(key.getType())) {
+        ret.add((IntakeLov) intakeLovs.get(key));
+      }
+    }
+    return ret;
   }
 
   /**
@@ -216,8 +230,8 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
 
     private static final long serialVersionUID = 1L;
 
-    private static final String META_ID_TYPE = "META_ID";
-    private static final String SYSTEM_CODE_ID_TYPE = "SYSTEM_CODE_ID";
+    static final String META_ID_TYPE = "META_ID";
+    static final String SYSTEM_CODE_ID_TYPE = "SYSTEM_CODE_ID";
 
     private Serializable value;
     private String type;

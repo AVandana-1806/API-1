@@ -1,18 +1,20 @@
 package gov.ca.cwds.data.cms;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.cms.DrmsDocumentTemplate;
 import gov.ca.cwds.inject.CmsSessionFactory;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 
 /**
  * DAO for {@link DrmsDocumentTemplateDao}.
  *
- * @author Intake Team 4
+ * @author CWDS API Team
  */
-public class DrmsDocumentTemplateDao  extends CrudsDaoImpl<DrmsDocumentTemplate> {
+public class DrmsDocumentTemplateDao extends CrudsDaoImpl<DrmsDocumentTemplate> {
 
   public static final Short APPLICATION_CONTEXT_REFERRAL_DOCUMENTS = 82;
   public static final Short APPLICATION_CONTEXT_OTHER = 3075;
@@ -32,21 +34,20 @@ public class DrmsDocumentTemplateDao  extends CrudsDaoImpl<DrmsDocumentTemplate>
   }
 
   /**
-   * finding templates based on application contex id and goverment entity type
+   * Find templates by application context id and government entity type.
    *
    * @param applicationContextType - application context type id
-   * @param govermentEntityType - govermant entity type id.
+   * @param governmentEntityType - government entity type id.
    * @return - list of DrmsDocumentTemplates
    */
   @SuppressWarnings("unchecked")
-  public DrmsDocumentTemplate[] findByApplicationContextAndGovermentEntity(
-      Short applicationContextType, Short govermentEntityType) {
-
-    final Query<DrmsDocumentTemplate> query = this.getSessionFactory().getCurrentSession()
-            .getNamedQuery(DrmsDocumentTemplate.NQ_TEMPLATES_BY_APPLICATION_CONTEXT_AND_GOVERMANT_ENTITY);
+  public DrmsDocumentTemplate[] findByApplicationContextAndGovernmentEntity(
+      Short applicationContextType, Short governmentEntityType) {
+    final Query<DrmsDocumentTemplate> query = this.grabSession().getNamedQuery(
+        DrmsDocumentTemplate.NQ_TEMPLATES_BY_APPLICATION_CONTEXT_AND_GOVERNMENT_ENTITY);
 
     query.setParameter("applicationContextType", applicationContextType)
-         .setParameter("govermentEntityType", govermentEntityType);
+        .setParameter("govermentEntityType", governmentEntityType);
     return query.list().toArray(new DrmsDocumentTemplate[0]);
   }
 

@@ -56,7 +56,7 @@ public class AddressTest {
     gov.ca.cwds.rest.api.domain.Address domainAddress =
         new AddressResourceBuilder().setState(null).setType(null).createAddress();
     Address address = new Address(domainAddress, staffId, staffId);
-    assertThat(address.getState(), is(equalTo(null)));
-    assertThat(address.getType(), is(equalTo(null)));
+    assertThat(address.getState(), is(equalTo("0")));
+    assertThat(address.getType(), is(equalTo("0")));
   }
 }

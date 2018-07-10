@@ -17,9 +17,8 @@ import gov.ca.cwds.data.persistence.cms.ClientUc;
 import gov.ca.cwds.rest.services.ServiceException;
 
 /**
- * Business layer object to update upper case tables
+ * Business layer object to update upper case tables.
  * 
- *
  * @author CWDS API Team
  */
 public class UpperCaseTables {

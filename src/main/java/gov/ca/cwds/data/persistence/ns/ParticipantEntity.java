@@ -40,11 +40,10 @@ import gov.ca.cwds.data.persistence.ns.papertrail.HasPaperTrail;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 
 /**
- * {@link PersistentObject} representing Participant.
+ * {@link PersistentObject} representing a Participant.
  *
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @NamedQuery(name = FIND_LEGACY_ID_LIST_BY_SCREENING_ID,
     query = "SELECT legacyId FROM ParticipantEntity WHERE screeningEntity.id = :screeningId")
 @NamedQuery(name = FIND_PARTICIPANTS_BY_SCREENING_IDS,
@@ -56,6 +55,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND id = :participantId")
 @Entity
 @Table(name = "participants")
+@SuppressWarnings({"squid:S00107"})
 public class ParticipantEntity
     implements PersistentObject, HasPaperTrail, Identifiable<String>, Serializable {
 
@@ -137,6 +137,9 @@ public class ParticipantEntity
   @Column(name = "sealed")
   private Boolean sealed;
 
+  @Column(name = "probation_youth")
+  private Boolean probationYouth;
+
   @Column(name = "approximate_age")
   private String approximateAge;
 
@@ -156,9 +159,7 @@ public class ParticipantEntity
   private SafelySurrenderedBabiesEntity safelySurrenderedBabies;
 
   /**
-   * Default constructor
-   *
-   * Required for Hibernate
+   * Default constructor, required for some frameworks.
    */
   public ParticipantEntity() {
     super();
@@ -172,7 +173,7 @@ public class ParticipantEntity
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
       String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
-      String approximateAge, String approximateAgeUnits) {
+      Boolean probationYouth, String approximateAge, String approximateAgeUnits) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
     this.dateOfDeath = freshDate(dateOfDeath);
@@ -190,6 +191,7 @@ public class ParticipantEntity
     this.ethnicity = ethnicity;
     this.legacySourceTable = legacySourceTable;
     this.sensitive = sensitive;
+    this.probationYouth = probationYouth;
     this.sealed = sealed;
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
@@ -214,6 +216,7 @@ public class ParticipantEntity
     legacySourceTable = participantIntakeApi.getLegacySourceTable();
     sensitive = participantIntakeApi.isSensitive();
     sealed = participantIntakeApi.isSealed();
+    probationYouth = participantIntakeApi.isProbationYouth();
     approximateAge = participantIntakeApi.getApproximateAge();
     approximateAgeUnits = participantIntakeApi.getApproximateAgeUnits();
     return this;
@@ -234,7 +237,7 @@ public class ParticipantEntity
   }
 
   public Date getDateOfDeath() {
-    return dateOfDeath;
+    return freshDate(dateOfDeath);
   }
 
   public String getFirstName() {
@@ -326,7 +329,7 @@ public class ParticipantEntity
   }
 
   public void setDateOfDeath(Date dateOfDeath) {
-    this.dateOfDeath = dateOfDeath;
+    this.dateOfDeath = freshDate(dateOfDeath);
   }
 
   public void setFirstName(String firstName) {
@@ -416,6 +419,14 @@ public class ParticipantEntity
 
   public void setSealed(Boolean sealed) {
     this.sealed = sealed;
+  }
+
+  public Boolean getProbationYouth() {
+    return probationYouth;
+  }
+
+  public void setProbationYouth(Boolean probationYouth) {
+    this.probationYouth = probationYouth;
   }
 
   public void setApproximateAge(String approximateAge) {

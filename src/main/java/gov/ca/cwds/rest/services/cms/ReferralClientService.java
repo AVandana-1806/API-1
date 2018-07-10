@@ -58,7 +58,7 @@ public class ReferralClientService implements
    *        {@link gov.ca.cwds.data.rules.TriggerTablesDao} objects
    * @param staffpersonDao The {@link Dao} handling
    *        {@link gov.ca.cwds.data.persistence.cms.StaffPerson} objects
-   * @param riReferralClient the ri for referral client
+   * @param riReferralClient RI for referral client
    */
   @Inject
   public ReferralClientService(ReferralClientDao referralClientDao,
@@ -160,6 +160,10 @@ public class ReferralClientService implements
     String referralId = nameValuePairs.get(KEY_REFERRAL_ID);
     String clientId = nameValuePairs.get(KEY_CLIENT_ID);
     return new ReferralClient.PrimaryKey(referralId, clientId);
+  }
+
+  public RIReferralClient getRiReferralClient() {
+    return riReferralClient;
   }
 
 }
