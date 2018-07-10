@@ -66,13 +66,13 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
-    con.setNetworkTimeout(timeoutExecutor, 90); // NEXT: soft-code timeout
 
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");
       con.setClientInfo("ApplicationName", PROGRAM_NAME);
       con.setClientInfo("ClientUser", userId);
       con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
+      con.setNetworkTimeout(timeoutExecutor, 90); // NEXT: soft-code timeout
 
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
