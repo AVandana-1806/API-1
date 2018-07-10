@@ -73,7 +73,7 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
     try {
       final Query<IntakeLov> query = session.getNamedQuery(namedQueryName).setReadOnly(true)
           .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL)
-          .setParameter("legacySystemCodeId", legacySystemCodeId.shortValue());
+          .setParameter("legacySystemCodeId", Long.valueOf(legacySystemCodeId.shortValue()));
       return query.getSingleResult();
     } catch (HibernateException h) {
       LOGGER.error("ERROR FINDING CODE! {}", h.getMessage(), h);
