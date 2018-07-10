@@ -278,7 +278,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       LOGGER.info("XA BEGIN TRANSACTION!");
       txn = new UserTransactionImp();
-      txn.setTransactionTimeout(180); // NEXT: soft-code timeout
+      txn.setTransactionTimeout(120); // NEXT: soft-code timeout
       txn.begin();
       transactionStarted = true;
     } catch (Exception e) {
