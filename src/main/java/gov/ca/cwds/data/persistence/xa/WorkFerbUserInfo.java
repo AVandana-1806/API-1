@@ -37,7 +37,7 @@ public class WorkFerbUserInfo implements Work {
   public static final String SERVER_IP_ADDRESS;
   public static final String SERVER_IP_NAME;
 
-  private static ExecutorService timeoutExecutor = Executors.newFixedThreadPool(2);
+  private static ExecutorService timeoutExecutor = Executors.newFixedThreadPool(4);
 
   // Find host and IP address up front.
   static {
@@ -72,7 +72,7 @@ public class WorkFerbUserInfo implements Work {
       con.setClientInfo("ApplicationName", PROGRAM_NAME);
       con.setClientInfo("ClientUser", userId);
       con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
-      con.setNetworkTimeout(timeoutExecutor, 90); // NEXT: soft-code timeout
+      con.setNetworkTimeout(timeoutExecutor, 120); // NEXT: soft-code timeout
 
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
