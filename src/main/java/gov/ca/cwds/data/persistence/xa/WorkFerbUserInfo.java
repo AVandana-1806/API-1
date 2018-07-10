@@ -3,6 +3,8 @@ package gov.ca.cwds.data.persistence.xa;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
@@ -35,6 +37,8 @@ public class WorkFerbUserInfo implements Work {
   public static final String SERVER_IP_ADDRESS;
   public static final String SERVER_IP_NAME;
 
+  private static ExecutorService timeoutExecutor = Executors.newFixedThreadPool(2);
+
   // Find host and IP address up front.
   static {
     String hostAddress = null;
@@ -62,7 +66,7 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
-    // con.setNetworkTimeout(Executors.newFixedThreadPool(1), 90); // NEXT: soft-code timeout
+    con.setNetworkTimeout(timeoutExecutor, 90); // NEXT: soft-code timeout
 
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");

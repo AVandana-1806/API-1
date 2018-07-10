@@ -53,7 +53,6 @@ public class ParticipantIntakeApiResource {
 
   /**
    * Constructor
-   *
    */
   public ParticipantIntakeApiResource() {
     // no ops

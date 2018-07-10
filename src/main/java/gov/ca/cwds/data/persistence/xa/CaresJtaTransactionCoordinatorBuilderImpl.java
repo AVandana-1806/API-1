@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Monitor JTA managed connections for XA. Changes the default connection handling mode to
- * {@link PhysicalConnectionHandlingMode#DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION}.
+ * {@link PhysicalConnectionHandlingMode#DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION} instead
+ * of the default.
  * 
  * @author CWDS API Team
  */
