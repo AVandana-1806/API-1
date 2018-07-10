@@ -1,12 +1,19 @@
 package gov.ca.cwds.data.persistence.cms;
 
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -20,6 +27,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NamedQuery;
@@ -48,24 +56,25 @@ public class Client extends BaseClient {
 
   private static final long serialVersionUID = 1L;
 
+  // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToMany(cascade = CascadeType.DETACH)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 
   @ToStringExclude
   @Fetch(FetchMode.SELECT)
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "ESTBLSH_ID", referencedColumnName = "IDENTIFIER", nullable = false,
       updatable = false, insertable = false)
   private Set<ClientScpEthnicity> clientScpEthnicities = new HashSet<>();
 
   /**
-   * Default constructor
-   * 
-   * Required for Hibernate
+   * Default constructor, often required for some frameworks.
    */
   public Client() {
     super();

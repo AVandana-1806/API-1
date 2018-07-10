@@ -18,6 +18,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRawValue;
@@ -38,6 +39,7 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "legacySourceTable", "legacyId", "firstName", "lastName", "gender", "ssn",
     "dateOfBirth", "date_of_death", "roles", "addresses", "races", "ethnicity"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantIntakeApi extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
@@ -77,40 +79,36 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   @JsonProperty("date_of_birth")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-  @ApiModelProperty(value = "Date of Birth",
-      example = "2001-09-11")
+  @ApiModelProperty(value = "Date of Birth", example = "2001-09-11")
   private Date dateOfBirth;
 
   @JsonProperty("date_of_death")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-  @ApiModelProperty(value = "Date of Death",
-      example = "2001-12-13")
+  @ApiModelProperty(value = "Date of Death", example = "2001-12-13")
   private Date dateOfDeath;
 
   @JsonProperty("approximate_age")
-  @ApiModelProperty( value = "Approximate Age", example = "25")
+  @ApiModelProperty(value = "Approximate Age", example = "25")
   private String approximateAge;
 
   @JsonProperty("approximate_age_units")
   @OneOf(value = {"days", "weeks", "months", "years"})
-  @ApiModelProperty(value = "Approximate Age Units",
-      example = "years", allowableValues = "days, weeks, months, years")
+  @ApiModelProperty(value = "Approximate Age Units", example = "years",
+      allowableValues = "days, weeks, months, years")
   private String approximateAgeUnits;
 
   @JsonProperty("languages")
-  @ApiModelProperty(dataType = "java.util.List", value = "",
-      example = "American Sign Language", notes = "The Participant's Languages")
+  @ApiModelProperty(dataType = "java.util.List", value = "", example = "American Sign Language",
+      notes = "The Participant's Languages")
   private List<String> languages;
 
   @JsonProperty("legacy_id")
-  @ApiModelProperty(required = true, value = "Legacy Client Id",
-      example = "ABC1234567")
+  @ApiModelProperty(required = true, value = "Legacy Client Id", example = "ABC1234567")
   @Size(max = CMS_ID_LEN)
   private String legacyId;
 
   @JsonProperty("legacy_source_table")
-  @ApiModelProperty(required = true, value = "Legacy Source Table",
-      example = "CLIENT_T")
+  @ApiModelProperty(required = true, value = "Legacy Source Table", example = "CLIENT_T")
   private String legacySourceTable;
 
 
@@ -132,8 +130,8 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   @Valid
   @JsonProperty("roles")
-  @ApiModelProperty(required = true, value = "Role of participant",
-      dataType = "java.util.List", example = "['Victim', 'Mandated Reporter']")
+  @ApiModelProperty(required = true, value = "Role of participant", dataType = "java.util.List",
+      example = "['Victim', 'Mandated Reporter']")
   private Set<String> roles = new HashSet<>();
 
   @Valid
@@ -220,7 +218,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.gender = gender;
     this.ssn = ssn;
     this.dateOfBirth = dateOfBirth != null ? new Date(dateOfBirth.getTime()) : null;
-    this.dateOfDeath = dateOfDeath;
+    this.dateOfDeath = freshDate(dateOfDeath);
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
     this.roles = roles;

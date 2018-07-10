@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 
 /**
  * {@link PersistentObject} Class representing a CountyOwnership record.
@@ -33,7 +34,7 @@ public class CountyOwnership implements PersistentObject, Serializable {
   private static final long serialVersionUID = 1L;
 
   protected static final int CMS_ID_LEN = CmsPersistentObject.CMS_ID_LEN;
-  protected static final String DATE_FORMAT = "yyyy-MM-dd";
+  protected static final String DATE_FORMAT = DomainChef.DATE_FORMAT;
 
   @Id
   @Column(name = "ENTITY_ID", length = CMS_ID_LEN)

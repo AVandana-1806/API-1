@@ -1,17 +1,18 @@
 package gov.ca.cwds.data.cms;
 
-import gov.ca.cwds.data.persistence.cms.BaseClient;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.BaseDaoImpl;
+import gov.ca.cwds.data.persistence.cms.BaseClient;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.inject.CmsSessionFactory;
-import org.hibernate.query.Query;
 
 /**
  * Hibernate DAO for DB2 {@link Client}.
@@ -33,9 +34,9 @@ public class ClientDao extends BaseDaoImpl<Client> {
   }
 
   /**
-   * Find Clients by id-s
+   * Find Clients by id's
    *
-   * @param ids Set of Client id-s
+   * @param ids Set of Client id'ss
    * @return map where key is a Client id and value is a Client itself
    */
   public Map<String, Client> findClientsByIds(Collection<String> ids) {

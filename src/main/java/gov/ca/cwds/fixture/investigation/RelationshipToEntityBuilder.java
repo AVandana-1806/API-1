@@ -28,9 +28,9 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipTo build() {
     return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
-        relatedGenderCode, relatedDateOfBirth, relatedAge, relatedAgeUnit, relatedDateOfDeath,
-        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
-        relationshipContext, relationshipToPerson, cmsRecordDescriptor);
+        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
+        absentParentCode, sameHomeCode, relationship, relationshipContext, relationshipToPerson,
+        cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {

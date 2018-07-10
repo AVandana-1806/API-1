@@ -62,15 +62,15 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
-  // Only works for the same datasource, for which this class is a facade.
-  private final ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
-
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
   private SessionFactory xaSessionFactory;
 
-  private HibernateBundle<ApiConfiguration> hibernateBundle;
-  private FerbHibernateBundle xaHibernateBundle;
+  // Only works for the same datasource, for which this class is a facade.
+  private transient ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+
+  private transient HibernateBundle<ApiConfiguration> hibernateBundle;
+  private transient FerbHibernateBundle xaHibernateBundle;
 
   public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {

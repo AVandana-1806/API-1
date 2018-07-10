@@ -28,7 +28,7 @@ import gov.ca.cwds.data.ns.ParticipantPhoneNumbersDao;
 import gov.ca.cwds.data.ns.PhoneNumbersDao;
 import gov.ca.cwds.data.ns.SafelySurrenderedBabiesDao;
 import gov.ca.cwds.data.persistence.ns.Addresses;
-import gov.ca.cwds.data.persistence.ns.Allegation;
+import gov.ca.cwds.data.persistence.ns.AllegationEntity;
 import gov.ca.cwds.data.persistence.ns.CsecEntity;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantAddresses;
@@ -172,7 +172,7 @@ public class ParticipantIntakeApiService implements
 
     // Delete all allegations for this participant
     allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
-        .map(Allegation::getId).collect(Collectors.toList()));
+        .map(AllegationEntity::getId).collect(Collectors.toList()));
 
     // Delete Participant Addresses & PhoneNumbers
     participantAddressesDao.findByParticipantId(participantId).forEach(

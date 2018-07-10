@@ -144,8 +144,6 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - name suffix of related person
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
-   * @param relatedAge related person's age
-   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
@@ -158,13 +156,12 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, Short relatedAge,
-      String relatedAgeUnit,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
+      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
       @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
-      String absentParentCode, String sameHomeCode, String relationshipToPerson,
-      String relationshipContext, String relatedPersonRelationship,
+      String absentParentCode,
+      String sameHomeCode,
+      String relationshipToPerson, String relationshipContext, String relatedPersonRelationship,
       CmsRecordDescriptor cmsRecordDescriptor) {
     super();
     this.relatedFirstName = relatedFirstName;
@@ -213,10 +210,8 @@ public final class RelationshipTo implements Serializable {
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship, String clientId) {
     this(relatedFirstName, relatedLastName, relatedNameSuffix, relatedGender, relatedDateOfBirth,
-        relatedAge, relatedAgeUnit, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
-        absentParentCode, sameHomeCode, relationshipToPerson, relationshipContext,
-        relatedPersonRelationship,
-        CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
+        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
+        relationshipToPerson, relationshipContext, relatedPersonRelationship, CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
   /**
