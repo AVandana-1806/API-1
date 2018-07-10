@@ -62,6 +62,7 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
+    // con.setNetworkTimeout(executor, milliseconds);
 
     if (con instanceof DB2Connection) {
       LOGGER.info("DB2 connection, set user info");
