@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -38,10 +39,9 @@ public class SubstituteCareProviderTransformer
         .getIntakeCodeForLegacySystemCode(substituteCareProvider.getStateCodeType());
     String streetAddress =
         substituteCareProvider.getStreetNumber() + " " + substituteCareProvider.getStreetName();
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(
+    List<AddressIntakeApi> addresses = Collections.singletonList(
         new AddressIntakeApi(null, null, streetAddress, substituteCareProvider.getCityName(), state,
-            getZip(substituteCareProvider), null, legacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+            getZip(substituteCareProvider), null, legacyDescriptor));
     String sensitivityIndicator = substituteCareProvider.getSensitivityIndicator() != null
         ? substituteCareProvider.getSensitivityIndicator()
         : "";

@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import org.apache.shiro.authz.AuthorizationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class ClientTransformerTest {
 
   private ClientTransformer clientTransformer = new ClientTransformer();
   private AuthorizationService authorizationService;
+  private PlacementEpisodeDao placementEpisodeDao;
 
   @Before
   public void setup() {
@@ -36,6 +38,9 @@ public class ClientTransformerTest {
     doThrow(AuthorizationException.class).when(authorizationService)
         .ensureClientAccessAuthorized("authorizedId");
     clientTransformer.setAuthorizationService(authorizationService);
+
+    placementEpisodeDao = mock(PlacementEpisodeDao.class);
+    clientTransformer.setPlacementEpisodeDao(placementEpisodeDao);
   }
 
   /**
