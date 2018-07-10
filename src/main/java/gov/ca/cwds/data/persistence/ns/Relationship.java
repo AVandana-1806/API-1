@@ -17,8 +17,8 @@ import org.hibernate.annotations.NamedQuery;
 
 @NamedQuery(
         name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
-        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId " +
-                "OR r.participantTo.screeningId = :screeningId")
+        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningEntity.id = :screeningId " +
+                "OR r.participantTo.screeningEntity.id = :screeningId")
 @NamedQuery(
         name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
         query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")

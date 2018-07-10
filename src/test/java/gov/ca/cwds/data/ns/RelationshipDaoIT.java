@@ -70,6 +70,7 @@ public class RelationshipDaoIT implements DaoTestTemplate {
         existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
                 new Date(), new Date(), true, false, "222", new Date(), new Date());
         existingRelationship = relationshipDao.create(existingRelationship);
+        session.flush();
     }
 
     @Override

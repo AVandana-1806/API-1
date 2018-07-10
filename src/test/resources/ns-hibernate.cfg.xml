@@ -35,5 +35,6 @@
     <mapping class="gov.ca.cwds.data.persistence.ns.ScreeningEntity"/>
     <mapping class="gov.ca.cwds.data.persistence.ns.CsecEntity"/>
     <mapping class="gov.ca.cwds.data.persistence.ns.Allegation"/>
+    <mapping class="gov.ca.cwds.data.persistence.ns.SafelySurrenderedBabiesEntity"/>
   </session-factory>
 </hibernate-configuration>
