@@ -66,7 +66,6 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  @Ignore
   public void testPut() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-put-request.json");
