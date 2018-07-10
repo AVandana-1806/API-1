@@ -8,8 +8,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -87,8 +89,8 @@ public class EducationProviderContactTransformerTest {
         "EDPRVCNT", "Education Provider Contact");
     LegacyDescriptor addressLegacyDescriptor =
         new LegacyDescriptor("fk12345678", null, lastUpdated, "ED_PVDRT", "Education Provider");
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor)));
+    List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
+        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "0", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Firstname", "Middle",

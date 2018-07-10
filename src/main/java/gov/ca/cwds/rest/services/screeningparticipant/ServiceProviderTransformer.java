@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -35,10 +36,9 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
         .getIntakeCodeForLegacySystemCode(serviceProvider.getStateCodeType());
     String streetAddress =
         serviceProvider.getStreetNumber() + " " + serviceProvider.getStreetName();
-    Set<AddressIntakeApi> addresses =
-        new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null, streetAddress,
-            serviceProvider.getCity(), state, getZip(serviceProvider), null, legacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = Collections.singletonList(
+        new AddressIntakeApi(null, null, streetAddress,
+            serviceProvider.getCity(), state, getZip(serviceProvider), null, legacyDescriptor));
     String phoneType =
         serviceProvider.getPhoneType() != null ? serviceProvider.getPhoneType().name() : null;
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
