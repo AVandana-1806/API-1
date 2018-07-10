@@ -37,7 +37,8 @@ public class WorkFerbUserInfo implements Work {
   public static final String SERVER_IP_ADDRESS;
   public static final String SERVER_IP_NAME;
 
-  private static ExecutorService timeoutExecutor = Executors.newFixedThreadPool(4);
+  // HOT-2190: XA connection pool exhaustion
+  private static ExecutorService timeoutExecutor = Executors.newWorkStealingPool(8);
 
   // Find host and IP address up front.
   static {
@@ -72,7 +73,11 @@ public class WorkFerbUserInfo implements Work {
       con.setClientInfo("ApplicationName", PROGRAM_NAME);
       con.setClientInfo("ClientUser", userId);
       con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
-      con.setNetworkTimeout(timeoutExecutor, 120); // NEXT: soft-code timeout
+
+      // HOT-2190: XA connection pool exhaustion
+      if (RequestExecutionContext.instance().isXaTransaction()) {
+        con.setNetworkTimeout(timeoutExecutor, 120); // NEXT: soft-code timeout
+      }
 
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
