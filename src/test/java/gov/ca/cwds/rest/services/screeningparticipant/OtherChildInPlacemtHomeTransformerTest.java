@@ -9,10 +9,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -117,8 +118,8 @@ public class OtherChildInPlacemtHomeTransformerTest {
     LegacyDescriptor addressLegacyDescriptor = new LegacyDescriptor("ph12345678", null, lastUpdated,
         LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
 
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor)));
+    List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
+        "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor));
     Set<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "aaa", null, "bbb", null, "male", null, null, null, new Date(), null, new LinkedList<>(),

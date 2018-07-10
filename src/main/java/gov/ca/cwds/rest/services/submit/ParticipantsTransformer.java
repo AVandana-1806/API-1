@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.submit;
 
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +39,9 @@ public class ParticipantsTransformer {
     for (ParticipantIntakeApi p : participantsIntake) {
       Set<Address> addresses = new HashSet<>();
       for (AddressIntakeApi addressIntake : p.getAddresses()) {
-        addresses.add(addressTransformer.transform(addressIntake));
+        if (!IntakeAddressConverter.PLACEMENT_INTAKE_CODE.equals(addressIntake.getType())) {
+          addresses.add(addressTransformer.transform(addressIntake));
+        }
       }
       addresses = Collections.unmodifiableSet(addresses);
       String gender = StringUtils.isNotBlank(p.getGender())

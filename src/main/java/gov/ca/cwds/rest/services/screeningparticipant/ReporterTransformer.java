@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -34,9 +35,8 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
     String state =
         IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(reporter.getStateCodeType());
     String streetAddress = reporter.getStreetNumber() + " " + reporter.getStreetName();
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
+        streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
         Arrays.asList(new PhoneNumber(null, reporter.getPrimaryPhoneNumber().toString(), null)));
 

@@ -148,7 +148,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
 
     AddressIntakeApi addressIntakeApi1 = new AddressIntakeApi(addresses1);
     AddressIntakeApi addressIntakeApi2 = new AddressIntakeApi(addresses2);
-    expected.addAddresses(new HashSet<>(Arrays.asList(addressIntakeApi1, addressIntakeApi2)));
+    expected.addAddresses(Arrays.asList(addressIntakeApi1, addressIntakeApi2));
 
     PhoneNumber phoneNumber1 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber2 = new PhoneNumber(phoneNumbers2);
@@ -228,8 +228,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     AddressIntakeApi addressIntakeApi11 = new AddressIntakeApi(addresses1);
     AddressIntakeApi addressIntakeApi2 = new AddressIntakeApi(addresses2);
     AddressIntakeApi addressIntakeApi22 = new AddressIntakeApi(addresses2);
-    expected.addAddresses(new HashSet<>(Arrays.asList(addressIntakeApi1, addressIntakeApi2)));
-    expected00.addAddresses(new HashSet<>(Arrays.asList(addressIntakeApi11, addressIntakeApi22)));
+    expected.addAddresses(Arrays.asList(addressIntakeApi1, addressIntakeApi2));
+    expected00.addAddresses(Arrays.asList(addressIntakeApi11, addressIntakeApi22));
 
     PhoneNumber phoneNumber1 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber11 = new PhoneNumber(phoneNumbers1);
@@ -459,8 +459,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     AddressIntakeApi addressIntakeApi11 = new AddressIntakeApi(addresses1);
     AddressIntakeApi addressIntakeApi3 = new AddressIntakeApi(addresses3new);
     AddressIntakeApi addressIntakeApi33 = new AddressIntakeApi(addresses3new);
-    expected.addAddresses(new HashSet<>(Arrays.asList(addressIntakeApi1, addressIntakeApi3)));
-    expected00.addAddresses(new HashSet<>(Arrays.asList(addressIntakeApi11, addressIntakeApi33)));
+    expected.addAddresses(Arrays.asList(addressIntakeApi1, addressIntakeApi3));
+    expected00.addAddresses(Arrays.asList(addressIntakeApi11, addressIntakeApi33));
     expected00.setSafelySurenderedBabies(null);
 
     PhoneNumber phoneNumber1 = new PhoneNumber(phoneNumbers1);
