@@ -172,12 +172,11 @@ public class ClientService implements
 
     gov.ca.cwds.rest.api.domain.cms.Client savedEntity;
     try {
-      // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-      final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      final Client existingClient = clientDao.find(primaryKey);
+      Client existingClient = clientDao.find(primaryKey);
       Client managed =
           new Client(primaryKey, client, RequestExecutionContext.instance().getStaffId(),
               RequestExecutionContext.instance().getRequestStartTime());
+
       validateByRuleR04966(existingClient);
 
       managed.setClientAddress(existingClient.getClientAddress());
