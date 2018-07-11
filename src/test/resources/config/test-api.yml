@@ -148,8 +148,8 @@ xaCmsRsDataSourceFactory:
 
 xaNsDataSourceFactory:
   driverClass: org.h2.Driver
-  user: DB_NS_USER:-sa
-  password: DB_NS_PASSWORD
+  user: sa
+  password:
   url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
   validationQuery: "/* XA/NS Health Check */ SELECT 1 FOR READ ONLY"
