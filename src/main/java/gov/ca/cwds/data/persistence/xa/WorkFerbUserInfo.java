@@ -3,8 +3,6 @@ package gov.ca.cwds.data.persistence.xa;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
@@ -38,7 +36,7 @@ public class WorkFerbUserInfo implements Work {
   public static final String SERVER_IP_NAME;
 
   // HOT-2190: XA connection pool exhaustion
-  private static ExecutorService timeoutExecutor = Executors.newWorkStealingPool(8);
+  // private static ExecutorService timeoutExecutor = Executors.newWorkStealingPool(20);
 
   // Find host and IP address up front.
   static {
@@ -75,9 +73,9 @@ public class WorkFerbUserInfo implements Work {
       con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
 
       // HOT-2190: XA connection pool exhaustion
-      if (RequestExecutionContext.instance().isXaTransaction()) {
-        con.setNetworkTimeout(timeoutExecutor, 120); // NEXT: soft-code timeout
-      }
+      // if (RequestExecutionContext.instance().isXaTransaction()) {
+      // con.setNetworkTimeout(timeoutExecutor, 120); // NEXT: soft-code timeout
+      // }
 
       final DB2Connection db2conn = (DB2Connection) con;
       db2conn.setDB2ClientAccountingInformation(userId);
