@@ -97,8 +97,8 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    */
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
-    final Collection<String> authorizedClientIds = authorizationService
-        .filterClientIds(hoiRequest.getClientIds());
+    final Collection<String> authorizedClientIds =
+        authorizationService.filterClientIds(hoiRequest.getClientIds());
     if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
