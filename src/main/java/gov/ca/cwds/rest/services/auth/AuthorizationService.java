@@ -66,9 +66,11 @@ public class AuthorizationService
    *         logged in user.
    */
   public void ensureClientAccessAuthorized(Collection<String> clientIds) {
-    Collection<String> filteredClientIds = filterClientIds(clientIds);
-    if (filteredClientIds == null || filteredClientIds.isEmpty()) {
-      throw new UnauthorizedException();
+    if (clientIds != null && !clientIds.isEmpty()) {
+      Collection<String> filteredClientIds = filterClientIds(clientIds);
+      if (clientIds.size() != filteredClientIds.size()) {
+        throw new UnauthorizedException();
+      }
     }
   }
 
