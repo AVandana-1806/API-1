@@ -116,8 +116,7 @@ public class ScreeningResource {
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @UnitOfWork(value = DATASOURCE_NS, readOnly = true, flushMode = FlushMode.MANUAL,
-      transactional = false)
+  @UnitOfWork(value = DATASOURCE_NS)
   @GET
   @Path("/{screeningId}/relationships")
   @ApiResponses(

@@ -1,30 +1,28 @@
 package gov.ca.cwds.rest.services.relationship;
 
-import java.util.*;
-
+import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
-import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.cms.ClientRelationshipDao;
+import gov.ca.cwds.data.ns.ParticipantDao;
+import gov.ca.cwds.data.ns.RelationshipDao;
 import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
-import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
+import gov.ca.cwds.data.persistence.ns.Relationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-
-import gov.ca.cwds.data.cms.ClientRelationshipDao;
-import gov.ca.cwds.data.ns.ParticipantDao;
-import gov.ca.cwds.data.ns.RelationshipDao;
-import gov.ca.cwds.data.persistence.cms.ClientRelationship;
-import gov.ca.cwds.data.persistence.ns.Relationship;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
-import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.RelationshipsService;
-import gov.ca.cwds.rest.services.ScreeningRelationshipService;
-import gov.ca.cwds.rest.services.cms.ClientService;
 
 /**
  * @author CWDS TPT-3 Team
@@ -32,46 +30,25 @@ import gov.ca.cwds.rest.services.cms.ClientService;
 public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
-
-  private final ScreeningRelationshipService screeningRelationshipService;
-  private final RelationshipsService relationshipsService;
-  private final ParticipantService participantService;
-  private final ClientService clientService;
-
+  private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
-  private final ScreeningDao nsScreeningDao;
-  private final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
 
   @Inject
-  public RelationshipFacade(ScreeningRelationshipService screeningRelationshipService,
-                            RelationshipsService relationshipsService, ParticipantService participantService,
-                            ClientService clientService, ParticipantDao participantDao,
-                            ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao, ClientDao cmsClientDao, ScreeningDao nsScreeningDao) {
-    this.screeningRelationshipService = screeningRelationshipService;
-    this.relationshipsService = relationshipsService;
-    this.participantService = participantService;
-    this.clientService = clientService;
+  public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
-    this.nsScreeningDao = nsScreeningDao;
   }
 
   public List<ScreeningRelationship> getRelationshipsByScreeningId(String screeningId) {
     if (StringUtils.isEmpty(screeningId)) {
       return Collections.emptyList();
     }
-
-    // DELETE it (just for sonar)
-    LOGGER.info("screeningId {}", screeningId.replaceAll("[\r\n]", ""));
-    LOGGER.info("clientService {}", clientService);
-    LOGGER.info("participantService {}", participantService);
-    LOGGER.info("relationshipsService {}", relationshipsService);
-    LOGGER.info("screeningRelationshipService {}", screeningRelationshipService);
 
     // getparticipants by screeningId
     Set<String> legacyClientIds = getLegacyClientIdsByScreeningId(screeningId);
@@ -88,8 +65,8 @@ public class RelationshipFacade {
     List<ClientRelationship> shouldBeCreated =
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
     result.addAll(createRelationships(shouldBeCreated, screeningId));
-      result.addAll(updateRelationships(shouldBeUpdated));
-      result= (getRelationshipsThatShouldNotBeUpdated(result, nsRelationships));
+    result.addAll(updateRelationships(shouldBeUpdated));
+    result = (getRelationshipsThatShouldNotBeUpdated(result, nsRelationships));
 
     // select and return
     return result;
@@ -123,103 +100,110 @@ public class RelationshipFacade {
 //    return list;
 //  }
 
-  private List<ScreeningRelationship> updateRelationships(List<ClientRelationship> shouldBeUpdated) {
+  private List<ScreeningRelationship> updateRelationships(
+      List<ClientRelationship> shouldBeUpdated) {
+    Date updatedAt = RequestExecutionContext.instance().getRequestStartTime();
     if (CollectionUtils.isEmpty(shouldBeUpdated)) {
       return new ArrayList<>();
     }
     LOGGER.info("shouldBeUpdated {}", shouldBeUpdated);
-        RelationshipMapper mapper = RelationshipMapper.INSTANCE;
-      List<ScreeningRelationship> result = new ArrayList<>();
-    for(ClientRelationship clientRelationship : shouldBeUpdated){
-        Relationship managed = nsRelationshipDao.getByLegacyId(clientRelationship.getId());
-        if(managed != null){
-            managed.setRelationshipType(clientRelationship.getClientRelationshipType());
-            managed.setStartDate(clientRelationship.getStartDate());
-            managed.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
-            managed.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
-            managed.setEndDate(clientRelationship.getEndDate());
-            managed = nsRelationshipDao.update(managed);
-            result.add(mapper.map(managed));
-        }
+    List<ScreeningRelationship> result = new ArrayList<>();
+    for (ClientRelationship clientRelationship : shouldBeUpdated) {
+      Relationship managed = nsRelationshipDao.getByLegacyId(clientRelationship.getId());
+      if (managed != null) {
+        managed.setRelationshipType(clientRelationship.getClientRelationshipType());
+        managed.setStartDate(clientRelationship.getStartDate());
+        managed.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
+        managed.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
+        managed.setEndDate(clientRelationship.getEndDate());
+        managed.setUpdatedAt(updatedAt);
+        managed = nsRelationshipDao.update(managed);
+        result.add(mapper.map(managed));
+      }
     }
     return result;
   }
 
-  private List<ScreeningRelationship>  createRelationships(List<ClientRelationship> shouldBeCreated, String screeningId) {
+  private List<ScreeningRelationship> createRelationships(List<ClientRelationship> shouldBeCreated,
+      String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
       return new ArrayList<>();
     }
     LOGGER.info("shouldBeCreated {}", shouldBeCreated);
-    RelationshipMapper mapper = RelationshipMapper.INSTANCE;
+
+    Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
     List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
-    for(ClientRelationship clientRelationship : shouldBeCreated ) {
-        ParticipantEntity participantEntity1 = null;
-        ParticipantEntity participantEntity2 = null;
-        if(!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
-            Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
-            ScreeningEntity screening = new ScreeningEntity();
-            participantEntity1 = participantDao.create(new ParticipantEntity(
-                    null,
-                    client.getBirthDate(),
-                    client.getDeathDate(),
-                    client.getFirstName(),
-                    client.getGender(),
-                    client.getLastName(),
-                    client.getSsn(),
-                    screening,
-                    client.getId(),
-                    null,
-                    null,
-                    client.getMiddleName(),
-                    client.getNameSuffix(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            ));
-        }else{
-            participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,clientRelationship.getPrimaryClientId());
-        }
-        if(!clientIdSet.contains(clientRelationship.getSecondaryClientId())){
-            Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
-            ScreeningEntity screening = new ScreeningEntity();
-            participantEntity2 = participantDao.create(new ParticipantEntity(
-                    null,
-                    client.getBirthDate(),
-                    client.getDeathDate(),
-                    client.getFirstName(),
-                    client.getGender(),
-                    client.getLastName(),
-                    client.getSsn(),
-                    screening,
-                    client.getId(),
-                    null,
-                    null,
-                    client.getMiddleName(),
-                    client.getNameSuffix(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            ));
-        }else{
-            participantEntity2 = participantDao.findByScreeningIdAndLegacyId(screeningId,clientRelationship.getSecondaryClientId());
-        }
-        Date now = new Date();
-        Relationship newRelationship = new Relationship(   null, participantEntity1.getId(), participantEntity2.getId()
-                , clientRelationship.getClientRelationshipType(), now, now, "Y".equals(clientRelationship.getAbsentParentCode()), "Y".equals(clientRelationship.getSameHomeCode()),
-                clientRelationship.getId(),clientRelationship.getStartDate(), clientRelationship.getEndDate());
-        newRelationship = nsRelationshipDao.create(newRelationship);
-        result.add(mapper.map(newRelationship));
+    for (ClientRelationship clientRelationship : shouldBeCreated) {
+      ParticipantEntity participantEntity1 = null;
+      ParticipantEntity participantEntity2 = null;
+      if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
+        Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
+        participantEntity1 = participantDao.create(new ParticipantEntity(
+            null,
+            client.getBirthDate(),
+            client.getDeathDate(),
+            client.getFirstName(),
+            client.getGender(),
+            client.getLastName(),
+            client.getSsn(),
+            null,
+            client.getId(),
+            null,
+            null,
+            client.getMiddleName(),
+            client.getNameSuffix(),
+            null,
+            null,
+            null,
+            false,
+            false,
+            null,
+            null,
+            null
+        ));
+      } else {
+        participantEntity1 = participantDao
+            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+      }
+      if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
+        Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
+        participantEntity2 = participantDao.create(new ParticipantEntity(
+            null,
+            client.getBirthDate(),
+            client.getDeathDate(),
+            client.getFirstName(),
+            client.getGender(),
+            client.getLastName(),
+            client.getSsn(),
+            null,
+            client.getId(),
+            null,
+            null,
+            client.getMiddleName(),
+            client.getNameSuffix(),
+            null,
+            null,
+            null,
+            false,
+            false,
+            null,
+            null,
+            null
+        ));
+      } else {
+        participantEntity2 = participantDao
+            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+      }
+      Relationship newRelationship = new Relationship(null, participantEntity1.getId(),
+          participantEntity2.getId()
+          , clientRelationship.getClientRelationshipType(), createdAt, createdAt,
+          "Y".equals(clientRelationship.getAbsentParentCode()),
+          "Y".equals(clientRelationship.getSameHomeCode()),
+          clientRelationship.getId(), clientRelationship.getStartDate(),
+          clientRelationship.getEndDate());
+      newRelationship = nsRelationshipDao.create(newRelationship);
+      result.add(mapper.map(newRelationship));
     }
     return result;
   }
@@ -230,53 +214,53 @@ public class RelationshipFacade {
     LOGGER.info("nsRelationships {}", nsRelationships);
     List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
     for (ClientRelationship clientRelationship : lagacyRelationships) {
-        boolean exist = false;
-        for(Relationship relationship : nsRelationships) {
-            if (clientRelationship.getId().equals(relationship.getLegacyId())) {
-                exist = true;
-                break;
-            }
+      boolean exist = false;
+      for (Relationship relationship : nsRelationships) {
+        if (clientRelationship.getId().equals(relationship.getLegacyId())) {
+          exist = true;
+          break;
         }
-        if (!exist) {
-            relationshipsToCreate.add(clientRelationship);
-        }
+      }
+      if (!exist) {
+        relationshipsToCreate.add(clientRelationship);
+      }
     }
     return relationshipsToCreate;
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeUpdated(
       List<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
-    if (CollectionUtils.isEmpty(nsRelationships)) {
-      return lagacyRelationships;
-    }
-
-    if (CollectionUtils.isEmpty(lagacyRelationships)) {
+    if (CollectionUtils.isEmpty(nsRelationships) || CollectionUtils.isEmpty(lagacyRelationships)) {
       return new ArrayList<>();
     }
 
-    // lagacyRelationships.stream().filter(e->e.getId().equals())
-      List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
-      for (ClientRelationship clientRelationship : lagacyRelationships) {
-          boolean update = false;
-          for(Relationship relationship : nsRelationships) {
-              if (clientRelationship.getId().equals(relationship.getLegacyId())) {
-                  if( "Y".equals(clientRelationship.getAbsentParentCode())!= relationship.isAbsentParentIndicator()
-                          || "Y".equals(clientRelationship.getSameHomeCode()) != relationship.getSameHomeStatus()
-                          || clientRelationship.getClientRelationshipType() != relationship.getRelationshipType()
-                          || clientRelationship.getStartDate() != relationship.getStartDate()
-                          || clientRelationship.getEndDate() != relationship.getEndDate()){
-                      update = true;
-                  }
-                  break;
-              }
-
+    List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
+    for (ClientRelationship clientRelationship : lagacyRelationships) {
+      boolean update = false;
+      for (Relationship relationship : nsRelationships) {
+        if (clientRelationship.getId().equals(relationship.getLegacyId())) {
+          if (("Y".equals(clientRelationship.getAbsentParentCode()) != relationship
+              .isAbsentParentIndicator()
+              || "Y".equals(clientRelationship.getSameHomeCode()) != relationship
+              .getSameHomeStatus()
+              || clientRelationship.getClientRelationshipType() != relationship
+              .getRelationshipType()
+              || clientRelationship.getStartDate() != relationship.getStartDate()
+              || clientRelationship.getEndDate() != relationship.getEndDate())
+              && clientRelationship.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
+              .getTime()) {
+            update = true;
           }
-          if (update) {
+          break;
+        }
 
-              relationshipsToUpdate.add(clientRelationship);
-          }
       }
-      return relationshipsToUpdate;
+      if (update) {
+
+        relationshipsToUpdate.add(clientRelationship);
+      }
+    }
+    return relationshipsToUpdate;
   }
 
   private Set<String> getLegacyClientIdsByScreeningId(String screeningId) {
@@ -289,30 +273,37 @@ public class RelationshipFacade {
 
   private List<ClientRelationship> getCmsRelationships(Set<String> legacyClientIds) {
     LOGGER.info("legacyClientIds {}", legacyClientIds);
-        List<ClientRelationship> relationshipListcms = new ArrayList<>();
-      Map<String, Collection<ClientRelationship>> relationshipMap =
-              cmsRelationshipDao.findByPrimaryClientIds(legacyClientIds);
-      for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : relationshipMap.entrySet()) {
-          String clientId = relationshipMapEntry.getKey();
-          relationshipListcms.addAll(relationshipMapEntry.getValue());
-      };
+    List<ClientRelationship> relationshipListcms = new ArrayList<>();
+    Map<String, Collection<ClientRelationship>> primaryRelationshipMap =
+        cmsRelationshipDao.findByPrimaryClientIds(legacyClientIds);
+    for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : primaryRelationshipMap
+        .entrySet()) {
+      relationshipListcms.addAll(relationshipMapEntry.getValue());
+    }
+    Map<String, Collection<ClientRelationship>> secondaryRelationshipMap =
+        cmsRelationshipDao.findBySecondaryClientIds(legacyClientIds);
+    for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : secondaryRelationshipMap
+        .entrySet()) {
+      relationshipListcms.addAll(relationshipMapEntry.getValue());
+    }
     return relationshipListcms;
   }
 
-  private List<ScreeningRelationship> getRelationshipsThatShouldNotBeUpdated(List<ScreeningRelationship> list1, List<Relationship> list2 ) {
-      List<ScreeningRelationship> result = new ArrayList<>(list1);
-      for (Relationship relationship : list2) {
-          boolean exist = false;
-          for (ScreeningRelationship screeningRelationship : list1) {
-              if (screeningRelationship.getId().equals(relationship.getId())) {
-                  exist = true;
-                  break;
-              }
-          }
-          if (!exist) {
-              result.add(mapper.map(relationship));
-          }
+  private List<ScreeningRelationship> getRelationshipsThatShouldNotBeUpdated(
+      List<ScreeningRelationship> list1, List<Relationship> list2) {
+    List<ScreeningRelationship> result = new ArrayList<>(list1);
+    for (Relationship relationship : list2) {
+      boolean exist = false;
+      for (ScreeningRelationship screeningRelationship : list1) {
+        if (screeningRelationship.getId().equals(relationship.getId())) {
+          exist = true;
+          break;
+        }
       }
-      return result;
+      if (!exist) {
+        result.add(mapper.map(relationship));
+      }
+    }
+    return result;
   }
 }

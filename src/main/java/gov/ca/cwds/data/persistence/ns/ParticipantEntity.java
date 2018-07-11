@@ -106,7 +106,7 @@ public class ParticipantEntity
 
   @HashCodeExclude
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "screening_id", nullable = false, insertable = false, updatable = false)
+  @JoinColumn(name = "screening_id", insertable = false, updatable = false)
   private ScreeningEntity screeningEntity;
 
   @Column(name = "legacy_id")

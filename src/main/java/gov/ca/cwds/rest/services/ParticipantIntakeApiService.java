@@ -205,6 +205,9 @@ public class ParticipantIntakeApiService implements
       throw new ServiceException("NULL argument for CREATE participant");
     }
 
+    if (participant.getLegacyId() == null && participant.getLegacyDescriptor() != null) {
+      participant.setLegacyId(participant.getLegacyDescriptor().getId());
+    }
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 

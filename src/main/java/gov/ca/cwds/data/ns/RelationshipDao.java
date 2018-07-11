@@ -5,6 +5,7 @@ import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.inject.NsSessionFactory;
 import java.util.List;
+import javax.persistence.NoResultException;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -23,9 +24,15 @@ public class RelationshipDao  extends CrudsDaoImpl<Relationship> {
   }
 
   public Relationship getByLegacyId(String legacyId){
-    final Query<Relationship> query = this.getSessionFactory().getCurrentSession()
-            .getNamedQuery(Relationship.FIND_RELATIONSHIPS_BY_LEGACY_ID)
-            .setParameter("legacyId", legacyId);
-    return query.getSingleResult();
+    Relationship result;
+    try {
+      final Query<Relationship> query = this.getSessionFactory().getCurrentSession()
+          .getNamedQuery(Relationship.FIND_RELATIONSHIPS_BY_LEGACY_ID)
+          .setParameter("legacyId", legacyId);
+       result = query.getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
+    return  result;
   }
 }
