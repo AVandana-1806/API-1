@@ -35,20 +35,20 @@ public class SsaName3Dao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SsaName3Dao.class);
 
-  private final static String TABLE_NAME = "TABLENAME";
-  private final static String CRUD_FUNCTION = "CRUDFUNCT";
-  private final static String IDENTIFIER = "IDENTIFIER";
-  private final static String NAME_CODE = "NAMECODE";
-  private final static String FIRST_NAME = "FIRSTNAME";
-  private final static String MIDDLE_NAME = "MIDDLENAME";
-  private final static String LAST_NAME = "LASTNAME";
-  private final static String STREET_NUMBER = "STREETNUM";
-  private final static String STREET_NAME = "STREETNAME";
-  private final static String GOVERNMENT_ENTITY_CODE = "GVRENTC";
-  private final static String LAST_UPDATE_TIMESTAMP = "LASTUPDTM";
-  private final static String LAST_UPDATE_ID = "LASTUPDID";
-  private final static String RETURN_STATUS = "RETSTATUS";
-  private final static String RETURN_MESSAGE = "RETMESSAG";
+  private static final String TABLE_NAME = "TABLENAME";
+  private static final String CRUD_FUNCTION = "CRUDFUNCT";
+  private static final String IDENTIFIER = "IDENTIFIER";
+  private static final String NAME_CODE = "NAMECODE";
+  private static final String FIRST_NAME = "FIRSTNAME";
+  private static final String MIDDLE_NAME = "MIDDLENAME";
+  private static final String LAST_NAME = "LASTNAME";
+  private static final String STREET_NUMBER = "STREETNUM";
+  private static final String STREET_NAME = "STREETNAME";
+  private static final String GOVERNMENT_ENTITY_CODE = "GVRENTC";
+  private static final String LAST_UPDATE_TIMESTAMP = "LASTUPDTM";
+  private static final String LAST_UPDATE_ID = "LASTUPDID";
+  private static final String RETURN_STATUS = "RETSTATUS";
+  private static final String RETURN_MESSAGE = "RETMESSAG";
 
   private SessionFactory sessionFactory;
   private short s = 0;
