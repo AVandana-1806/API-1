@@ -74,7 +74,8 @@ public class HOIReferralService extends
 
   @Override
   public HOIReferralResponse handleFind(HOIRequest hoiRequest) {
-    final List<String> authorizedClientIds = authorizeClients(hoiRequest.getClientIds());
+    final Collection<String> authorizedClientIds =
+        authorizationService.filterClientIds(hoiRequest.getClientIds());
     if (authorizedClientIds.isEmpty()) {
       return new HOIReferralResponse();
     }
@@ -147,11 +148,6 @@ public class HOIReferralService extends
   @Override
   public HOIReferralResponse handleRequest(HOIReferral req) {
     throw new NotImplementedException("handle request not implemented");
-  }
-
-  @Override
-  public AuthorizationService getAuthorizationService() {
-    return authorizationService;
   }
 
   @Override

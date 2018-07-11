@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.shiro.authz.AuthorizationException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -250,8 +248,6 @@ public class HOIReferralServiceTest extends Doofenshmirtz<Client> {
     when(referralClientDao.findByClientIds(any())).thenReturn(referralClients);
 
     authorizationService = mock(AuthorizationService.class);
-    doThrow(AuthorizationException.class).when(authorizationService)
-        .ensureClientAccessAuthorized("unauthorizedId");
 
     request = new HOIRequest();
     request.setClientIds(Stream.of("unauthorizedId").collect(Collectors.toSet()));
@@ -260,8 +256,7 @@ public class HOIReferralServiceTest extends Doofenshmirtz<Client> {
         referralDao, staffPersonDao, allegationDao);
     final HOIReferralService spyTarget = spy(hoiReferralService);
     final HOIReferralResponse response = spyTarget.handleFind(request);
-    assertThat("Expected authorization errors!!",
-        response.hasMessages() && !response.getMessages().isEmpty());
+    assertThat("No Referrals have been returned", response.getHoiReferrals().isEmpty());
   }
 
   private static gov.ca.cwds.data.persistence.cms.ReferralClient buildReferralClient(
