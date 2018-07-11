@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
