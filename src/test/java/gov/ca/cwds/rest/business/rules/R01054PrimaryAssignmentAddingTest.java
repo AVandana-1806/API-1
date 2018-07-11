@@ -1,5 +1,19 @@
 package gov.ca.cwds.rest.business.rules;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.junit.Before;
+import org.junit.Test;
+
 import gov.ca.cwds.data.cms.AssignmentUnitDao;
 import gov.ca.cwds.data.cms.CaseLoadDao;
 import gov.ca.cwds.data.cms.CwsOfficeDao;
@@ -15,13 +29,6 @@ import gov.ca.cwds.fixture.CaseLoadEntityBuilder;
 import gov.ca.cwds.fixture.CwsOfficeEntityBuilder;
 import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * CWDS API Team
@@ -49,24 +56,26 @@ public class R01054PrimaryAssignmentAddingTest {
   public void testReferralAssignment() {
     short governmentEntityType = (short) -1;
 
-    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P").setEstablishedForCode("R").build();
+    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P")
+        .setEstablishedForCode("R").build();
     CaseLoad caseLoad = new CaseLoadEntityBuilder().build();
     AssignmentUnit assignmentUnit = new AssignmentUnitEntityBuilder().build();
-    CwsOffice cwsOffice = new CwsOfficeEntityBuilder().setGovernmentEntityType(governmentEntityType).build();
+    CwsOffice cwsOffice =
+        new CwsOfficeEntityBuilder().setGovernmentEntityType(governmentEntityType).build();
     Referral referral = new ReferralEntityBuilder().build();
 
     when(caseLoadDao.find(anyString())).thenReturn(caseLoad);
     when(assignmentUnitDao.find(anyString())).thenReturn(assignmentUnit);
     when(cwsOfficeDao.find(anyString())).thenReturn(cwsOffice);
     when(referralDao.find(anyString())).thenReturn(referral);
-    when(referralDao.getSessionFactory()).thenReturn(sessionFactory);
+    when(referralDao.grabSession()).thenReturn(session);
     when(sessionFactory.getCurrentSession()).thenReturn(session);
 
     R01054PrimaryAssignmentAdding rule = new R01054PrimaryAssignmentAdding(assignment, referralDao,
         caseLoadDao, assignmentUnitDao, cwsOfficeDao);
     rule.execute();
 
-    assertEquals((int)governmentEntityType, (int)referral.getGovtEntityType());
+    assertEquals((int) governmentEntityType, (int) referral.getGovtEntityType());
     verify(session, times(1)).merge(any());
   }
 
@@ -74,10 +83,12 @@ public class R01054PrimaryAssignmentAddingTest {
   public void testReferralAssignmentNoReferralFound() {
     short governmentEntityType = (short) -1;
 
-    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P").setEstablishedForCode("R").build();
+    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P")
+        .setEstablishedForCode("R").build();
     CaseLoad caseLoad = new CaseLoadEntityBuilder().build();
     AssignmentUnit assignmentUnit = new AssignmentUnitEntityBuilder().build();
-    CwsOffice cwsOffice = new CwsOfficeEntityBuilder().setGovernmentEntityType(governmentEntityType).build();
+    CwsOffice cwsOffice =
+        new CwsOfficeEntityBuilder().setGovernmentEntityType(governmentEntityType).build();
 
     when(caseLoadDao.find(anyString())).thenReturn(caseLoad);
     when(assignmentUnitDao.find(anyString())).thenReturn(assignmentUnit);
@@ -89,7 +100,7 @@ public class R01054PrimaryAssignmentAddingTest {
     try {
       rule.execute();
       fail();
-    } catch(ServiceException e) {
+    } catch (ServiceException e) {
       assertEquals("Cannot find referral for assignment: SlCAr46088", e.getMessage());
     }
     verify(session, times(0)).merge(any());
@@ -98,7 +109,8 @@ public class R01054PrimaryAssignmentAddingTest {
 
   @Test
   public void testNoCwsOfficeFound() {
-    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P").setEstablishedForCode("R").build();
+    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P")
+        .setEstablishedForCode("R").build();
     CaseLoad caseLoad = new CaseLoadEntityBuilder().build();
     AssignmentUnit assignmentUnit = new AssignmentUnitEntityBuilder().build();
 
@@ -111,14 +123,15 @@ public class R01054PrimaryAssignmentAddingTest {
     try {
       rule.execute();
       fail();
-    } catch(ServiceException e) {
+    } catch (ServiceException e) {
       assertEquals("Cannot find cwsOffice for assignmentUnit: assignmentUnitId", e.getMessage());
     }
   }
 
   @Test
   public void testAssignmentUnitFound() {
-    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P").setEstablishedForCode("R").build();
+    Assignment assignment = new AssignmentEntityBuilder().setTypeOfAssignmentCode("P")
+        .setEstablishedForCode("R").build();
     CaseLoad caseLoad = new CaseLoadEntityBuilder().build();
 
     when(caseLoadDao.find(anyString())).thenReturn(caseLoad);
@@ -129,7 +142,7 @@ public class R01054PrimaryAssignmentAddingTest {
     try {
       rule.execute();
       fail();
-    } catch(ServiceException e) {
+    } catch (ServiceException e) {
       assertEquals("Cannot find assignmentUnit for caseLoad: ABC1234567", e.getMessage());
     }
     verify(session, times(0)).merge(any());
@@ -145,7 +158,7 @@ public class R01054PrimaryAssignmentAddingTest {
     try {
       rule.execute();
       fail();
-    } catch(ServiceException e) {
+    } catch (ServiceException e) {
       assertEquals("Cannot find caseLoad for assignment: SlCAr46088", e.getMessage());
     }
     verify(session, times(0)).merge(any());
