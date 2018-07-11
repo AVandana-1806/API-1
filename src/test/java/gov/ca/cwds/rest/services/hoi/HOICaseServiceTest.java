@@ -264,16 +264,11 @@ public class HOICaseServiceTest extends Doofenshmirtz<Client> {
   @Test
   public void testUnAuthorizedClient() {
     authorizationService = mock(AuthorizationService.class);
-    doThrow(AuthorizationException.class).when(authorizationService)
-        .ensureClientAccessAuthorized(any(String.class));
-
     target = new HOICaseService(caseDao, clientDao, clientRelationshipDao, staffPersonDao,
         authorizationService);
     final HOICaseService spyTarget = spy(target);
     final HOICaseResponse response = spyTarget.handleFind(request);
-
-    assertThat("Expected authorization errors!!",
-        response.hasMessages() && !response.getMessages().isEmpty());
+    assertThat("No Cases have been returned", response.getHoiCases().isEmpty());
   }
 
 }
