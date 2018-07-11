@@ -46,8 +46,8 @@ public class WorkFerbUserInfo implements Work {
     } catch (Exception e) {
       LOGGER.error("FAILED TO FIND HOST IP! {}", e.getMessage(), e);
     } finally {
-      IP_ADDRESS = hostAddress.substring(0, Math.max(hostAddress.length(), 10));
-      WORKSTATION = hostName.substring(0, Math.max(hostName.length(), 17));
+      IP_ADDRESS = hostAddress.substring(0, Math.min(hostAddress.length(), 10));
+      WORKSTATION = hostName.substring(0, Math.min(hostName.length(), 17));
     }
   }
 
