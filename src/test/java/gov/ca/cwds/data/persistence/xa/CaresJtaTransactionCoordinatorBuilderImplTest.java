@@ -36,7 +36,6 @@ public class CaresJtaTransactionCoordinatorBuilderImplTest extends Doofenshmirtz
   }
 
   // @Test
-  // @Ignore
   // public void buildTransactionCoordinator_A$TransactionCoordinatorOwner$Object() throws Exception
   // {
   // TransactionCoordinatorOwner owner = mock(TransactionCoordinatorOwner.class);
@@ -63,7 +62,6 @@ public class CaresJtaTransactionCoordinatorBuilderImplTest extends Doofenshmirtz
   }
 
   // @Test
-  // @Ignore
   // public void buildDdlTransactionIsolator_A$JdbcContext() throws Exception {
   // JdbcContext jdbcContext = mock(JdbcContext.class);
   // DdlTransactionIsolator actual = target.buildDdlTransactionIsolator(jdbcContext);
