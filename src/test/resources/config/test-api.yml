@@ -55,7 +55,6 @@ cmsDataSourceFactory:
       hibernate.use_sql_comments: false
       hibernate.default_schema: cwsint
       hibernate.connection.autocommit: false
-      # hibernate.current_session_context_class: thread  
 
 rsDataSourceFactory:
   autoCommitByDefault: false
@@ -86,7 +85,7 @@ xaCmsDataSourceFactory:
   driverClass: org.h2.Driver
   user: sa
   password:
-  url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
+  url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
   validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
@@ -111,14 +110,14 @@ xaCmsDataSourceFactory:
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
   xaProperties:
-      url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint}
+      url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
 
 xaCmsRsDataSourceFactory:
   autoCommitByDefault: false
   driverClass: org.h2.Driver
   user: sa
   password:
-  url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1}
+  url: jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
   validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
@@ -145,13 +144,13 @@ xaCmsRsDataSourceFactory:
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
   xaProperties:
-      url: ${DB_CMS_JDBC_URL:-jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1}
+      url: jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1
 
 xaNsDataSourceFactory:
   driverClass: org.h2.Driver
-  user: ${DB_NS_USER:-sa}
-  password: ${DB_NS_PASSWORD:-}
-  url: ${DB_NS_JDBC_URL:-jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens}
+  user: DB_NS_USER:-sa
+  password: DB_NS_PASSWORD
+  url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
   validationQuery: "/* XA/NS Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
@@ -178,7 +177,7 @@ xaNsDataSourceFactory:
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
   xaProperties:
-      url: ${DB_NS_JDBC_URL:-jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens}
+      url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
 
 elasticsearch:
   # People index
