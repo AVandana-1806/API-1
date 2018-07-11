@@ -17,7 +17,6 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.Screening;
 
 /**
- *
  * CWDS API Team
  */
 public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
