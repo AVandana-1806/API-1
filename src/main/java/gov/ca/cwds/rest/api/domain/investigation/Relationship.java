@@ -24,6 +24,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.DomainObject;
 import gov.ca.cwds.rest.api.domain.ReportingDomain;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.business.rules.CalendarEnum;
 import gov.ca.cwds.rest.util.CmsRecordUtils;
 import gov.ca.cwds.rest.validation.Date;
 import io.dropwizard.jackson.JsonSnakeCase;
@@ -130,7 +131,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   /**
    * @param id - id
    * @param dateOfBirth - date of birth
-   * @param age age
+   * @param age - age
    * @param ageUnit age time unit
    * @param firstName - first name
    * @param middleName - middle name
@@ -194,6 +195,10 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.relatedTo = relationships;
   }
 
+  /**
+   * @param birthDate - birthDate
+   * @return the age
+   */
   public static Short calculatedAge(String birthDate) {
     LocalDate currentDate = LocalDate.now();
     LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
@@ -215,19 +220,23 @@ public final class Relationship extends ReportingDomain implements Request, Resp
 
   }
 
+  /**
+   * @param birthDate - birthDate
+   * @return the ageUnit
+   */
   public static String calculatedAgeUnit(String birthDate) {
     LocalDate currentDate = LocalDate.now();
     LocalDate dob = StringUtils.isNotBlank(birthDate) ? LocalDate.parse(birthDate) : null;
     if (dob != null) {
       int ageInYears = Period.between(dob, currentDate).getYears();
       if (ageInYears > 0)
-        return "Y";
+        return CalendarEnum.YEARS.getName();
       else {
         int ageInMonths = Period.between(dob, currentDate).getMonths();
         if (ageInMonths > 0)
-          return "M";
+          return CalendarEnum.MONTHS.getName();
         else {
-          return "D";
+          return CalendarEnum.DAYS.getName();
         }
       }
     } else {

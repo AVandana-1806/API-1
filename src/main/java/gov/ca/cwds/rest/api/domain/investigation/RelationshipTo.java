@@ -156,12 +156,12 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
-      @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
-      @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
-      String absentParentCode,
-      String sameHomeCode,
-      String relationshipToPerson, String relationshipContext, String relatedPersonRelationship,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,
+      String absentParentCode, String sameHomeCode, String relationshipToPerson,
+      String relationshipContext, String relatedPersonRelationship,
       CmsRecordDescriptor cmsRecordDescriptor) {
     super();
     this.relatedFirstName = relatedFirstName;
@@ -202,16 +202,17 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfBirth, Short relatedAge,
-      String relatedAgeUnit,
-      @Date(format = "yyyy-MM-dd", required = false) String relatedDateOfDeath,
-      @Date(format = "yyyy-MM-dd", required = false) String relationshipStartDate,
-      @Date(format = "yyyy-MM-dd", required = false) String relationshipEndDate,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
+      Short relatedAge, String relatedAgeUnit,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
+      @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship, String clientId) {
     this(relatedFirstName, relatedLastName, relatedNameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
-        relationshipToPerson, relationshipContext, relatedPersonRelationship, CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
+        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
+        sameHomeCode, relationshipToPerson, relationshipContext, relatedPersonRelationship,
+        CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
   /**
