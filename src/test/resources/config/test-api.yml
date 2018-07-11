@@ -192,9 +192,12 @@ elasticsearch:
 
   # Screenings index
   screeningsIndex:
-    elasticsearch.host: ${ES_HOST_SCREENINGS:-127.0.0.1}
-    elasticsearch.port: ${ES_PORT_SCREENINGS:-9200}
-    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-taborda-dev-es}
+    # The old "elasticsearch.host" and "elasticsearch.port" will still work but not required when "elasticsearch.nodes" is provided.
+    elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
+    elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
+    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
+    # Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
+    elasticsearch.nodes: ${ES_NODES_SCREENINGS}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
     elasticsearch.xpack.user: ${XPACK_USER_SCREENINGS:-}
