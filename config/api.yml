@@ -118,6 +118,8 @@ xaCmsDataSourceFactory:
       hibernate.connection.isolation: 1
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
@@ -193,6 +195,8 @@ xaNsDataSourceFactory:
       hibernate.temp.use_jdbc_metadata_defaults: true
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
