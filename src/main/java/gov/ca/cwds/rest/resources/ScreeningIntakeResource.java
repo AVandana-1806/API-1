@@ -2,8 +2,6 @@ package gov.ca.cwds.rest.resources;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_SCREENINGS;
 
-
-import gov.ca.cwds.rest.services.ScreeningService;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,6 +18,7 @@ import org.apache.http.HttpStatus;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.api.domain.Screening;
+import gov.ca.cwds.rest.services.ScreeningService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

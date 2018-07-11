@@ -345,9 +345,9 @@ public class ScreeningService implements CrudsService {
         allegationIdsOld.remove(allegationEntity.getId());
       }
     }
+
     // Delete old ones that are not in the new.
     allegationIdsOld.forEach(allegationId -> allegationDao.delete(allegationId));
-
   }
 
   private void createUpdateDeleteCrossReports(Screening screening) {

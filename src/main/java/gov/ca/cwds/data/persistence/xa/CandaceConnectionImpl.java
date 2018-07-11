@@ -55,6 +55,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public Statement createStatement() throws SQLException {
+    LOGGER.debug("CandaceConnectionImpl.createStatement");
     return con.createStatement();
   }
 
@@ -84,6 +85,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public boolean getAutoCommit() throws SQLException {
+    LOGGER.trace("CandaceConnectionImpl.getAutoCommit");
     return con.getAutoCommit();
   }
 
@@ -128,6 +130,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public boolean isReadOnly() throws SQLException {
+    LOGGER.trace("CandaceConnectionImpl.isReadOnly: con.isReadOnly(): {}", con.isReadOnly());
     return con.isReadOnly();
   }
 
