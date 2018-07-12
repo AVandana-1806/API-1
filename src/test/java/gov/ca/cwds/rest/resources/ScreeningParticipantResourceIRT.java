@@ -23,8 +23,7 @@ public class ScreeningParticipantResourceIRT extends IntakeBaseTest {
     ParticipantIntakeApi participant = objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
 
     expectedResponse = expectedResponse.replace("${participant_id}", participant.getId());
-    expectedResponse = expectedResponse.replace("${address_id}",
-        participant.getAddresses().get(0).getId());
+    expectedResponse = expectedResponse.replace("${address_id}", participant.getAddresses().get(0).getId());
 
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
 
