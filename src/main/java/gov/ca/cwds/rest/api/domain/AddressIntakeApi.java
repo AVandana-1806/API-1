@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.validation.ValidZipCode;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -48,12 +47,10 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
 
   @JsonProperty("street_address")
   @ApiModelProperty(example = "742 Evergreen Terrace")
-  @Size(max = 50)
   private String streetAddress;
 
   @JsonProperty("city")
   @ApiModelProperty(value = "City", example = "Sacramento")
-  @Size(max = 50)
   private String city;
 
   @JsonProperty("state")
@@ -62,7 +59,6 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
 
   @JsonProperty("zip")
   @ApiModelProperty(value = "Zip", example = "95835")
-  @ValidZipCode
   private String zip;
 
   @JsonProperty("legacy_descriptor")
