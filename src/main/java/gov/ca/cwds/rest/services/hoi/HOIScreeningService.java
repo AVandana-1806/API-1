@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -99,7 +100,8 @@ public class HOIScreeningService
      * authorizationService&#46;ensureClientAccessAuthorized&#40;clientIds&#41;&#59;
      */
     Set<ScreeningEntity> screeningEntities = screeningDao
-        .findScreeningsByClientIds(hsd.getClientIds());
+        .findScreeningsByClientIds(hsd.getClientIds().stream()
+            .filter(Objects::nonNull).collect(Collectors.toSet()));
     hsd.getScreeningEntities().addAll(screeningEntities);
 
     Map<String, Set<ParticipantEntity>> participantEntitiesMap = participantDao.findByScreeningIds(
