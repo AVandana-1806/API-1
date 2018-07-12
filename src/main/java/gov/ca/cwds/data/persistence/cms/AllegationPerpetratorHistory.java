@@ -34,7 +34,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AllegationPerpetratorHistory extends CmsPersistentObject {
-  protected static final String DATE_FORMAT = "yyyy-MM-dd";
+  protected static final String DATE_FORMAT = DomainChef.DATE_FORMAT;
 
   @Id
   @Column(name = "IDENTIFIER", length = CMS_ID_LEN)

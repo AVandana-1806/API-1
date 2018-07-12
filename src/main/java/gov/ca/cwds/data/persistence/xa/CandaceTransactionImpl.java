@@ -30,8 +30,9 @@ public class CandaceTransactionImpl implements Transaction {
    * @param txn Hibernate transaction
    */
   public CandaceTransactionImpl(Transaction txn) {
-    LOGGER.trace("CandaceTransactionImpl.ctor");
+    LOGGER.debug("CandaceTransactionImpl.ctor");
     this.txn = txn;
+    this.txn.setTimeout(90); // NEXT: soft-code
   }
 
   public boolean isXaTransaction() {
@@ -73,6 +74,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void registerSynchronization(Synchronization synchronization) throws HibernateException {
+    LOGGER.trace("CandaceTransactionImpl.registerSynchronization");
     txn.registerSynchronization(synchronization);
   }
 
@@ -84,7 +86,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   public void setTimeout(int seconds) {
-    LOGGER.debug("CandaceTransactionImpl.setTimeout: seconds: {}", seconds);
+    LOGGER.info("CandaceTransactionImpl.setTimeout: seconds: {}", seconds);
     txn.setTimeout(seconds);
   }
 
@@ -108,7 +110,7 @@ public class CandaceTransactionImpl implements Transaction {
 
   @Override
   protected void finalize() throws Throwable {
-    LOGGER.debug("CandaceTransactionImpl.finalize");
+    LOGGER.info("CandaceTransactionImpl.finalize");
     super.finalize();
   }
 

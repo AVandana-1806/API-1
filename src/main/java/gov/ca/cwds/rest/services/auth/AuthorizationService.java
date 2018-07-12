@@ -12,6 +12,7 @@ import gov.ca.cwds.rest.api.domain.auth.AuthorizationRequest;
 import gov.ca.cwds.rest.api.domain.auth.AuthorizationResponse;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.security.annotations.Authorize;
+import org.apache.shiro.authz.UnauthorizedException;
 
 /**
  * Service to check that logged in staff person is authorized to access entities
@@ -51,6 +52,11 @@ public class AuthorizationService
     // Authorizer annotation does the work
   }
 
+  public Collection<String> filterClientIds(@Authorize("client:read:clientIds") Collection<String> clientIds) {
+    // Authorizer annotation does the work
+    return clientIds;
+  }
+
   /**
    * Check if logged in user is authorized to access clients identified by given clientIds, throws
    * AuthorizationException if any client is not authorized for staff person.
@@ -60,8 +66,11 @@ public class AuthorizationService
    *         logged in user.
    */
   public void ensureClientAccessAuthorized(Collection<String> clientIds) {
-    for (String clientId : clientIds) {
-      ensureClientAccessAuthorized(clientId);
+    if (clientIds != null && !clientIds.isEmpty()) {
+      Collection<String> filteredClientIds = filterClientIds(clientIds);
+      if (clientIds.size() != filteredClientIds.size()) {
+        throw new UnauthorizedException();
+      }
     }
   }
 

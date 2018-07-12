@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
-import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -12,6 +10,8 @@ import org.joda.time.DateTime;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
@@ -45,7 +45,8 @@ public class ClientTransformer implements ParticipantMapper<Client> {
 
     List<PlacementEpisode> placementEpisodes = placementEpisodeDao.findByClientId(clientId);
 
-    List<AddressIntakeApi> addresses = intakeAddressConverter.getPlacementHomeAddresses(clientId, placementEpisodes);
+    List<AddressIntakeApi> addresses =
+        intakeAddressConverter.getPlacementHomeAddresses(placementEpisodes);
 
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor(clientId, null, new DateTime(client.getLastUpdatedTime()),

@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +29,15 @@ public class WorkFerbUserInfo implements Work {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkFerbUserInfo.class);
 
-  public static final String PROGRAM_NAME = "CARES Ferb";
+  public static final String PROGRAM_NAME = "Ferb";
 
-  public static final String SERVER_IP_ADDRESS;
-  public static final String SERVER_IP_NAME;
+  public static final String IP_ADDRESS;
+  public static final String WORKSTATION;
 
   // Find host and IP address up front.
   static {
-    String hostAddress = null;
-    String hostName = null;
+    String hostAddress = "IP?";
+    String hostName = PROGRAM_NAME;
     try {
       final InetAddress i = InetAddress.getLocalHost();
       hostAddress = i.getHostAddress();
@@ -46,12 +45,9 @@ public class WorkFerbUserInfo implements Work {
       LOGGER.info("Host name: {}, IP address: {}", hostAddress, hostName);
     } catch (Exception e) {
       LOGGER.error("FAILED TO FIND HOST IP! {}", e.getMessage(), e);
-      if (StringUtils.isBlank(hostAddress)) {
-        hostAddress = "Ferb unknown";
-      }
     } finally {
-      SERVER_IP_ADDRESS = hostAddress;
-      SERVER_IP_NAME = hostName;
+      IP_ADDRESS = hostAddress.substring(0, Math.min(hostAddress.length(), 10));
+      WORKSTATION = hostName.substring(0, Math.min(hostName.length(), 17));
     }
   }
 
@@ -62,18 +58,23 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
 
     con.setAutoCommit(false);
+
     if (con instanceof DB2Connection) {
+      // https://vsis-www.informatik.uni-hamburg.de/oldServer/teaching/ws-06.07/dbms/materialien/db2-manuals/db2aje90.pdf
+      // Properties start on page 232.
       LOGGER.info("DB2 connection, set user info");
       con.setClientInfo("ApplicationName", PROGRAM_NAME);
+      con.setClientInfo("clientProgramName", PROGRAM_NAME);
+      con.setClientInfo("clientWorkstation", IP_ADDRESS);
+      con.setClientInfo("clientAccountingInformation", userId);
       con.setClientInfo("ClientUser", userId);
-      con.setClientInfo("ClientHostname", SERVER_IP_ADDRESS);
 
-      final DB2Connection db2conn = (DB2Connection) con;
-      db2conn.setDB2ClientAccountingInformation(userId);
-      db2conn.setDB2ClientApplicationInformation(userId);
-      db2conn.setDB2ClientProgramId(userId);
-      db2conn.setDB2ClientUser(staffId);
-      db2conn.setDB2ClientWorkstation(SERVER_IP_NAME);
+      final DB2Connection db2con = (DB2Connection) con;
+      db2con.setDB2ClientAccountingInformation(userId);
+      db2con.setDB2ClientApplicationInformation(userId);
+      db2con.setDB2ClientProgramId(userId);
+      db2con.setDB2ClientUser(staffId);
+      db2con.setDB2ClientWorkstation(WORKSTATION);
 
       // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
     }

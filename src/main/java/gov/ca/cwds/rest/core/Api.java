@@ -3,7 +3,7 @@ package gov.ca.cwds.rest.core;
 /**
  * Constants defining resources locations in the API.
  * 
- * @author CWDS API Tea "secondaryLanguage":1255,m
+ * @author CWDS API Team
  */
 public final class Api {
 
