@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.validation.ValidZipCode;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -61,7 +62,7 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
 
   @JsonProperty("zip")
   @ApiModelProperty(value = "Zip", example = "95835")
-  @Size(min = 5, max = 5)
+  @ValidZipCode
   private String zip;
 
   @JsonProperty("legacy_descriptor")
@@ -89,12 +90,8 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
    * @param legacyDescriptor - legacyDescriptor
    */
   @SuppressWarnings("squid:S00107")
-  public AddressIntakeApi(String legacySourceTable,
-      String addressId,
-      String streetAddress,  String city,
-      String state, String zip,
-      String type,
-      LegacyDescriptor legacyDescriptor) {
+  public AddressIntakeApi(String legacySourceTable, String addressId, String streetAddress,
+      String city, String state, String zip, String type, LegacyDescriptor legacyDescriptor) {
     super();
     this.legacySourceTable = legacySourceTable;
     this.legacyId = addressId;
