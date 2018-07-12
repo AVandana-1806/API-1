@@ -99,9 +99,13 @@ public class HOIScreeningService
      * of code back at this spot:<br/>
      * authorizationService&#46;ensureClientAccessAuthorized&#40;clientIds&#41;&#59;
      */
+    Collection<String> filteredClientIds = hsd.getClientIds().stream()
+        .filter(Objects::nonNull).collect(Collectors.toSet());
+    if (filteredClientIds.isEmpty()) {
+      return;
+    }
     Set<ScreeningEntity> screeningEntities = screeningDao
-        .findScreeningsByClientIds(hsd.getClientIds().stream()
-            .filter(Objects::nonNull).collect(Collectors.toSet()));
+        .findScreeningsByClientIds(filteredClientIds);
     hsd.getScreeningEntities().addAll(screeningEntities);
 
     Map<String, Set<ParticipantEntity>> participantEntitiesMap = participantDao.findByScreeningIds(
