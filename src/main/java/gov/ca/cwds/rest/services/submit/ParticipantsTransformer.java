@@ -39,7 +39,7 @@ public class ParticipantsTransformer {
     for (ParticipantIntakeApi p : participantsIntake) {
       Set<Address> addresses = new HashSet<>();
       for (AddressIntakeApi addressIntake : p.getAddresses()) {
-        if (!IntakeAddressConverter.PLACEMENT_INTAKE_CODE.equals(addressIntake.getType())) {
+        if (!IntakeAddressConverter.PLACEMENT_HOME_INTAKE_CODE.equals(addressIntake.getType())) {
           addresses.add(addressTransformer.transform(addressIntake));
         }
       }

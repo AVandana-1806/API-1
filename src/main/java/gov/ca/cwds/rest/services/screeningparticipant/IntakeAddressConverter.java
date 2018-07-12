@@ -33,7 +33,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
  */
 public class IntakeAddressConverter {
 
-  public static final String PLACEMENT_INTAKE_CODE = "Placement";
+  public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
   private static final Short RESIDENCE = 32;
 
   /**
@@ -83,7 +83,7 @@ public class IntakeAddressConverter {
             IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(placementHome.getStateCode());
         addressIntakeApi.setState(state);
         addressIntakeApi.setZip(placementHome.getZipNo());
-        addressIntakeApi.setType(PLACEMENT_INTAKE_CODE);
+        addressIntakeApi.setType(PLACEMENT_HOME_INTAKE_CODE);
 
         LocalDateTime lastUpdateTime = placementHome.getLastUpdateTime();
         ZoneOffset zoneOffset = ZoneOffset.systemDefault().getRules().getOffset(lastUpdateTime);
