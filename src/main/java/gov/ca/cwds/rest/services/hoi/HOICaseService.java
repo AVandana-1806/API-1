@@ -157,7 +157,7 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
         .forEach(rel -> ids.add(rel.getSecondaryClientId()));
     hcd.getAllRelationshipsBySecondaryClients().stream().filter(relationshipFilter)
         .forEach(rel -> ids.add(rel.getPrimaryClientId()));
-    return ids;
+    return ids.stream().filter(Objects::nonNull).collect(Collectors.toSet());
   }
 
   private void loadCmsCases(HOICasesData hcd) {
