@@ -5,6 +5,7 @@ import static com.jayway.restassured.RestAssured.given;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.enums.SameHomeStatus;
 import gov.ca.cwds.rest.core.Api;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class ScreeningRelationshipTest extends FunctionalTest{
   public void setup() {
     resourcePath = getResourceUrlFor("/" + Api.SCREENING_RELATIONSHIPS);
     relationship = new ScreeningRelationship("id", "Client1", "Client2", RELATIONSHIP_TYPE, true,
-        SameHomeStatus.U.getCode());
+        SameHomeStatus.U.getCode(), new Date(), new Date(), "1234567890");
   }
 
   @Test

@@ -755,7 +755,7 @@ public class ScreeningToReferralServiceTest {
 
 
     ScreeningRelationship relationship = new ScreeningRelationship(id, personId.toString(),
-        relationId.toString(), relationshipType, true, "N");
+        relationId.toString(), relationshipType, true, "N", new Date(), new Date(), "1234567890");
     Set<ScreeningRelationship> relationships = new HashSet<>();
     relationships.add(relationship);
 
