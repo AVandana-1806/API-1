@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services.submit;
 
-import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +14,7 @@ import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
 import gov.ca.cwds.rest.business.rules.CalendarEnum;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 
 /**
  * Business layer object to transform NS {@link ParticipantIntakeApi} to {@link Participant}
