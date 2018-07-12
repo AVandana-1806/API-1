@@ -207,6 +207,7 @@ public class ParticipantIntakeApiService implements
 
     if (participant.getLegacyId() == null && participant.getLegacyDescriptor() != null) {
       participant.setLegacyId(participant.getLegacyDescriptor().getId());
+      participant.setLegacySourceTable(participant.getLegacyDescriptor().getTableName());
     }
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
