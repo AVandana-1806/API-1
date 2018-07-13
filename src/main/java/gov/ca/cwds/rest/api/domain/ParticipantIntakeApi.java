@@ -18,6 +18,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRawValue;
@@ -38,79 +39,76 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "legacySourceTable", "legacyId", "firstName", "lastName", "gender", "ssn",
     "dateOfBirth", "date_of_death", "roles", "addresses", "races", "ethnicity"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantIntakeApi extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
-  @ApiModelProperty(required = true, readOnly = false, value = "Participant Id", example = "12345")
+  @ApiModelProperty(value = "Participant Id", example = "12345")
   private String id;
 
   @JsonProperty("first_name")
-  @ApiModelProperty(required = false, readOnly = false, value = "First Name", example = "John")
+  @ApiModelProperty(value = "First Name", example = "John")
   @Size(max = 64)
   private String firstName;
 
   @JsonProperty("middle_name")
   @Size(min = 0, max = 64)
-  @ApiModelProperty(required = false, readOnly = false, value = "", example = "middle name")
+  @ApiModelProperty(value = "", example = "middle name")
   private String middleName;
 
   @JsonProperty("last_name")
-  @ApiModelProperty(required = false, readOnly = false, value = "Last name", example = "Smith")
+  @ApiModelProperty(value = "Last name", example = "Smith")
   @Size(max = 64)
   private String lastName;
 
   @JsonProperty("name_suffix")
-  @ApiModelProperty(required = false, readOnly = false, value = "name suffix", example = "Jr.")
+  @ApiModelProperty(value = "name suffix", example = "Jr.")
   private String nameSuffix;
 
   @JsonProperty("gender")
   @OneOf(value = {"male", "female", "unknown", "intersex"})
-  @ApiModelProperty(required = false, readOnly = false, value = "Gender Code", example = "male",
+  @ApiModelProperty(value = "Gender Code", example = "male",
       allowableValues = "male, female, unknown, intersex")
   private String gender;
 
   @JsonProperty("ssn")
-  @ApiModelProperty(required = false, readOnly = false, value = "", example = "123456789")
+  @ApiModelProperty(value = "", example = "123456789")
   private String ssn;
 
   @JsonProperty("date_of_birth")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-  @ApiModelProperty(required = false, readOnly = false, value = "Date of Birth",
-      example = "2001-09-11")
+  @ApiModelProperty(value = "Date of Birth", example = "2001-09-11")
   private Date dateOfBirth;
 
   @JsonProperty("date_of_death")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-  @ApiModelProperty(required = false, readOnly = false, value = "Date of Death",
-      example = "2001-12-13")
+  @ApiModelProperty(value = "Date of Death", example = "2001-12-13")
   private Date dateOfDeath;
 
   @JsonProperty("approximate_age")
-  @ApiModelProperty(required = false, readOnly = false, value = "Approximate Age", example = "25")
+  @ApiModelProperty(value = "Approximate Age", example = "25")
   private String approximateAge;
 
   @JsonProperty("approximate_age_units")
   @OneOf(value = {"days", "weeks", "months", "years"})
-  @ApiModelProperty(required = false, readOnly = false, value = "Approximate Age Units",
-      example = "years", allowableValues = "days, weeks, months, years")
+  @ApiModelProperty(value = "Approximate Age Units", example = "years",
+      allowableValues = "days, weeks, months, years")
   private String approximateAgeUnits;
 
   @JsonProperty("languages")
-  @ApiModelProperty(required = false, readOnly = false, dataType = "java.util.List", value = "",
-      example = "American Sign Language", notes = "The Participant's Languages")
+  @ApiModelProperty(dataType = "java.util.List", value = "", example = "American Sign Language",
+      notes = "The Participant's Languages")
   private List<String> languages;
 
   @JsonProperty("legacy_id")
-  @ApiModelProperty(required = true, readOnly = false, value = "Legacy Client Id",
-      example = "ABC1234567")
+  @ApiModelProperty(required = true, value = "Legacy Client Id", example = "ABC1234567")
   @Size(max = CMS_ID_LEN)
   private String legacyId;
 
   @JsonProperty("legacy_source_table")
-  @ApiModelProperty(required = true, readOnly = false, value = "Legacy Source Table",
-      example = "CLIENT_T")
+  @ApiModelProperty(required = true, value = "Legacy Source Table", example = "CLIENT_T")
   private String legacySourceTable;
 
 
@@ -118,28 +116,28 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    * Workafoung for fields containing raw json races ethnicity
    *
    */
-  @ApiModelProperty(required = true, readOnly = false, value = "Races",
+  @ApiModelProperty(required = true, value = "Races",
       example = "['White', 'Black or African American']")
   private String races;
 
-  @ApiModelProperty(required = true, readOnly = false, value = "Ethnicity",
+  @ApiModelProperty(required = true, value = "Ethnicity",
       example = "{\"hispanic_latino_origin\":\"Yes\",\"ethnicity_detail\":[\"Hispanic\"]}")
   private String ethnicity;
 
   @JsonProperty("screening_id")
-  @ApiModelProperty(required = false, readOnly = false, value = "Screening Id", example = "12345")
+  @ApiModelProperty(value = "Screening Id", example = "12345")
   private String screeningId;
 
   @Valid
   @JsonProperty("roles")
-  @ApiModelProperty(required = true, readOnly = false, value = "Role of participant",
-      dataType = "java.util.List", example = "['Victim', 'Mandated Reporter']")
+  @ApiModelProperty(required = true, value = "Role of participant", dataType = "java.util.List",
+      example = "['Victim', 'Mandated Reporter']")
   private Set<String> roles = new HashSet<>();
 
   @Valid
   @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.AddressIntakeApi]")
   @JsonProperty("addresses")
-  private Set<AddressIntakeApi> addresses;
+  private List<AddressIntakeApi> addresses;
 
   @Valid
   @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.PhoneNumber]")
@@ -147,12 +145,16 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   private Set<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers = new HashSet<>();
 
   @JsonProperty("sealed")
-  @ApiModelProperty(required = false, readOnly = false, value = "sealed", example = "true")
+  @ApiModelProperty(value = "sealed", example = "true")
   private Boolean sealed;
 
   @JsonProperty("sensitive")
-  @ApiModelProperty(required = false, readOnly = false, value = "sensitive", example = "true")
+  @ApiModelProperty(value = "sensitive", example = "true")
   private Boolean sensitive;
+
+  @JsonProperty("probation_youth")
+  @ApiModelProperty(value = "probation youth", example = "true")
+  private Boolean probationYouth;
 
   @JsonProperty("legacy_descriptor")
   @ApiModelProperty(required = true, readOnly = false)
@@ -204,7 +206,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
       LegacyDescriptor legacyDescriptor, String firstName, String middleName, String lastName,
       String nameSuffix, String gender, String approximateAge, String approximateAgeUnits,
       String ssn, Date dateOfBirth, Date dateOfDeath, List<String> languages, String races,
-      String ethnicity, String screeningId, Set<String> roles, Set<AddressIntakeApi> addresses,
+      String ethnicity, String screeningId, Set<String> roles, List<AddressIntakeApi> addresses,
       Set<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
 
     super();
@@ -216,7 +218,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.gender = gender;
     this.ssn = ssn;
     this.dateOfBirth = dateOfBirth != null ? new Date(dateOfBirth.getTime()) : null;
-    this.dateOfDeath = dateOfDeath;
+    this.dateOfDeath = freshDate(dateOfDeath);
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
     this.roles = roles;
@@ -261,6 +263,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.screeningId = participantEntity.getScreeningId();
     this.sealed = participantEntity.getSealed();
     this.sensitive = participantEntity.getSensitive();
+    this.probationYouth = participantEntity.getProbationYouth();
   }
 
   /**
@@ -503,9 +506,9 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @return addresses
    */
-  public Set<AddressIntakeApi> getAddresses() {
+  public List<AddressIntakeApi> getAddresses() {
     if (addresses == null) {
-      addresses = new HashSet<>();
+      addresses = new ArrayList<>();
     }
     return addresses;
   }
@@ -513,7 +516,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @param addresses - domain addresses
    */
-  public void setAddresses(Set<AddressIntakeApi> addresses) {
+  public void setAddresses(List<AddressIntakeApi> addresses) {
     this.addresses = addresses;
   }
 
@@ -522,7 +525,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    *
    * @param addresses - domain addresses
    */
-  public void addAddresses(Set<AddressIntakeApi> addresses) {
+  public void addAddresses(List<AddressIntakeApi> addresses) {
     if (addresses == null) {
       return;
     }
@@ -577,6 +580,14 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   public Boolean isSensitive() {
     return sensitive;
+  }
+
+  public Boolean isProbationYouth() {
+    return probationYouth;
+  }
+
+  public void setProbationYouth(Boolean probationYouth) {
+    this.probationYouth = probationYouth;
   }
 
   public List<Csec> getCsecs() {

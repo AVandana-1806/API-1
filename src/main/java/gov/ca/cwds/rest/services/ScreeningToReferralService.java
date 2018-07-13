@@ -142,7 +142,7 @@ public class ScreeningToReferralService implements CrudsService {
     ClientParticipants clientParticipants = processParticipants(screeningToReferral, dateStarted,
         timeStarted, referralId, messageBuilder);
 
-    saveRelationships(screeningToReferral);
+    saveRelationships(screeningToReferral, clientParticipants);
 
     Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
     Set<Allegation> resultAllegations = createAllegations(screeningToReferral, referralId,
@@ -200,12 +200,11 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-
     return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
   }
 
-  private void saveRelationships(ScreeningToReferral screeningToReferral) {
+  private void saveRelationships(ScreeningToReferral screeningToReferral, ClientParticipants clientParticipants ) {
     if (screeningToReferral.getRelationships() == null) {
       return;
     }
@@ -214,7 +213,7 @@ public class ScreeningToReferralService implements CrudsService {
         continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
-          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
+          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship, clientParticipants);
           gov.ca.cwds.data.legacy.cms.entity.ClientRelationship savedRelationship =
               clientRelationshipService.createRelationship(builder.build());
           relationship.setId(savedRelationship.getIdentifier());

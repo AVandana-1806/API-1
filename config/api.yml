@@ -62,7 +62,7 @@ cmsDataSourceFactory:
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
-      hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.current_session_context_class: thread
 
 rsDataSourceFactory:
@@ -102,7 +102,7 @@ xaCmsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -112,12 +112,16 @@ xaCmsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
       hibernate.connection.isolation: 1
-      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -128,30 +132,34 @@ xaCmsDataSourceFactory:
 xaCmsRsDataSourceFactory:
   autoCommitByDefault: false
   driverClass: com.ibm.db2.jcc.DB2Driver
-  user: ${DB_CMS_USER}
-  password: ${DB_CMS_PASSWORD}
-  url: ${DB_CMS_JDBC_URL}
+  user: ${DB_CWSRS_USER}
+  password: ${DB_CWSRS_PASSWORD}
+  url: ${DB_CWSRS_JDBC_URL}
   xaDataSourceClassName: com.ibm.db2.jcc.DB2XADataSource
   validationQuery: "/* XA/CMS Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
       hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
-      hibernate.default_schema: ${DB_CMSRS_SCHEMA}
+      hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
       hibernate.connection.isolation: 1
-      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -169,7 +177,7 @@ xaNsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
@@ -180,13 +188,16 @@ xaNsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
-      hibernate.temp.use_jdbc_metadata_defaults: false
-      # hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_query_cache: false
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 2
+      hibernate.temp.use_jdbc_metadata_defaults: true
+      hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_NS_JDBC_URL}
@@ -198,7 +209,7 @@ elasticsearch:
     elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
     elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
     elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
-    #Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
+    # Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
     elasticsearch.nodes: ${ES_NODES_SCREENINGS}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
@@ -207,13 +218,18 @@ elasticsearch:
 
 testConfig:
   path: ${TEST_FILE_PATH:-config/testConfig.yml}
-    
+
 triggertables:
   laCountySpecificCode: 19
- 
+
 systemCodeCache: 
-  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+
+intakeCodeCache:
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
+  # This is 365 days
+  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}
  
 webSecurity:
   httpResponseSecurityHeaders:
@@ -228,7 +244,7 @@ webSecurity:
     
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
-     
+
 server:
   applicationConnectors:
   - type: http 
@@ -255,6 +271,8 @@ logging:
       level: ${LOGLEVEL_HIBERNATE_INTERCEPTOR:-DEBUG}
     "com.atomikos.jdbc":
       level: ${LOGLEVEL_XA_TRANSACTION:-DEBUG}
+    "org.eclipse.jetty":
+      level: ${LOGLEVEL_JETTY:-DEBUG}
     "io.dropwizard.server":
       level: INFO
     "io.dropwizard.jersey.DropwizardResourceConfig":

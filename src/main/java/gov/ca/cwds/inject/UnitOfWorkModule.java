@@ -1,5 +1,7 @@
 package gov.ca.cwds.inject;
 
+import org.hibernate.SessionFactory;
+
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.rest.ApiConfiguration;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -29,6 +31,14 @@ public class UnitOfWorkModule {
       HibernateBundle<ApiConfiguration>... bundles) {
     if (proxyFactory == null) {
       proxyFactory = new UnitOfWorkAwareProxyFactory(bundles);
+    }
+    return proxyFactory;
+  }
+
+  public static UnitOfWorkAwareProxyFactory getUnitOfWorkProxyFactory(String name,
+      SessionFactory sessionFactory) {
+    if (proxyFactory == null) {
+      proxyFactory = new UnitOfWorkAwareProxyFactory(name, sessionFactory);
     }
     return proxyFactory;
   }

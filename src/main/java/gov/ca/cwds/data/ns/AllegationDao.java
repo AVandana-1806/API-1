@@ -1,20 +1,22 @@
 package gov.ca.cwds.data.ns;
 
-import com.google.inject.Inject;
-import gov.ca.cwds.data.CrudsDaoImpl;
-import gov.ca.cwds.data.persistence.ns.Allegation;
-import gov.ca.cwds.inject.NsSessionFactory;
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-import java.util.List;
+import com.google.inject.Inject;
+
+import gov.ca.cwds.data.CrudsDaoImpl;
+import gov.ca.cwds.data.persistence.ns.AllegationEntity;
+import gov.ca.cwds.inject.NsSessionFactory;
 
 /**
  * Address DAO
  * 
  * @author Intake Team 4
  */
-public class AllegationDao extends CrudsDaoImpl<Allegation> {
+public class AllegationDao extends CrudsDaoImpl<AllegationEntity> {
 
   /**
    * Constructor
@@ -26,30 +28,27 @@ public class AllegationDao extends CrudsDaoImpl<Allegation> {
     super(sessionFactory);
   }
 
-  public List<Allegation> findByVictimId(String id) {
-    final Query<Allegation> query = this.getSessionFactory().getCurrentSession()
-            .getNamedQuery(Allegation.FIND_BY_VICTIM_ID)
-            .setParameter("victimId", id);
+  public List<AllegationEntity> findByVictimId(String id) {
+    final Query<AllegationEntity> query = this.grabSession()
+        .getNamedQuery(AllegationEntity.FIND_BY_VICTIM_ID).setParameter("victimId", id);
     return query.list();
   }
 
-  public List<Allegation> findByPerpetratorId(String id) {
-    final Query<Allegation> query = this.getSessionFactory().getCurrentSession()
-            .getNamedQuery(Allegation.FIND_BY_PERPETRATOR_ID)
-            .setParameter("perpetratorId", id);
+  public List<AllegationEntity> findByPerpetratorId(String id) {
+    final Query<AllegationEntity> query = this.grabSession()
+        .getNamedQuery(AllegationEntity.FIND_BY_PERPETRATOR_ID).setParameter("perpetratorId", id);
     return query.list();
   }
 
-  public List<Allegation> findByVictimOrPerpetratorId(String id) {
-    final Query<Allegation> query = this.getSessionFactory().getCurrentSession()
-            .getNamedQuery(Allegation.FIND_BY_VICTIM_OR_PERPETRATOR_ID)
-            .setParameter("id", id);
+  public List<AllegationEntity> findByVictimOrPerpetratorId(String id) {
+    final Query<AllegationEntity> query = this.grabSession()
+        .getNamedQuery(AllegationEntity.FIND_BY_VICTIM_OR_PERPETRATOR_ID).setParameter("id", id);
     return query.list();
   }
 
-  public void deleteByIdList(List<String> idList) {
-    if (idList != null) {
-      for (String id : idList) {
+  public void deleteByIdList(List<Integer> list) {
+    if (list != null) {
+      for (Integer id : list) {
         delete(id);
       }
     }

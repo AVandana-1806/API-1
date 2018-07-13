@@ -28,7 +28,7 @@ import gov.ca.cwds.data.ns.ParticipantPhoneNumbersDao;
 import gov.ca.cwds.data.ns.PhoneNumbersDao;
 import gov.ca.cwds.data.ns.SafelySurrenderedBabiesDao;
 import gov.ca.cwds.data.persistence.ns.Addresses;
-import gov.ca.cwds.data.persistence.ns.Allegation;
+import gov.ca.cwds.data.persistence.ns.AllegationEntity;
 import gov.ca.cwds.data.persistence.ns.CsecEntity;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantAddresses;
@@ -172,7 +172,7 @@ public class ParticipantIntakeApiService implements
 
     // Delete all allegations for this participant
     allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
-        .map(Allegation::getId).collect(Collectors.toList()));
+        .map(AllegationEntity::getId).collect(Collectors.toList()));
 
     // Delete Participant Addresses & PhoneNumbers
     participantAddressesDao.findByParticipantId(participantId).forEach(
@@ -204,7 +204,9 @@ public class ParticipantIntakeApiService implements
     if (participant == null) {
       throw new ServiceException("NULL argument for CREATE participant");
     }
-
+    if (participant.getLegacyId() == null && participant.getLegacyDescriptor() != null) {
+      participant.setLegacyId(participant.getLegacyDescriptor().getId());
+    }
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 
@@ -212,7 +214,7 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Create Participant Addresses & PhoneNumbers
-    Set<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiSet =
         createParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet =
@@ -277,7 +279,7 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Update Participant Addresses & PhoneNumbers
-    Set<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiSet =
         updateParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
     Set<PhoneNumber> phoneNumberSet =
@@ -293,9 +295,9 @@ public class ParticipantIntakeApiService implements
     return participantIntakeApiPosted;
   }
 
-  private Set<AddressIntakeApi> createParticipantAddresses(
-      Set<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    Set<AddressIntakeApi> addressIntakeApiSetPosted = new HashSet<>();
+  private List<AddressIntakeApi> createParticipantAddresses(
+      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
     addressIntakeApiSet.stream().map(this::createAddresses).forEach(addressesWrapper -> {
       addressIntakeApiSetPosted.add(addressesWrapper.addressIntakeApi);
       participantAddressesDao
@@ -304,9 +306,9 @@ public class ParticipantIntakeApiService implements
     return addressIntakeApiSetPosted;
   }
 
-  private Set<AddressIntakeApi> updateParticipantAddresses(
-      Set<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    Set<AddressIntakeApi> addressIntakeApiSetPosted = new HashSet<>();
+  private List<AddressIntakeApi> updateParticipantAddresses(
+      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
 
     Map<String, ParticipantAddresses> participantAddressesOldMap = new HashMap<>();
     participantAddressesDao.findByParticipantId(participantEntityManaged.getId())

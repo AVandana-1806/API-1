@@ -12,7 +12,8 @@ import gov.ca.cwds.rest.services.ServiceException;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S3437", "squid:S2160", "fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
+@SuppressWarnings({"squid:S3437", "squid:S2160", "fb-contrib:COM_COPIED_OVERRIDDEN_METHOD",
+    "findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
 public class PostedDrmsDocument extends DrmsDocument {
 
   private static final long serialVersionUID = 1L;

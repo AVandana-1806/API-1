@@ -90,7 +90,8 @@ public class R04464CrossReportLawEnforcementDue {
     Reporter persistedReporter = null;
     for (Participant participant : reporter) {
       if (ParticipantValidator.isReporterType(participant)
-          && !ParticipantValidator.selfReported(participant)) {
+          && !ParticipantValidator.selfReported(participant)
+          && !ParticipantValidator.anonymousReporter(postedScreeningToReferral)) {
         persistedReporter = reporterDao.find(participant.getLegacyDescriptor().getId());
         break;
       }

@@ -1,18 +1,18 @@
 package gov.ca.cwds.rest.services.mapper;
 
-/**
- * CWDS API Team
- */
-
-import gov.ca.cwds.data.persistence.ns.CsecEntity;
-import gov.ca.cwds.rest.api.domain.Csec;
 import java.util.List;
+
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
+
+/**
+ * CWDS API Team
+ */
+import gov.ca.cwds.data.persistence.ns.CsecEntity;
+import gov.ca.cwds.rest.api.domain.Csec;
 
 @Mapper
 @SuppressWarnings("squid:S1214")

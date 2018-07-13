@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.FlushMode;
@@ -41,7 +42,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1166"})
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
@@ -139,30 +140,41 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     } catch (Exception e) {
       LOGGER.error("XaUnitOfWorkAspect.onError(): ROLLBACK FAILED! {} ", e.getMessage(), e);
       throw e;
-    } finally {
-      // nix
     }
   }
 
   /**
-   * Close open sessions, set transaction to null.
+   * Close open sessions, set transactions to null.
    */
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
+    clearXaFlags();
+
+    try {
+      closeSessions();
+      this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
+          .forEach(ManagedSessionContext::unbind);
+    } catch (Exception e) {
+      LOGGER.warn("XaUnitOfWorkAspect.onFinish(): FAILED TO UNBIND SESSION FACTORY! {} ",
+          e.getMessage(), e);
+    }
+
+    sessionFactories.clear();
+    units.clear();
+  }
+
+  protected void clearXaFlags() {
     BaseAuthorizationDao.clearXaMode();
     RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-    this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
-        .forEach(ManagedSessionContext::unbind);
-
-    closeSessions();
+    RequestExecutionContext.instance().put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
   }
 
   /**
    * Get the current Hibernate session, if open, or open a new session.
    * 
    * <p>
-   * For DB2 sessions, this method calls {@link WorkDB2UserInfo} to populate user information fields
-   * on the JDBC connection.
+   * For DB2 sessions, this method calls {@link WorkFerbUserInfo} to populate user information
+   * fields on the JDBC connection.
    * </p>
    * 
    * @param key datasource name
@@ -190,7 +202,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       sessions.put(key, session);
 
       // Add user info to DB2 connections. Harmless for other connections.
-      session.doWork(new WorkDB2UserInfo());
+      session.doWork(new WorkFerbUserInfo());
     }
 
     return session;
@@ -220,18 +232,18 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   protected void closeSessions() {
     LOGGER.info("XaUnitOfWorkAspect.closeSessions()");
     sessions.values().stream().forEach(this::closeSession);
+    sessions.clear();
   }
 
+  /**
+   * Close an individual XA session.
+   * 
+   * @param session target XA session
+   */
   protected void closeSession(Session session) {
     LOGGER.info("XaUnitOfWorkAspect.closeSession()");
     if (session != null) {
       LOGGER.info("XA CLOSE SESSION!");
-      try {
-        session.flush();
-      } catch (Exception e) {
-        LOGGER.error("FAILED TO FLUSH SESSION! {}", e.getMessage(), e);
-      }
-
       try {
         session.close();
       } catch (Exception e) {
@@ -265,21 +277,28 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   protected void beginXaTransaction() throws CaresXAException {
     LOGGER.info("XaUnitOfWorkAspect.beginXaTransaction()");
     if (!hasTransactionalFlag()) {
-      LOGGER.info("XA BEGIN TRANSACTION: unit of work is not transactional");
+      LOGGER.trace("XA BEGIN TRANSACTION: unit of work is not transactional");
       return;
     } else if (transactionStarted) {
-      LOGGER.info("XA: transaction already started");
+      LOGGER.debug("XA: transaction already started");
       return;
     }
 
     try {
       LOGGER.info("XA BEGIN TRANSACTION!");
       txn = new UserTransactionImp();
-      txn.setTransactionTimeout(180); // NEXT: soft-code timeout
+      txn.setTransactionTimeout(90); // NEXT: soft-code timeout
       txn.begin();
       transactionStarted = true;
     } catch (Exception e) {
       LOGGER.error("XA BEGIN FAILED! {}", e.getMessage(), e);
+      try {
+        txn.setRollbackOnly();
+        txn.rollback();
+      } catch (SystemException e2) {
+        LOGGER.warn("XA: ROLLBACK FAILED! {}", e.getMessage(), e);
+      }
+
       throw new CaresXAException("XA BEGIN FAILED!", e);
     }
   }
@@ -313,8 +332,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     try {
       LOGGER.info("XA ROLLBACK TRANSACTION!");
+      txn.setRollbackOnly();
+      txn.rollback();
       sessions.values().stream().forEach(this::rollbackSessionTransaction);
-      txn.rollback(); // wrapping XA transaction
     } catch (Exception e) {
       LOGGER.error("XA ROLLBACK FAILED! {}", e.getMessage(), e);
       throw new CaresXAException("XA ROLLBACK FAILED!", e);
@@ -323,6 +343,11 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
   /**
    * Commit XA transaction.
+   * 
+   * <p>
+   * Commit automatically flushes session. No need for
+   * {@code sessions.values().stream().sequential().forEach(Session::flush);}
+   * </p>
    * 
    * @throws CaresXAException on database error
    */
@@ -338,10 +363,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     try {
       final int status = txn.getStatus();
-      if (status == Status.STATUS_ROLLING_BACK || status == Status.STATUS_MARKED_ROLLBACK) {
-        LOGGER.warn("XA ROLLBACK TRANSACTION!");
-        txn.rollback();
-      } else {
+      if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
         LOGGER.warn("XA COMMIT TRANSACTION!");
         txn.commit();
       }

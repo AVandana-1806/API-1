@@ -136,14 +136,14 @@ public class Assignment extends ReportingDomain implements Request, Response {
    * @param weightingNumber - weight within case load
    */
   public Assignment(String countySpecificCode,
-      @Date(format = "yyyy-MM-dd", required = false) String endDate,
+      @Date(format = DATE_FORMAT, required = false) String endDate,
       @Date(format = "HH:mm:ss", required = true) String endTime,
       @OneOf(value = {"R", "C"}, ignoreCase = true,
           ignoreWhitespace = true) String establishedForCode,
       String establishedForId, String caseLoadId, String outOfStateContactId,
       String responsibilityDescription, Short secondaryAssignmentRoleType,
-      @Date(format = "yyyy-MM-dd", required = false) String startDate,
-      @Date(format = "HH:mm:ss", required = true) String startTime, @OneOf(value = {"P", "S", "R"},
+      @Date(format = DATE_FORMAT, required = false) String startDate,
+      @Date(format = TIME_FORMAT, required = true) String startTime, @OneOf(value = {"P", "S", "R"},
           ignoreCase = true, ignoreWhitespace = true) String typeOfAssignmentCode,
       BigDecimal weightingNumber) {
     super();
@@ -203,9 +203,10 @@ public class Assignment extends ReportingDomain implements Request, Response {
     String theTypeOfAssignmentCode = "P";
     BigDecimal theWeightingNumber = new BigDecimal("0.0");
 
-    return new Assignment(countyCode, theEndDate, theEndTime, theEstablishedForCode, referralId, caseLoadId,
-        theOutOfStateContactId, theResponsibilityDescription, theSecondaryAssignmentRoleType, startDate,
-        startTime, theTypeOfAssignmentCode, theWeightingNumber);
+    return new Assignment(countyCode, theEndDate, theEndTime, theEstablishedForCode, referralId,
+        caseLoadId, theOutOfStateContactId, theResponsibilityDescription,
+        theSecondaryAssignmentRoleType, startDate, startTime, theTypeOfAssignmentCode,
+        theWeightingNumber);
   }
 
   /**

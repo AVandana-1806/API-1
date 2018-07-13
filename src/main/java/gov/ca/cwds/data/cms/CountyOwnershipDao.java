@@ -30,19 +30,17 @@ public class CountyOwnershipDao extends CrudsDaoImpl<CountyOwnership> {
   }
 
   /**
-   * CountyOwnership Dao
-   * 
    * Overriding the existing update for triggers and using the own update for countyOwnership
-   * Trigger
+   * Trigger.
    * 
+   * @param object CountyOwnership to update
    */
   @Override
   public CountyOwnership update(CountyOwnership object) {
-    CountyOwnership databaseObject = find(object.getPrimaryKey());
+    final CountyOwnership databaseObject = find(object.getPrimaryKey());
     if (databaseObject == null) {
-      String msg =
-          MessageFormat.format("Unable to find entity with id={0}", object.getPrimaryKey());
-      throw new EntityNotFoundException(msg);
+      throw new EntityNotFoundException(
+          MessageFormat.format("Unable to find entity with id={0}", object.getPrimaryKey()));
     }
     return persist(object);
   }

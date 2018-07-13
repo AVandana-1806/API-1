@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_STAFF_PERSONS;
 
 import javax.ws.rs.Consumes;
@@ -9,6 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
@@ -38,6 +41,7 @@ import io.swagger.annotations.ApiResponses;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class StaffPersonResource {
+
   private TypedResourceDelegate<String, StaffPerson> typedResourceDelegate;
 
   /**
@@ -51,7 +55,6 @@ public class StaffPersonResource {
     this.typedResourceDelegate = typedResourceDelegate;
   }
 
-
   /**
    * Finds an {@link StaffPerson} by id.
    * 
@@ -59,7 +62,8 @@ public class StaffPersonResource {
    * 
    * @return the response
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DATASOURCE_CMS, readOnly = true, flushMode = FlushMode.MANUAL,
+      transactional = false)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),

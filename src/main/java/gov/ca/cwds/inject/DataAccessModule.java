@@ -7,6 +7,8 @@ import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import gov.ca.cwds.data.legacy.cms.dao.TribalMembershipVerificationDao;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,8 +104,6 @@ import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
-import gov.ca.cwds.data.persistence.xa.XaSystemCodeDao;
-import gov.ca.cwds.data.persistence.xa.XaSystemMetaDao;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.ElasticUtils;
@@ -234,7 +234,14 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.persistence.contact.ContactPartyDeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.IndividualDeliveredServiceEntity.class,
-          gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.class)
+          gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.IndianTribeType.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.IndianEnrolmentStatus.class,
+          gov.ca.cwds.data.legacy.cms.entity.TribalMembershipVerification.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.ClientRelationshipType.class,
+          gov.ca.cwds.data.legacy.cms.entity.PaternityDetail.class,
+          gov.ca.cwds.data.legacy.cms.entity.ChildClient.class,
+          gov.ca.cwds.data.legacy.cms.entity.ClientRelationship.class)
       .build();
 
   private final ImmutableList<Class<?>> nsEntities = ImmutableList.<Class<?>>builder().add(
@@ -436,36 +443,37 @@ public class DataAccessModule extends AbstractModule {
     bind(SpecialProjectReferralDao.class);
     bind(StaffPersonDao.class);
     bind(StateIdDao.class);
-    bind(SystemCodeDao.class).to(XaSystemCodeDao.class);
-    bind(SystemMetaDao.class).to(XaSystemMetaDao.class);
+    bind(SystemCodeDao.class);
+    bind(SystemMetaDao.class);
     bind(TickleDao.class);
+    bind(TribalMembershipVerificationDao.class);
 
     // NS:
     bind(AddressDao.class);
     bind(AddressesDao.class);
-    bind(CsecDao.class);
-
-    bind(PersonDao.class);
-    bind(ScreeningDao.class);
-    bind(ScreeningAddressDao.class);
     bind(AgencyDao.class);
-    bind(gov.ca.cwds.data.ns.CrossReportDao.class);
     bind(AllegationIntakeDao.class);
-    bind(ParticipantDao.class);
-    bind(PhoneNumberDao.class);
-    bind(LanguageDao.class);
-    bind(PersonAddressDao.class);
-    bind(PersonPhoneDao.class);
-    bind(PersonLanguageDao.class);
-    bind(PersonEthnicityDao.class);
+    bind(ContactDao.class);
+    bind(CsecDao.class);
     bind(EthnicityDao.class);
-    bind(PersonRaceDao.class);
-    bind(RaceDao.class);
+    bind(gov.ca.cwds.data.ns.CrossReportDao.class);
     bind(IntakeLOVCodeDao.class);
     bind(IntakeLovDao.class);
+    bind(LanguageDao.class);
     bind(PaperTrailDao.class);
     bind(PaperTrailInterceptor.class);
-    bind(ContactDao.class);
+    bind(ParticipantDao.class);
+    bind(PersonAddressDao.class);
+    bind(PersonDao.class);
+    bind(PersonEthnicityDao.class);
+    bind(PersonLanguageDao.class);
+    bind(PersonPhoneDao.class);
+    bind(PersonRaceDao.class);
+    bind(PhoneNumberDao.class);
+    bind(RaceDao.class);
+    bind(ScreeningAddressDao.class);
+    bind(ScreeningDao.class);
+    bind(PlacementEpisodeDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);
@@ -494,7 +502,6 @@ public class DataAccessModule extends AbstractModule {
     bind(RIReferralClient.class);
     bind(RIGovernmentOrganizationCrossReport.class);
   }
-
 
   // ==========================
   // HIBERNATE BUNDLES

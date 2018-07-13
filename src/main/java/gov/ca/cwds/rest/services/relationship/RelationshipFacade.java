@@ -25,7 +25,6 @@ import gov.ca.cwds.rest.services.cms.ClientService;
 
 /**
  * @author CWDS TPT-3 Team
- *
  */
 public class RelationshipFacade {
 
@@ -91,8 +90,8 @@ public class RelationshipFacade {
   }
 
   private List<ScreeningRelationship> getMockedData() {
-    List<ScreeningRelationship> list = new ArrayList<>();
-    ScreeningRelationship relationship1 = new ScreeningRelationship();
+    final List<ScreeningRelationship> list = new ArrayList<>();
+    final ScreeningRelationship relationship1 = new ScreeningRelationship();
     relationship1.setId("123123");
     relationship1.setClientId("111111");
     relationship1.setRelativeId("222222");
@@ -101,14 +100,14 @@ public class RelationshipFacade {
     relationship1.setSameHomeStatus("U");
     list.add(relationship1);
 
-    ScreeningRelationship relationship2 = new ScreeningRelationship();
-    relationship1.setId("123123");
-    relationship1.setClientId("222222");
-    relationship1.setRelativeId("333333");
-    relationship1.setRelationshipType(189);
-    relationship1.setAbsentParentIndicator(true);
-    relationship1.setSameHomeStatus("Y");
-    list.add(relationship1);
+    final ScreeningRelationship relationship2 = new ScreeningRelationship();
+    relationship2.setId("123123");
+    relationship2.setClientId("222222");
+    relationship2.setRelativeId("333333");
+    relationship2.setRelationshipType(189);
+    relationship2.setAbsentParentIndicator(true);
+    relationship2.setSameHomeStatus("Y");
+    list.add(relationship2);
 
     return list;
   }
@@ -118,7 +117,6 @@ public class RelationshipFacade {
       return;
     }
     LOGGER.info("shouldBeUpdated {}", shouldBeUpdated);
-
   }
 
   private void createRelationships(List<ClientRelationship> shouldBeCreated) {
@@ -163,4 +161,9 @@ public class RelationshipFacade {
 
     return new ArrayList<>();
   }
+
+  public ClientRelationshipDao getCmsRelationshipDao() {
+    return cmsRelationshipDao;
+  }
+
 }

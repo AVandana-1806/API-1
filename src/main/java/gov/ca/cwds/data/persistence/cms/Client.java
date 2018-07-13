@@ -1,12 +1,21 @@
 package gov.ca.cwds.data.persistence.cms;
 
+import static gov.ca.cwds.rest.api.domain.DomainChef.cookBoolean;
+import static gov.ca.cwds.rest.api.domain.DomainChef.uncookDateString;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.LOCK;
+import static org.hibernate.annotations.CascadeType.MERGE;
+import static org.hibernate.annotations.CascadeType.PERSIST;
+import static org.hibernate.annotations.CascadeType.REFRESH;
+import static org.hibernate.annotations.CascadeType.REMOVE;
+import static org.hibernate.annotations.CascadeType.REPLICATE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -20,6 +29,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NamedQuery;
@@ -48,24 +58,25 @@ public class Client extends BaseClient {
 
   private static final long serialVersionUID = 1L;
 
+  // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @OneToMany(cascade = CascadeType.DETACH)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "FKCLIENT_T", referencedColumnName = "IDENTIFIER")
   private Set<ClientAddress> clientAddress = new HashSet<>();
 
   @ToStringExclude
   @Fetch(FetchMode.SELECT)
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany
+  @Cascade({PERSIST, MERGE, SAVE_UPDATE, DELETE, LOCK, REFRESH, REMOVE, REPLICATE})
   @JoinColumn(name = "ESTBLSH_ID", referencedColumnName = "IDENTIFIER", nullable = false,
       updatable = false, insertable = false)
   private Set<ClientScpEthnicity> clientScpEthnicities = new HashSet<>();
 
   /**
-   * Default constructor
-   * 
-   * Required for Hibernate
+   * Default constructor, often required for some frameworks.
    */
   public Client() {
     super();
@@ -267,37 +278,32 @@ public class Client extends BaseClient {
     super(lastUpdatedId, lastUpdatedTime);
     try {
       this.id = id;
-      this.adjudicatedDelinquentIndicator =
-          DomainChef.cookBoolean(client.getAdjudicatedDelinquentIndicator());
+      this.adjudicatedDelinquentIndicator = cookBoolean(client.getAdjudicatedDelinquentIndicator());
       this.adoptionStatusCode = client.getAdoptionStatusCode();
       this.alienRegistrationNumber = client.getAlienRegistrationNumber();
       this.birthCity = client.getBirthCity();
       this.birthCountryCodeType = client.getBirthCountryCodeType();
-      this.birthDate = DomainChef.uncookDateString(client.getBirthDate());
+      this.birthDate = uncookDateString(client.getBirthDate());
       this.birthFacilityName = client.getBirthFacilityName();
       this.birthStateCodeType = client.getBirthStateCodeType();
-      this.birthplaceVerifiedIndicator =
-          DomainChef.cookBoolean(client.getBirthplaceVerifiedIndicator());
-      this.childClientIndicatorVar = DomainChef.cookBoolean(client.getChildClientIndicatorVar());
+      this.birthplaceVerifiedIndicator = cookBoolean(client.getBirthplaceVerifiedIndicator());
+      this.childClientIndicatorVar = cookBoolean(client.getChildClientIndicatorVar());
       this.clientIndexNumber = client.getClientIndexNumber();
       this.commentDescription = client.getCommentDescription();
       this.commonFirstName = client.getCommonFirstName();
       this.commonMiddleName =
           StringUtils.isBlank(client.getCommonMiddleName()) ? "" : client.getCommonMiddleName();
       this.commonLastName = client.getCommonLastName();
-      this.confidentialityActionDate =
-          DomainChef.uncookDateString(client.getConfidentialityActionDate());
+      this.confidentialityActionDate = uncookDateString(client.getConfidentialityActionDate());
       this.confidentialityInEffectIndicator =
-          DomainChef.cookBoolean(client.getConfidentialityInEffectIndicator());
-      this.creationDate = DomainChef.uncookDateString(client.getCreationDate());
-      this.currCaChildrenServIndicator =
-          DomainChef.cookBoolean(client.getCurrCaChildrenServIndicator());
+          cookBoolean(client.getConfidentialityInEffectIndicator());
+      this.creationDate = uncookDateString(client.getCreationDate());
+      this.currCaChildrenServIndicator = cookBoolean(client.getCurrCaChildrenServIndicator());
       this.currentlyOtherDescription = client.getCurrentlyOtherDescription();
       this.currentlyRegionalCenterIndicator =
-          DomainChef.cookBoolean(client.getCurrentlyRegionalCenterIndicator());
+          cookBoolean(client.getCurrentlyRegionalCenterIndicator());
       this.deathDate = DomainChef.uncookDateString(client.getDeathDate());
-      this.deathDateVerifiedIndicator =
-          DomainChef.cookBoolean(client.getDeathDateVerifiedIndicator());
+      this.deathDateVerifiedIndicator = cookBoolean(client.getDeathDateVerifiedIndicator());
       this.deathPlace = client.getDeathPlace();
       this.deathReasonText = client.getDeathReasonText();
       this.driverLicenseNumber = client.getDriverLicenseNumber();
@@ -307,8 +313,7 @@ public class Client extends BaseClient {
       this.ethUnableToDetReasonCode =
           StringUtils.isBlank(client.getEthUnableToDetReasonCode()) ? null
               : client.getEthUnableToDetReasonCode();
-      this.fatherParentalRightTermDate =
-          DomainChef.uncookDateString(client.getFatherParentalRightTermDate());
+      this.fatherParentalRightTermDate = uncookDateString(client.getFatherParentalRightTermDate());
       this.genderCode = client.getGenderCode();
       this.genderIdentityType = client.getGenderIdentityType();
       this.giNotListedDescription = client.getGiNotListedDescription();
@@ -323,49 +328,43 @@ public class Client extends BaseClient {
       this.immigrationStatusType = client.getImmigrationStatusType();
       this.incapacitatedParentCode = client.getIncapacitatedParentCode();
       this.individualHealthCarePlanIndicator =
-          DomainChef.cookBoolean(client.getIndividualHealthCarePlanIndicator());
-      this.limitationOnScpHealthIndicator =
-          DomainChef.cookBoolean(client.getLimitationOnScpHealthIndicator());
+          cookBoolean(client.getIndividualHealthCarePlanIndicator());
+      this.limitationOnScpHealthIndicator = cookBoolean(client.getLimitationOnScpHealthIndicator());
       this.literateCode = client.getLiterateCode();
       this.maritalCohabitatnHstryIndicatorVar =
-          DomainChef.cookBoolean(client.getMaritalCohabitatnHstryIndicatorVar());
+          cookBoolean(client.getMaritalCohabitatnHstryIndicatorVar());
       this.maritalStatusType = client.getMaritalStatusType();
       this.militaryStatusCode = client.getMilitaryStatusCode();
-      this.motherParentalRightTermDate =
-          DomainChef.uncookDateString(client.getMotherParentalRightTermDate());
+      this.motherParentalRightTermDate = uncookDateString(client.getMotherParentalRightTermDate());
       this.namePrefixDescription = client.getNamePrefixDescription();
       this.nameType = client.getNameType();
-      this.outstandingWarrantIndicator =
-          DomainChef.cookBoolean(client.getOutstandingWarrantIndicator());
-      this.prevCaChildrenServIndicator =
-          DomainChef.cookBoolean(client.getPrevCaChildrenServIndicator());
+      this.outstandingWarrantIndicator = cookBoolean(client.getOutstandingWarrantIndicator());
+      this.prevCaChildrenServIndicator = cookBoolean(client.getPrevCaChildrenServIndicator());
       this.prevOtherDescription = client.getPrevOtherDescription();
-      this.prevRegionalCenterIndicator =
-          DomainChef.cookBoolean(client.getPrevRegionalCenterIndicator());
+      this.prevRegionalCenterIndicator = cookBoolean(client.getPrevRegionalCenterIndicator());
       this.primaryEthnicityType = client.getPrimaryEthnicityType();
       this.primaryLanguageType = client.getPrimaryLanguage();
       this.religionType = client.getReligionType();
       this.secondaryLanguageType = client.getSecondaryLanguage();
       this.sensitiveHlthInfoOnFileIndicator =
-          DomainChef.cookBoolean(client.getSensitiveHlthInfoOnFileIndicator());
+          cookBoolean(client.getSensitiveHlthInfoOnFileIndicator());
       this.sensitivityIndicator = client.getSensitivityIndicator();
       this.sexualOrientationType = client.getSexualOrientationType();
       this.soUnableToDetermineCode = client.getSoUnableToDetermineCode();
       this.soNotListedDescrption = client.getSoNotListedDescrption();
       this.soc158PlacementCode = client.getSoc158PlacementCode();
-      this.soc158SealedClientIndicator =
-          DomainChef.cookBoolean(client.getSoc158SealedClientIndicator());
+      this.soc158SealedClientIndicator = cookBoolean(client.getSoc158SealedClientIndicator());
       this.socialSecurityNumChangedCode = client.getSocialSecurityNumChangedCode();
       this.socialSecurityNumber = StringUtils.isBlank(client.getSocialSecurityNumber()) ? ""
           : client.getSocialSecurityNumber();
       this.suffixTitleDescription =
           client.getSuffixTitleDescription() == null ? "" : client.getSuffixTitleDescription();
       this.tribalAncestryClientIndicatorVar =
-          DomainChef.cookBoolean(client.getTribalAncestryClientIndicatorVar());
+          cookBoolean(client.getTribalAncestryClientIndicatorVar());
       this.tribalMembrshpVerifctnIndicatorVar =
-          DomainChef.cookBoolean(client.getTribalMembrshpVerifctnIndicatorVar());
+          cookBoolean(client.getTribalMembrshpVerifctnIndicatorVar());
       this.unemployedParentCode = client.getUnemployedParentCode();
-      this.zippyCreatedIndicator = DomainChef.cookBoolean(client.getZippyCreatedIndicator());
+      this.zippyCreatedIndicator = cookBoolean(client.getZippyCreatedIndicator());
     } catch (ApiException e) {
       throw new PersistenceException(e);
     }

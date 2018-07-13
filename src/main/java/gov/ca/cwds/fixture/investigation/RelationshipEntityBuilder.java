@@ -19,6 +19,8 @@ public class RelationshipEntityBuilder {
   protected String middleName = "R";
   protected String lastName = "Greene";
   protected String dateOfBirth = "2000-10-01";
+  protected Short age = 17;
+  protected String ageUnit = "Y";
   protected String gender = "M";
   protected String dateOfDeath = "2001-10-01";
   protected String suffixTitle = "";
@@ -29,8 +31,8 @@ public class RelationshipEntityBuilder {
 
   public Relationship build() {
     relationshipsTo.add(relationshipTo);
-    return new Relationship(id, dateOfBirth, firstName, middleName, lastName, suffixTitle, gender,
-        dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+    return new Relationship(id, dateOfBirth, age, ageUnit, firstName, middleName, lastName,
+        suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
   }
 

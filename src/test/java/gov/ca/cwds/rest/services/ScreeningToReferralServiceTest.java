@@ -746,14 +746,15 @@ public class ScreeningToReferralServiceTest {
   @Test
   public void shouldSaveRelationship() throws DataAccessServicesException {
     String id = null;
-    String personId = "QWER";
-    String relationId = "ZXCV";
+    Long personId = 1L;
+    Long relationId = 2L;
     int relationshipType = 123;
 
+    ScreeningRelationship relationship = new ScreeningRelationship(id, personId.toString(),
+        relationId.toString(), relationshipType, true, "N");
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
+
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
 
@@ -764,6 +765,7 @@ public class ScreeningToReferralServiceTest {
     gov.ca.cwds.data.legacy.cms.entity.ClientRelationship clientRelationship =
         new gov.ca.cwds.data.legacy.cms.entity.ClientRelationship();
     clientRelationship.setIdentifier("SavedId");
+
     when(clientRelationshipService.createRelationship(any(ClientRelationshipDTO.class)))
         .thenReturn(clientRelationship);
 
@@ -772,13 +774,8 @@ public class ScreeningToReferralServiceTest {
     ArgumentCaptor<ClientRelationshipDTO> argument =
         ArgumentCaptor.forClass(ClientRelationshipDTO.class);
 
-    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
-
     verify(clientRelationshipService).createRelationship(argument.capture());
     assertEquals(clientRelationship.getIdentifier(), relationship.getId());
-    assertEquals(relationship.getClientId(), argument.getValue().getPrimaryClient().getId());
-    assertEquals(relationship.getRelativeId(), argument.getValue().getSecondaryClient().getId());
-    assertEquals(relationship.getRelationshipType(), argument.getValue().getType());
   }
 
   @Test

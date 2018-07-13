@@ -1,9 +1,11 @@
 package gov.ca.cwds.data.cms;
 
+import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.util.Date;
 
 import javax.persistence.ParameterMode;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.procedure.ProcedureCall;
@@ -33,6 +35,21 @@ public class SsaName3Dao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SsaName3Dao.class);
 
+  private static final String TABLE_NAME = "TABLENAME";
+  private static final String CRUD_FUNCTION = "CRUDFUNCT";
+  private static final String IDENTIFIER = "IDENTIFIER";
+  private static final String NAME_CODE = "NAMECODE";
+  private static final String FIRST_NAME = "FIRSTNAME";
+  private static final String MIDDLE_NAME = "MIDDLENAME";
+  private static final String LAST_NAME = "LASTNAME";
+  private static final String STREET_NUMBER = "STREETNUM";
+  private static final String STREET_NAME = "STREETNAME";
+  private static final String GOVERNMENT_ENTITY_CODE = "GVRENTC";
+  private static final String LAST_UPDATE_TIMESTAMP = "LASTUPDTM";
+  private static final String LAST_UPDATE_ID = "LASTUPDID";
+  private static final String RETURN_STATUS = "RETSTATUS";
+  private static final String RETURN_MESSAGE = "RETMESSAG";
+
   private SessionFactory sessionFactory;
   private short s = 0;
 
@@ -51,9 +68,18 @@ public class SsaName3Dao {
    * @param address address
    */
   public void addressSsaname3(String crudOperation, Address address) {
-    callStoredProc(LegacyTable.ADDRESS_PHONETIC.getName(), crudOperation, address.getId(), "A", " ",
-        " ", " ", address.getStreetNumber(), address.getStreetName(),
-        address.getGovernmentEntityCd(), address.getLastUpdatedTime(), address.getLastUpdatedId());
+    SsaName3 ssaName3 = new SsaName3();
+    ssaName3.setTableName(LegacyTable.ADDRESS_PHONETIC.getName());
+    ssaName3.setCrudFunction(crudOperation);
+    ssaName3.setIdentifier(address.getId());
+    ssaName3.setNameCode("A");
+    ssaName3.setStreetNumber(address.getStreetNumber());
+    ssaName3.setStreetName(address.getStreetName());
+    ssaName3.setGovernmentEntityCode(s);
+    ssaName3.setUpdateTimestamp(address.getLastUpdatedTime());
+    ssaName3.setUpdateId(address.getLastUpdatedId());
+
+    callStoredProc(ssaName3);
   }
 
   /**
@@ -61,9 +87,19 @@ public class SsaName3Dao {
    * @param client client
    */
   public void clientSsaname3(String crudOperation, Client client) {
-    callStoredProc(LegacyTable.CLIENT_PHONETIC.getName(), crudOperation, client.getId(), "C",
-        client.getFirstName(), client.getMiddleName(), client.getLastName(), " ", " ", s,
-        client.getLastUpdatedTime(), client.getLastUpdatedId());
+    SsaName3 ssaName3 = new SsaName3();
+    ssaName3.setTableName(LegacyTable.CLIENT_PHONETIC.getName());
+    ssaName3.setCrudFunction(crudOperation);
+    ssaName3.setIdentifier(client.getId());
+    ssaName3.setNameCode("C");
+    ssaName3.setFirstName(client.getFirstName());
+    ssaName3.setMiddleName(client.getMiddleName());
+    ssaName3.setLastName(client.getLastName());
+    ssaName3.setGovernmentEntityCode(s);
+    ssaName3.setUpdateTimestamp(client.getLastUpdatedTime());
+    ssaName3.setUpdateId(client.getLastUpdatedId());
+
+    callStoredProc(ssaName3);
   }
 
   /**
@@ -71,10 +107,19 @@ public class SsaName3Dao {
    * @param otherClientName other client name object
    */
   public void otherClientSsaname3(String crudOperation, OtherClientName otherClientName) {
-    callStoredProc(LegacyTable.CLIENT_PHONETIC.getName(), crudOperation,
-        otherClientName.getThirdId(), "N", otherClientName.getFirstName(),
-        otherClientName.getMiddleName(), otherClientName.getLastName(), " ", " ", s,
-        otherClientName.getLastUpdatedTime(), otherClientName.getLastUpdatedId());
+    SsaName3 ssaName3 = new SsaName3();
+    ssaName3.setTableName(LegacyTable.CLIENT_PHONETIC.getName());
+    ssaName3.setCrudFunction(crudOperation);
+    ssaName3.setIdentifier(otherClientName.getThirdId());
+    ssaName3.setNameCode("N");
+    ssaName3.setFirstName(otherClientName.getFirstName());
+    ssaName3.setMiddleName(otherClientName.getMiddleName());
+    ssaName3.setLastName(otherClientName.getLastName());
+    ssaName3.setGovernmentEntityCode(s);
+    ssaName3.setUpdateTimestamp(otherClientName.getLastUpdatedTime());
+    ssaName3.setUpdateId(otherClientName.getLastUpdatedId());
+
+    callStoredProc(ssaName3);
   }
 
   /**
@@ -83,10 +128,18 @@ public class SsaName3Dao {
    */
   public void subCareProviderSsaname3(String crudOperation,
       SubstituteCareProvider substituteCareProvider) {
-    callStoredProc(LegacyTable.SUBSTITUTE_CARE_PROVIDER_PHONETIC.getName(), crudOperation,
-        substituteCareProvider.getId(), " ", substituteCareProvider.getFirstName(),
-        substituteCareProvider.getMiddleName(), substituteCareProvider.getLastName(), " ", " ", s,
-        substituteCareProvider.getLastUpdatedTime(), substituteCareProvider.getLastUpdatedId());
+    SsaName3 ssaName3 = new SsaName3();
+    ssaName3.setTableName(LegacyTable.SUBSTITUTE_CARE_PROVIDER_PHONETIC.getName());
+    ssaName3.setCrudFunction(crudOperation);
+    ssaName3.setIdentifier(substituteCareProvider.getId());
+    ssaName3.setFirstName(substituteCareProvider.getFirstName());
+    ssaName3.setMiddleName(substituteCareProvider.getMiddleName());
+    ssaName3.setLastName(substituteCareProvider.getLastName());
+    ssaName3.setGovernmentEntityCode(s);
+    ssaName3.setUpdateTimestamp(substituteCareProvider.getLastUpdatedTime());
+    ssaName3.setUpdateId(substituteCareProvider.getLastUpdatedId());
+
+    callStoredProc(ssaName3);
   }
 
   /**
@@ -96,31 +149,24 @@ public class SsaName3Dao {
    */
 
   public void deleteSsaname3(String phttTable, String primaryKey, String nameCode) {
-    callStoredProc(phttTable, "D", primaryKey, nameCode, " ", " ", " ", " ", " ", s,
-        DomainChef.uncookDateString(" "), " ");
+    SsaName3 ssaName3 = new SsaName3();
+    ssaName3.setTableName(phttTable);
+    ssaName3.setCrudFunction("D");
+    ssaName3.setIdentifier(primaryKey);
+    ssaName3.setNameCode(nameCode);
+    ssaName3.setGovernmentEntityCode(s);
+
+    callStoredProc(ssaName3);
   }
 
   /**
    * Call DB2 stored procedure SPSSANAME3 to insert soundex records for client search. Story
    * #146481759.
    * 
-   * @param tableName table name
-   * @param crudOper CRUD operation (I/U/D)
-   * @param identifier legacy identifier
-   * @param nameCd name code
-   * @param firstName first name
-   * @param middleName middle name
-   * @param lastName last name
-   * @param streettNumber street number
-   * @param streetName street name
-   * @param gvrEntc government entity code
-   * @param updateTimeStamp update timestamp
-   * @param updateId updated by user id
+   * @param ssaName3 parameters carrier
    */
-  protected void callStoredProc(String tableName, String crudOper, String identifier, String nameCd,
-      String firstName, String middleName, String lastName, String streettNumber, String streetName,
-      Short gvrEntc, Date updateTimeStamp, String updateId) {
-    Session session = sessionFactory.getCurrentSession();
+  protected void callStoredProc(SsaName3 ssaName3) {
+    final Session session = sessionFactory.getCurrentSession();
     final String STORED_PROC_NAME = "SPSSANAME3";
     final String schema =
         (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
@@ -128,38 +174,38 @@ public class SsaName3Dao {
     try {
       ProcedureCall q = session.createStoredProcedureCall(schema + "." + STORED_PROC_NAME);
 
-      q.registerStoredProcedureParameter("TABLENAME", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("CRUDFUNCT", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("IDENTIFIER", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("NAMECODE", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("FIRSTNAME", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("MIDDLENAME", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("LASTNAME", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("STREETNUM", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("STREETNAME", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("GVRENTC", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("LASTUPDTM", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("LASTUPDID", String.class, ParameterMode.IN);
-      q.registerStoredProcedureParameter("RETSTATUS", String.class, ParameterMode.OUT);
-      q.registerStoredProcedureParameter("RETMESSAG", String.class, ParameterMode.OUT);
+      q.registerStoredProcedureParameter(TABLE_NAME, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(CRUD_FUNCTION, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(IDENTIFIER, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(NAME_CODE, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(FIRST_NAME, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(MIDDLE_NAME, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(LAST_NAME, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(STREET_NUMBER, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(STREET_NAME, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(GOVERNMENT_ENTITY_CODE, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(LAST_UPDATE_TIMESTAMP, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(LAST_UPDATE_ID, String.class, ParameterMode.IN);
+      q.registerStoredProcedureParameter(RETURN_STATUS, String.class, ParameterMode.OUT);
+      q.registerStoredProcedureParameter(RETURN_MESSAGE, String.class, ParameterMode.OUT);
 
-      q.setParameter("TABLENAME", tableName);
-      q.setParameter("CRUDFUNCT", crudOper);
-      q.setParameter("IDENTIFIER", identifier);
-      q.setParameter("NAMECODE", nameCd);
-      q.setParameter("FIRSTNAME", firstName);
-      q.setParameter("MIDDLENAME", middleName);
-      q.setParameter("LASTNAME", lastName);
-      q.setParameter("STREETNUM", streettNumber);
-      q.setParameter("STREETNAME", streetName);
-      q.setParameter("GVRENTC", String.valueOf(gvrEntc));
-      q.setParameter("LASTUPDTM", DomainChef.cookTimestamp(updateTimeStamp));
-      q.setParameter("LASTUPDID", updateId);
+      q.setParameter(TABLE_NAME, ssaName3.getTableName());
+      q.setParameter(CRUD_FUNCTION, ssaName3.getCrudFunction());
+      q.setParameter(IDENTIFIER, ssaName3.getIdentifier());
+      q.setParameter(NAME_CODE, ssaName3.getNameCode());
+      q.setParameter(FIRST_NAME, ssaName3.getFirstName());
+      q.setParameter(MIDDLE_NAME, ssaName3.getMiddleName());
+      q.setParameter(LAST_NAME, ssaName3.getLastName());
+      q.setParameter(STREET_NUMBER, ssaName3.getStreetNumber());
+      q.setParameter(STREET_NAME, ssaName3.getStreetName());
+      q.setParameter(GOVERNMENT_ENTITY_CODE, String.valueOf(ssaName3.getGovernmentEntityCode()));
+      q.setParameter(LAST_UPDATE_TIMESTAMP, DomainChef.cookTimestamp(ssaName3.getUpdateTimestamp()));
+      q.setParameter(LAST_UPDATE_ID, ssaName3.getUpdateId());
 
       q.execute();
 
-      final String returnStatus = (String) q.getOutputParameterValue("RETSTATUS");
-      final String returnMessage = (String) q.getOutputParameterValue("RETMESSAG");
+      final String returnStatus = (String) q.getOutputParameterValue(RETURN_STATUS);
+      final String returnMessage = (String) q.getOutputParameterValue(RETURN_MESSAGE);
       int returnCode = Integer.parseInt(returnStatus);
 
       LOGGER.info("storeProcReturnStatus: {}, storeProcreturnMessage: {}", returnStatus,
@@ -169,13 +215,125 @@ public class SsaName3Dao {
        * procedure 3=SQL failed, 4=Call to SSANAME3 DLL failed
        */
       if (returnCode != 0 && returnCode != 1) {
-        String msg = "Stored Procedure " + STORED_PROC_NAME + " returned with ERROR: " + returnMessage;
+        String msg =
+            "Stored Procedure " + STORED_PROC_NAME + " returned with ERROR: " + returnMessage;
         LOGGER.error(msg);
         throw new DaoException(msg);
       }
 
     } catch (DaoException h) {
       throw new DaoException("Call to Stored Procedure " + STORED_PROC_NAME + " failed - " + h, h);
+    }
+  }
+
+  static class SsaName3 {
+    private String tableName = StringUtils.SPACE;
+    private String crudFunction = StringUtils.SPACE;
+    private String identifier = StringUtils.SPACE;
+    private String nameCode = StringUtils.SPACE;
+    private String firstName = StringUtils.SPACE;
+    private String middleName = StringUtils.SPACE;
+    private String lastName = StringUtils.SPACE;
+    private String streetNumber = StringUtils.SPACE;
+    private String streetName = StringUtils.SPACE;
+    private Short governmentEntityCode;
+    private Date updateTimestamp;
+    private String updateId = StringUtils.SPACE;
+
+    public String getTableName() {
+      return tableName;
+    }
+
+    public void setTableName(String tableName) {
+      this.tableName = tableName;
+    }
+
+    public String getCrudFunction() {
+      return crudFunction;
+    }
+
+    public void setCrudFunction(String crudFunction) {
+      this.crudFunction = crudFunction;
+    }
+
+    public String getIdentifier() {
+      return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+      this.identifier = identifier;
+    }
+
+    public String getNameCode() {
+      return nameCode;
+    }
+
+    public void setNameCode(String nameCode) {
+      this.nameCode = nameCode;
+    }
+
+    public String getFirstName() {
+      return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+      this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+      return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+      this.middleName = middleName;
+    }
+
+    public String getLastName() {
+      return lastName;
+    }
+
+    public void setLastName(String lastName) {
+      this.lastName = lastName;
+    }
+
+    public String getStreetNumber() {
+      return streetNumber;
+    }
+
+    public void setStreetNumber(String streetNumber) {
+      this.streetNumber = streetNumber;
+    }
+
+    public String getStreetName() {
+      return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+      this.streetName = streetName;
+    }
+
+    public Short getGovernmentEntityCode() {
+      return governmentEntityCode;
+    }
+
+    public void setGovernmentEntityCode(Short governmentEntityCode) {
+      this.governmentEntityCode = governmentEntityCode;
+    }
+
+    public Date getUpdateTimestamp() {
+      return FerbDateUtils.freshDate(updateTimestamp);
+    }
+
+    public void setUpdateTimestamp(Date updateTimestamp) {
+      this.updateTimestamp = FerbDateUtils.freshDate(updateTimestamp);
+    }
+
+    public String getUpdateId() {
+      return updateId;
+    }
+
+    public void setUpdateId(String updateId) {
+      this.updateId = updateId;
     }
   }
 

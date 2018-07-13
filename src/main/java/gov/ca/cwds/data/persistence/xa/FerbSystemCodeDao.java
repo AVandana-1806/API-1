@@ -1,9 +1,9 @@
 package gov.ca.cwds.data.persistence.xa;
 
 import org.hibernate.FlushMode;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +20,9 @@ import gov.ca.cwds.inject.CmsSessionFactory;
  * @author CWDS API Team
  */
 @SuppressWarnings({"squid:S1854"})
-public class XaSystemCodeDao extends SystemCodeDao {
+public class FerbSystemCodeDao extends SystemCodeDao {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(XaSystemCodeDao.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FerbSystemCodeDao.class);
 
   /**
    * Constructor
@@ -30,7 +30,7 @@ public class XaSystemCodeDao extends SystemCodeDao {
    * @param sessionFactory The session factory
    */
   @Inject
-  public XaSystemCodeDao(@CmsSessionFactory SessionFactory sessionFactory) {
+  public FerbSystemCodeDao(@CmsSessionFactory SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 

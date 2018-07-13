@@ -182,14 +182,18 @@ public class CmsCase extends CmsPersistentObject {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCHLD_CLT", nullable = false, updatable = false, insertable = false)
   private ChildClient childClient;
 
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKSTFPERST", nullable = false, updatable = false, insertable = false)
   private StaffPerson staffPerson;
 

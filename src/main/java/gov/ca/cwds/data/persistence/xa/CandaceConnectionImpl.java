@@ -55,6 +55,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public Statement createStatement() throws SQLException {
+    LOGGER.debug("CandaceConnectionImpl.createStatement");
     return con.createStatement();
   }
 
@@ -84,26 +85,27 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public boolean getAutoCommit() throws SQLException {
+    LOGGER.trace("CandaceConnectionImpl.getAutoCommit");
     return con.getAutoCommit();
   }
 
   @Override
   public void commit() throws SQLException {
-    LOGGER.warn("\n\t ******** CandaceConnectionImpl.commit ******** \n");
+    LOGGER.info("*** CandaceConnectionImpl.commit ***");
     CaresStackUtils.logStack();
     con.commit();
   }
 
   @Override
   public void rollback() throws SQLException {
-    LOGGER.warn("\n\t ******** CandaceConnectionImpl.rollback ******** \n");
+    LOGGER.info("*** CandaceConnectionImpl.rollback ***");
     CaresStackUtils.logStack();
     con.rollback();
   }
 
   @Override
   public void close() throws SQLException {
-    LOGGER.warn("\n\t ******** CandaceConnectionImpl.close ******** \n");
+    LOGGER.info("*** CandaceConnectionImpl.close ***");
     CaresStackUtils.logStack();
     con.close();
   }
@@ -128,6 +130,7 @@ public class CandaceConnectionImpl implements Connection {
 
   @Override
   public boolean isReadOnly() throws SQLException {
+    LOGGER.trace("CandaceConnectionImpl.isReadOnly: con.isReadOnly(): {}", con.isReadOnly());
     return con.isReadOnly();
   }
 

@@ -41,12 +41,16 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.stat.SessionStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.ca.cwds.data.CaresStackUtils;
+import gov.ca.cwds.data.persistence.PersistentObject;
+
 /**
- * Hibernate session facade.
+ * Hibernate session facade. Adds logging and facilitates XA transactions.
  * 
  * @author CWDS API Team
  */
@@ -59,12 +63,31 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  protected final Session session;
+  protected Session session;
 
-  protected CandaceTransactionImpl txn;
+  protected transient CandaceTransactionImpl txn;
 
   public CandaceSessionImpl(Session session) {
+    LOGGER.debug("CandaceSessionImpl.ctor");
     this.session = session;
+  }
+
+  protected void logStack(Object obj, String methodMsg) {
+    if (LOGGER.isTraceEnabled()) {
+      if (obj instanceof PersistentObject) {
+        final PersistentObject po = (PersistentObject) obj;
+        LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
+            po.getPrimaryKey());
+        CaresStackUtils.logStack();
+      } else {
+        LOGGER.info("CandaceSessionImpl.{}", methodMsg);
+        CaresStackUtils.logStack();
+      }
+    }
+  }
+
+  protected void logStack(String methodMsg) {
+    logStack(null, methodMsg);
   }
 
   public boolean isXaTransaction() {
@@ -73,6 +96,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Query getNamedQuery(String queryName) {
+    LOGGER.debug("CandaceSessionImpl.getNamedQuery: {}", queryName);
     return session.getNamedQuery(queryName);
   }
 
@@ -88,25 +112,33 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.warn("CandaceSessionImpl.close");
-    session.close();
+    LOGGER.info("CandaceSessionImpl.close");
+    if (session != null) {
+      session.close();
+      session = null; // release session references
+    }
   }
 
   @Override
   public boolean isOpen() {
+    LOGGER.debug("CandaceSessionImpl.isOpen");
     return session.isOpen();
   }
 
   @Override
   public boolean isConnected() {
+    LOGGER.debug("CandaceSessionImpl.isConnected");
     return session.isConnected();
   }
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.warn("CandaceSessionImpl.beginTransaction: XA: {}",
+    LOGGER.info("CandaceSessionImpl.beginTransaction: XA: {}",
         CandaceSessionFactoryImpl.isXaTransaction());
-    this.txn = new CandaceTransactionImpl(session.beginTransaction());
+    if (txn == null || txn.getStatus() != TransactionStatus.ACTIVE) {
+      this.txn = new CandaceTransactionImpl(session.beginTransaction());
+    }
+
     return txn;
   }
 
@@ -121,22 +153,23 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
   public Query createNamedQuery(String name) {
+    LOGGER.debug("CandaceSessionImpl.createNamedQuery: {}", name);
     return session.createNamedQuery(name);
   }
 
   @Override
   public ProcedureCall getNamedProcedureCall(String name) {
+    LOGGER.debug("CandaceSessionImpl.getNamedProcedureCall: {}", name);
     return session.getNamedProcedureCall(name);
   }
 
   @Override
   public ProcedureCall createStoredProcedureCall(String procedureName) {
+    LOGGER.debug("CandaceSessionImpl.createStoredProcedureCall: {}", procedureName);
     return session.createStoredProcedureCall(procedureName);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
     return session.createStoredProcedureCall(procedureName, resultClasses);
@@ -148,31 +181,32 @@ public class CandaceSessionImpl implements Session {
     return session.createStoredProcedureCall(procedureName, resultSetMappings);
   }
 
-  @SuppressWarnings({"rawtypes", "deprecation"})
   @Override
   public NativeQuery createSQLQuery(String queryString) {
+    LOGGER.debug("CandaceSessionImpl.createSQLQuery: {}", queryString);
     return session.createSQLQuery(queryString);
   }
 
   @Override
   public void remove(Object entity) {
+    LOGGER.debug("CandaceSessionImpl.remove");
     session.remove(entity);
   }
 
-  @SuppressWarnings({"deprecation", "rawtypes"})
   @Override
   public Criteria createCriteria(Class persistentClass) {
     return session.createCriteria(persistentClass);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NativeQuery createNativeQuery(String sqlString) {
+    LOGGER.debug("CandaceSessionImpl.createNativeQuery: {}", sqlString);
     return session.createNativeQuery(sqlString);
   }
 
   @Override
   public SharedSessionBuilder sessionWithOptions() {
+    LOGGER.debug("CandaceSessionImpl.sessionWithOptions");
     return session.sessionWithOptions();
   }
 
@@ -188,7 +222,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.debug("CandaceSessionImpl.flush");
+    LOGGER.warn("***** CandaceSessionImpl.flush *****");
+    logStack("flush");
     session.flush();
   }
 
@@ -249,6 +284,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void setHibernateFlushMode(FlushMode flushMode) {
+    LOGGER.debug("CandaceSessionImpl.setHibernateFlushMode: flushMode: {}", flushMode);
     session.setHibernateFlushMode(flushMode);
   }
 
@@ -259,6 +295,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void setCacheMode(CacheMode cacheMode) {
+    LOGGER.debug("CandaceSessionImpl.setCacheMode: cacheMode: {}", cacheMode);
     session.setCacheMode(cacheMode);
   }
 
@@ -295,6 +332,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void setDefaultReadOnly(boolean readOnly) {
+    LOGGER.debug("CandaceSessionImpl.setDefaultReadOnly: readOnly: {}", readOnly);
+    logStack("flush");
     session.setDefaultReadOnly(readOnly);
   }
 
@@ -310,6 +349,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void evict(Object object) {
+    logStack("evict");
     session.evict(object);
   }
 
@@ -335,6 +375,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void setFlushMode(FlushModeType flushMode) {
+    LOGGER.debug("CandaceSessionImpl.setFlushMode: flushMode: {}", flushMode);
     session.setFlushMode(flushMode);
   }
 
@@ -380,21 +421,29 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Serializable save(Object object) {
+    LOGGER.debug("CandaceSessionImpl.save(object)");
+    logStack(object, "save(object)");
     return session.save(object);
   }
 
   @Override
   public Serializable save(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.save(String,Object): entityName: {}", entityName);
+    logStack(object, "save(String,Object)");
     return session.save(entityName, object);
   }
 
   @Override
   public void saveOrUpdate(Object object) {
+    LOGGER.debug("CandaceSessionImpl.saveOrUpdate(Object)");
+    logStack(object, "saveOrUpdate(Object)");
     session.saveOrUpdate(object);
   }
 
   @Override
   public void saveOrUpdate(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.saveOrUpdate(String,Object): entityName: {}", entityName);
+    logStack(object, "saveOrUpdate(String,Object)");
     session.saveOrUpdate(entityName, object);
   }
 
@@ -405,11 +454,15 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void update(Object object) {
+    LOGGER.debug("CandaceSessionImpl.update(Object)");
+    logStack(object, "update(Object)");
     session.update(object);
   }
 
   @Override
   public void update(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.persist(String,Object): entityName: {}", entityName);
+    logStack(object, "persist(String,Object)");
     session.update(entityName, object);
   }
 
@@ -425,6 +478,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Object merge(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.merge(String,Object): entityName: {}", entityName);
+    logStack(object, "merge(String,Object)");
     return session.merge(entityName, object);
   }
 
@@ -434,23 +489,27 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public void persist(String entityName, Object object) {
+    LOGGER.debug("CandaceSessionImpl.persist(String,Object): entityName: {}", entityName);
+    logStack(object, "persist(String,Object)");
+    session.persist(entityName, object);
+  }
+
+  @Override
   public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
     session.refresh(entity, lockMode, properties);
   }
 
   @Override
-  public void persist(String entityName, Object object) {
-    session.persist(entityName, object);
-  }
-
-  @Override
   public void delete(Object object) {
+    LOGGER.info("CandaceSessionImpl.delete");
     session.delete(object);
   }
 
   @Override
   public void delete(String entityName, Object object) {
-    LOGGER.warn("CandaceSessionImpl.delete entityName: {}", entityName);
+    LOGGER.debug("CandaceSessionImpl.delete(String,Object): entityName: {}", entityName);
+    logStack(object, "delete(String,Object)");
     session.delete(entityName, object);
   }
 
@@ -466,7 +525,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void detach(Object entity) {
-    LOGGER.warn("CandaceSessionImpl.detach entity: {}", entity);
+    LOGGER.debug("CandaceSessionImpl.delete(String,Object)");
+    logStack("detach(Object)");
     session.detach(entity);
   }
 
@@ -487,6 +547,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void refresh(Object object) {
+    LOGGER.debug("CandaceSessionImpl.refresh(Object)");
+    logStack("refresh(Object)");
     session.refresh(object);
   }
 
@@ -525,7 +587,6 @@ public class CandaceSessionImpl implements Session {
     return session.getCurrentLockMode(object);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createFilter(Object collection, String queryString) {
     return session.createFilter(collection, queryString);
@@ -533,7 +594,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void clear() {
-    LOGGER.debug("CandaceSessionImpl.clear");
+    LOGGER.debug("CandaceSessionImpl.clear()");
+    logStack("clear()");
     session.clear();
   }
 
@@ -572,7 +634,6 @@ public class CandaceSessionImpl implements Session {
     return session.get(entityName, id, lockMode);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       Class... resultClasses) {
@@ -595,7 +656,6 @@ public class CandaceSessionImpl implements Session {
     return session.getEntityName(object);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public IdentifierLoadAccess byId(String entityName) {
     return session.byId(entityName);
@@ -611,7 +671,6 @@ public class CandaceSessionImpl implements Session {
     session.joinTransaction();
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
     return session.byMultipleIds(entityName);
@@ -632,7 +691,6 @@ public class CandaceSessionImpl implements Session {
     return session.unwrap(cls);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NaturalIdLoadAccess byNaturalId(String entityName) {
     return session.byNaturalId(entityName);
@@ -648,7 +706,6 @@ public class CandaceSessionImpl implements Session {
     return session.byNaturalId(entityClass);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public SimpleNaturalIdLoadAccess bySimpleNaturalId(String entityName) {
     return session.bySimpleNaturalId(entityName);
@@ -778,7 +835,6 @@ public class CandaceSessionImpl implements Session {
     session.addEventListeners(listeners);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(String queryString) {
     LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}", queryString);
@@ -797,13 +853,11 @@ public class CandaceSessionImpl implements Session {
     return session.createQuery(criteriaQuery);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(CriteriaUpdate updateQuery) {
     return session.createQuery(updateQuery);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Query createQuery(CriteriaDelete deleteQuery) {
     return session.createQuery(deleteQuery);
@@ -822,7 +876,6 @@ public class CandaceSessionImpl implements Session {
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
     LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,

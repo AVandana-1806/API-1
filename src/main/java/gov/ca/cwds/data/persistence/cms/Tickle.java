@@ -29,7 +29,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Tickle extends CmsPersistentObject {
 
-  protected static final String DATE_FORMAT = "yyyy-MM-dd";
+  protected static final String DATE_FORMAT = DomainChef.DATE_FORMAT;
 
   private static final long serialVersionUID = 1L;
 
