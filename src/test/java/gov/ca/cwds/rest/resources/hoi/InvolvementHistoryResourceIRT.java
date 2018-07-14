@@ -39,7 +39,8 @@ public class InvolvementHistoryResourceIRT extends HOIBaseTest {
     assertHOIScreeningsAreSorted(new String[] {"750", "885", "862"},
         actualInvolvementHistory.getScreenings());
 
-    assertQueryExecutionCount(Api.DATASOURCE_CMS, 16);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 14);
+    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP);
     assertQueryExecutionCount(Api.DATASOURCE_NS, 5);
   }
 

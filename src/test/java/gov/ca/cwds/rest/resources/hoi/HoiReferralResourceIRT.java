@@ -38,8 +38,8 @@ public class HoiReferralResourceIRT extends HOIBaseTest {
 
     assertHOIReferralsAreSorted(new String[] {"MYsSPHW0DW", "9OQhOAE0DW"}, actualHOIReferrals);
 
-    assertQueryExecutionCount(Api.DATASOURCE_CMS, 6);
-    assertDatasourceNotTouched(Api.DATASOURCE_NS);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 5);
+    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP, Api.DATASOURCE_NS);
   }
 
   private String doGet() throws Exception {

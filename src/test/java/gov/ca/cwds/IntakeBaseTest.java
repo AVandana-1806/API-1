@@ -126,8 +126,10 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
     assertTrue(hibernateStatisticsMap.get(bundleTag).getQueryExecutionCount() <= maxCount);
   }
 
-  protected void assertDatasourceNotTouched(String bundleTag) {
-    assertNull(hibernateStatisticsMap.get(bundleTag));
+  protected void assertDatasourceNotTouched(String ... bundleTags) {
+    for (String bundleTag : bundleTags) {
+      assertNull(hibernateStatisticsMap.get(bundleTag));
+    }
   }
 
 }
