@@ -1,13 +1,12 @@
 package gov.ca.cwds.rest.resources.hoi;
 
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CLIENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
+import gov.ca.cwds.rest.core.Api;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -45,8 +44,8 @@ public class HoiUsingClientIdResourceIRT extends HOIBaseTest {
     assertHOIScreeningsAreSorted(new String[]{"750", "885", "862", "714"},
         actualInvolvementHistory.getScreenings());
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 16);
-    assertQueryExecutionCount(NS_BUNDLE_TAG, 4);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 16);
+    assertQueryExecutionCount(Api.DATASOURCE_NS, 4);
   }
 
   private String doGet() throws Exception {
