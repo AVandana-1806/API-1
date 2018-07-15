@@ -11,11 +11,14 @@ import org.hibernate.stat.Statistics;
 public final class HibernateStatisticsConsumerRegistry {
 
   // one statistics consumer per bundle is currently enough
-  // DRS: Don't use a single-threaded map across threads.
   private static Map<String, HibernateStatisticsConsumer> consumerMap = new ConcurrentHashMap<>();
 
   @FunctionalInterface
   public interface HibernateStatisticsConsumer {
+
+    default void prepare(Statistics hibernateStatistics) {
+    }
+
     void consume(Statistics hibernateStatistics);
   }
 
@@ -30,6 +33,13 @@ public final class HibernateStatisticsConsumerRegistry {
 
   public static void unRegisterHibernateStatisticsConsumer(String bundleTag) {
     consumerMap.remove(bundleTag);
+  }
+
+  public static void prepareHibernateStatisticsConsumer(String bundleTag,
+      Statistics hibernateStatistics) {
+    if (consumerMap.containsKey(bundleTag)) {
+      consumerMap.get(bundleTag).prepare(hibernateStatistics);
+    }
   }
 
   public static void provideHibernateStatistics(String bundleTag, Statistics hibernateStatistics) {
