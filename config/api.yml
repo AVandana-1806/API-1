@@ -102,7 +102,7 @@ xaCmsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -112,13 +112,15 @@ xaCmsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
-      hibernate.connection.isolation: 2
-      hibernate.cache.use_query_cache: false
-      # hibernate.connection.provider_disables_autocommit: true
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 1
+      hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
@@ -138,7 +140,7 @@ xaCmsRsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -148,13 +150,15 @@ xaCmsRsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
-      hibernate.connection.isolation: 2
-      hibernate.cache.use_query_cache: false
-      # hibernate.connection.provider_disables_autocommit: true
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 1
+      hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
@@ -173,7 +177,7 @@ xaNsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
@@ -184,14 +188,16 @@ xaNsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: on_close
-      connection.release_mode: on_close
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
       hibernate.connection.isolation: 2
       hibernate.temp.use_jdbc_metadata_defaults: true
-      # hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_NS_JDBC_URL}
@@ -203,7 +209,7 @@ elasticsearch:
     elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
     elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
     elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
-    #Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
+    # Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
     elasticsearch.nodes: ${ES_NODES_SCREENINGS}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
@@ -217,7 +223,7 @@ triggertables:
   laCountySpecificCode: 19
 
 systemCodeCache: 
-  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-false}
+  preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
 
 intakeCodeCache:

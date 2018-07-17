@@ -2,11 +2,12 @@ package gov.ca.cwds;
 
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.registerHibernateStatisticsConsumer;
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.unRegisterHibernateStatisticsConsumer;
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.RS_BUNDLE_TAG;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.HibernateStatisticsConsumer;
+import gov.ca.cwds.rest.core.Api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +21,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.stat.Statistics;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,7 @@ import io.dropwizard.jackson.Jackson;
  */
 public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
 
-  private Map<String, Statistics> hibernateStatisticsMap = new ConcurrentHashMap<>();
+  private static Map<String, Statistics> hibernateStatisticsMap = new ConcurrentHashMap<>();
 
   protected ObjectMapper objectMapper = Jackson.newObjectMapper();
 
@@ -88,33 +89,47 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
    * methods for testing DB usage
    */
 
-  @Before
-  public void registerHibernateStatisticsConsumers() {
-    registerHibernateStatisticsConsumer(CMS_BUNDLE_TAG,
-        statistics -> hibernateStatisticsMap.put(CMS_BUNDLE_TAG, statistics));
-    registerHibernateStatisticsConsumer(NS_BUNDLE_TAG,
-        statistics -> hibernateStatisticsMap.put(NS_BUNDLE_TAG, statistics));
-    registerHibernateStatisticsConsumer(RS_BUNDLE_TAG,
-        statistics -> hibernateStatisticsMap.put(RS_BUNDLE_TAG, statistics));
+  private static HibernateStatisticsConsumer createTestHibernateStatisticsConsumer(
+      final String bundleTag) {
+    return new HibernateStatisticsConsumer() {
+      @Override
+      public void prepare(Statistics hibernateStatistics) {
+        hibernateStatistics.clear();
+      }
+
+      @Override
+      public void consume(Statistics hibernateStatistics) {
+        hibernateStatisticsMap.put(bundleTag, hibernateStatistics);
+      }
+    };
   }
 
-  @After
-  public void unRegisterHibernateStatisticsConsumers() {
-    unRegisterHibernateStatisticsConsumer(CMS_BUNDLE_TAG);
-    unRegisterHibernateStatisticsConsumer(NS_BUNDLE_TAG);
-    unRegisterHibernateStatisticsConsumer(RS_BUNDLE_TAG);
+  @BeforeClass
+  public static void registerHibernateStatisticsConsumers() {
+    registerHibernateStatisticsConsumer(Api.DATASOURCE_CMS,
+        createTestHibernateStatisticsConsumer(Api.DATASOURCE_CMS));
+    registerHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP,
+        createTestHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP));
+    registerHibernateStatisticsConsumer(Api.DATASOURCE_NS,
+        createTestHibernateStatisticsConsumer(Api.DATASOURCE_NS));
+  }
+
+  @AfterClass
+  public static void unRegisterHibernateStatisticsConsumers() {
+    unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_CMS);
+    unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP);
+    unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_NS);
   }
 
   protected void assertQueryExecutionCount(String bundleTag, long maxCount) {
-    // DRS: re-working this approach.
-    // See ServicesModule.UnitOfWorkInterceptor
-    // assertNotNull(hibernateStatisticsMap.get(bundleTag));
-    // assertThat(hibernateStatisticsMap.get(bundleTag).getQueryExecutionCount(),
-    // is(lessThanOrEqualTo(maxCount)));
+    assertNotNull(hibernateStatisticsMap.get(bundleTag));
+    assertTrue(hibernateStatisticsMap.get(bundleTag).getQueryExecutionCount() <= maxCount);
   }
 
-  protected void assertDbNotTouched(String bundleTag) {
-    assertNull(hibernateStatisticsMap.get(bundleTag));
+  protected void assertDatasourceNotTouched(String ... bundleTags) {
+    for (String bundleTag : bundleTags) {
+      assertNull(hibernateStatisticsMap.get(bundleTag));
+    }
   }
 
 }

@@ -6,9 +6,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -88,8 +90,8 @@ public class CollateralIndividualTranformerTest {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor("AarHGUP0Ki", null, lastUpdated,
         LegacyTable.COLLATERAL_INDIVIDUAL.getName(),
         LegacyTable.COLLATERAL_INDIVIDUAL.getDescription());
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "2751 West River", "Sacramento", "CA", "95833", null, legacyDescriptor)));
+    List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
+        "2751 West River", "Sacramento", "CA", "95833", null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "1", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "firstName", "middleName",

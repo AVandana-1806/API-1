@@ -7,6 +7,8 @@ import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import gov.ca.cwds.data.legacy.cms.dao.TribalMembershipVerificationDao;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -232,7 +234,14 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.persistence.contact.ContactPartyDeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity.class,
           gov.ca.cwds.data.persistence.contact.IndividualDeliveredServiceEntity.class,
-          gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.class)
+          gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.IndianTribeType.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.IndianEnrolmentStatus.class,
+          gov.ca.cwds.data.legacy.cms.entity.TribalMembershipVerification.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.ClientRelationshipType.class,
+          gov.ca.cwds.data.legacy.cms.entity.PaternityDetail.class,
+          gov.ca.cwds.data.legacy.cms.entity.ChildClient.class,
+          gov.ca.cwds.data.legacy.cms.entity.ClientRelationship.class)
       .build();
 
   private final ImmutableList<Class<?>> nsEntities = ImmutableList.<Class<?>>builder().add(
@@ -437,6 +446,7 @@ public class DataAccessModule extends AbstractModule {
     bind(SystemCodeDao.class);
     bind(SystemMetaDao.class);
     bind(TickleDao.class);
+    bind(TribalMembershipVerificationDao.class);
 
     // NS:
     bind(AddressDao.class);
@@ -463,6 +473,7 @@ public class DataAccessModule extends AbstractModule {
     bind(RaceDao.class);
     bind(ScreeningAddressDao.class);
     bind(ScreeningDao.class);
+    bind(PlacementEpisodeDao.class);
 
     // Trigger Tables:
     bind(CountyOwnershipDao.class);

@@ -1,9 +1,8 @@
 package gov.ca.cwds.rest.resources.hoi;
 
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT;
 
+import gov.ca.cwds.rest.core.Api;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -39,8 +38,8 @@ public class HoiReferralResourceIRT extends HOIBaseTest {
 
     assertHOIReferralsAreSorted(new String[] {"MYsSPHW0DW", "9OQhOAE0DW"}, actualHOIReferrals);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 6);
-    assertDbNotTouched(NS_BUNDLE_TAG);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 5);
+    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP, Api.DATASOURCE_NS);
   }
 
   private String doGet() throws Exception {

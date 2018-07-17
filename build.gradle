@@ -29,8 +29,8 @@ applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/works
 
 project.ext {
     coreApiVersion = '1.7.4_834-RC'
-    apiVersion = '0.8.1'
-    cwdsModelVersion = '0.7.4_616-RC'
+    apiVersion = '0.8.2'
+    cwdsModelVersion = '0.8.1_623-RC'
     configPath = '$rootProject.projectDir/config/'
     dropwizardVersion = '1.1.0'
     dropwizardFlywayVersion = '1.0.0-1'
@@ -132,7 +132,6 @@ dependencies {
 	compile group: "io.dropwizard", name: "dropwizard-testing", version: dropwizardVersion
 	compile group: "io.dropwizard.metrics", name: "metrics-core", version: metricsVersion
     compile group: "io.dropwizard.modules", name: "dropwizard-flyway", version: dropwizardFlywayVersion
-    compile group: 'io.dropwizard', name: 'dropwizard-json-logging', version: '1.3.5'
 
     compile group: 'gov.ca.cwds.cals', name: 'intake-ns-data-model', version: cwdsModelVersion
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'

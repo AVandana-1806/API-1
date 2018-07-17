@@ -81,20 +81,9 @@ public class SsaName3DaoTest extends Doofenshmirtz<Client> {
   @Test
   public void callStoredProc_A$String$String$String$String$String$String$String$String$String$Short$Date$String()
       throws Exception {
-    String tableName = null;
-    String crudOper = null;
-    String identifier = null;
-    String nameCd = null;
-    String firstName = null;
-    String middleName = null;
-    String lastName = null;
-    String streettNumber = null;
-    String streetName = null;
-    Short gvrEntc = null;
-    Date updateTimeStamp = new Date();
-    String updateId = null;
-    target.callStoredProc(tableName, crudOper, identifier, nameCd, firstName, middleName, lastName,
-        streettNumber, streetName, gvrEntc, updateTimeStamp, updateId);
+    SsaName3Dao.SsaName3 ssaName3 = new SsaName3Dao.SsaName3();
+    ssaName3.setUpdateTimestamp(new Date());
+    target.callStoredProc(ssaName3);
   }
 
 }

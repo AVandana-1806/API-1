@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.google.inject.Injector;
 
+import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.services.ServiceException;
 
@@ -20,8 +21,8 @@ import gov.ca.cwds.rest.services.ServiceException;
  */
 public class ParticipantMapperFactoryImplTest {
 
-  private ParticipantMapperFactoryImpl participantMapperFactoryImpl =
-      new ParticipantMapperFactoryImpl();
+  private ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl =
+      new ParticipantMapperFactoryImpl<CmsPersistentObject>();
   private Injector injector;
 
   @Before
@@ -47,7 +48,8 @@ public class ParticipantMapperFactoryImplTest {
     when(injector.getInstance(CollateralIndividualTranformer.class))
         .thenReturn(new CollateralIndividualTranformer());
     participantMapperFactoryImpl.setInjector(injector);
-    ParticipantMapper participantMapper = participantMapperFactoryImpl.create(tableName);
+    ParticipantMapper<CmsPersistentObject> participantMapper =
+        participantMapperFactoryImpl.create(tableName);
     assertThat(participantMapper, is(notNullValue()));
   }
 

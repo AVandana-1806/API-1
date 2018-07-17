@@ -47,12 +47,10 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
 
   @JsonProperty("street_address")
   @ApiModelProperty(example = "742 Evergreen Terrace")
-  @Size(max = 50)
   private String streetAddress;
 
   @JsonProperty("city")
   @ApiModelProperty(value = "City", example = "Sacramento")
-  @Size(max = 50)
   private String city;
 
   @JsonProperty("state")
@@ -61,7 +59,6 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
 
   @JsonProperty("zip")
   @ApiModelProperty(value = "Zip", example = "95835")
-  @Size(min = 5, max = 5)
   private String zip;
 
   @JsonProperty("legacy_descriptor")
@@ -89,12 +86,8 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
    * @param legacyDescriptor - legacyDescriptor
    */
   @SuppressWarnings("squid:S00107")
-  public AddressIntakeApi(String legacySourceTable,
-      String addressId,
-      String streetAddress,  String city,
-      String state, String zip,
-      String type,
-      LegacyDescriptor legacyDescriptor) {
+  public AddressIntakeApi(String legacySourceTable, String addressId, String streetAddress,
+      String city, String state, String zip, String type, LegacyDescriptor legacyDescriptor) {
     super();
     this.legacySourceTable = legacySourceTable;
     this.legacyId = addressId;

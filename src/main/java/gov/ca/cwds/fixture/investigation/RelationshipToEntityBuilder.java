@@ -28,9 +28,9 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipTo build() {
     return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
-        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
-        absentParentCode, sameHomeCode, relationship, relationshipContext, relationshipToPerson,
-        cmsRecordDescriptor);
+        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate,
+        relationshipEndDate, absentParentCode, sameHomeCode, relationship, relationshipContext,
+        relationshipToPerson, cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {
@@ -88,16 +88,6 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
-  public RelationshipToEntityBuilder setrelatedDateOfBirth(String relatedDateOfBirth) {
-    this.relatedDateOfBirth = relatedDateOfBirth;
-    return this;
-  }
-
-  public RelationshipToEntityBuilder setrelatedDateOfDeath(String relatedDateOfDeath) {
-    this.relatedDateOfDeath = relatedDateOfDeath;
-    return this;
-  }
-
   public RelationshipToEntityBuilder setAbsentParentCode(String absentParentCode) {
     this.absentParentCode = absentParentCode;
     return this;
@@ -105,6 +95,26 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipToEntityBuilder setSameHomeCode(String sameHomeCode) {
     this.sameHomeCode = sameHomeCode;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedDateOfBirth(String relatedDateOfBirth) {
+    this.relatedDateOfBirth = relatedDateOfBirth;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedAge(Short relatedAge) {
+    this.relatedAge = relatedAge;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedAgeUnit(String relatedAgeUnit) {
+    this.relatedAgeUnit = relatedAgeUnit;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedDateOfDeath(String relatedDateOfDeath) {
+    this.relatedDateOfDeath = relatedDateOfDeath;
     return this;
   }
 

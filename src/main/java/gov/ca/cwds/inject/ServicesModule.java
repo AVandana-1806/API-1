@@ -1,8 +1,7 @@
 package gov.ca.cwds.inject;
 
+import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.prepareHibernateStatisticsConsumer;
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibernateStatistics;
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 
 import java.lang.reflect.Method;
 import java.util.Properties;
@@ -97,7 +96,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 /**
  * Identifies all CWDS API business layer (aka, service) classes available for dependency injection
  * (aka, DI) by Google Guice.
- * 
+ *
  * @author CWDS API Team
  */
 public class ServicesModule extends AbstractModule {
@@ -106,7 +105,7 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * AOP method interceptor manages database transactions outside of DropWizard resource classes.
-   * 
+   *
    * @author CWDS API Team
    */
   public static class UnitOfWorkInterceptor implements org.aopalliance.intercept.MethodInterceptor {
@@ -147,26 +146,20 @@ public class ServicesModule extends AbstractModule {
       // Find the right session factory.
       switch (name) {
         case Api.DS_CMS:
-          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_CMS, cmsSessionFactory);
           currentSessionFactory = cmsSessionFactory;
           break;
-
         case Api.DATASOURCE_CMS_REP:
-          proxyFactory =
-              UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DATASOURCE_CMS_REP, rsSessionFactory);
           currentSessionFactory = rsSessionFactory;
           break;
-
         case Api.DS_NS:
-          proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(Api.DS_NS, nsSessionFactory);
           currentSessionFactory = nsSessionFactory;
           break;
-
         default:
           throw new IllegalStateException("Unknown datasource! " + annotation.value());
       }
 
       // Build the aspect with our wrapped session factory, not a hibernate bundle:
+      proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory);
       final UnitOfWorkAspect aspect =
           proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
 
@@ -179,9 +172,9 @@ public class ServicesModule extends AbstractModule {
         final Session session = currentSessionFactory.getCurrentSession();
         session.doWork(new WorkFerbUserInfo()); // Fine for all datasources.
 
-        // clearHibernateStatistics(annotation.value());
+        prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
         final Object result = mi.proceed();
-        // collectAndProvideHibernateStatistics(annotation.value());
+        provideHibernateStatistics(name, currentSessionFactory.getStatistics());
         aspect.afterEnd();
 
         return result;
@@ -194,35 +187,17 @@ public class ServicesModule extends AbstractModule {
       }
     }
 
-    // WARNING: check **session** stats, not session factory stats.
-    // At minimum this is a race condition across request threads.
-    protected void clearHibernateStatistics(String bundleTag) {
-      if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        cmsSessionFactory.getStatistics().clear();
-      } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        nsSessionFactory.getStatistics().clear();
-      }
-    }
-
-    protected void collectAndProvideHibernateStatistics(String bundleTag) {
-      if (CMS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, cmsSessionFactory.getStatistics());
-      } else if (NS_BUNDLE_TAG.equals(bundleTag)) {
-        provideHibernateStatistics(bundleTag, nsSessionFactory.getStatistics());
-      }
-    }
-
   }
 
   /**
    * AOP method interception for Ferb annotation {@link XAUnitOfWork}. Automatically manages
    * Hibernate sessions and XA transactions.
-   * 
+   *
    * <p>
    * NEXT: switch *all* data sources to XA and change all resources to use {@link XAUnitOfWork}
    * instead of {@link UnitOfWork}.
    * </p>
-   * 
+   *
    * @author CWDS API Team
    * @see XAUnitOfWorkAspect
    */
@@ -271,17 +246,17 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * Construct an interceptor to stack traces for any injected class.
-   * 
+   *
    * <blockquote>
-   * 
+   *
    * <pre>
    * final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
    * bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
    * requestInjection(daoInterceptor);
    * </pre>
-   * 
+   *
    * </blockquote>
-   * 
+   *
    * @author CWDS API Team
    */
   public static class PhineasMethodLoggerInterceptor
@@ -403,7 +378,7 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * Provides SystemCodeCache.
-   * 
+   *
    * @param systemCodeDao system code DAO
    * @param systemMetaDao system meta (category) DAO
    * @param config Ferb API configuration
@@ -424,7 +399,7 @@ public class ServicesModule extends AbstractModule {
 
   /**
    * Provides IntakeCodeCache.
-   * 
+   *
    * @param intakeLovDao Intake list of values (LOV) DAO
    * @param config Ferb API configuration
    * @return IntakeCodeCache initialized Intake LOV code cache

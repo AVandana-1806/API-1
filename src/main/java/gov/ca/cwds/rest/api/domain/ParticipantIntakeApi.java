@@ -137,7 +137,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   @Valid
   @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.AddressIntakeApi]")
   @JsonProperty("addresses")
-  private Set<AddressIntakeApi> addresses;
+  private List<AddressIntakeApi> addresses;
 
   @Valid
   @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.PhoneNumber]")
@@ -206,7 +206,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
       LegacyDescriptor legacyDescriptor, String firstName, String middleName, String lastName,
       String nameSuffix, String gender, String approximateAge, String approximateAgeUnits,
       String ssn, Date dateOfBirth, Date dateOfDeath, List<String> languages, String races,
-      String ethnicity, String screeningId, Set<String> roles, Set<AddressIntakeApi> addresses,
+      String ethnicity, String screeningId, Set<String> roles, List<AddressIntakeApi> addresses,
       Set<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
 
     super();
@@ -506,9 +506,9 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @return addresses
    */
-  public Set<AddressIntakeApi> getAddresses() {
+  public List<AddressIntakeApi> getAddresses() {
     if (addresses == null) {
-      addresses = new HashSet<>();
+      addresses = new ArrayList<>();
     }
     return addresses;
   }
@@ -516,7 +516,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @param addresses - domain addresses
    */
-  public void setAddresses(Set<AddressIntakeApi> addresses) {
+  public void setAddresses(List<AddressIntakeApi> addresses) {
     this.addresses = addresses;
   }
 
@@ -525,7 +525,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    *
    * @param addresses - domain addresses
    */
-  public void addAddresses(Set<AddressIntakeApi> addresses) {
+  public void addAddresses(List<AddressIntakeApi> addresses) {
     if (addresses == null) {
       return;
     }

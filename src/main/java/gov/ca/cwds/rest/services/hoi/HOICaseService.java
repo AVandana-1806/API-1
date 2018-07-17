@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
@@ -97,14 +98,16 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    */
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
-    final List<String> authorizedClients = authorizeClients(hoiRequest.getClientIds());
-    if (authorizedClients.isEmpty()) {
+    final Collection<String> authorizedClientIds =
+        authorizationService.filterClientIds(hoiRequest.getClientIds().stream()
+            .filter(Objects::nonNull).collect(Collectors.toSet()));
+    if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
 
-    final HOICasesData hcd = new HOICasesData(authorizedClients);
+    final HOICasesData hcd = new HOICasesData(authorizedClientIds);
 
-    loadRelationshipsByClients(authorizedClients, hcd);
+    loadRelationshipsByClients(authorizedClientIds, hcd);
     hcd.getAllClientIds().addAll(getClientIdsFromRelations(hcd));
     loadRelationshipsByClients(hcd.getAllClientIds(), hcd);
     loadClients(hcd);
@@ -154,7 +157,7 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
         .forEach(rel -> ids.add(rel.getSecondaryClientId()));
     hcd.getAllRelationshipsBySecondaryClients().stream().filter(relationshipFilter)
         .forEach(rel -> ids.add(rel.getPrimaryClientId()));
-    return ids;
+    return ids.stream().filter(Objects::nonNull).collect(Collectors.toSet());
   }
 
   private void loadCmsCases(HOICasesData hcd) {
@@ -216,11 +219,6 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   protected HOICaseResponse handleRequest(HOICase req) {
     LOGGER.info("HOICaseService handle request not implemented");
     throw new NotImplementedException("handle request not implemented");
-  }
-
-  @Override
-  public AuthorizationService getAuthorizationService() {
-    return authorizationService;
   }
 
   @Override

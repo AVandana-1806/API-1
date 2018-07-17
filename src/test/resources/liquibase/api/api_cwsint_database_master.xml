@@ -14,6 +14,8 @@
     <include file="liquibase/cwscms_data_types.xml"/>
     <include file="liquibase/ddl/cwscms_structure.xml"/>
     <include file="liquibase/ddl/cwscms_constraints.xml"/>
+    <include file="liquibase/ddl/cwscms_placement_home_structure.xml"/>
+    <include file="liquibase/ddl/cwscms_placement_home_constraints.xml"/>
 
     <include file="liquibase/dml/cws_case_data.xml"/>
     <include file="liquibase/dml/cws_child_client_data.xml"/>
@@ -29,4 +31,7 @@
     <include file="liquibase/dml/cws_address_data.xml"/>
     <include file="liquibase/dml/cws_drms_document_data.xml"/>
     <include file="liquibase/dml/cws_law_enforcement_data.xml"/>
+    <include file="liquibase/dml/cws_out_of_home_placement.xml"/>
+    <include file="liquibase/dml/cws_placement_episode.xml"/>
+    <include file="liquibase/dml/cws_placement_home.xml"/>
 </databaseChangeLog>

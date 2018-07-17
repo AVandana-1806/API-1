@@ -144,13 +144,11 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   }
 
   /**
-   * Close open sessions, set transaction to null.
+   * Close open sessions, set transactions to null.
    */
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
-    BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-    RequestExecutionContext.instance().put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
+    clearXaFlags();
 
     try {
       closeSessions();
@@ -163,6 +161,12 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     sessionFactories.clear();
     units.clear();
+  }
+
+  protected void clearXaFlags() {
+    BaseAuthorizationDao.clearXaMode();
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    RequestExecutionContext.instance().put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
   }
 
   /**
@@ -231,6 +235,11 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     sessions.clear();
   }
 
+  /**
+   * Close an individual XA session.
+   * 
+   * @param session target XA session
+   */
   protected void closeSession(Session session) {
     LOGGER.info("XaUnitOfWorkAspect.closeSession()");
     if (session != null) {
@@ -268,17 +277,17 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   protected void beginXaTransaction() throws CaresXAException {
     LOGGER.info("XaUnitOfWorkAspect.beginXaTransaction()");
     if (!hasTransactionalFlag()) {
-      LOGGER.info("XA BEGIN TRANSACTION: unit of work is not transactional");
+      LOGGER.trace("XA BEGIN TRANSACTION: unit of work is not transactional");
       return;
     } else if (transactionStarted) {
-      LOGGER.info("XA: transaction already started");
+      LOGGER.debug("XA: transaction already started");
       return;
     }
 
     try {
       LOGGER.info("XA BEGIN TRANSACTION!");
       txn = new UserTransactionImp();
-      txn.setTransactionTimeout(180); // NEXT: soft-code timeout
+      txn.setTransactionTimeout(90); // NEXT: soft-code timeout
       txn.begin();
       transactionStarted = true;
     } catch (Exception e) {
@@ -323,8 +332,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
 
     try {
       LOGGER.info("XA ROLLBACK TRANSACTION!");
+      txn.setRollbackOnly();
+      txn.rollback();
       sessions.values().stream().forEach(this::rollbackSessionTransaction);
-      txn.rollback(); // wrap XA transaction
     } catch (Exception e) {
       LOGGER.error("XA ROLLBACK FAILED! {}", e.getMessage(), e);
       throw new CaresXAException("XA ROLLBACK FAILED!", e);
