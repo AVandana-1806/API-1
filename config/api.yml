@@ -274,9 +274,9 @@ logging:
     "AUDIT":
       level: ${LOGLEVEL:-ALL}
   appenders:
-    - type: console
+    - type: console-json
       threshold: ALL
       timeZone: UTC
       target: stdout
-      logFormat: '[%X{REMOTE_ADDRESS}] [%date{ISO8601}] [%level] [%thread] [%X{UNIQUE_ID}] [%logger] [%X{USER_ID}] [%X{REQUEST_START_TIME}]: [%message]%n'
+      logFormat: '[%date{ISO8601}] [%level] [%X{REMOTE_ADDRESS}] [%X{UNIQUE_ID}] [%X{STAFF_ID}] [%X{STAFF_COUNTY}] [%X{RESPONSE_STATUS}] [%thread] [%logger]: [%message]%n'
  

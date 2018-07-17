@@ -72,8 +72,11 @@ public class RequestResponseLoggingFilter implements Filter {
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-      loggingContext.setLogParameter(LogParameter.USER_ID,
-          RequestExecutionContext.instance().getUserId());
+      loggingContext.setLogParameter(LogParameter.UNIQUE_ID, uniqueId);
+      loggingContext.setLogParameter(LogParameter.STAFF_ID,
+          RequestExecutionContext.instance().getStaffId());
+      loggingContext.setLogParameter(LogParameter.STAFF_COUNTY,
+          RequestExecutionContext.instance().getUserIdentity().getCountyCwsCode());
       loggingContext.setLogParameter(LogParameter.REQUEST_START_TIME,
           DomainChef.cookStrictTimestamp(RequestExecutionContext.instance().getRequestStartTime()));
       loggingContext.setLogParameter(LogParameter.REMOTE_ADDRESS,
@@ -87,6 +90,8 @@ public class RequestResponseLoggingFilter implements Filter {
       auditLogger.audit(requestContent(wrappedRequest));
 
       final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+      final int responseStatus = httpServletResponse.getStatus();
+      loggingContext.setLogParameter(LogParameter.RESPONSE_STATUS, String.valueOf(responseStatus));
       final RequestResponseLoggingHttpServletResponseWrapper wrappedResponse =
           new RequestResponseLoggingHttpServletResponseWrapper(httpServletResponse);
       try {
