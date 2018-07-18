@@ -43,4 +43,21 @@ public class FunctionalTestingBuilder {
         .get(resourcePath).then().contentType(ContentType.JSON).extract().response();
   }
 
+  /**
+   * Method to process the POST with path parameters
+   * 
+   * @param object - object
+   * @param resourcePath - resourcePath
+   * @param pathParam - pathParam
+   * @param pathParamValue - pathParamValue
+   * @param token - token
+   * @return the post response
+   */
+  public Response processPostRequestWithPathParameter(Object object, String resourcePath,
+      String pathParam, String pathParamValue, String token) {
+    return given().queryParam("token", token).header("Content-Type", "application/json")
+        .pathParam(pathParam, pathParamValue).header("Accept", "application/json").body(object)
+        .when().post(resourcePath).then().contentType(ContentType.JSON).extract().response();
+  }
+
 }
