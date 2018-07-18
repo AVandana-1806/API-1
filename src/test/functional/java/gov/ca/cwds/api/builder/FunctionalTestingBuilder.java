@@ -14,6 +14,8 @@ import io.restassured.response.Response;
  */
 public class FunctionalTestingBuilder {
 
+  private static final String TOKEN = "token";
+
   /**
    * This method process the POST processing and return the appropriate body or Json response.
    * 
@@ -23,9 +25,9 @@ public class FunctionalTestingBuilder {
    * @return the response
    */
   public Response processPostRequest(Object object, String resourcePath, String token) {
-    return given().queryParam("token", token).header("Content-Type", "application/json")
-        .header("Accept", "application/json").body(object).when().post(resourcePath).then()
-        .contentType(ContentType.JSON).extract().response();
+    return given().queryParam(TOKEN, token).contentType(ContentType.JSON).accept(ContentType.JSON)
+        .body(object).when().post(resourcePath).then().contentType(ContentType.JSON).extract()
+        .response();
   }
 
   /**
@@ -39,7 +41,7 @@ public class FunctionalTestingBuilder {
    */
   public Response processGetRequest(String resourcePath, String parameter, String ParameterValue,
       String token) {
-    return given().queryParam(parameter, ParameterValue).queryParam("token", token)
+    return given().queryParam(parameter, ParameterValue).queryParam(TOKEN, token)
         .get(resourcePath).then().contentType(ContentType.JSON).extract().response();
   }
 
@@ -55,9 +57,9 @@ public class FunctionalTestingBuilder {
    */
   public Response processPostRequestWithPathParameter(Object object, String resourcePath,
       String pathParam, String pathParamValue, String token) {
-    return given().queryParam("token", token).header("Content-Type", "application/json")
-        .pathParam(pathParam, pathParamValue).header("Accept", "application/json").body(object)
-        .when().post(resourcePath).then().contentType(ContentType.JSON).extract().response();
+    return given().queryParam(TOKEN, token).contentType(ContentType.JSON)
+        .pathParam(pathParam, pathParamValue).accept(ContentType.JSON).body(object).when()
+        .post(resourcePath).then().contentType(ContentType.JSON).extract().response();
   }
 
 }
