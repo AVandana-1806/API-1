@@ -1,13 +1,12 @@
 package gov.ca.cwds.rest.resources.hoi;
 
 import static gov.ca.cwds.IntakeBaseTestConstants.USER_SOCIAL_WORKER_ONLY;
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CASE_HISTORY_OF_INVOLVEMENT;
 import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import gov.ca.cwds.rest.api.domain.hoi.HOICase;
+import gov.ca.cwds.rest.core.Api;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -28,8 +27,8 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
     assertEquals(expectedHOICases, actualHOICases);
     assertHOICasesAreSorted(new String[]{"Co8uaDi0DW", "IdQImWo0DW"}, actualHOICases);
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 9);
-    assertDbNotTouched(NS_BUNDLE_TAG);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 8);
+    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP, Api.DATASOURCE_NS);
   }
 
   private String doGet() throws Exception {
