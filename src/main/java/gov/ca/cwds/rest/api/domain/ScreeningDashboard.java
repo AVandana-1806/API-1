@@ -89,7 +89,6 @@ public class ScreeningDashboard extends ReportingDomain {
    * @param screeningDecisionDetail - screening decision detail
    * @param assignee - assignee
    * @param assigneeStaffId - assignee staff id
-   * @param startedAt = started at
    */
   @JsonCreator
   public ScreeningDashboard(@JsonProperty("id") String id,
@@ -97,8 +96,7 @@ public class ScreeningDashboard extends ReportingDomain {
       @JsonProperty("screening_decision") String screeningDecision,
       @JsonProperty("screening_decision_detail") String screeningDecisionDetail,
       @JsonProperty("assignee") String assignee,
-      @JsonProperty("assignee_staff_id") String assigneeStaffId,
-      @JsonProperty("started_at") Date startedAt) {
+      @JsonProperty("assignee_staff_id") String assigneeStaffId) {
     super();
     this.id = id;
     this.reference = reference;
@@ -107,7 +105,6 @@ public class ScreeningDashboard extends ReportingDomain {
     this.screeningDecisionDetail = screeningDecisionDetail;
     this.assignee = assignee;
     this.assigneeStaffId = assigneeStaffId;
-    this.startedAt = freshDate(startedAt);
   }
 
   /**
@@ -157,6 +154,10 @@ public class ScreeningDashboard extends ReportingDomain {
 
   public Date getStartedAt() {
     return freshDate(startedAt);
+  }
+  
+  public void setStartedAt(Date startedAt) {
+    this.startedAt = startedAt;
   }
 
   public String getScreeningStatus() {
