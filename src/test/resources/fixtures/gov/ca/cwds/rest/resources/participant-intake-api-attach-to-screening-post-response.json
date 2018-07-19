@@ -10,7 +10,7 @@
     {
       "messages": [],
       "id": "${address_id}",
-      "type": "Placement",
+      "type": "Placement Home",
       "street_address": "2809 Tyler Avenue",
       "city": "Riverside",
       "state": "CA",

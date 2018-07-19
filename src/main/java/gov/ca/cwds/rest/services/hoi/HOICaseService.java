@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
@@ -98,7 +99,8 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
     final Collection<String> authorizedClientIds =
-        authorizationService.filterClientIds(hoiRequest.getClientIds());
+        authorizationService.filterClientIds(hoiRequest.getClientIds().stream()
+            .filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
@@ -155,7 +157,7 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
         .forEach(rel -> ids.add(rel.getSecondaryClientId()));
     hcd.getAllRelationshipsBySecondaryClients().stream().filter(relationshipFilter)
         .forEach(rel -> ids.add(rel.getPrimaryClientId()));
-    return authorizationService.filterClientIds(ids);
+    return ids.stream().filter(Objects::nonNull).collect(Collectors.toSet());
   }
 
   private void loadCmsCases(HOICasesData hcd) {
