@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.resources;
 
 import gov.ca.cwds.IntakeBaseTest;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -17,7 +16,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
  */
 public class ScreeningParticipantResourceIRT extends IntakeBaseTest {
   @Test
-  @Ignore
   public void testPostParticipantWithActivePlacementHomeAddress() throws Exception {
     String request = fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-attach-to-screening-post-request.json");
     String actualJson = getStringResponse(doPostCall(RESOURCE_SCREENINGS + "/36/participant", request));
