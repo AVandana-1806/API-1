@@ -15,15 +15,13 @@ public class RelationshipToEntityBuilder {
   protected String relationshipToPerson = "Sister";
   protected String relationshipContext = "step";
   protected String relatedDateOfBirth = "2000-10-01";
-  protected Short relatedAge = 17;
-  protected String relatedAgeUnit = "Y";
   protected String relatedDateOfDeath = "2001-10-01";
   protected String relationshipStartDate = "2000-10-01";
   protected String relationshipEndDate = "2001-10-01";
   protected String absentParentCode = "N";
   protected String sameHomeCode = "U";
 
-  private CmsRecordDescriptor cmsRecordDescriptor =
+  protected CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
 
   public RelationshipTo build() {
@@ -69,18 +67,15 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
-  public String getRelationshipToPerson() {
-    return relationshipToPerson;
-  }
-
   public RelationshipToEntityBuilder setRelationshipToPerson(String relationshipToPerson) {
     this.relationshipToPerson = relationshipToPerson;
     return this;
   }
 
 
-  public void setCmsRecordDescriptor(CmsRecordDescriptor cmsRecordDescriptor) {
+  public RelationshipToEntityBuilder setCmsRecordDescriptor(CmsRecordDescriptor cmsRecordDescriptor) {
     this.cmsRecordDescriptor = cmsRecordDescriptor;
+    return this;
   }
 
   public RelationshipToEntityBuilder setRelationshipContext(String relationshipContext) {
@@ -100,16 +95,6 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipToEntityBuilder setRelatedDateOfBirth(String relatedDateOfBirth) {
     this.relatedDateOfBirth = relatedDateOfBirth;
-    return this;
-  }
-
-  public RelationshipToEntityBuilder setRelatedAge(Short relatedAge) {
-    this.relatedAge = relatedAge;
-    return this;
-  }
-
-  public RelationshipToEntityBuilder setRelatedAgeUnit(String relatedAgeUnit) {
-    this.relatedAgeUnit = relatedAgeUnit;
     return this;
   }
 

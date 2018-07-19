@@ -310,6 +310,13 @@ public final class RelationshipTo implements Serializable {
   public Short getRelatedAge() {
     return relatedAge;
   }
+  
+  /**
+   * @return the relatedAgeUnit
+   */
+  public String getRelatedAgeUnit() {
+    return relatedAgeUnit;
+  }
 
   /**
    * @return the relatedDateOfDeath
