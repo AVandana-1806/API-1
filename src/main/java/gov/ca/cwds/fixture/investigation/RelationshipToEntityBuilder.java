@@ -8,6 +8,7 @@ public class RelationshipToEntityBuilder {
   protected String tableName = "CLIENT_T";
   protected String id = "2345678ABC";
   protected String relatedFirstName = "Steve";
+  protected String relatedMiddleName = "James";
   protected String relatedLastName = "Briggs";
   protected String relatedNameSuffix = "Jr";
   protected String relatedGenderCode = "I";
@@ -25,10 +26,10 @@ public class RelationshipToEntityBuilder {
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
 
   public RelationshipTo build() {
-    return new RelationshipTo(relatedFirstName, relatedLastName, relatedNameSuffix,
-        relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate,
-        relationshipEndDate, absentParentCode, sameHomeCode, relationship, relationshipContext,
-        relationshipToPerson, cmsRecordDescriptor);
+    return new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName,
+        relatedNameSuffix, relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath,
+        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
+        relationshipContext, relationshipToPerson, cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {
@@ -43,6 +44,11 @@ public class RelationshipToEntityBuilder {
 
   public RelationshipToEntityBuilder setRelatedFirstName(String relatedFirstName) {
     this.relatedFirstName = relatedFirstName;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedMiddleName(String relatedMiddleName) {
+    this.relatedMiddleName = relatedMiddleName;
     return this;
   }
 
@@ -73,7 +79,8 @@ public class RelationshipToEntityBuilder {
   }
 
 
-  public RelationshipToEntityBuilder setCmsRecordDescriptor(CmsRecordDescriptor cmsRecordDescriptor) {
+  public RelationshipToEntityBuilder setCmsRecordDescriptor(
+      CmsRecordDescriptor cmsRecordDescriptor) {
     this.cmsRecordDescriptor = cmsRecordDescriptor;
     return this;
   }
