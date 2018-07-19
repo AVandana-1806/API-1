@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.authenticate;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -18,6 +17,7 @@ public class HttpClientBuild {
   RequestConfig requestConfig =
       RequestConfig.custom().setRedirectsEnabled(false).setCookieSpec(CookieSpecs.STANDARD).build();
 
-  CloseableHttpClient httpClient = HttpClientBuilder.create().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
+  CloseableHttpClient httpClient = HttpClientBuilder.create().setConnectionManager(connManager)
+      .setDefaultRequestConfig(requestConfig).build();
   HttpClientContext httpContext = HttpClientContext.create();
 }
