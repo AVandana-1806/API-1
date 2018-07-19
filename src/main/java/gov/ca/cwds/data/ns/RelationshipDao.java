@@ -15,7 +15,7 @@ public class RelationshipDao  extends CrudsDaoImpl<Relationship> {
     super(sessionFactory);
   }
 
-  public List<Relationship> getRelationshipsByScreeningId() {
+  public List<Relationship> getRelationshipsByScreeningId(String screeningId) {
     return new ArrayList<>();
   }
 }
