@@ -48,9 +48,18 @@ public class RelationshipToTest {
   private String newRelationship = "new Brother";
   private String newRelationshipToPerson = "new Sister";
   private String newRelationshipContext = "maternal";
+  private String newRelatedGender = "F";
+  private String newAbsentParentCode = "Y";
+  private String newSameHomeCode = "N";
+  private String newRelatedDateOfBirth = "2010-01-31";
+  private String newRelatedDateOfDeath = "";
+  private String newRelationshipStartDate = "2010-01-31";
+  private String newRelationshipEndDate = "2017-01-30";
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
+  private CmsRecordDescriptor newCmsRecordDescriptor = 
+      new CmsRecordDescriptor(id, "222-333-444-5555", tableName, "Client");
 
 
   @Test
@@ -131,10 +140,24 @@ public class RelationshipToTest {
   @Test
   public void shouldSetValuesWithBuilderSetters() {
     RelationshipTo relationshipTo =
-        new RelationshipToEntityBuilder().setId(newId).setRelatedFirstName(newRelatedFirstName)
-            .setRelatedLastName(newRelatedLastName).setRelatedNameSuffix(newRelatedNameSuffix)
-            .setRelationship(newRelationship).setRelationshipContext(newRelationshipContext)
-            .setRelationshipToPerson(newRelationshipToPerson).setTableName(newTableName).build();
+        new RelationshipToEntityBuilder()
+            .setId(newId)
+            .setRelatedFirstName(newRelatedFirstName)
+            .setRelatedLastName(newRelatedLastName)
+            .setRelatedNameSuffix(newRelatedNameSuffix)
+            .setRelationship(newRelationship)
+            .setRelationshipContext(newRelationshipContext)
+            .setRelationshipToPerson(newRelationshipToPerson)
+            .setTableName(newTableName)
+            .setRelatedGenderCode(newRelatedGender)
+            .setCmsRecordDescriptor(newCmsRecordDescriptor)
+            .setAbsentParentCode(newAbsentParentCode)
+            .setSameHomeCode(newSameHomeCode)
+            .setRelatedDateOfBirth(newRelatedDateOfBirth)
+            .setRelatedDateOfDeath(newRelatedDateOfDeath)
+            .setRelationshipStartDate(newRelationshipStartDate)
+            .setRelationshipEndDate(newRelationshipEndDate)
+            .build();
 
     assertThat(relationshipTo.getRelatedFirstName(), is(equalTo(newRelatedFirstName)));
     assertThat(relationshipTo.getRelatedLastName(), is(equalTo(newRelatedLastName)));
@@ -142,7 +165,13 @@ public class RelationshipToTest {
     assertThat(relationshipTo.getRelationshipToPerson(), is(equalTo(newRelationship)));
     assertThat(relationshipTo.getRelationshipContext(), is(equalTo(newRelationshipContext)));
     assertThat(relationshipTo.getRelatedPersonRelationship(), is(equalTo(newRelationshipToPerson)));
-
+    assertThat(relationshipTo.getRelatedGender(), is(equalTo(newRelatedGender)));
+    assertThat(relationshipTo.getCmsRecordDescriptor(), is(equalTo(newCmsRecordDescriptor)));
+    assertThat(relationshipTo.getAbsentParentCode(), is(equalTo(newAbsentParentCode)));
+    assertThat(relationshipTo.getSameHomeCode(), is(equalTo(newSameHomeCode)));
+    assertThat(relationshipTo.getrelatedDateOfBirth(), is(equalTo(newRelatedDateOfBirth)));
+    assertThat(relationshipTo.getRelationshipStartDate(), is(equalTo(newRelationshipStartDate)));
+    assertThat(relationshipTo.getRelationshipEndDate(), is(equalTo(newRelationshipEndDate)));
   }
 
 }
