@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+  <changeSet id="relationships_test_data" author="mzemlyanoi">
+    <sql>
+      INSERT INTO ${database.defaultSchemaName}.CLN_RELT (IDENTIFIER, ABSENT_CD, CLNTRELC, END_DT,
+      SAME_HM_CD, START_DT, LST_UPD_ID, LST_UPD_TS, FKCLIENT_T, FKCLIENT_0)VALUES
+      ('0btlf7s000', 'Y', 285, NULL, 'N', NULL, '0Jy', '2000-03-02 14:24:50.706082', '0000000001',
+      '0000000002');
+    </sql>
+  </changeSet>
+</databaseChangeLog>

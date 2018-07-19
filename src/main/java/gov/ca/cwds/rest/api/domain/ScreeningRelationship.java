@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.ws.rs.DefaultValue;
 
-public class ScreeningRelationship extends ReportingDomain implements Request {
+public class ScreeningRelationship extends ReportingDomain implements Request, gov.ca.cwds.rest.api.Response {
 
     @JsonProperty("id")
     @ApiModelProperty(required = true, readOnly = false, value = "Screening Relationship Id",

@@ -6,7 +6,8 @@
             <column name="relation" value="190"/>
             <column name="client" value="9C7kKgc0CN"/>
             <column name="relative" value="6YtTyyc0ND"/>
-            <!--<column name="absent_parent_indicator" value="true"/>-->
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
             <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
             <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
         </insert>
@@ -15,8 +16,39 @@
             <column name="relation" value="190"/>
             <column name="client" value="1111111111"/>
             <column name="relative" value="2222222222"/>
-            <!--<column name="absent_parent_indicator" value="true"/>-->
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
             <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="3"/>
+            <column name="relation" value="190"/>
+            <column name="client" value="1001"/>
+            <column name="relative" value="1002"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="4"/>
+            <column name="relation" value="190"/>
+            <column name="client" value="1001"/>
+            <column name="relative" value="1003"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="5"/>
+            <column name="relation" value="190"/>
+            <column name="client" value="1004"/>
+            <column name="relative" value="1005"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
             <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
         </insert>
     </changeSet>

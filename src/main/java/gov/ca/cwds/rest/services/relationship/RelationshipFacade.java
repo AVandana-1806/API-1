@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,19 +46,19 @@ public class RelationshipFacade {
     this.cmsClientDao = cmsClientDao;
   }
 
-  public List<ScreeningRelationship> getRelationshipsByScreeningId(String screeningId) {
+  public List<gov.ca.cwds.rest.api.Response> getRelationshipsByScreeningId(String screeningId) {
     if (StringUtils.isEmpty(screeningId)) {
       return Collections.emptyList();
     }
 
-    // getparticipants by screeningId
+    // get participants by screeningId
     Set<String> legacyClientIds = getLegacyClientIdsByScreeningId(screeningId);
     // get relationships from legacy
     List<ClientRelationship> lagacyRelationships = getCmsRelationships(legacyClientIds);
     // get relationships from pgsql
     List<Relationship> nsRelationships = getNsRelationships(screeningId);
 
-    List<ScreeningRelationship> result = new ArrayList<>();
+    List<gov.ca.cwds.rest.api.Response> result = new ArrayList<>();
 
     // compare
     List<ClientRelationship> shouldBeUpdated =
@@ -71,34 +72,6 @@ public class RelationshipFacade {
     // select and return
     return result;
   }
-
-  // Mocked Data
-//  private List<ScreeningRelationship> getRelationshipsFromNs(String screeningId) {
-//    return getMockedData();
-//  }
-//
-//  private List<ScreeningRelationship> getMockedData() {
-//    List<ScreeningRelationship> list = new ArrayList<>();
-//    ScreeningRelationship relationship1 = new ScreeningRelationship();
-//    relationship1.setId("123123");
-//    relationship1.setClientId("111111");
-//    relationship1.setRelativeId("222222");
-//    relationship1.setRelationshipType(190);
-//    relationship1.setAbsentParentIndicator(false);
-//    relationship1.setSameHomeStatus("U");
-//    list.add(relationship1);
-//
-//    ScreeningRelationship relationship2 = new ScreeningRelationship();
-//    relationship1.setId("123123");
-//    relationship1.setClientId("222222");
-//    relationship1.setRelativeId("333333");
-//    relationship1.setRelationshipType(189);
-//    relationship1.setAbsentParentIndicator(true);
-//    relationship1.setSameHomeStatus("Y");
-//    list.add(relationship1);
-//
-//    return list;
-//  }
 
   private List<ScreeningRelationship> updateRelationships(
       List<ClientRelationship> shouldBeUpdated) {
@@ -134,9 +107,10 @@ public class RelationshipFacade {
     Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
     List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
+
     for (ClientRelationship clientRelationship : shouldBeCreated) {
-      ParticipantEntity participantEntity1 = null;
-      ParticipantEntity participantEntity2 = null;
+      ParticipantEntity participantEntity1;
+      ParticipantEntity participantEntity2;
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         participantEntity1 = participantDao.create(new ParticipantEntity(
@@ -213,18 +187,21 @@ public class RelationshipFacade {
     LOGGER.info("lagacyRelationships {}", lagacyRelationships);
     LOGGER.info("nsRelationships {}", nsRelationships);
     List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
-    for (ClientRelationship clientRelationship : lagacyRelationships) {
-      boolean exist = false;
-      for (Relationship relationship : nsRelationships) {
-        if (clientRelationship.getId().equals(relationship.getLegacyId())) {
-          exist = true;
-          break;
+    if (CollectionUtils.isEmpty(lagacyRelationships)) {
+      return relationshipsToCreate;
+    }
+
+    lagacyRelationships.forEach(e -> {
+      if (CollectionUtils.isEmpty(nsRelationships)) {
+        relationshipsToCreate.add(e);
+      } else {
+        Optional<Relationship> clientRelationship = nsRelationships.stream()
+            .filter(b -> e.getId().equals(b.getLegacyId())).findFirst();
+        if (!clientRelationship.isPresent()) {
+          relationshipsToCreate.add(e);
         }
       }
-      if (!exist) {
-        relationshipsToCreate.add(clientRelationship);
-      }
-    }
+    });
     return relationshipsToCreate;
   }
 
@@ -289,12 +266,13 @@ public class RelationshipFacade {
     return relationshipListcms;
   }
 
-  private List<ScreeningRelationship> getRelationshipsThatShouldNotBeUpdated(
-      List<ScreeningRelationship> list1, List<Relationship> list2) {
-    List<ScreeningRelationship> result = new ArrayList<>(list1);
+  private List<gov.ca.cwds.rest.api.Response> getRelationshipsThatShouldNotBeUpdated(
+      List<gov.ca.cwds.rest.api.Response> list1, List<Relationship> list2) {
+    List<gov.ca.cwds.rest.api.Response> result = new ArrayList<>(list1);
     for (Relationship relationship : list2) {
       boolean exist = false;
-      for (ScreeningRelationship screeningRelationship : list1) {
+      for (gov.ca.cwds.rest.api.Response response : list1) {
+        ScreeningRelationship screeningRelationship = (ScreeningRelationship) response;
         if (screeningRelationship.getId().equals(relationship.getId())) {
           exist = true;
           break;

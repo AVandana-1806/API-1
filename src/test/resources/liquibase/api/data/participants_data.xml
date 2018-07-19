@@ -394,4 +394,134 @@
       <column name="date_of_death"/>
     </insert>
   </changeSet>
+  <changeSet author="mzemlyanoi" id="participants_data_for_relationships">
+    <insert tableName="participants">
+      <column name="id" value="1001"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1101"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1002"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex2"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1101"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1003"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex3"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1101"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1004"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex4"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1102"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1005"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex4"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1102"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1006"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex4"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1102"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="legacy_id" value="0000000001"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+    <insert tableName="participants">
+      <column name="id" value="1007"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Alex4"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Pfeiffer"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="screening_id" value="1102"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="legacy_id" value="0000000002"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr"/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
+  </changeSet>
 </databaseChangeLog>

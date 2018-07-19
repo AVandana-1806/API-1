@@ -17,16 +17,16 @@ import org.hibernate.annotations.NamedQuery;
 
 @NamedQuery(
         name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
-        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningEntity.id = :screeningId " +
-                "OR r.participantTo.screeningEntity.id = :screeningId")
+        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId " +
+                "OR r.participantTo.screeningId = :screeningId")
 @NamedQuery(
-        name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
-        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")
-
+    name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
+    query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")
 
 @Entity
 @Table(name = "relationships")
 public class Relationship implements PersistentObject {
+
   public static final String FIND_RELATIONSHIPS_BY_SCREENING_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByScreeningId";
   public static final String FIND_RELATIONSHIPS_BY_LEGACY_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByLegacyId";
   @Id
@@ -59,14 +59,6 @@ public class Relationship implements PersistentObject {
   @Column(name = "created_at")
   private Date createdAt;
 
-  public ParticipantEntity getParticipantFrom() {
-    return participantFrom;
-  }
-
-  public ParticipantEntity getParticipantTo() {
-    return participantTo;
-  }
-
   @Column(name = "updated_at")
 
   private Date updatedAt;
@@ -86,11 +78,12 @@ public class Relationship implements PersistentObject {
   @Column(name = "legacy_id")
   private String legacyId;
 
-  public Relationship() {}
+  public Relationship() {
+  }
 
-    public Relationship(String id, String clientId, String relativeId, int relationshipType,
-                        Date createdAt, Date updatedAt, Boolean absentParentIndicator, Boolean sameHomeStatus,
-                        String legacyId, Date startDate, Date endDate){
+  public Relationship(String id, String clientId, String relativeId, int relationshipType,
+      Date createdAt, Date updatedAt, Boolean absentParentIndicator, Boolean sameHomeStatus,
+      String legacyId, Date startDate, Date endDate) {
     this.id = id;
     this.clientId = clientId;
     this.relativeId = relativeId;
@@ -173,27 +166,43 @@ public class Relationship implements PersistentObject {
     this.sameHomeStatus = sameHomeStatus;
   }
 
-    public Date getStartDate() {
-        return startDate;
-    }
+  public Date getStartDate() {
+    return startDate;
+  }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
 
-    public Date getEndDate() {
-        return endDate;
-    }
+  public Date getEndDate() {
+    return endDate;
+  }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
 
-    public String getLegacyId() {
-        return legacyId;
-    }
+  public String getLegacyId() {
+    return legacyId;
+  }
 
-    public void setLegacyId(String legacyId) {
-        this.legacyId = legacyId;
-    }
+  public void setLegacyId(String legacyId) {
+    this.legacyId = legacyId;
+  }
+
+  public ParticipantEntity getParticipantFrom() {
+    return participantFrom;
+  }
+
+  public ParticipantEntity getParticipantTo() {
+    return participantTo;
+  }
+
+  public void setParticipantFrom(ParticipantEntity participantFrom) {
+    this.participantFrom = participantFrom;
+  }
+
+  public void setParticipantTo(ParticipantEntity participantTo) {
+    this.participantTo = participantTo;
+  }
 }
