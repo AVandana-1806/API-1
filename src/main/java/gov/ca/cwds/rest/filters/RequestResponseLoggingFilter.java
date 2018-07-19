@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.io.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,6 @@ import com.google.inject.Inject;
 import gov.ca.cwds.logging.AuditLogger;
 import gov.ca.cwds.logging.LoggingContext;
 import gov.ca.cwds.logging.LoggingContext.LogParameter;
-import gov.ca.cwds.rest.api.domain.DomainChef;
 
 /**
  * Log key variables from {@link RequestExecutionContext} for audit purposes, including user id,
@@ -72,13 +72,19 @@ public class RequestResponseLoggingFilter implements Filter {
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-      loggingContext.setLogParameter(LogParameter.USER_ID,
-          RequestExecutionContext.instance().getUserId());
-      loggingContext.setLogParameter(LogParameter.REQUEST_START_TIME,
-          DomainChef.cookStrictTimestamp(RequestExecutionContext.instance().getRequestStartTime()));
+      loggingContext.setLogParameter(LogParameter.STAFF_ID,
+          RequestExecutionContext.instance().getStaffId());
+      loggingContext.setLogParameter(LogParameter.STAFF_COUNTY,
+          RequestExecutionContext.instance().getUserIdentity().getCountyCwsCode());
       loggingContext.setLogParameter(LogParameter.REMOTE_ADDRESS,
           httpServletRequest.getRemoteAddr());
-      loggingContext.setLogParameter(LogParameter.REQUEST_ID, Thread.currentThread().getName());
+
+      String sessionId = httpServletRequest.getHeader(LogParameter.SESSION_ID.name());
+      String requestId = httpServletRequest.getHeader(LogParameter.REQUEST_ID.name());
+
+      loggingContext.setLogParameter(LogParameter.REQUEST_ID,
+          StringUtils.isBlank(requestId) ? uniqueId : requestId);
+      loggingContext.setLogParameter(LogParameter.SESSION_ID, sessionId);
 
       RequestResponseLoggingHttpServletRequest wrappedRequest =
           new RequestResponseLoggingHttpServletRequest(httpServletRequest);
@@ -87,6 +93,8 @@ public class RequestResponseLoggingFilter implements Filter {
       auditLogger.audit(requestContent(wrappedRequest));
 
       final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+      final int responseStatus = httpServletResponse.getStatus();
+      loggingContext.setLogParameter(LogParameter.RESPONSE_STATUS, String.valueOf(responseStatus));
       final RequestResponseLoggingHttpServletResponseWrapper wrappedResponse =
           new RequestResponseLoggingHttpServletResponseWrapper(httpServletResponse);
       try {
