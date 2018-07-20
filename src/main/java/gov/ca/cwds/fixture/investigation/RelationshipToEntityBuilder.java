@@ -123,5 +123,14 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
+  public void setRelatedPersonSensitive(Boolean relatedPersonSensitive) {
+    this.relatedPersonSensitive = relatedPersonSensitive;
+  }
+
+  public void setRelatedPersonSealed(Boolean relatedPersonSealed) {
+    this.relatedPersonSealed = relatedPersonSealed;
+  }
+
+
 
 }
