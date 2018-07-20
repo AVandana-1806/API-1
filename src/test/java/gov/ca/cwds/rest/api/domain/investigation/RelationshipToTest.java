@@ -44,6 +44,7 @@ public class RelationshipToTest {
   private String newTableName = "REFERL_T";
   private String newId = "3456789ABC";
   private String newRelatedFirstName = "new first name";
+  private String newRelatedMiddleName = "new middle name";
   private String newRelatedLastName = "new last name";
   private String newRelatedNameSuffix = "Sr";
   private String newRelationship = "new Brother";
@@ -58,6 +59,8 @@ public class RelationshipToTest {
   private String newRelationshipEndDate = "2017-01-30";
   private Boolean relatedPersonSensitive = false;
   private Boolean relatedPersonSealed = false;
+  private Boolean newRelatedPersonSensitive = false;
+  private Boolean newRelatedPersonSealed = false;
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
@@ -144,16 +147,19 @@ public class RelationshipToTest {
   public void shouldSetValuesWithBuilderSetters() {
     RelationshipTo relationshipTo = new RelationshipToEntityBuilder().setId(newId)
         .setRelatedFirstName(newRelatedFirstName).setRelatedLastName(newRelatedLastName)
-        .setRelatedNameSuffix(newRelatedNameSuffix).setRelationship(newRelationship)
-        .setRelationshipContext(newRelationshipContext)
+        .setRelatedMiddleName(newRelatedMiddleName).setRelatedNameSuffix(newRelatedNameSuffix)
+        .setRelationship(newRelationship).setRelationshipContext(newRelationshipContext)
         .setRelationshipToPerson(newRelationshipToPerson).setTableName(newTableName)
         .setRelatedGenderCode(newRelatedGender).setCmsRecordDescriptor(newCmsRecordDescriptor)
         .setAbsentParentCode(newAbsentParentCode).setSameHomeCode(newSameHomeCode)
         .setRelatedDateOfBirth(newRelatedDateOfBirth).setRelatedDateOfDeath(newRelatedDateOfDeath)
         .setRelationshipStartDate(newRelationshipStartDate)
-        .setRelationshipEndDate(newRelationshipEndDate).build();
+        .setRelationshipEndDate(newRelationshipEndDate)
+        .setRelatedPersonSensitive(newRelatedPersonSensitive)
+        .setRelatedPersonSealed(newRelatedPersonSealed).build();
 
     assertThat(relationshipTo.getRelatedFirstName(), is(equalTo(newRelatedFirstName)));
+    assertThat(relationshipTo.getRelatedMiddleName(), is(equalTo(newRelatedMiddleName)));
     assertThat(relationshipTo.getRelatedLastName(), is(equalTo(newRelatedLastName)));
     assertThat(relationshipTo.getRelatedNameSuffix(), is(equalTo(newRelatedNameSuffix)));
     assertThat(relationshipTo.getRelationshipToPerson(), is(equalTo(newRelationship)));
@@ -166,6 +172,8 @@ public class RelationshipToTest {
     assertThat(relationshipTo.getrelatedDateOfBirth(), is(equalTo(newRelatedDateOfBirth)));
     assertThat(relationshipTo.getRelationshipStartDate(), is(equalTo(newRelationshipStartDate)));
     assertThat(relationshipTo.getRelationshipEndDate(), is(equalTo(newRelationshipEndDate)));
+    assertThat(relationshipTo.getRelatedPersonSensitive(), is(equalTo(newRelatedPersonSensitive)));
+    assertThat(relationshipTo.getRelatedPersonSealed(), is(equalTo(newRelatedPersonSealed)));
   }
 
 }

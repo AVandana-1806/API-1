@@ -123,12 +123,14 @@ public class RelationshipToEntityBuilder {
     return this;
   }
 
-  public void setRelatedPersonSensitive(Boolean relatedPersonSensitive) {
+  public RelationshipToEntityBuilder setRelatedPersonSensitive(Boolean relatedPersonSensitive) {
     this.relatedPersonSensitive = relatedPersonSensitive;
+    return this;
   }
 
-  public void setRelatedPersonSealed(Boolean relatedPersonSealed) {
+  public RelationshipToEntityBuilder setRelatedPersonSealed(Boolean relatedPersonSealed) {
     this.relatedPersonSealed = relatedPersonSealed;
+    return this;
   }
 
 
