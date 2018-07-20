@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.auth.realms.PerryUserIdentity;
 import gov.ca.cwds.logging.AuditLogger;
 import gov.ca.cwds.logging.LoggingContext;
 import gov.ca.cwds.logging.LoggingContext.LogParameter;
@@ -70,21 +71,10 @@ public class RequestResponseLoggingFilter implements Filter {
     final String uniqueId = loggingContext.initialize();
 
     if (request instanceof HttpServletRequest) {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+      final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+      final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-      loggingContext.setLogParameter(LogParameter.STAFF_ID,
-          RequestExecutionContext.instance().getStaffId());
-      loggingContext.setLogParameter(LogParameter.STAFF_COUNTY,
-          RequestExecutionContext.instance().getUserIdentity().getCountyCwsCode());
-      loggingContext.setLogParameter(LogParameter.REMOTE_ADDRESS,
-          httpServletRequest.getRemoteAddr());
-
-      String sessionId = httpServletRequest.getHeader(LogParameter.SESSION_ID.name());
-      String requestId = httpServletRequest.getHeader(LogParameter.REQUEST_ID.name());
-
-      loggingContext.setLogParameter(LogParameter.REQUEST_ID,
-          StringUtils.isBlank(requestId) ? uniqueId : requestId);
-      loggingContext.setLogParameter(LogParameter.SESSION_ID, sessionId);
+      setLoggingContextParameters(uniqueId, httpServletRequest, httpServletResponse);
 
       RequestResponseLoggingHttpServletRequest wrappedRequest =
           new RequestResponseLoggingHttpServletRequest(httpServletRequest);
@@ -92,9 +82,6 @@ public class RequestResponseLoggingFilter implements Filter {
       auditLogger.audit(httpServletRequest.toString());
       auditLogger.audit(requestContent(wrappedRequest));
 
-      final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-      final int responseStatus = httpServletResponse.getStatus();
-      loggingContext.setLogParameter(LogParameter.RESPONSE_STATUS, String.valueOf(responseStatus));
       final RequestResponseLoggingHttpServletResponseWrapper wrappedResponse =
           new RequestResponseLoggingHttpServletResponseWrapper(httpServletResponse);
       try {
@@ -110,6 +97,29 @@ public class RequestResponseLoggingFilter implements Filter {
         loggingContext.close();
       }
     }
+  }
+
+  private void setLoggingContextParameters(String uniqueId, HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse) {
+    PerryUserIdentity user = (PerryUserIdentity) RequestExecutionContext.instance()
+        .get(RequestExecutionContext.Parameter.USER_IDENTITY);
+
+    if (user != null) {
+      loggingContext.setLogParameter(LogParameter.STAFF_ID, user.getStaffId());
+      loggingContext.setLogParameter(LogParameter.STAFF_COUNTY, user.getCountyCwsCode());
+    }
+
+    loggingContext.setLogParameter(LogParameter.REMOTE_ADDRESS, httpServletRequest.getRemoteAddr());
+
+    String sessionId = httpServletRequest.getHeader(LogParameter.SESSION_ID.name());
+    String requestId = httpServletRequest.getHeader(LogParameter.REQUEST_ID.name());
+
+    loggingContext.setLogParameter(LogParameter.REQUEST_ID,
+        StringUtils.isBlank(requestId) ? uniqueId : requestId);
+    loggingContext.setLogParameter(LogParameter.SESSION_ID, sessionId);
+
+    final int responseStatus = httpServletResponse.getStatus();
+    loggingContext.setLogParameter(LogParameter.RESPONSE_STATUS, String.valueOf(responseStatus));
   }
 
   @Override

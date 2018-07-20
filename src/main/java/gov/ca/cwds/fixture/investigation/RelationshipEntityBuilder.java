@@ -34,16 +34,6 @@ public class RelationshipEntityBuilder {
 
   }
 
-  public RelationshipEntityBuilder setTableName(String tableName) {
-    this.tableName = tableName;
-    return this;
-  }
-
-  public RelationshipEntityBuilder setId(String id) {
-    this.id = id;
-    return this;
-  }
-
   public RelationshipEntityBuilder setDateOfBirth(String dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
     return this;
@@ -93,35 +83,5 @@ public class RelationshipEntityBuilder {
     this.relationshipsTo = relationshipsTo;
     return this;
   }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getSuffixTitle() {
-    return suffixTitle;
-  }
-
-  public Set<RelationshipTo> getRelationshipsTo() {
-    return relationshipsTo;
-  }
-
-
 
 }

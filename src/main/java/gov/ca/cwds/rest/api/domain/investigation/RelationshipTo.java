@@ -211,8 +211,6 @@ public final class RelationshipTo implements Serializable {
    * @param relatedNameSuffix - related persons name suffix
    * @param relatedGender - gender of related person
    * @param relatedDateOfBirth - birth date of related person
-   * @param relatedAge related person's age
-   * @param relatedAgeUnit related person's age unit
    * @param relatedDateOfDeath - death date of related person
    * @param relationshipStartDate - relationship start date
    * @param relationshipEndDate - relationship end date
@@ -228,7 +226,6 @@ public final class RelationshipTo implements Serializable {
   public RelationshipTo(String relatedFirstName, String relatedMiddleName, String relatedLastName,
       String relatedNameSuffix, String relatedGender,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
-      Short relatedAge, String relatedAgeUnit,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,

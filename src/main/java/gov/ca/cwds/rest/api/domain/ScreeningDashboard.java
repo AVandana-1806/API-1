@@ -157,7 +157,7 @@ public class ScreeningDashboard extends ReportingDomain {
   }
   
   public void setStartedAt(Date startedAt) {
-    this.startedAt = startedAt;
+    this.startedAt = freshDate(startedAt);
   }
 
   public String getScreeningStatus() {

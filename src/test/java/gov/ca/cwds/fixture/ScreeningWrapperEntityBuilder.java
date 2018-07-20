@@ -18,9 +18,11 @@ public class ScreeningWrapperEntityBuilder {
   private Date startedAt;
 
   public ScreeningWrapper build() {
-    return new ScreeningWrapper(id, reference, name, screeningDecision, screeningDecisionDetail,
+    ScreeningWrapper screeningWrapper = new ScreeningWrapper(id, reference, name, screeningDecision,
         assigneeStaffId, startedAt, screeningStatus);
-
+    screeningWrapper.setScreeningDecisionDetail(screeningDecisionDetail);
+    screeningWrapper.setAssignee(assignee);
+    return screeningWrapper;
   }
 
   public ScreeningWrapperEntityBuilder setId(String id) {

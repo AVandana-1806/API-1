@@ -98,7 +98,7 @@ public class Genealogist {
       String sameHomeCode, String relationContext, Boolean relatedPersonSensitive,
       Boolean relatedPersonSealed) {
     return new RelationshipTo(secondaryFirstname, secondaryMiddleName, secodnaryLastName,
-        nameSuffix, relatedGender, relatedDateOfBirth, relatedAge, relatedAgeUnit,
+        nameSuffix, relatedGender, relatedDateOfBirth,
         relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
         sameHomeCode, secondaryRelation, relationContext, primaryRelationCode, relationId,
         relatedPersonSensitive, relatedPersonSealed);

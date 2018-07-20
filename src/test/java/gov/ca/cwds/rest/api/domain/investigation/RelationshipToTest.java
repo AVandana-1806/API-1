@@ -68,10 +68,9 @@ public class RelationshipToTest {
   @Test
   public void testDomainConstructorSuccess() throws Exception {
     RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedMiddleName,
-        relatedLastName, relatednameSuffix, relatedGender, relatedDateOfBirth, relatedAge,
-        relatedAgeUnit, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
-        absentParentCode, sameHomeCode, relationship, relationshipContext, relationshipToPerson, id,
-        relatedPersonSensitive, relatedPersonSealed);
+        relatedLastName, relatednameSuffix, relatedGender, relatedDateOfBirth, relatedDateOfDeath,
+        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
+        relationshipContext, relationshipToPerson, id, relatedPersonSensitive, relatedPersonSealed);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));
