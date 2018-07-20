@@ -28,8 +28,8 @@
     "relationship_context" : "step",
     "related_person_relationship" : "Sister",
     "indexed_person_relationship" : "Brother",
-    "relatedPersonsensitive": false,
-    "relatedPersonsealed": false,
+    "related_person_sensitive": false,
+    "related_person_sealed": false,
     "legacy_descriptor" : {
       "legacy_id" : "2345678ABC",
       "legacy_ui_id" : "111-222-333-4444",
