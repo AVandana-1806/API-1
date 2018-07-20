@@ -21,8 +21,8 @@ public class RelationshipToEntityBuilder {
   protected String relationshipEndDate = "2001-10-01";
   protected String absentParentCode = "N";
   protected String sameHomeCode = "U";
-  protected Boolean relatedPersonSensitive = false;
-  protected Boolean relatedPersonSealed = false;
+  protected Boolean relatedPersonSensitive = Boolean.FALSE;
+  protected Boolean relatedPersonSealed = Boolean.FALSE;
 
   protected CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
