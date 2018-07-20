@@ -21,6 +21,8 @@ public class RelationshipToEntityBuilder {
   protected String relationshipEndDate = "2001-10-01";
   protected String absentParentCode = "N";
   protected String sameHomeCode = "U";
+  protected Boolean relatedPersonSensitive = Boolean.FALSE;
+  protected Boolean relatedPersonSealed = Boolean.FALSE;
 
   protected CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
@@ -29,7 +31,8 @@ public class RelationshipToEntityBuilder {
     return new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName,
         relatedNameSuffix, relatedGenderCode, relatedDateOfBirth, relatedDateOfDeath,
         relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
-        relationshipContext, relationshipToPerson, cmsRecordDescriptor);
+        relationshipContext, relationshipToPerson, relatedPersonSensitive, relatedPersonSealed,
+        cmsRecordDescriptor);
   }
 
   public RelationshipToEntityBuilder setTableName(String tableName) {
@@ -119,6 +122,17 @@ public class RelationshipToEntityBuilder {
     this.relationshipEndDate = relationshipEndDate;
     return this;
   }
+
+  public RelationshipToEntityBuilder setRelatedPersonSensitive(Boolean relatedPersonSensitive) {
+    this.relatedPersonSensitive = relatedPersonSensitive;
+    return this;
+  }
+
+  public RelationshipToEntityBuilder setRelatedPersonSealed(Boolean relatedPersonSealed) {
+    this.relatedPersonSealed = relatedPersonSealed;
+    return this;
+  }
+
 
 
 }

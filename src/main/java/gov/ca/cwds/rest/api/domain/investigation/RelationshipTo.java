@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
@@ -133,6 +134,16 @@ public final class RelationshipTo implements Serializable {
       example = "Brother")
   private String relatedPersonRelationship;
 
+  @JsonProperty("related_person_sensitive")
+  @NotNull
+  @ApiModelProperty(required = true, readOnly = false, value = "sensitive", example = "false")
+  private Boolean relatedPersonSensitive;
+
+  @JsonProperty("related_person_sealed")
+  @NotNull
+  @ApiModelProperty(required = true, readOnly = false, value = "sealed", example = "false")
+  private Boolean relatedPersonSealed;
+
   @JsonProperty("legacy_descriptor")
   private CmsRecordDescriptor cmsRecordDescriptor;
 
@@ -158,6 +169,8 @@ public final class RelationshipTo implements Serializable {
    * @param relationshipToPerson - relation of owning person
    * @param relationshipContext - context information
    * @param relatedPersonRelationship - relation to owning person
+   * @param relatedPersonSensitive - related person's sensitive indicator
+   * @param relatedPersonSealed - relation to owning sealed indicator
    * @param cmsRecordDescriptor - record descriptor containing meta data about legacy information
    */
   public RelationshipTo(String relatedFirstName, String relatedMiddleName, String relatedLastName,
@@ -167,8 +180,8 @@ public final class RelationshipTo implements Serializable {
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
-      String relationshipContext, String relatedPersonRelationship,
-      CmsRecordDescriptor cmsRecordDescriptor) {
+      String relationshipContext, String relatedPersonRelationship, Boolean relatedPersonSensitive,
+      Boolean relatedPersonSealed, CmsRecordDescriptor cmsRecordDescriptor) {
     super();
     this.relatedFirstName = relatedFirstName;
     this.relatedMiddleName = relatedMiddleName;
@@ -186,6 +199,8 @@ public final class RelationshipTo implements Serializable {
     this.relationshipToPerson = relationshipToPerson;
     this.relationshipContext = relationshipContext;
     this.relatedPersonRelationship = relatedPersonRelationship;
+    this.relatedPersonSensitive = relatedPersonSensitive;
+    this.relatedPersonSealed = relatedPersonSealed;
     this.cmsRecordDescriptor = cmsRecordDescriptor;
   }
 
@@ -204,6 +219,8 @@ public final class RelationshipTo implements Serializable {
    * @param relationshipToPerson - relation of owning person
    * @param relationshipContext - context information
    * @param relatedPersonRelationship - relation to owning person
+   * @param relatedPersonSensitive - related person sensitive
+   * @param relatedPersonSealed - related person sealed
    * @param clientId - The Client this relationship pertains too
    */
   public RelationshipTo(String relatedFirstName, String relatedMiddleName, String relatedLastName,
@@ -213,11 +230,12 @@ public final class RelationshipTo implements Serializable {
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
-      String relationshipContext, String relatedPersonRelationship, String clientId) {
+      String relationshipContext, String relatedPersonRelationship, String clientId,
+      Boolean relatedPersonSensitive, Boolean relatedPersonSealed) {
     this(relatedFirstName, relatedMiddleName, relatedLastName, relatedNameSuffix, relatedGender,
         relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
         absentParentCode, sameHomeCode, relationshipToPerson, relationshipContext,
-        relatedPersonRelationship,
+        relatedPersonRelationship, relatedPersonSensitive, relatedPersonSealed,
         CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
@@ -229,7 +247,8 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(ClientRelationship clientRelationship, Client client) {
     this.relatedFirstName = client.getFirstName();
-    this.relatedMiddleName = client.getMiddleName();
+    this.relatedMiddleName =
+        StringUtils.isBlank(client.getMiddleName()) ? "" : client.getMiddleName();
     this.relatedLastName = client.getLastName();
     this.relatedNameSuffix = client.getNameSuffix();
     this.relatedGender = client.getGender();
@@ -244,6 +263,12 @@ public final class RelationshipTo implements Serializable {
     relatedPersonRelationship = " ";
     this.absentParentCode = clientRelationship.getAbsentParentCode();
     this.sameHomeCode = clientRelationship.getSameHomeCode();
+    this.relatedPersonSensitive =
+        StringUtils.equalsAnyIgnoreCase(client.getSensitivityIndicator(), "R") ? Boolean.TRUE
+            : Boolean.FALSE;
+    this.relatedPersonSealed =
+        StringUtils.equalsAnyIgnoreCase(client.getSensitivityIndicator(), "S") ? Boolean.TRUE
+            : Boolean.FALSE;
     this.cmsRecordDescriptor = CmsRecordUtils.createLegacyDescriptor(clientRelationship.getId(),
         LegacyTable.CLIENT_RELATIONSHIP);
   }
@@ -365,6 +390,21 @@ public final class RelationshipTo implements Serializable {
    */
   public String getRelationshipEndDate() {
     return relationshipEndDate;
+  }
+
+
+  /**
+   * @return the relatedPersonsensitive
+   */
+  public Boolean getRelatedPersonSensitive() {
+    return relatedPersonSensitive;
+  }
+
+  /**
+   * @return the relatedPersonsealed
+   */
+  public Boolean getRelatedPersonSealed() {
+    return relatedPersonSealed;
   }
 
   /**

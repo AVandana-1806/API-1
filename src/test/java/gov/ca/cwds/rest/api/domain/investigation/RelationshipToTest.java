@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.time.LocalDate;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +16,7 @@ import org.junit.Test;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ClientRelationshipResourceBuilder;
-import gov.ca.cwds.fixture.investigation.RelationshipEntityBuilder;
 import gov.ca.cwds.fixture.investigation.RelationshipToEntityBuilder;
-import gov.ca.cwds.rest.business.rules.CalendarEnum;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -46,6 +44,7 @@ public class RelationshipToTest {
   private String newTableName = "REFERL_T";
   private String newId = "3456789ABC";
   private String newRelatedFirstName = "new first name";
+  private String newRelatedMiddleName = "new middle name";
   private String newRelatedLastName = "new last name";
   private String newRelatedNameSuffix = "Sr";
   private String newRelationship = "new Brother";
@@ -58,6 +57,10 @@ public class RelationshipToTest {
   private String newRelatedDateOfDeath = "";
   private String newRelationshipStartDate = "2010-01-31";
   private String newRelationshipEndDate = "2017-01-30";
+  private Boolean relatedPersonSensitive = Boolean.FALSE;
+  private Boolean relatedPersonSealed = Boolean.FALSE;
+  private Boolean newRelatedPersonSensitive = Boolean.FALSE;
+  private Boolean newRelatedPersonSealed = Boolean.FALSE;
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
@@ -67,11 +70,10 @@ public class RelationshipToTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    RelationshipTo relationshipTo =
-        new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName, relatednameSuffix,
-            relatedGender, relatedDateOfBirth, relatedDateOfDeath,
-            relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
-            relationship, relationshipContext, relationshipToPerson, id);
+    RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedMiddleName,
+        relatedLastName, relatednameSuffix, relatedGender, relatedDateOfBirth, relatedDateOfDeath,
+        relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode, relationship,
+        relationshipContext, relationshipToPerson, id, relatedPersonSensitive, relatedPersonSealed);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));
@@ -145,16 +147,19 @@ public class RelationshipToTest {
   public void shouldSetValuesWithBuilderSetters() {
     RelationshipTo relationshipTo = new RelationshipToEntityBuilder().setId(newId)
         .setRelatedFirstName(newRelatedFirstName).setRelatedLastName(newRelatedLastName)
-        .setRelatedNameSuffix(newRelatedNameSuffix).setRelationship(newRelationship)
-        .setRelationshipContext(newRelationshipContext)
+        .setRelatedMiddleName(newRelatedMiddleName).setRelatedNameSuffix(newRelatedNameSuffix)
+        .setRelationship(newRelationship).setRelationshipContext(newRelationshipContext)
         .setRelationshipToPerson(newRelationshipToPerson).setTableName(newTableName)
         .setRelatedGenderCode(newRelatedGender).setCmsRecordDescriptor(newCmsRecordDescriptor)
         .setAbsentParentCode(newAbsentParentCode).setSameHomeCode(newSameHomeCode)
         .setRelatedDateOfBirth(newRelatedDateOfBirth).setRelatedDateOfDeath(newRelatedDateOfDeath)
         .setRelationshipStartDate(newRelationshipStartDate)
-        .setRelationshipEndDate(newRelationshipEndDate).build();
+        .setRelationshipEndDate(newRelationshipEndDate)
+        .setRelatedPersonSensitive(newRelatedPersonSensitive)
+        .setRelatedPersonSealed(newRelatedPersonSealed).build();
 
     assertThat(relationshipTo.getRelatedFirstName(), is(equalTo(newRelatedFirstName)));
+    assertThat(relationshipTo.getRelatedMiddleName(), is(equalTo(newRelatedMiddleName)));
     assertThat(relationshipTo.getRelatedLastName(), is(equalTo(newRelatedLastName)));
     assertThat(relationshipTo.getRelatedNameSuffix(), is(equalTo(newRelatedNameSuffix)));
     assertThat(relationshipTo.getRelationshipToPerson(), is(equalTo(newRelationship)));
@@ -167,43 +172,8 @@ public class RelationshipToTest {
     assertThat(relationshipTo.getrelatedDateOfBirth(), is(equalTo(newRelatedDateOfBirth)));
     assertThat(relationshipTo.getRelationshipStartDate(), is(equalTo(newRelationshipStartDate)));
     assertThat(relationshipTo.getRelationshipEndDate(), is(equalTo(newRelationshipEndDate)));
+    assertThat(relationshipTo.getRelatedPersonSensitive(), is(equalTo(newRelatedPersonSensitive)));
+    assertThat(relationshipTo.getRelatedPersonSealed(), is(equalTo(newRelatedPersonSealed)));
   }
 
-  @Test
-  public void shouldCalculateAgeInYears() {
-    Short age = 2;
-    LocalDate today = LocalDate.now();
-    LocalDate dateOfBirth = today.minusYears(age);
-    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
-        .setRelatedDateOfBirth(dateOfBirth.toString())
-        .build();
-    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
-    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.YEARS.getName())));
-    
-  }
-  
-  @Test
-  public void shouldCalculateAgeInMonths() {
-    Short age = 2;
-    LocalDate today = LocalDate.now();
-    LocalDate dateOfBirth = today.minusMonths(age);
-    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
-        .setRelatedDateOfBirth(dateOfBirth.toString())
-        .build();
-    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
-    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.MONTHS.getName())));
-    
-  }
-
-  @Test
-  public void shouldCalculateAgeInDays() {
-    Short age = 2;
-    LocalDate today = LocalDate.now();
-    LocalDate dateOfBirth = today.minusDays(age);
-    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
-        .setRelatedDateOfBirth(dateOfBirth.toString())
-        .build();
-    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
-    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.DAYS.getName())));
-  }
 }
