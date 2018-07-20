@@ -203,7 +203,6 @@ public final class RelationshipTo implements Serializable {
   public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
       String relatedGender,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
-      Short relatedAge, String relatedAgeUnit,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,

@@ -26,7 +26,8 @@ public class ScreeningWrapperTest {
   @Test
   public void testConstructorAndGetters() throws Exception {
     ScreeningWrapper screeningWrapper = new ScreeningWrapper(id, reference, name, screeningDecision,
-        screeningDecisionDetail, assigneeStaffId, startedAt, screeningStatus);
+        assigneeStaffId, startedAt, screeningStatus);
+    screeningWrapper.setScreeningDecisionDetail(screeningDecisionDetail);
     assertThat(screeningWrapper.getId(), is(equalTo(id)));
     assertThat(screeningWrapper.getReference(), is(equalTo(reference)));
     assertThat(screeningWrapper.getName(), is(equalTo(name)));
@@ -42,8 +43,9 @@ public class ScreeningWrapperTest {
   public void testSetters() throws Exception {
 
     ScreeningWrapper screeningWrapper = new ScreeningWrapper(id, reference, name, screeningDecision,
-        screeningDecisionDetail, assigneeStaffId, startedAt, screeningStatus);
+        assigneeStaffId, startedAt, screeningStatus);
     screeningWrapper.setId("setscreeningid");
+    screeningWrapper.setScreeningDecisionDetail(screeningDecisionDetail);
     assertThat(screeningWrapper.getId(), is(equalTo("setscreeningid")));
     screeningWrapper.setReference("new reference");
     assertThat(screeningWrapper.getReference(), is(equalTo("new reference")));
