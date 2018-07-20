@@ -57,10 +57,10 @@ public class RelationshipToTest {
   private String newRelatedDateOfDeath = "";
   private String newRelationshipStartDate = "2010-01-31";
   private String newRelationshipEndDate = "2017-01-30";
-  private Boolean relatedPersonSensitive = false;
-  private Boolean relatedPersonSealed = false;
-  private Boolean newRelatedPersonSensitive = false;
-  private Boolean newRelatedPersonSealed = false;
+  private Boolean relatedPersonSensitive = Boolean.FALSE;
+  private Boolean relatedPersonSealed = Boolean.FALSE;
+  private Boolean newRelatedPersonSensitive = Boolean.FALSE;
+  private Boolean newRelatedPersonSealed = Boolean.FALSE;
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
