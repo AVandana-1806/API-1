@@ -56,6 +56,8 @@ public class RelationshipToTest {
   private String newRelatedDateOfDeath = "";
   private String newRelationshipStartDate = "2010-01-31";
   private String newRelationshipEndDate = "2017-01-30";
+  private Boolean relatedPersonSensitive = false;
+  private Boolean relatedPersonSealed = false;
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
@@ -65,11 +67,11 @@ public class RelationshipToTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    RelationshipTo relationshipTo =
-        new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName, relatednameSuffix,
-            relatedGender, relatedDateOfBirth, relatedAge, relatedAgeUnit, relatedDateOfDeath,
-            relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
-            relationship, relationshipContext, relationshipToPerson, id);
+    RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedMiddleName,
+        relatedLastName, relatednameSuffix, relatedGender, relatedDateOfBirth, relatedAge,
+        relatedAgeUnit, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
+        absentParentCode, sameHomeCode, relationship, relationshipContext, relationshipToPerson, id,
+        relatedPersonSensitive, relatedPersonSealed);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));

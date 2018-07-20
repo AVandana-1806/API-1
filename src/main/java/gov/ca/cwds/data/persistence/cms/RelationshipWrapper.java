@@ -23,6 +23,7 @@ import gov.ca.cwds.data.std.ApiMarker;
         + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
         + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
         + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
+        + "    CLNS.SENSTV_IND        AS Primary_SENSTV_IND, \n"
         + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
         + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
         + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
@@ -35,6 +36,7 @@ import gov.ca.cwds.data.std.ApiMarker;
         + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
+        + "    CLNP.SENSTV_IND        AS Secondary_SENSTV_IND, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
         + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
         + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
@@ -54,6 +56,7 @@ import gov.ca.cwds.data.std.ApiMarker;
         + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
         + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
         + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
+        + "    CLNS.SENSTV_IND        AS Primary_SENSTV_IND, \n"
         + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
         + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
         + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
@@ -66,6 +69,7 @@ import gov.ca.cwds.data.std.ApiMarker;
         + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
+        + "    CLNP.SENSTV_IND        AS Secondary_SENSTV_IND, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
         + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
         + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
@@ -92,8 +96,8 @@ public class RelationshipWrapper implements ApiMarker {
   @Column(name = "Primary_LEGACY_ID")
   private String primaryLegacyId;
 
-  @ColumnTransformer(read = "rtrim(Primary_FIRST_NAME)")
   @Column(name = "Primary_FIRST_NAME")
+  @ColumnTransformer(read = "trim(Primary_FIRST_NAME)")
   private String primaryFirstName;
 
   @Column(name = "Primary_MIDDLE_NAME")
@@ -114,11 +118,14 @@ public class RelationshipWrapper implements ApiMarker {
   @Column(name = "Primary_GENDER_CODE")
   private String primaryGenderCode;
 
+  @Column(name = "Primary_SENSTV_IND")
+  private String primarySensitive_Indicator;
+
   @Column(name = "Secondary_LEGACY_ID")
   private String secondaryLegacyId;
 
-  @ColumnTransformer(read = "rtrim(Secondary_FIRST_NAME)")
   @Column(name = "Secondary_FIRST_NAME")
+  @ColumnTransformer(read = "trim(Secondary_FIRST_NAME)")
   private String secondaryFirstName;
 
   @Column(name = "Secondary_MIDDLE_NAME")
@@ -138,6 +145,9 @@ public class RelationshipWrapper implements ApiMarker {
 
   @Column(name = "Secondary_GENDER_CODE")
   private String secondaryGenderCode;
+
+  @Column(name = "Secondary_SENSTV_IND")
+  private String secondarySensitive_Indicator;
 
   @Column(name = "Primary_REL_ID")
   private String primaryRelationshipCode;
@@ -360,6 +370,22 @@ public class RelationshipWrapper implements ApiMarker {
 
   public void setRelationshipEndDate(String relationshipEndDate) {
     this.relationshipEndDate = relationshipEndDate;
+  }
+
+  public String getPrimarySensitive_Indicator() {
+    return primarySensitive_Indicator;
+  }
+
+  public String getSecondarySensitive_Indicator() {
+    return secondarySensitive_Indicator;
+  }
+
+  public void setPrimarySensitive_Indicator(String primarySensitive_Indicator) {
+    this.primarySensitive_Indicator = primarySensitive_Indicator;
+  }
+
+  public void setSecondarySensitive_Indicator(String secondarySensitive_Indicator) {
+    this.secondarySensitive_Indicator = secondarySensitive_Indicator;
   }
 
 
