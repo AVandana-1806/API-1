@@ -29,12 +29,12 @@ import io.swagger.annotations.ApiModelProperty;
  * @author CWDS API Team
  */
 @JsonSnakeCase
-@JsonPropertyOrder({"related_person_first_name", "related_person_last_name",
-    "related_person_name_suffix", "related_person_gender", "related_person_date_of_birth",
-    "related_person_age", "related_person_age_unit", "related_person_date_of_death",
-    "relationship_start_date", "relationship_end_date", "absent_parent_code", "same_home_code",
-    "relationship_context", "indexed_person_relationship", "related_person_relationship",
-    "legacy_description"})
+@JsonPropertyOrder({"related_person_first_name", "related_person_middle_name",
+    "related_person_last_name", "related_person_name_suffix", "related_person_gender",
+    "related_person_date_of_birth", "related_person_age", "related_person_age_unit",
+    "related_person_date_of_death", "relationship_start_date", "relationship_end_date",
+    "absent_parent_code", "same_home_code", "relationship_context", "indexed_person_relationship",
+    "related_person_relationship", "legacy_description"})
 public final class RelationshipTo implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -43,6 +43,11 @@ public final class RelationshipTo implements Serializable {
   @ApiModelProperty(required = false, readOnly = false, value = "first name", example = "jane")
   @Size(min = 1, max = 20)
   private String relatedFirstName;
+
+  @JsonProperty("related_person_middle_name")
+  @ApiModelProperty(required = false, readOnly = false, value = "middle name", example = "ann")
+  @Size(min = 1, max = 20)
+  private String relatedMiddleName;
 
   @JsonProperty("related_person_last_name")
   @NotBlank
@@ -140,6 +145,7 @@ public final class RelationshipTo implements Serializable {
 
   /**
    * @param relatedFirstName - related person's first name
+   * @param relatedMiddleName - related person's middle name
    * @param relatedLastName - related person's last name
    * @param relatedNameSuffix - name suffix of related person
    * @param relatedGender - gender of related person
@@ -154,8 +160,8 @@ public final class RelationshipTo implements Serializable {
    * @param relatedPersonRelationship - relation to owning person
    * @param cmsRecordDescriptor - record descriptor containing meta data about legacy information
    */
-  public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
-      String relatedGender,
+  public RelationshipTo(String relatedFirstName, String relatedMiddleName, String relatedLastName,
+      String relatedNameSuffix, String relatedGender,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
@@ -165,6 +171,7 @@ public final class RelationshipTo implements Serializable {
       CmsRecordDescriptor cmsRecordDescriptor) {
     super();
     this.relatedFirstName = relatedFirstName;
+    this.relatedMiddleName = relatedMiddleName;
     this.relatedLastName = relatedLastName;
     this.relatedNameSuffix = relatedNameSuffix;
     this.relatedGender = relatedGender;
@@ -184,6 +191,7 @@ public final class RelationshipTo implements Serializable {
 
   /**
    * @param relatedFirstName - related persons first name
+   * @param relatedMiddleName - related persons middle name
    * @param relatedLastName - related persons last name
    * @param relatedNameSuffix - related persons name suffix
    * @param relatedGender - gender of related person
@@ -198,17 +206,18 @@ public final class RelationshipTo implements Serializable {
    * @param relatedPersonRelationship - relation to owning person
    * @param clientId - The Client this relationship pertains too
    */
-  public RelationshipTo(String relatedFirstName, String relatedLastName, String relatedNameSuffix,
-      String relatedGender,
+  public RelationshipTo(String relatedFirstName, String relatedMiddleName, String relatedLastName,
+      String relatedNameSuffix, String relatedGender,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfBirth,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relatedDateOfDeath,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipStartDate,
       @Date(format = DomainChef.DATE_FORMAT, required = false) String relationshipEndDate,
       String absentParentCode, String sameHomeCode, String relationshipToPerson,
       String relationshipContext, String relatedPersonRelationship, String clientId) {
-    this(relatedFirstName, relatedLastName, relatedNameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
-        sameHomeCode, relationshipToPerson, relationshipContext, relatedPersonRelationship,
+    this(relatedFirstName, relatedMiddleName, relatedLastName, relatedNameSuffix, relatedGender,
+        relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
+        absentParentCode, sameHomeCode, relationshipToPerson, relationshipContext,
+        relatedPersonRelationship,
         CmsRecordUtils.createLegacyDescriptor(clientId, LegacyTable.CLIENT_RELATIONSHIP));
   }
 
@@ -220,6 +229,7 @@ public final class RelationshipTo implements Serializable {
    */
   public RelationshipTo(ClientRelationship clientRelationship, Client client) {
     this.relatedFirstName = client.getFirstName();
+    this.relatedMiddleName = client.getMiddleName();
     this.relatedLastName = client.getLastName();
     this.relatedNameSuffix = client.getNameSuffix();
     this.relatedGender = client.getGender();
@@ -243,6 +253,13 @@ public final class RelationshipTo implements Serializable {
    */
   public String getRelatedFirstName() {
     return relatedFirstName;
+  }
+
+  /**
+   * @return the relatedMiddleName
+   */
+  public String getRelatedMiddleName() {
+    return relatedMiddleName;
   }
 
   /**
@@ -307,7 +324,7 @@ public final class RelationshipTo implements Serializable {
   public Short getRelatedAge() {
     return relatedAge;
   }
-  
+
   /**
    * @return the relatedAgeUnit
    */

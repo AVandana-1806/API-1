@@ -28,6 +28,7 @@ public class RelationshipToTest {
   private String tableName = "CLIENT_T";
   private String id = "2345678ABC";
   private String relatedFirstName = "Steve";
+  private String relatedMiddleName = "James";
   private String relatedLastName = "Briggs";
   private String relatednameSuffix = "Jr";
   private String relatedGender = "M";
@@ -60,16 +61,17 @@ public class RelationshipToTest {
 
   private CmsRecordDescriptor cmsRecordDescriptor =
       new CmsRecordDescriptor(id, "111-222-333-4444", tableName, "Client");
-  private CmsRecordDescriptor newCmsRecordDescriptor = 
+  private CmsRecordDescriptor newCmsRecordDescriptor =
       new CmsRecordDescriptor(id, "222-333-444-5555", tableName, "Client");
 
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    RelationshipTo relationshipTo = new RelationshipTo(relatedFirstName, relatedLastName,
-        relatednameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
-        sameHomeCode, relationship, relationshipContext, relationshipToPerson, id);
+    RelationshipTo relationshipTo =
+        new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName, relatednameSuffix,
+            relatedGender, relatedDateOfBirth, relatedDateOfDeath,
+            relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
+            relationship, relationshipContext, relationshipToPerson, id);
 
     assertThat(relatedFirstName, is(equalTo(relationshipTo.getRelatedFirstName())));
     assertThat(relatedLastName, is(equalTo(relationshipTo.getRelatedLastName())));
@@ -141,25 +143,16 @@ public class RelationshipToTest {
 
   @Test
   public void shouldSetValuesWithBuilderSetters() {
-    RelationshipTo relationshipTo =
-        new RelationshipToEntityBuilder()
-            .setId(newId)
-            .setRelatedFirstName(newRelatedFirstName)
-            .setRelatedLastName(newRelatedLastName)
-            .setRelatedNameSuffix(newRelatedNameSuffix)
-            .setRelationship(newRelationship)
-            .setRelationshipContext(newRelationshipContext)
-            .setRelationshipToPerson(newRelationshipToPerson)
-            .setTableName(newTableName)
-            .setRelatedGenderCode(newRelatedGender)
-            .setCmsRecordDescriptor(newCmsRecordDescriptor)
-            .setAbsentParentCode(newAbsentParentCode)
-            .setSameHomeCode(newSameHomeCode)
-            .setRelatedDateOfBirth(newRelatedDateOfBirth)
-            .setRelatedDateOfDeath(newRelatedDateOfDeath)
-            .setRelationshipStartDate(newRelationshipStartDate)
-            .setRelationshipEndDate(newRelationshipEndDate)
-            .build();
+    RelationshipTo relationshipTo = new RelationshipToEntityBuilder().setId(newId)
+        .setRelatedFirstName(newRelatedFirstName).setRelatedLastName(newRelatedLastName)
+        .setRelatedNameSuffix(newRelatedNameSuffix).setRelationship(newRelationship)
+        .setRelationshipContext(newRelationshipContext)
+        .setRelationshipToPerson(newRelationshipToPerson).setTableName(newTableName)
+        .setRelatedGenderCode(newRelatedGender).setCmsRecordDescriptor(newCmsRecordDescriptor)
+        .setAbsentParentCode(newAbsentParentCode).setSameHomeCode(newSameHomeCode)
+        .setRelatedDateOfBirth(newRelatedDateOfBirth).setRelatedDateOfDeath(newRelatedDateOfDeath)
+        .setRelationshipStartDate(newRelationshipStartDate)
+        .setRelationshipEndDate(newRelationshipEndDate).build();
 
     assertThat(relationshipTo.getRelatedFirstName(), is(equalTo(newRelatedFirstName)));
     assertThat(relationshipTo.getRelatedLastName(), is(equalTo(newRelatedLastName)));

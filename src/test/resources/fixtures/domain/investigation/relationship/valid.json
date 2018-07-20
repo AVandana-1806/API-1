@@ -13,6 +13,7 @@
   "sealed" : false,
   "relationship_to" : [ {
     "related_person_first_name" : "Steve",
+    "related_person_middle_name" : "James",
     "related_person_last_name" : "Briggs",
     "related_person_name_suffix" : "Jr",
     "related_person_gender" : "I",

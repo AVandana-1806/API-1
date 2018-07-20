@@ -64,7 +64,7 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
    * @param legacySystemCodeId - legacySystemCodeId
    * @return the intakeLov
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "squid:CallToDeprecatedMethod"})
   public IntakeLov findByLegacySystemCodeId(Number legacySystemCodeId) {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacySystemId";
     final Session session = grabSession();
