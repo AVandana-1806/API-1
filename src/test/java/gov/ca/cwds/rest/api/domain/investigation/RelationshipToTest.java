@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,9 @@ import org.junit.Test;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ClientRelationshipResourceBuilder;
+import gov.ca.cwds.fixture.investigation.RelationshipEntityBuilder;
 import gov.ca.cwds.fixture.investigation.RelationshipToEntityBuilder;
+import gov.ca.cwds.rest.business.rules.CalendarEnum;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -67,7 +69,7 @@ public class RelationshipToTest {
   public void testDomainConstructorSuccess() throws Exception {
     RelationshipTo relationshipTo =
         new RelationshipTo(relatedFirstName, relatedMiddleName, relatedLastName, relatednameSuffix,
-            relatedGender, relatedDateOfBirth, relatedAge, relatedAgeUnit, relatedDateOfDeath,
+            relatedGender, relatedDateOfBirth, relatedDateOfDeath,
             relationshipStartDate, relationshipEndDate, absentParentCode, sameHomeCode,
             relationship, relationshipContext, relationshipToPerson, id);
 
@@ -167,4 +169,41 @@ public class RelationshipToTest {
     assertThat(relationshipTo.getRelationshipEndDate(), is(equalTo(newRelationshipEndDate)));
   }
 
+  @Test
+  public void shouldCalculateAgeInYears() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusYears(age);
+    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
+        .setRelatedDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
+    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.YEARS.getName())));
+    
+  }
+  
+  @Test
+  public void shouldCalculateAgeInMonths() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusMonths(age);
+    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
+        .setRelatedDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
+    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.MONTHS.getName())));
+    
+  }
+
+  @Test
+  public void shouldCalculateAgeInDays() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusDays(age);
+    RelationshipTo relationshipTo = new RelationshipToEntityBuilder()
+        .setRelatedDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationshipTo.getRelatedAge(), is(equalTo(age)));
+    assertThat(relationshipTo.getRelatedAgeUnit(), is(equalTo(CalendarEnum.DAYS.getName())));
+  }
 }

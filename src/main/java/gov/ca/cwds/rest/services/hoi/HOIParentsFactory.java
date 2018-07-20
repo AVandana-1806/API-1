@@ -35,9 +35,7 @@ final class HOIParentsFactory {
         Short type = relation.getClientRelationshipType();
         if (HOIRelationshipTypeService.isRelationTypeChild(type)) {
           Client relatedSecondaryClient = hcd.getAllClients().get(relation.getSecondaryClientId());
-          if (relatedSecondaryClient != null) {
-            parents.add(buildHOIRelatedPerson(relatedSecondaryClient, type));
-          }
+          addRelatedParent(relatedSecondaryClient, type, parents);
         }
       }
     }
@@ -53,10 +51,8 @@ final class HOIParentsFactory {
         Short type = relation.getClientRelationshipType();
         if (HOIRelationshipTypeService.isRelationTypeParent(type)) {
           Client relatedPrimaryClient = hcd.getAllClients().get(relation.getPrimaryClientId());
-          if (relatedPrimaryClient != null) {
-            parents.add(buildHOIRelatedPerson(relatedPrimaryClient, type));
-          }
-        }
+          addRelatedParent(relatedPrimaryClient, type, parents);
+         }
       }
     }
     return parents;
@@ -79,5 +75,11 @@ final class HOIParentsFactory {
     person.setLimitedAccessType(LimitedAccessType.getByValue(client.getSensitivityIndicator()));
     person.setLegacyDescriptor(legacyDescriptor);
     return person;
+  }
+  
+  private void addRelatedParent(Client relatedClient, Short type, List<HOIRelatedPerson> parents) {
+    if (relatedClient != null) {
+      parents.add(buildHOIRelatedPerson(relatedClient, type));
+    }
   }
 }

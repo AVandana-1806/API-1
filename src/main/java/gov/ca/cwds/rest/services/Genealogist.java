@@ -77,7 +77,7 @@ public class Genealogist {
       String relationshipStartDate, String relationshipEndDate, String absentParentCode,
       String sameHomeCode, String relationContext) {
     return new RelationshipTo(secondaryFirstname, secondaryMiddleName, secodnaryLastName,
-        nameSuffix, relatedGender, relatedDateOfBirth, relatedAge, relatedAgeUnit,
+        nameSuffix, relatedGender, relatedDateOfBirth,
         relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
         sameHomeCode, secondaryRelation, relationContext, primaryRelationCode, relationId);
 
