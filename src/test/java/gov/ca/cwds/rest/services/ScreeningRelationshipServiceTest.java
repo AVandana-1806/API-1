@@ -27,14 +27,12 @@ public class ScreeningRelationshipServiceTest {
   private Serializable serialized;
   private RelationshipDao relationshipDao;
   private RelationshipMapper relationshipMapper;
-  private ClientsRelationshipsService clientsRelationshipsService;
 
   @Before
   public void setup() {
     relationshipDao = mock(RelationshipDao.class);
     relationshipMapper = RelationshipMapper.INSTANCE;
-    clientsRelationshipsService = mock(ClientsRelationshipsService.class);
-    service = new ScreeningRelationshipService(relationshipDao, relationshipMapper, clientsRelationshipsService);
+    service = new ScreeningRelationshipService(relationshipDao, relationshipMapper);
     relationshipEntity = new Relationship("123", "ClientID", "RelationId", 190, new Date(),
         new Date(), true, null, "1111", null, null);
     relationship = new ScreeningRelationship("123", "ClientID", "RelationId", 190, true, "U", new Date(), new Date(), "1234567890");

@@ -21,16 +21,13 @@ public class ScreeningRelationshipService implements CrudsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningRelationshipService.class);
     private RelationshipDao relationshipDao;
     private RelationshipMapper relationshipMapper;
-    private ClientsRelationshipsService clientsRelationshipsService;
 
     @Inject
     public ScreeningRelationshipService(RelationshipDao relationshipDao,
-                                        RelationshipMapper relationshipMapper,
-                                        ClientsRelationshipsService clientsRelationshipsService) {
+                                        RelationshipMapper relationshipMapper) {
         super();
         this.relationshipDao = relationshipDao;
         this.relationshipMapper = relationshipMapper;
-        this.clientsRelationshipsService = clientsRelationshipsService;
     }
 
     @Override

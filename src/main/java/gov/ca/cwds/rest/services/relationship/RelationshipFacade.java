@@ -5,7 +5,6 @@ import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
-import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
@@ -36,15 +35,13 @@ public class RelationshipFacade {
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
-  private final ClientDao cmsClientDao;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
+      RelationshipDao nsRelationshipDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
-    this.cmsClientDao = cmsClientDao;
   }
 
   public List<gov.ca.cwds.rest.api.Response> getRelationshipsByScreeningId(String screeningId) {
@@ -107,69 +104,13 @@ public class RelationshipFacade {
 
     Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
     List<ScreeningRelationship> result = new ArrayList<>();
-    Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
 
     for (ClientRelationship clientRelationship : shouldBeCreated) {
-      ParticipantEntity participantEntity1;
-      ParticipantEntity participantEntity2;
-      if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
-        participantEntity1 = participantDao.create(new ParticipantEntity(
-            null,
-            client.getBirthDate(),
-            client.getDeathDate(),
-            client.getFirstName(),
-            client.getGender(),
-            client.getLastName(),
-            client.getSsn(),
-            null,
-            client.getId(),
-            null,
-            null,
-            client.getMiddleName(),
-            client.getNameSuffix(),
-            null,
-            null,
-            null,
-            false,
-            false,
-            null,
-            null,
-            null
-        ));
-      } else {
-        participantEntity1 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
-      }
-      if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
-        participantEntity2 = participantDao.create(new ParticipantEntity(
-            null,
-            client.getBirthDate(),
-            client.getDeathDate(),
-            client.getFirstName(),
-            client.getGender(),
-            client.getLastName(),
-            client.getSsn(),
-            null,
-            client.getId(),
-            null,
-            null,
-            client.getMiddleName(),
-            client.getNameSuffix(),
-            null,
-            null,
-            null,
-            false,
-            false,
-            null,
-            null,
-            null
-        ));
-      } else {
-        participantEntity2 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
-      }
+      ParticipantEntity participantEntity1 = participantDao
+          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+      ParticipantEntity participantEntity2 = participantDao
+          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+
       Relationship newRelationship = new Relationship(null, participantEntity1.getId(),
           participantEntity2.getId()
           , clientRelationship.getClientRelationshipType(), createdAt, createdAt,
