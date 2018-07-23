@@ -9,9 +9,6 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.enums.SameHomeStatus;
 import gov.ca.cwds.rest.core.Api;
 import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * @author CWDS API Team
  *
