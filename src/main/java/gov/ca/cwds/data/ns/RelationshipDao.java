@@ -31,7 +31,7 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
   }
 
   public Relationship getByLegacyId(String legacyId){
-    Relationship result;
+    Relationship result = null;
     try {
       final Query<Relationship> query = this.getSessionFactory().getCurrentSession()
           .getNamedQuery(Relationship.FIND_RELATIONSHIPS_BY_LEGACY_ID)
@@ -39,7 +39,6 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
        result = query.getSingleResult();
     } catch (NoResultException e) {
       LOGGER.info(e.getMessage());
-      return null;
     }
     return  result;
   }
