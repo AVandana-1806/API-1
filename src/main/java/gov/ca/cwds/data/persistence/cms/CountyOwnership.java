@@ -29,6 +29,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @Table(name = "CNTYOWNT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings({"squid:S00104"})
 public class CountyOwnership implements PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -546,7 +547,7 @@ public class CountyOwnership implements PersistentObject, Serializable {
    */
   @Override
   public Serializable getPrimaryKey() {
-    return entityId;
+    return getEntityId();
   }
 
   /**

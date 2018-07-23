@@ -38,7 +38,8 @@ public class ScreeningDashboardTest {
   @Test
   public void testConstructor() throws Exception {
 	ScreeningDashboard domain = new ScreeningDashboard(id, reference, name, screeningDecision,
-		screeningDecisionDetail, assignee, assigneeStaffId, startedAt);
+		screeningDecisionDetail, assignee, assigneeStaffId);
+	domain.setStartedAt(startedAt);
 	assertThat(domain.getId(), is(equalTo(id)));
 	assertThat(domain.getReference(), is(equalTo(reference)));
 	assertThat(domain.getName(), is(equalTo(name)));

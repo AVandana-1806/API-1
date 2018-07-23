@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,10 +29,13 @@ import gov.ca.cwds.data.legacy.cms.entity.SafetyAlert;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.County;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SafetyAlertActivationReasonType;
 import gov.ca.cwds.data.persistence.cms.Referral;
+import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
@@ -71,8 +75,16 @@ public class ReferralSafetyAlertsServiceTest {
   public void testSaveSafetyAlertsSuccessfully() {
     SafetyAlerts safetyAlerts =
         new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Danger Fellow");
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim =
+        new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor).createParticipant();
+    Participant Perp = new ParticipantResourceBuilder().setGender("M").createParticipant();
+    Participant reporter =
+        new ParticipantResourceBuilder().setGender("M").createReporterParticipant();
+    Set<Participant> ScreeeningParticpants = new HashSet<>(Arrays.asList(victim, Perp, reporter));
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
-        .setSafetyAlerts(safetyAlerts.getAlerts())
+        .setParticipants(ScreeeningParticpants).setSafetyAlerts(safetyAlerts.getAlerts())
         .setSafetyAlertInformationn(safetyAlerts.getAlertInformation()).createScreeningToReferral();
     ClientParticipants clientParticipants = new ClientParticipants();
     Set<Participant> participants = screeningToReferral.getParticipants();

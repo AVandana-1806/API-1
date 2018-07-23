@@ -131,8 +131,6 @@ public final class Relationship extends ReportingDomain implements Request, Resp
   /**
    * @param id - id
    * @param dateOfBirth - date of birth
-   * @param age - age
-   * @param ageUnit age time unit
    * @param firstName - first name
    * @param middleName - middle name
    * @param lastName - last name
@@ -145,7 +143,7 @@ public final class Relationship extends ReportingDomain implements Request, Resp
    * @param relatedTo - people related to this person
    */
   public Relationship(String id, @Date(format = "yyyy-MM-dd", required = false) String dateOfBirth,
-      Short age, String ageUnit, String firstName, String middleName, String lastName,
+      String firstName, String middleName, String lastName,
       String suffixName, String gender,
       @Date(format = "yyyy-MM-dd", required = false) String dateOfDeath, Boolean sensitive,
       Boolean sealed, CmsRecordDescriptor cmsRecordDescriptor, Set<RelationshipTo> relatedTo) {
@@ -273,6 +271,13 @@ public final class Relationship extends ReportingDomain implements Request, Resp
     this.age = age;
   }
 
+  /**
+   * @return age unit
+   */
+  public String getAgeUnit() {
+    return ageUnit;
+  }
+  
   /**
    * @return first name
    */

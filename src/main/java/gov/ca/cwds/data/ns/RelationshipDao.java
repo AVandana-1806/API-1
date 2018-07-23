@@ -1,15 +1,18 @@
 package gov.ca.cwds.data.ns;
 
+import java.util.List;
+
+import org.hibernate.SessionFactory;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.inject.NsSessionFactory;
-import java.util.List;
 import javax.persistence.NoResultException;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-public class RelationshipDao  extends CrudsDaoImpl<Relationship> {
+public class RelationshipDao extends CrudsDaoImpl<Relationship> {
 
   @Inject
   public RelationshipDao(@NsSessionFactory SessionFactory sessionFactory) {

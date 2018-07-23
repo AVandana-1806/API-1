@@ -19,8 +19,6 @@ public class RelationshipEntityBuilder {
   protected String middleName = "R";
   protected String lastName = "Greene";
   protected String dateOfBirth = "2000-10-01";
-  protected Short age = 17;
-  protected String ageUnit = "Y";
   protected String gender = "M";
   protected String dateOfDeath = "2001-10-01";
   protected String suffixTitle = "";
@@ -31,19 +29,9 @@ public class RelationshipEntityBuilder {
 
   public Relationship build() {
     relationshipsTo.add(relationshipTo);
-    return new Relationship(id, dateOfBirth, age, ageUnit, firstName, middleName, lastName,
+    return new Relationship(id, dateOfBirth, firstName, middleName, lastName,
         suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
-  }
-
-  public RelationshipEntityBuilder setTableName(String tableName) {
-    this.tableName = tableName;
-    return this;
-  }
-
-  public RelationshipEntityBuilder setId(String id) {
-    this.id = id;
-    return this;
   }
 
   public RelationshipEntityBuilder setDateOfBirth(String dateOfBirth) {
@@ -95,35 +83,5 @@ public class RelationshipEntityBuilder {
     this.relationshipsTo = relationshipsTo;
     return this;
   }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getSuffixTitle() {
-    return suffixTitle;
-  }
-
-  public Set<RelationshipTo> getRelationshipsTo() {
-    return relationshipsTo;
-  }
-
-
 
 }

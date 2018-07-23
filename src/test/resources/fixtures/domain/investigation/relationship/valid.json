@@ -13,6 +13,7 @@
   "sealed" : false,
   "relationship_to" : [ {
     "related_person_first_name" : "Steve",
+    "related_person_middle_name" : "James",
     "related_person_last_name" : "Briggs",
     "related_person_name_suffix" : "Jr",
     "related_person_gender" : "I",
@@ -27,6 +28,8 @@
     "relationship_context" : "step",
     "related_person_relationship" : "Sister",
     "indexed_person_relationship" : "Brother",
+    "related_person_sensitive": false,
+    "related_person_sealed": false,
     "legacy_descriptor" : {
       "legacy_id" : "2345678ABC",
       "legacy_ui_id" : "111-222-333-4444",

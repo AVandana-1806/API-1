@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,17 +27,23 @@ import gov.ca.cwds.data.cms.ReporterDao;
 import gov.ca.cwds.data.cms.StateIdDao;
 import gov.ca.cwds.fixture.AddressResourceBuilder;
 import gov.ca.cwds.fixture.AllegationResourceBuilder;
+import gov.ca.cwds.fixture.ClientEntityBuilder;
+import gov.ca.cwds.fixture.CrossReportEntityBuilder;
 import gov.ca.cwds.fixture.CrossReportResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReferralResourceBuilder;
+import gov.ca.cwds.fixture.ReporterEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.Address;
 import gov.ca.cwds.rest.api.domain.Allegation;
 import gov.ca.cwds.rest.api.domain.CrossReport;
+import gov.ca.cwds.rest.api.domain.DomainChef;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Client;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.Referral;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.services.cms.TickleService;
@@ -88,9 +95,12 @@ public class R04631ReferralInvestigationContactDueTest {
    */
   @Test
   public void testForAllegationDispostionTypeIsEnteredInError() throws Exception {
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
-    Participant perp = new ParticipantResourceBuilder().createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth("1992-06-18")
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createPerpParticipant();
 
     Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -162,12 +172,15 @@ public class R04631ReferralInvestigationContactDueTest {
    */
   @Test
   public void testForClientDateOfBirthLessThan19ReferralInvestigationReminder() throws Exception {
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth("2010-03-15").createVictimParticipant();
-    Participant perp =
-        new ParticipantResourceBuilder().setDateOfBirth("2011-03-15").createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth("2010-03-15")
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setDateOfBirth("2011-03-15")
+        .setLegacyDescriptor(legacyDescriptor).createPerpParticipant();
 
-    Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
+    Participant reporter = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
     CrossReport crossReport = new CrossReportResourceBuilder().createCrossReport();
     Allegation allegation = new AllegationResourceBuilder().createAllegation();
@@ -186,7 +199,7 @@ public class R04631ReferralInvestigationContactDueTest {
 
     Client client = Client.createWithDefaults(victim, "2016-09-02", "", (short) 0, true);
     gov.ca.cwds.data.persistence.cms.Client savedClient =
-        new gov.ca.cwds.data.persistence.cms.Client("ABC1234567", client, "0X5", new Date());
+        new gov.ca.cwds.data.persistence.cms.Client("098UijH1gf", client, "0X5", new Date());
 
     gov.ca.cwds.rest.api.domain.cms.Allegation cmsAllegation =
         new gov.ca.cwds.rest.api.domain.cms.Allegation("", DEFAULT_CODE, "",
@@ -262,36 +275,14 @@ public class R04631ReferralInvestigationContactDueTest {
 
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
-
-    Client client = Client.createWithDefaults(victim, "2016-09-02", "", (short) 0, true);
     gov.ca.cwds.data.persistence.cms.Client savedClient =
-        new gov.ca.cwds.data.persistence.cms.Client("ABC1234567", client, "0X5", new Date());
-
-    gov.ca.cwds.rest.api.domain.cms.Allegation cmsAllegation =
-        new gov.ca.cwds.rest.api.domain.cms.Allegation("", DEFAULT_CODE, "",
-            referral.getLocationType(), "", DEFAULT_CODE, (short) 0, referral.getReportNarrative(),
-            "", false, DEFAULT_NON_PROTECTING_PARENT_CODE, false, "ABC1234568", "ABC1234560",
-            "123ABC1235", DEFAULT_COUNTY_SPECIFIC_CODE, false, DEFAULT_CODE);
-
+        new ClientEntityBuilder().setBirthDate(DomainChef.uncookDateString("2016-09-02")).build();
     gov.ca.cwds.data.persistence.cms.Allegation savedAllegation =
-        new gov.ca.cwds.data.persistence.cms.Allegation("123ABC1236", cmsAllegation, "0X5",
-            new Date());
+        new gov.ca.cwds.fixture.AllegationEntityBuilder().build();
 
-    Address address = new AddressResourceBuilder().createAddress();
-
-    Reporter reporterDomain =
-        Reporter.createWithDefaults("123ABC1235", true, address, reporter, "62");
-
-    gov.ca.cwds.data.persistence.cms.Reporter savedReporter =
-        new gov.ca.cwds.data.persistence.cms.Reporter(reporterDomain, "0X5", new Date());
-
-    gov.ca.cwds.rest.api.domain.cms.CrossReport cmsCrossReport =
-        gov.ca.cwds.rest.api.domain.cms.CrossReport.createWithDefaults("123ABC1K35", crossReport,
-            "123ABC1235", DEFAULT_STAFF_PERSON_ID, "", "ABc1qf56yi", "1101", false, false);
-
+    gov.ca.cwds.data.persistence.cms.Reporter savedReporter = new ReporterEntityBuilder().build();
     gov.ca.cwds.data.persistence.cms.CrossReport savedCrossReport =
-        new gov.ca.cwds.data.persistence.cms.CrossReport("123ABp1235", cmsCrossReport, "0X5",
-            new Date());
+        new CrossReportEntityBuilder().build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(savedClient);
@@ -318,10 +309,12 @@ public class R04631ReferralInvestigationContactDueTest {
    */
   @Test(expected = DateTimeException.class)
   public void testForReferralInvestigationDateOfBirthParseException() throws Exception {
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
-    Participant perp =
-        new ParticipantResourceBuilder().setDateOfBirth("1992:06:18").createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth("1992-06-18")
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setDateOfBirth("1992:06:18")
+        .setLegacyDescriptor(legacyDescriptor).createPerpParticipant();
 
     Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));

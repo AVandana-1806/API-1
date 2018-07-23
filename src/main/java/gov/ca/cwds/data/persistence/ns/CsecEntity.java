@@ -58,37 +58,37 @@ public class CsecEntity implements PersistentObject, Serializable {
     return participantId;
   }
 
-  public void setParticipantId(String participantId) {
-    this.participantId = participantId;
-  }
-
   public String getCsecCodeId() {
     return csecCodeId;
-  }
-
-  public void setCsecCodeId(String csecCodeId) {
-    this.csecCodeId = csecCodeId;
   }
 
   public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(LocalDate startDate) {
-    this.startDate = startDate;
-  }
-
   public LocalDate getEndDate() {
     return endDate;
-  }
-
-  public void setEndDate(LocalDate endDate) {
-    this.endDate = endDate;
   }
 
   @Override
   public Serializable getPrimaryKey() {
     return getId();
+  }
+
+  public void setParticipantId(String participantId) {
+    this.participantId = participantId;
+  }
+
+  public void setCsecCodeId(String csecCodeId) {
+    this.csecCodeId = csecCodeId;
+  }
+
+  public void setStartDate(LocalDate startDate) {
+    this.startDate = startDate;
+  }
+
+  public void setEndDate(LocalDate endDate) {
+    this.endDate = endDate;
   }
 
   @Override
