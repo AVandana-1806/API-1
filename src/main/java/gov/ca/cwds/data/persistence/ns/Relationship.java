@@ -94,8 +94,8 @@ public class Relationship implements PersistentObject {
     this.sameHomeStatus = sameHomeStatus;
     this.absentParentIndicator = absentParentIndicator;
     this.legacyId = legacyId;
-    setStartDate(startDate);
-    setEndDate(endDate);
+    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
+    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
   @Override

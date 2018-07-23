@@ -50,7 +50,7 @@ public class CandaceTransactionImpl implements Transaction {
   public void commit() {
     LOGGER.info("CandaceTransactionImpl.commit");
     CaresStackUtils.logStack();
-    //txn.commit(); // TODO: revert after implementation
+    txn.commit();
   }
 
   @Override

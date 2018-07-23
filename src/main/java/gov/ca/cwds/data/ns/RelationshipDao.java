@@ -11,8 +11,12 @@ import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.inject.NsSessionFactory;
 import javax.persistence.NoResultException;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RelationshipDao extends CrudsDaoImpl<Relationship> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipDao.class);
 
   @Inject
   public RelationshipDao(@NsSessionFactory SessionFactory sessionFactory) {
@@ -34,6 +38,7 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
           .setParameter("legacyId", legacyId);
        result = query.getSingleResult();
     } catch (NoResultException e) {
+      LOGGER.info(e.getMessage());
       return null;
     }
     return  result;

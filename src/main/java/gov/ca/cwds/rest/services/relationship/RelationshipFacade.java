@@ -1,7 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
@@ -154,23 +153,21 @@ public class RelationshipFacade {
     }
 
     List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
-    for (ClientRelationship clientRelationship : lagacyRelationships) {
+    lagacyRelationships.forEach(e->{
       boolean update = false;
       for (Relationship relationship : nsRelationships) {
-        if (clientRelationship.getId().equals(relationship.getLegacyId())) {
-          if (clientRelationship.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
+        if (e.getId().equals(relationship.getLegacyId())) {
+          if (e.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
               .getTime()) {
             update = true;
           }
           break;
         }
-
       }
       if (update) {
-
-        relationshipsToUpdate.add(clientRelationship);
+        relationshipsToUpdate.add(e);
       }
-    }
+    });
     return relationshipsToUpdate;
   }
 

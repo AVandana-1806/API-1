@@ -71,8 +71,8 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
     this.absentParentIndicator = absentParentIndicator;
     this.sameHomeStatus = sameHomeStatus;
     this.legacyId = legacyId;
-    setStartDate(startDate);
-    setEndDate(endDate);
+    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
+    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
   public String getId() {
