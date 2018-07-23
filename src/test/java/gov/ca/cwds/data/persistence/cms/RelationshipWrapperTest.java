@@ -1,17 +1,21 @@
 package gov.ca.cwds.data.persistence.cms;
 
-import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
 
 public class RelationshipWrapperTest {
   private String relationId = "relationId";
   private String primaryLegacyId = "primaryLegacyId";
   private String secondaryLegacyId = "secondaryLegacyId";
   private String primaryFirstName = "primaryFirstName";
+  private String primaryMiddleName = "primaryMiddleName";
   private String primaryLastName = "primaryLastName";
   private String secondaryFirstName = "secondaryFirstName";
+  private String secondaryMiddleName = "secondaryMiddleName";
   private String secondaryLastName = "secondaryLastName";
   private String primaryRelationshipCode = "primaryRelationshipCode";
   private String secondaryRelationshipCode = "secondaryRelationshipCode";
@@ -25,7 +29,7 @@ public class RelationshipWrapperTest {
   private String sameHomeCode = "Y";
   private String primaryGenderCode = "M";
   private String secondaryGenderCode = "F";
-  
+
 
   @Test
   public void testDefaultConstructor() {
@@ -40,20 +44,24 @@ public class RelationshipWrapperTest {
     String secondaryLegacyId = "";
     String primaryFirstName = "";
     String primaryLastName = "";
+    String primaryMiddleName = "";
     String secondaryFirstName = "";
+    String secondaryMiddleName = "";
     String secondaryLastName = "";
     String primaryRelationshipCode = "";
     String secondaryRelationshipCode = "";
 
     RelationshipWrapper relationshipWrapper = new RelationshipWrapper(relationId, primaryLegacyId,
-        secondaryLegacyId, primaryFirstName, primaryLastName, secondaryFirstName, secondaryLastName,
-        primaryRelationshipCode, secondaryRelationshipCode);
+        secondaryLegacyId, primaryFirstName, primaryMiddleName, primaryLastName, secondaryFirstName,
+        secondaryMiddleName, secondaryLastName, primaryRelationshipCode, secondaryRelationshipCode);
     assertEquals(relationId, relationshipWrapper.getRelationId());
     assertEquals(primaryLegacyId, relationshipWrapper.getPrimaryLegacyId());
     assertEquals(secondaryLegacyId, relationshipWrapper.getSecondaryLegacyId());
     assertEquals(primaryFirstName, relationshipWrapper.getPrimaryFirstName());
+    assertEquals(primaryMiddleName, relationshipWrapper.getPrimaryMiddleName());
     assertEquals(primaryLastName, relationshipWrapper.getPrimaryLastName());
     assertEquals(secondaryFirstName, relationshipWrapper.getSecondaryFirstName());
+    assertEquals(secondaryMiddleName, relationshipWrapper.getSecondaryMiddleName());
     assertEquals(secondaryLastName, relationshipWrapper.getSecondaryLastName());
     assertEquals(primaryRelationshipCode, relationshipWrapper.getPrimaryRelationshipCode());
     assertEquals(secondaryRelationshipCode, relationshipWrapper.getSecondaryRelationshipCode());
@@ -63,8 +71,8 @@ public class RelationshipWrapperTest {
   public void shouldConstructClassWhenParametersAreGiven() {
 
     RelationshipWrapper relationshipWrapper = new RelationshipWrapper(relationId, primaryLegacyId,
-        secondaryLegacyId, primaryFirstName, primaryLastName, secondaryFirstName, secondaryLastName,
-        primaryRelationshipCode, secondaryRelationshipCode);
+        secondaryLegacyId, primaryFirstName, primaryMiddleName, primaryLastName, secondaryFirstName,
+        secondaryMiddleName, secondaryLastName, primaryRelationshipCode, secondaryRelationshipCode);
     assertEquals(relationId, relationshipWrapper.getRelationId());
     assertEquals(primaryLegacyId, relationshipWrapper.getPrimaryLegacyId());
     assertEquals(secondaryLegacyId, relationshipWrapper.getSecondaryLegacyId());
@@ -75,10 +83,10 @@ public class RelationshipWrapperTest {
     assertEquals(primaryRelationshipCode, relationshipWrapper.getPrimaryRelationshipCode());
     assertEquals(secondaryRelationshipCode, relationshipWrapper.getSecondaryRelationshipCode());
   }
-  
+
   @Test
   public void shouldSetValuesWithSetters() {
-    RelationshipWrapper relationshipWrapper = new RelationshipWrapper();    
+    RelationshipWrapper relationshipWrapper = new RelationshipWrapper();
     relationshipWrapper.setRelationId(relationId);
     relationshipWrapper.setPrimaryLegacyId(primaryLegacyId);
     relationshipWrapper.setSecondaryLegacyId(secondaryLegacyId);
@@ -98,7 +106,7 @@ public class RelationshipWrapperTest {
     relationshipWrapper.setSameHomeCode(sameHomeCode);
     relationshipWrapper.setPrimaryGenderCode(primaryGenderCode);
     relationshipWrapper.setSecondaryGenderCode(secondaryGenderCode);
-    
+
     assertEquals(relationId, relationshipWrapper.getRelationId());
     assertEquals(primaryLegacyId, relationshipWrapper.getPrimaryLegacyId());
     assertEquals(secondaryLegacyId, relationshipWrapper.getSecondaryLegacyId());
@@ -118,7 +126,7 @@ public class RelationshipWrapperTest {
     assertEquals(sameHomeCode, relationshipWrapper.getSameHomeCode());
     assertEquals(primaryGenderCode, relationshipWrapper.getPrimaryGenderCode());
     assertEquals(secondaryGenderCode, relationshipWrapper.getSecondaryGenderCode());
-    
+
   }
 
 }

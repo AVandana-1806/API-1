@@ -214,16 +214,16 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Create Participant Addresses & PhoneNumbers
-    List<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiList =
         createParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
-    Set<PhoneNumber> phoneNumberSet =
+    Set<PhoneNumber> phoneSet =
         createParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
-    participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
-    participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
+    participantIntakeApiPosted.addAddresses(addressIntakeApiList);
+    participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
     SafelySurenderedBabiesIntakeApi createdSsb =
@@ -279,16 +279,16 @@ public class ParticipantIntakeApiService implements
     createOrUpdateSafelySurrenderedBabies(participant, participantEntityManaged);
 
     // Update Participant Addresses & PhoneNumbers
-    List<AddressIntakeApi> addressIntakeApiSet =
+    List<AddressIntakeApi> addressIntakeApiList =
         updateParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
-    Set<PhoneNumber> phoneNumberSet =
+    Set<PhoneNumber> phoneSet =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
-    participantIntakeApiPosted.addAddresses(addressIntakeApiSet);
-    participantIntakeApiPosted.addPhoneNumbers(phoneNumberSet);
+    participantIntakeApiPosted.addAddresses(addressIntakeApiList);
+    participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
@@ -296,27 +296,27 @@ public class ParticipantIntakeApiService implements
   }
 
   private List<AddressIntakeApi> createParticipantAddresses(
-      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
-    addressIntakeApiSet.stream().map(this::createAddresses).forEach(addressesWrapper -> {
-      addressIntakeApiSetPosted.add(addressesWrapper.addressIntakeApi);
+      List<AddressIntakeApi> addressIntakeApiList, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiListPosted = new ArrayList<>();
+    addressIntakeApiList.stream().map(this::createAddresses).forEach(addressesWrapper -> {
+      addressIntakeApiListPosted.add(addressesWrapper.addressIntakeApi);
       participantAddressesDao
           .create(new ParticipantAddresses(participantEntityManaged, addressesWrapper.addresses));
     });
-    return addressIntakeApiSetPosted;
+    return addressIntakeApiListPosted;
   }
 
   private List<AddressIntakeApi> updateParticipantAddresses(
-      List<AddressIntakeApi> addressIntakeApiSet, ParticipantEntity participantEntityManaged) {
-    List<AddressIntakeApi> addressIntakeApiSetPosted = new ArrayList<>();
+      List<AddressIntakeApi> addressIntakeApiList, ParticipantEntity participantEntityManaged) {
+    List<AddressIntakeApi> addressIntakeApiListPosted = new ArrayList<>();
 
     Map<String, ParticipantAddresses> participantAddressesOldMap = new HashMap<>();
     participantAddressesDao.findByParticipantId(participantEntityManaged.getId())
         .forEach(participantAddresses -> participantAddressesOldMap
             .put(participantAddresses.getAddress().getId(), participantAddresses));
 
-    addressIntakeApiSet.stream().map(this::createAddresses).forEach(addressesWrapper -> {
-      addressIntakeApiSetPosted.add(addressesWrapper.addressIntakeApi);
+    addressIntakeApiList.stream().map(this::createAddresses).forEach(addressesWrapper -> {
+      addressIntakeApiListPosted.add(addressesWrapper.addressIntakeApi);
 
       // See if we had this ParticipantAddresses entity before. Otherwise create
       Addresses addressesEntityManaged = addressesWrapper.addresses;
@@ -336,7 +336,7 @@ public class ParticipantIntakeApiService implements
     participantAddressesOldMap.values().forEach(
         participantAddresses -> participantAddressesDao.delete(participantAddresses.getId()));
 
-    return addressIntakeApiSetPosted;
+    return addressIntakeApiListPosted;
   }
 
   private void createOrUpdateCsecs(ParticipantIntakeApi participantIntakeApi,
@@ -445,11 +445,11 @@ public class ParticipantIntakeApiService implements
     return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
   }
 
-  private Set<PhoneNumber> createParticipantPhoneNumbers(Set<PhoneNumber> phoneNumberSet,
+  private Set<PhoneNumber> createParticipantPhoneNumbers(Set<PhoneNumber> phoneSet,
       ParticipantEntity participantEntityManaged) {
-    Set<PhoneNumber> phoneNumberSetPosted = new HashSet<>();
+    Set<PhoneNumber> phoneSetPosted = new HashSet<>();
 
-    for (PhoneNumber phoneNumber : phoneNumberSet) {
+    for (PhoneNumber phoneNumber : phoneSet) {
 
       PhoneNumbers phoneNumbersEntityManaged = phoneNumber.getId() == null ? null
           : phoneNumbersDao.find(String.valueOf(phoneNumber.getId()));
@@ -461,7 +461,7 @@ public class ParticipantIntakeApiService implements
         phoneNumbersEntityManaged = phoneNumbersDao.create(new PhoneNumbers(phoneNumber));
         phoneNumber = new PhoneNumber(phoneNumbersEntityManaged);
       }
-      phoneNumberSetPosted.add(phoneNumber);
+      phoneSetPosted.add(phoneNumber);
 
       ParticipantPhoneNumbers participantPhoneNumbers =
           new ParticipantPhoneNumbers(participantEntityManaged, phoneNumbersEntityManaged);
@@ -470,19 +470,19 @@ public class ParticipantIntakeApiService implements
       participantPhoneNumbersDao.create(participantPhoneNumbers);
 
     }
-    return phoneNumberSetPosted;
+    return phoneSetPosted;
   }
 
-  private Set<PhoneNumber> updateParticipantPhoneNumbers(Set<PhoneNumber> phoneNumberSet,
+  private Set<PhoneNumber> updateParticipantPhoneNumbers(Set<PhoneNumber> phoneSet,
       ParticipantEntity participantEntityManaged) {
-    Set<PhoneNumber> phoneNumberSetPosted = new HashSet<>();
+    Set<PhoneNumber> phoneSetPosted = new HashSet<>();
 
     Map<String, ParticipantPhoneNumbers> participantPhoneNumbersOldMap = new HashMap<>();
     participantPhoneNumbersDao.findByParticipantId(participantEntityManaged.getId())
         .forEach(participantPhoneNumbers -> participantPhoneNumbersOldMap
             .put(participantPhoneNumbers.getPhoneNumber().getId(), participantPhoneNumbers));
 
-    for (PhoneNumber phoneNumber : phoneNumberSet) {
+    for (PhoneNumber phoneNumber : phoneSet) {
 
       PhoneNumbers phoneNumbersEntityManaged = phoneNumber.getId() == null ? null
           : phoneNumbersDao.find(String.valueOf(phoneNumber.getId()));
@@ -495,7 +495,7 @@ public class ParticipantIntakeApiService implements
         phoneNumber = new PhoneNumber(phoneNumbersEntityManaged);
       }
 
-      phoneNumberSetPosted.add(phoneNumber);
+      phoneSetPosted.add(phoneNumber);
 
       // See if we had this ParticipantPhoneNumber entity before. Otherwise create
       ParticipantPhoneNumbers participantPhoneNumbers =
@@ -514,7 +514,7 @@ public class ParticipantIntakeApiService implements
         .forEach(participantPhoneNumbers -> participantPhoneNumbersDao
             .delete(participantPhoneNumbers.getId()));
 
-    return phoneNumberSetPosted;
+    return phoneSetPosted;
   }
 
   void setCsecMapper(CsecMapper csecMapper) {

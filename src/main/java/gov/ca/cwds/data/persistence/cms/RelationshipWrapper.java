@@ -12,28 +12,31 @@ import org.hibernate.annotations.NamedNativeQuery;
 import gov.ca.cwds.data.std.ApiMarker;
 
 @Entity
-//@formatter:off
+// @formatter:off
 @NamedNativeQuery(name = FIND_ALL_RELATED_CLIENTS_BY_CLIENT_ID,
     resultClass = RelationshipWrapper.class, readOnly = true,
-    query = "SELECT DISTINCT \n" 
-        + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
+    query = "SELECT DISTINCT \n" + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
         + "    CLNS.COM_FST_NM        AS Primary_FIRST_NAME, \n"
+        + "    CLNS.COM_MID_NM        AS Primary_MIDDLE_NAME, \n"
         + "    CLNS.COM_LST_NM        AS Primary_LAST_NAME, \n"
         + "    CLNS.SUFX_TLDSC        AS Primary_NAME_SUFFIX, \n"
         + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
         + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
         + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
+        + "    CLNS.SENSTV_IND        AS Primary_SENSTV_IND, \n"
         + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
         + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
         + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
         + "    sc2.SYS_ID             AS Secondary_REL_CODE, \n"
         + "    CLNP.IDENTIFIER        AS Secondary_LEGACY_ID, \n"
         + "    CLNP.COM_FST_NM        AS Secondary_FIRST_NAME, \n"
+        + "    CLNP.COM_MID_NM        AS Secondary_MIDDLE_NAME, \n"
         + "    CLNP.COM_LST_NM        AS Secondary_LAST_NAME, \n"
         + "    CLNP.SUFX_TLDSC        AS Secondary_NAME_SUFFIX, \n"
         + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
+        + "    CLNP.SENSTV_IND        AS Secondary_SENSTV_IND, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
         + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
         + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
@@ -44,40 +47,40 @@ import gov.ca.cwds.data.std.ApiMarker;
         + "JOIN {h-schema}CLIENT_T CLNP ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
         + "JOIN {h-schema}SYS_CD_C SC   ON SC.SYS_ID       = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
         + "JOIN {h-schema}SYS_CD_C SC2  ON SC2.SYS_ID      = CAST(SC.LONG_DSC AS SMALLINT) \n"
-        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" 
-        + "UNION \n" 
-        + "SELECT DISTINCT \n"
-        + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
+        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" + "UNION \n"
+        + "SELECT DISTINCT \n" + "    CLNS.IDENTIFIER        AS Primary_LEGACY_ID, \n"
         + "    CLNS.COM_FST_NM        AS Primary_FIRST_NAME, \n"
+        + "    CLNS.COM_MID_NM        AS Primary_MIDDLE_NAME, \n"
         + "    CLNS.COM_LST_NM        AS Primary_LAST_NAME, \n"
         + "    CLNS.SUFX_TLDSC        AS Primary_NAME_SUFFIX, \n"
         + "    CLNS.BIRTH_DT          AS Primary_BIRTH_DATE, \n"
         + "    CLNS.DEATH_DT          AS Primary_DEATH_DATE, \n"
         + "    CLNS.GENDER_CD         AS Primary_GENDER_CODE, \n"
+        + "    CLNS.SENSTV_IND        AS Primary_SENSTV_IND, \n"
         + "    CLNR.IDENTIFIER        AS RELATION_ID, \n"
         + "    CLNR.CLNTRELC          AS Primary_REL_ID, \n"
         + "    sc2.SHORT_DSC          AS Secondary_REL_TYPE, \n"
         + "    sc2.SYS_ID             AS Secondary_REL_CODE, \n"
         + "    CLNP.IDENTIFIER        AS Secondary_LEGACY_ID, \n"
         + "    CLNP.COM_FST_NM        AS Secondary_FIRST_NAME, \n"
+        + "    CLNP.COM_MID_NM        AS Secondary_MIDDLE_NAME, \n"
         + "    CLNP.COM_LST_NM        AS Secondary_LAST_NAME, \n"
         + "    CLNP.SUFX_TLDSC        AS Secondary_NAME_SUFFIX, \n"
         + "    CLNP.BIRTH_DT          AS Secondary_BIRTH_DATE, \n"
         + "    CLNP.DEATH_DT          AS Secondary_DEATH_DATE, \n"
         + "    CLNP.GENDER_CD         AS Secondary_GENDER_CODE, \n"
+        + "    CLNP.SENSTV_IND        AS Secondary_SENSTV_IND, \n"
         + "    CLNR.ABSENT_CD         AS ABSENT_CODE, \n"
         + "    CLNR.SAME_HM_CD        AS SAME_HOME_CODE, \n"
         + "    CLNR.START_DT          AS Relationship_START_DATE, \n"
-        + "    CLNR.END_DT            AS Relationship_END_DATE \n"
-        + "FROM {h-schema}CLIENT_T GT \n"
+        + "    CLNR.END_DT            AS Relationship_END_DATE \n" + "FROM {h-schema}CLIENT_T GT \n"
         + "JOIN {h-schema}CLN_RELT CLNR ON GT.IDENTIFIER   = CLNR.FKCLIENT_0 \n"
         + "JOIN {h-schema}CLIENT_T CLNS ON CLNR.FKCLIENT_0 = CLNS.IDENTIFIER \n"
         + "JOIN {h-schema}CLIENT_T CLNP ON CLNR.FKCLIENT_T = CLNP.IDENTIFIER \n"
         + "JOIN {h-schema}SYS_CD_C SC   ON SC.SYS_ID       = CLNR.CLNTRELC AND SC.FKS_META_T = 'CLNTRELC' \n"
         + "JOIN {h-schema}SYS_CD_C SC2  ON SC2.SYS_ID      = CAST(SC.LONG_DSC AS SMALLINT) \n"
-        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" 
-        + "WITH UR")
-//@formatter:on
+        + "WHERE CLNR.FKCLIENT_0 = :clientId OR CLNR.FKCLIENT_T = :clientId \n" + "WITH UR")
+// @formatter:on
 @SuppressWarnings({"squid:S00107"})
 public class RelationshipWrapper implements ApiMarker {
 
@@ -93,9 +96,12 @@ public class RelationshipWrapper implements ApiMarker {
   @Column(name = "Primary_LEGACY_ID")
   private String primaryLegacyId;
 
-  @ColumnTransformer(read = "rtrim(Primary_FIRST_NAME)")
   @Column(name = "Primary_FIRST_NAME")
+  @ColumnTransformer(read = "trim(Primary_FIRST_NAME)")
   private String primaryFirstName;
+
+  @Column(name = "Primary_MIDDLE_NAME")
+  private String primaryMiddleName;
 
   @Column(name = "Primary_LAST_NAME")
   private String primaryLastName;
@@ -112,12 +118,18 @@ public class RelationshipWrapper implements ApiMarker {
   @Column(name = "Primary_GENDER_CODE")
   private String primaryGenderCode;
 
+  @Column(name = "Primary_SENSTV_IND")
+  private String primarySensitive_Indicator;
+
   @Column(name = "Secondary_LEGACY_ID")
   private String secondaryLegacyId;
 
-  @ColumnTransformer(read = "rtrim(Secondary_FIRST_NAME)")
   @Column(name = "Secondary_FIRST_NAME")
+  @ColumnTransformer(read = "trim(Secondary_FIRST_NAME)")
   private String secondaryFirstName;
+
+  @Column(name = "Secondary_MIDDLE_NAME")
+  private String secondaryMiddleName;
 
   @Column(name = "Secondary_LAST_NAME")
   private String secondaryLastName;
@@ -133,6 +145,9 @@ public class RelationshipWrapper implements ApiMarker {
 
   @Column(name = "Secondary_GENDER_CODE")
   private String secondaryGenderCode;
+
+  @Column(name = "Secondary_SENSTV_IND")
+  private String secondarySensitive_Indicator;
 
   @Column(name = "Primary_REL_ID")
   private String primaryRelationshipCode;
@@ -156,14 +171,17 @@ public class RelationshipWrapper implements ApiMarker {
   public RelationshipWrapper() {}
 
   public RelationshipWrapper(String relationId, String primaryLegacyId, String secondaryLegacyId,
-      String primaryFirstName, String primaryLastName, String secondaryFirstName,
-      String secondaryLastName, String primaryRelationshipCode, String secondaryRelationshipCode) {
+      String primaryFirstName, String primaryMiddleName, String primaryLastName,
+      String secondaryFirstName, String secondaryMiddleName, String secondaryLastName,
+      String primaryRelationshipCode, String secondaryRelationshipCode) {
     this.relationId = relationId;
     this.primaryLegacyId = primaryLegacyId;
     this.secondaryLegacyId = secondaryLegacyId;
     this.primaryFirstName = primaryFirstName;
+    this.primaryMiddleName = primaryMiddleName;
     this.primaryLastName = primaryLastName;
     this.secondaryFirstName = secondaryFirstName;
+    this.secondaryMiddleName = secondaryMiddleName;
     this.secondaryLastName = secondaryLastName;
     this.primaryRelationshipCode = primaryRelationshipCode;
     this.secondaryRelationshipCode = secondaryRelationshipCode;
@@ -199,6 +217,23 @@ public class RelationshipWrapper implements ApiMarker {
 
   public void setPrimaryFirstName(String primaryFirstName) {
     this.primaryFirstName = primaryFirstName;
+  }
+
+
+  public String getPrimaryMiddleName() {
+    return primaryMiddleName;
+  }
+
+  public String getSecondaryMiddleName() {
+    return secondaryMiddleName;
+  }
+
+  public void setPrimaryMiddleName(String primaryMiddleName) {
+    this.primaryMiddleName = primaryMiddleName;
+  }
+
+  public void setSecondaryMiddleName(String secondaryMiddleName) {
+    this.secondaryMiddleName = secondaryMiddleName;
   }
 
   public String getPrimaryLastName() {
@@ -335,6 +370,22 @@ public class RelationshipWrapper implements ApiMarker {
 
   public void setRelationshipEndDate(String relationshipEndDate) {
     this.relationshipEndDate = relationshipEndDate;
+  }
+
+  public String getPrimarySensitive_Indicator() {
+    return primarySensitive_Indicator;
+  }
+
+  public String getSecondarySensitive_Indicator() {
+    return secondarySensitive_Indicator;
+  }
+
+  public void setPrimarySensitive_Indicator(String primarySensitive_Indicator) {
+    this.primarySensitive_Indicator = primarySensitive_Indicator;
+  }
+
+  public void setSecondarySensitive_Indicator(String secondarySensitive_Indicator) {
+    this.secondarySensitive_Indicator = secondarySensitive_Indicator;
   }
 
 

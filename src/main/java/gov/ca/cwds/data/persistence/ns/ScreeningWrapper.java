@@ -64,12 +64,11 @@ public class ScreeningWrapper implements Serializable {
   public ScreeningWrapper() {}
 
   public ScreeningWrapper(String id, String reference, String name, String screeningDecision,
-      String screeningDecisionDetail, String assigneeStaffId, Date startedAt, String screeningStatus) {
+      String assigneeStaffId, Date startedAt, String screeningStatus) {
     this.id = id;
     this.reference = reference;
     this.name = name;
     this.screeningDecision = screeningDecision;
-    this.screeningDecisionDetail = screeningDecisionDetail;
     this.assignee = null;
     this.assigneeStaffId = assigneeStaffId;
     this.startedAt = freshDate(startedAt);
