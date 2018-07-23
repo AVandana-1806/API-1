@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,10 +38,12 @@ import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.Address;
 import gov.ca.cwds.rest.api.domain.Allegation;
 import gov.ca.cwds.rest.api.domain.CrossReport;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Client;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.Referral;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.services.cms.TickleService;
@@ -90,12 +93,14 @@ public class R04464CrossReportLawEnforcementDueTest {
    */
   @Test
   public void testForCrossReportForLawEnforcementDueReminder() throws Exception {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("1987-06-18").createVictimParticipant();
     Participant perp =
         new ParticipantResourceBuilder().setDateOfBirth("1987-06-18").createPerpParticipant();
 
-    Participant reporter = new ParticipantResourceBuilder()
+    Participant reporter = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
         .setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter")))
         .createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -237,11 +242,13 @@ public class R04464CrossReportLawEnforcementDueTest {
   @Test
   public void testForCrossReportForLawEnforcementDueReminderCreatedWhenClosureDateNull()
       throws Exception {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
     Participant perp = new ParticipantResourceBuilder().createPerpParticipant();
 
-    Participant reporter = new ParticipantResourceBuilder()
+    Participant reporter = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
         .setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter")))
         .createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -604,11 +611,13 @@ public class R04464CrossReportLawEnforcementDueTest {
    */
   @Test
   public void reminderCreatedWhenReporterEnforcementIdNull() throws Exception {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
     Participant perp = new ParticipantResourceBuilder().createPerpParticipant();
 
-    Participant reporter = new ParticipantResourceBuilder()
+    Participant reporter = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
         .setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter")))
         .createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -717,11 +726,13 @@ public class R04464CrossReportLawEnforcementDueTest {
    */
   @Test
   public void reminderCreatedWhenCrossReportEnforcementIdNull() throws Exception {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("1992-06-18").createVictimParticipant();
     Participant perp = new ParticipantResourceBuilder().createPerpParticipant();
 
-    Participant reporter = new ParticipantResourceBuilder()
+    Participant reporter = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
         .setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter")))
         .createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));

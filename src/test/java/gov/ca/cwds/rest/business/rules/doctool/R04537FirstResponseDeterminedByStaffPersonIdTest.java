@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -70,6 +71,7 @@ import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.StaffPersonEntityBuilder;
 import gov.ca.cwds.helper.CmsIdGenerator;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.CrossReport;
@@ -396,7 +398,9 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
 
     CmsIdGenerator generator = new CmsIdGenerator();
     for (Participant participant : participants) {
-      participant.setLegacyId(generator.generate());
+      LegacyDescriptor legacyDescriptor =
+          new LegacyDescriptor(generator.generate(), null, new DateTime(), null, null);
+      participant.setLegacyDescriptor(legacyDescriptor);
     }
     clientParticipants.addParticipants(participants);
     when(participantService.saveParticipants(any(), any(), any(), any(), any()))
