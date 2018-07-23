@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class RelationshipFacade {
     // get participants by screeningId
     Set<String> legacyClientIds = getLegacyClientIdsByScreeningId(screeningId);
     // get relationships from legacy
-    List<ClientRelationship> lagacyRelationships = getCmsRelationships(legacyClientIds);
+    Set<ClientRelationship> lagacyRelationships = getCmsRelationships(legacyClientIds);
     // get relationships from pgsql
     List<Relationship> nsRelationships = getNsRelationships(screeningId);
 
@@ -67,7 +68,7 @@ public class RelationshipFacade {
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
     result.addAll(createRelationships(shouldBeCreated, screeningId));
     result.addAll(updateRelationships(shouldBeUpdated));
-    result = (getRelationshipsThatShouldNotBeUpdated(result, nsRelationships));
+    result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
     // select and return
     return result;
@@ -183,7 +184,7 @@ public class RelationshipFacade {
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
-      List<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
+      final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
     LOGGER.info("lagacyRelationships {}", lagacyRelationships);
     LOGGER.info("nsRelationships {}", nsRelationships);
     List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
@@ -206,7 +207,7 @@ public class RelationshipFacade {
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeUpdated(
-      List<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
+      final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
     if (CollectionUtils.isEmpty(nsRelationships) || CollectionUtils.isEmpty(lagacyRelationships)) {
       return new ArrayList<>();
     }
@@ -216,15 +217,7 @@ public class RelationshipFacade {
       boolean update = false;
       for (Relationship relationship : nsRelationships) {
         if (clientRelationship.getId().equals(relationship.getLegacyId())) {
-          if (("Y".equals(clientRelationship.getAbsentParentCode()) != relationship
-              .isAbsentParentIndicator()
-              || "Y".equals(clientRelationship.getSameHomeCode()) != relationship
-              .getSameHomeStatus()
-              || clientRelationship.getClientRelationshipType() != relationship
-              .getRelationshipType()
-              || clientRelationship.getStartDate() != relationship.getStartDate()
-              || clientRelationship.getEndDate() != relationship.getEndDate())
-              && clientRelationship.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
+          if (clientRelationship.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
               .getTime()) {
             update = true;
           }
@@ -248,9 +241,9 @@ public class RelationshipFacade {
     return nsRelationshipDao.getRelationshipsByScreeningId(screeningId);
   }
 
-  private List<ClientRelationship> getCmsRelationships(Set<String> legacyClientIds) {
+  private Set<ClientRelationship> getCmsRelationships(Set<String> legacyClientIds) {
     LOGGER.info("legacyClientIds {}", legacyClientIds);
-    List<ClientRelationship> relationshipListcms = new ArrayList<>();
+    Set<ClientRelationship> relationshipListcms = new HashSet<>();
     Map<String, Collection<ClientRelationship>> primaryRelationshipMap =
         cmsRelationshipDao.findByPrimaryClientIds(legacyClientIds);
     for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : primaryRelationshipMap

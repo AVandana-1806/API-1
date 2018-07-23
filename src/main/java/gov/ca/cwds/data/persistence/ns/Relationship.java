@@ -29,13 +29,13 @@ public class Relationship implements PersistentObject {
 
   public static final String FIND_RELATIONSHIPS_BY_SCREENING_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByScreeningId";
   public static final String FIND_RELATIONSHIPS_BY_LEGACY_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByLegacyId";
+
   @Id
   @GenericGenerator(name = "relationships_id",
       strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator",
       parameters = {@org.hibernate.annotations.Parameter(name = "sequence_name",
           value = "relationships_id_seq")})
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "relationships_id")
-
   @Column(name = "id")
   private String id;
 
@@ -60,7 +60,6 @@ public class Relationship implements PersistentObject {
   private Date createdAt;
 
   @Column(name = "updated_at")
-
   private Date updatedAt;
 
   @Column(name = "absent_parent_indicator")
