@@ -27,7 +27,8 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
  * Intake Address Converter transforms the legacy {@link Address} into a intake
- * {@link AddressIntakeApi}, From legacy find the recent open address residence for the client.
+ * {@link AddressIntakeApi}, From legacy find the recent open address residence and placement home
+ * for the client.
  * 
  * @author CWDS API Team
  */

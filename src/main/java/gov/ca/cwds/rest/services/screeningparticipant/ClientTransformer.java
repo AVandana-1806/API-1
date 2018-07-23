@@ -42,16 +42,13 @@ public class ClientTransformer implements ParticipantMapper<Client> {
         new IntakeRaceAndEthnicityConverter();
 
     IntakeAddressConverter intakeAddressConverter = new IntakeAddressConverter();
-
     List<PlacementEpisode> placementEpisodes = placementEpisodeDao.findByClientId(clientId);
-
     List<AddressIntakeApi> addresses =
         intakeAddressConverter.getPlacementHomeAddresses(placementEpisodes);
 
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor(clientId, null, new DateTime(client.getLastUpdatedTime()),
             LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription());
-
     String gender = StringUtils.isNotBlank(client.getGenderCode())
         ? (Gender.findByCmsDescription(client.getGenderCode().toUpperCase())).getNsDescription()
         : null;
@@ -119,6 +116,9 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     this.authorizationService = authorizationService;
   }
 
+  /**
+   * @param placementEpisodeDao - placementEpisodeDao
+   */
   public void setPlacementEpisodeDao(PlacementEpisodeDao placementEpisodeDao) {
     this.placementEpisodeDao = placementEpisodeDao;
   }
