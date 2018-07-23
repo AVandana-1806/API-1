@@ -119,7 +119,7 @@ public class RelationshipWrapper implements ApiMarker {
   private String primaryGenderCode;
 
   @Column(name = "Primary_SENSTV_IND")
-  private String primarySensitive_Indicator;
+  private String privarySensitiveIndicator;
 
   @Column(name = "Secondary_LEGACY_ID")
   private String secondaryLegacyId;
@@ -147,7 +147,7 @@ public class RelationshipWrapper implements ApiMarker {
   private String secondaryGenderCode;
 
   @Column(name = "Secondary_SENSTV_IND")
-  private String secondarySensitive_Indicator;
+  private String secondarySensitiveIndicator;
 
   @Column(name = "Primary_REL_ID")
   private String primaryRelationshipCode;
@@ -372,20 +372,20 @@ public class RelationshipWrapper implements ApiMarker {
     this.relationshipEndDate = relationshipEndDate;
   }
 
-  public String getPrimarySensitive_Indicator() {
-    return primarySensitive_Indicator;
+  public String getPrimarySensitiveIndicator() {
+    return privarySensitiveIndicator;
   }
 
-  public String getSecondarySensitive_Indicator() {
-    return secondarySensitive_Indicator;
+  public String getSecondarySensitiveIndicator() {
+    return secondarySensitiveIndicator;
   }
 
-  public void setPrimarySensitive_Indicator(String primarySensitive_Indicator) {
-    this.primarySensitive_Indicator = primarySensitive_Indicator;
+  public void setPrimarySensitiveIndicator(String privarySensitiveIndicator) {
+    this.privarySensitiveIndicator = privarySensitiveIndicator;
   }
 
-  public void setSecondarySensitive_Indicator(String secondarySensitive_Indicator) {
-    this.secondarySensitive_Indicator = secondarySensitive_Indicator;
+  public void setSecondarySensitiveIndicator(String secondarySensitiveIndicator) {
+    this.secondarySensitiveIndicator = secondarySensitiveIndicator;
   }
 
 

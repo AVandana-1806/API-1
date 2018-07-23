@@ -29,6 +29,9 @@ public class RelationshipWrapperTest {
   private String sameHomeCode = "Y";
   private String primaryGenderCode = "M";
   private String secondaryGenderCode = "F";
+  private String relationshipStartDate = "2015-01-31";
+  private String primarySensitiveIndicator = "N";
+  private String secondarySensitiveIndicator = "S";
 
 
   @Test
@@ -92,6 +95,8 @@ public class RelationshipWrapperTest {
     relationshipWrapper.setSecondaryLegacyId(secondaryLegacyId);
     relationshipWrapper.setPrimaryFirstName(primaryFirstName);
     relationshipWrapper.setSecondaryFirstName(secondaryFirstName);
+    relationshipWrapper.setPrimaryMiddleName(primaryMiddleName);
+    relationshipWrapper.setSecondaryMiddleName(secondaryMiddleName);
     relationshipWrapper.setPrimaryLastName(primaryLastName);
     relationshipWrapper.setSecondaryLastName(secondaryLastName);
     relationshipWrapper.setPrimaryRelationshipCode(primaryRelationshipCode);
@@ -106,13 +111,18 @@ public class RelationshipWrapperTest {
     relationshipWrapper.setSameHomeCode(sameHomeCode);
     relationshipWrapper.setPrimaryGenderCode(primaryGenderCode);
     relationshipWrapper.setSecondaryGenderCode(secondaryGenderCode);
+    relationshipWrapper.setRelationshipStartDate(relationshipStartDate);
+    relationshipWrapper.setPrimarySensitiveIndicator(primarySensitiveIndicator);
+    relationshipWrapper.setSecondarySensitiveIndicator(secondarySensitiveIndicator);
 
     assertEquals(relationId, relationshipWrapper.getRelationId());
     assertEquals(primaryLegacyId, relationshipWrapper.getPrimaryLegacyId());
     assertEquals(secondaryLegacyId, relationshipWrapper.getSecondaryLegacyId());
     assertEquals(primaryFirstName, relationshipWrapper.getPrimaryFirstName());
+    assertEquals(primaryMiddleName, relationshipWrapper.getPrimaryMiddleName());
     assertEquals(primaryLastName, relationshipWrapper.getPrimaryLastName());
     assertEquals(secondaryFirstName, relationshipWrapper.getSecondaryFirstName());
+    assertEquals(secondaryMiddleName, relationshipWrapper.getSecondaryMiddleName());
     assertEquals(secondaryLastName, relationshipWrapper.getSecondaryLastName());
     assertEquals(primaryRelationshipCode, relationshipWrapper.getPrimaryRelationshipCode());
     assertEquals(secondaryRelationshipCode, relationshipWrapper.getSecondaryRelationshipCode());
@@ -126,7 +136,9 @@ public class RelationshipWrapperTest {
     assertEquals(sameHomeCode, relationshipWrapper.getSameHomeCode());
     assertEquals(primaryGenderCode, relationshipWrapper.getPrimaryGenderCode());
     assertEquals(secondaryGenderCode, relationshipWrapper.getSecondaryGenderCode());
-
+    assertEquals(relationshipStartDate, relationshipWrapper.getRelationshipStartDate());
+    assertEquals(primarySensitiveIndicator, relationshipWrapper.getPrimarySensitiveIndicator());
+    assertEquals(secondarySensitiveIndicator, relationshipWrapper.getSecondarySensitiveIndicator());
   }
 
 }
