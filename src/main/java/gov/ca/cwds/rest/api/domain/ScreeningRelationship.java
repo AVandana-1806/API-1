@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.rest.api.Request;
 import io.dropwizard.validation.OneOf;
@@ -8,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import javax.ws.rs.DefaultValue;
 
 public class ScreeningRelationship extends ReportingDomain implements Request,
@@ -30,7 +30,7 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
   private String relativeId;
 
   @JsonProperty("relationship_type")
-  @ApiModelProperty(required = true, readOnly = false,
+  @ApiModelProperty(required = true,
       value = "The relationship type code", example = "190")
   private int relationshipType;
 
@@ -70,10 +70,9 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
     this.relationshipType = relationshipType;
     this.absentParentIndicator = absentParentIndicator;
     this.sameHomeStatus = sameHomeStatus;
-    this.startDate = startDate;
-    this.endDate = endDate;
     this.legacyId = legacyId;
-
+    setStartDate(startDate);
+    setEndDate(endDate);
   }
 
   public String getId() {
@@ -124,20 +123,20 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
     this.sameHomeStatus = sameHomeStatus;
   }
 
-  public Date getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(Date startDate) {
-    this.startDate = startDate;
-  }
-
   public Date getEndDate() {
-    return endDate;
+    return Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
   public void setEndDate(Date endDate) {
-    this.endDate = endDate;
+    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
+  }
+
+  public Date getStartDate() {
+    return Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
   public String getLegacyId() {

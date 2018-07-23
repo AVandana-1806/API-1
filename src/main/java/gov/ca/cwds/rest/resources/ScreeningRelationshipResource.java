@@ -15,19 +15,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 
-import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.http.HttpStatus;
-
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.ScreeningRelationshipServiceBackedResource;
@@ -87,7 +74,7 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
-  public Response create(@Valid @ApiParam(hidden = false,
+  public Response create(@Valid @ApiParam(
       required = true) ScreeningRelationship screeningRelationship) {
     return resourceDelegate.create(screeningRelationship);
   }
@@ -113,7 +100,7 @@ public class ScreeningRelationshipResource {
   @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
   public Response update(
-      @Valid @ApiParam(hidden = false, required = true) ScreeningRelationship screeningRelationship,
+      @Valid @ApiParam(required = true) ScreeningRelationship screeningRelationship,
       @PathParam("id") @ApiParam(required = true,
           value = "The id of the Relationship to find") String id) {
     return resourceDelegate.update(id, screeningRelationship);
@@ -121,7 +108,7 @@ public class ScreeningRelationshipResource {
 
   /**
    * Get an {@link ScreeningRelationship}.
-   * 
+   *
    * @param id - id
    * @return The {@link Response}
    */
@@ -133,7 +120,7 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
-  @ApiOperation(value = "Find Relationship by id", code = HttpStatus.SC_OK,
+  @ApiOperation(value = "Find Relationship by id",
       response = ScreeningRelationship.class)
   public Response get(@PathParam("id") @ApiParam(required = true,
       value = "The id of the Relationship to find") String id) {

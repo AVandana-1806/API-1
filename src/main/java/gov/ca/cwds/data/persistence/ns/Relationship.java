@@ -6,8 +6,8 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
+import java.util.Optional;
 import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -16,9 +16,11 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import org.hibernate.annotations.NamedQuery;
 
 @NamedQuery(
-        name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
-        query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId " +
-                "OR r.participantTo.screeningId = :screeningId")
+    name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
+    query =
+        "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId "
+            +
+            "OR r.participantTo.screeningId = :screeningId")
 @NamedQuery(
     name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
     query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")
@@ -91,9 +93,9 @@ public class Relationship implements PersistentObject {
     this.updatedAt = freshDate(updatedAt);
     this.sameHomeStatus = sameHomeStatus;
     this.absentParentIndicator = absentParentIndicator;
-    this.startDate = startDate;
-    this.endDate = endDate;
     this.legacyId = legacyId;
+    setStartDate(startDate);
+    setEndDate(endDate);
   }
 
   @Override
@@ -165,21 +167,22 @@ public class Relationship implements PersistentObject {
     this.sameHomeStatus = sameHomeStatus;
   }
 
-  public Date getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(Date startDate) {
-    this.startDate = startDate;
-  }
-
   public Date getEndDate() {
-    return endDate;
+    return Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
   public void setEndDate(Date endDate) {
-    this.endDate = endDate;
+    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
   }
+
+  public Date getStartDate() {
+    return Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
+  }
+
 
   public String getLegacyId() {
     return legacyId;
