@@ -25,6 +25,7 @@ public class ScreeningParticipantResourceIRT extends IntakeBaseTest {
     expectedResponse = expectedResponse.replace("${participant_id}", participant.getId());
     expectedResponse = expectedResponse.replace("${address_id}", participant.getAddresses().get(0).getId());
 
+    System.out.println(actualJson);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
 
     doDeleteCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + participant.getId());

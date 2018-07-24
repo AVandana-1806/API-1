@@ -35,6 +35,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String actualJson = getStringResponse(doGetCall(SCREENING_RELATIONSHIPS + "/1"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/relationship_get_response.json");
+    System.out.println(actualJson);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
