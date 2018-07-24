@@ -21,12 +21,12 @@ import gov.ca.cwds.test.support.BaseDropwizardApplication;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-//    AuthorizationResourceIRT.class, HoiCaseResourceAuthorizationIRT.class,
-//    HoiCaseResourceIRT.class, HoiReferralResourceIRT.class, HoiScreeningResourceIRT.class,
-//    HoiUsingClientIdResourceIRT.class, InvolvementHistoryResourceIRT.class,
-//    ScreeningIntakeResourceIRT.class, ParticipantIntakeApiResourceIRT.class,
-//    ScreeningRelationshipResourceIRT.class, ContactResourceIRT.class,
-//    ScreeningParticipantResourceIRT.class,
+    AuthorizationResourceIRT.class, HoiCaseResourceAuthorizationIRT.class,
+    HoiCaseResourceIRT.class, HoiReferralResourceIRT.class, HoiScreeningResourceIRT.class,
+    HoiUsingClientIdResourceIRT.class, InvolvementHistoryResourceIRT.class,
+    ScreeningIntakeResourceIRT.class, ParticipantIntakeApiResourceIRT.class,
+    ScreeningRelationshipResourceIRT.class, ContactResourceIRT.class,
+    ScreeningParticipantResourceIRT.class,
     ScreeningResourceIRT.class})
 public class IntegratedResourceTestSuiteIT {
 
