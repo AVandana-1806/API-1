@@ -1,17 +1,11 @@
 package gov.ca.cwds.rest.business.reminders;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.data.cms.ReferralClientDao;
-import gov.ca.cwds.data.cms.StateIdDao;
-import gov.ca.cwds.data.persistence.cms.ReferralClient;
-import gov.ca.cwds.data.persistence.cms.StateId;
-import gov.ca.cwds.fixture.ClientEntityBuilder;
-import gov.ca.cwds.fixture.ReferralClientEntityBuilder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -22,19 +16,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.cms.ReferralClientDao;
 import gov.ca.cwds.data.cms.ReferralDao;
+import gov.ca.cwds.data.cms.StateIdDao;
+import gov.ca.cwds.data.persistence.cms.ReferralClient;
+import gov.ca.cwds.data.persistence.cms.StateId;
+import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
+import gov.ca.cwds.fixture.ReferralClientEntityBuilder;
 import gov.ca.cwds.fixture.ReferralResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.Referral;
 import gov.ca.cwds.rest.services.cms.TickleService;
 
@@ -68,7 +71,8 @@ public class R05443AndR03341StateIdMissingTest {
 
   @Test
   public void testStateIdIsPresent() {
-    String back25YearsDate = LocalDate.now().minus(25, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
+    String back25YearsDate =
+        LocalDate.now().minus(25, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
 
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth(back25YearsDate).createVictimParticipant();
@@ -88,7 +92,8 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
     StateId stateId1 = new StateId();
     stateId1.setEndDate(new Date());
@@ -98,8 +103,8 @@ public class R05443AndR03341StateIdMissingTest {
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(client);
     when(stateIdDao.findAllByClientId(any())).thenReturn(stateIds);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(0)).create(any());
@@ -112,12 +117,15 @@ public class R05443AndR03341StateIdMissingTest {
    */
   @Test
   public void testForStateIdMissingReminder() throws Exception {
-    String back25YearsDate = LocalDate.now().minus(25, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
+    String back25YearsDate =
+        LocalDate.now().minus(25, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth(back25YearsDate).createVictimParticipant();
-    Participant perp =
-        new ParticipantResourceBuilder().setDateOfBirth(back25YearsDate).createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth(back25YearsDate)
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setDateOfBirth(back25YearsDate)
+        .setLegacyDescriptor(legacyDescriptor).createPerpParticipant();
 
     Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -132,12 +140,13 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(client);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(2)).create(any());
@@ -168,13 +177,14 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(client);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(0)).create(any());
@@ -185,10 +195,12 @@ public class R05443AndR03341StateIdMissingTest {
    */
   @Test(expected = DateTimeParseException.class)
   public void testForStateIdMissingDateOfBirthParseException() throws Exception {
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth("1986-06-18").createVictimParticipant();
-    Participant perp =
-        new ParticipantResourceBuilder().setDateOfBirth("1992:06:18").createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth("1986-06-18")
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setDateOfBirth("1992:06:18")
+        .setLegacyDescriptor(legacyDescriptor).createPerpParticipant();
 
     Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -203,13 +215,14 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(client);
 
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(1)).create(any());
@@ -222,7 +235,8 @@ public class R05443AndR03341StateIdMissingTest {
    */
   @Test
   public void testClientAgeIsAbove26() throws Exception {
-    String back26YearsDate = LocalDate.now().minus(26, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
+    String back26YearsDate =
+        LocalDate.now().minus(26, ChronoUnit.YEARS).format(DateTimeFormatter.ISO_LOCAL_DATE);
 
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth(back26YearsDate).createVictimParticipant();
@@ -242,17 +256,21 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(clientDao.find(any(String.class))).thenReturn(client);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(0)).create(any());
   }
 
+  /**
+   * @throws Exception - Exception
+   */
   @Test
   public void testEstimatedAgeIsAbove26() throws Exception {
     int ageNumber = 26;
@@ -275,29 +293,35 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
-    ReferralClient referralClient =
-        new ReferralClientEntityBuilder().setAgeNumber((short) ageNumber).setAgePeriodCode("Y").build();
+    ReferralClient referralClient = new ReferralClientEntityBuilder()
+        .setAgeNumber((short) ageNumber).setAgePeriodCode("Y").build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(referralClientDao.find(any())).thenReturn(referralClient);
     when(clientDao.find(any(String.class))).thenReturn(client);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(0)).create(any());
   }
 
+  /**
+   * @throws Exception - Exception
+   */
   @Test
   public void testEstimatedAgeIsLess26() throws Exception {
     int ageNumber = 25;
 
-    Participant victim =
-        new ParticipantResourceBuilder().setDateOfBirth(null).createVictimParticipant();
-    Participant perp =
-        new ParticipantResourceBuilder().setDateOfBirth(null).createPerpParticipant();
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim = new ParticipantResourceBuilder().setDateOfBirth(null)
+        .setLegacyDescriptor(legacyDescriptor).createVictimParticipant();
+    Participant perp = new ParticipantResourceBuilder().setDateOfBirth(null)
+        .setLegacyDescriptor(legacyDescriptor).createPerpParticipant();
 
     Participant reporter = new ParticipantResourceBuilder().createReporterParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(perp, victim, reporter));
@@ -312,16 +336,17 @@ public class R05443AndR03341StateIdMissingTest {
     gov.ca.cwds.data.persistence.cms.Referral savedReferral =
         new gov.ca.cwds.data.persistence.cms.Referral("123ABC1235", domainReferral, "0X5");
 
-    gov.ca.cwds.data.persistence.cms.Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    gov.ca.cwds.data.persistence.cms.Client client =
+        new ClientEntityBuilder().setEstimatedDobCode("Y").build();
 
-    ReferralClient referralClient =
-        new ReferralClientEntityBuilder().setAgeNumber((short) ageNumber).setAgePeriodCode("Y").build();
+    ReferralClient referralClient = new ReferralClientEntityBuilder()
+        .setAgeNumber((short) ageNumber).setAgePeriodCode("Y").build();
 
     when(referralDao.find(any(String.class))).thenReturn(savedReferral);
     when(referralClientDao.find(any())).thenReturn(referralClient);
     when(clientDao.find(any(String.class))).thenReturn(client);
-    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing =
-        new R05443AndR03341StateIdMissing(clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
+    R05443AndR03341StateIdMissing r05443AndR03341StateIdMissing = new R05443AndR03341StateIdMissing(
+        clientDao, referralDao, referralClientDao, stateIdDao, tickleService);
 
     r05443AndR03341StateIdMissing.stateIdMissing(postedScreeningToReferral);
     verify(tickleService, times(2)).create(any());
