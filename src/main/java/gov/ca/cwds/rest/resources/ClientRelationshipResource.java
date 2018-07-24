@@ -27,8 +27,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * A resource providing a RESTful interface for {@link Resource}. It delegates functions to
- * {@link RelationshipsService}.
+ * A resource providing a RESTful interface for {@link Resource}. It delegates functions to {@link
+ * RelationshipsService}.
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -41,6 +41,7 @@ import io.swagger.annotations.ApiResponses;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ClientRelationshipResource {
+
   private RelationshipsService relationshipsService;
 
   /**
@@ -57,7 +58,6 @@ public class ClientRelationshipResource {
    * Finds a Relationship for a Client id.
    *
    * @param id the id
-   *
    * @return client relationships
    */
   @UnitOfWork(value = "cms")
@@ -66,10 +66,7 @@ public class ClientRelationshipResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
-
-  @ApiOperation(value = "Find relationships by client id", response = Relationship.class,
-      code = 200)
-
+  @ApiOperation(value = "Find relationships by client id", response = Relationship.class)
   public Response get(@PathParam("id") @ApiParam(required = true, name = "id",
       value = "The id of the client to find relationships for") String id) {
     gov.ca.cwds.rest.api.Response relationship = relationshipsService.find(id);
@@ -80,7 +77,6 @@ public class ClientRelationshipResource {
    * Finds a Relationship for a Client id.
    *
    * @param clientIds the list of client ids to return relationships for
-   *
    * @return A list of client relationships
    */
   @UnitOfWork(value = "cms")
@@ -89,10 +85,7 @@ public class ClientRelationshipResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
-
-  @ApiOperation(value = "Find relationships by client id's", response = Relationship.class,
-      code = 200)
-
+  @ApiOperation(value = "Find relationships by client id's", response = Relationship.class)
   public Response getRelationships(
       @QueryParam("clientIds") @ApiParam(required = true, name = "clientIds",
           value = "A list of client id's to find relationships for") final List<String> clientIds) {
