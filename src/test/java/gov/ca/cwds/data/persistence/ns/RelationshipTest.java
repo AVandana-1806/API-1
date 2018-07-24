@@ -27,5 +27,28 @@ public class RelationshipTest {
     assertNull(relationship.getStartDate());
     assertNull(relationship.getEndDate());
   }
+  
+  @Test
+  public void shouldBeAbleToSetProperties() {
+    Date anHourAgo = new Date(System.currentTimeMillis() - 3600 * 1000);
+    Date now = new Date();
+    Relationship relationship = new Relationship();
+    relationship.setId("123");
+    relationship.setClientId("PersonLegacyId");
+    relationship.setRelativeId("RelationLegacydId");
+    relationship.setRelationshipType(RELATIONSHIP_TYPE);
+    relationship.setCreatedAt(anHourAgo);
+    relationship.setUpdatedAt(now);
+    relationship.setSameHomeStatus(true);
+    relationship.setAbsentParentIndicator(false);
+    assertEquals(relationship.getId(), "123");
+    assertEquals(relationship.getClientId(), "PersonLegacyId");
+    assertEquals(relationship.getRelativeId(), "RelationLegacydId");
+    assertEquals(relationship.getRelationshipType(), RELATIONSHIP_TYPE);
+    assertTrue(relationship.getCreatedAt().equals(anHourAgo));
+    assertTrue(relationship.getUpdatedAt().equals(now));
+    assertTrue(relationship.getSameHomeStatus());
+    assertFalse(relationship.isAbsentParentIndicator());
+  }
 
 }
