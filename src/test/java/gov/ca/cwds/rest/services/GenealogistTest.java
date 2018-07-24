@@ -193,6 +193,17 @@ public class GenealogistTest {
     assertFalse(relationship.getSealed());
     assertTrue(relationship.getSensitive());
   }
+  
+  @Test
+  public void givenAClientThatIsSealedThenRelationshipShouldBeSensitive() {
+    sonClient = new ClientEntityBuilder().setId("1").setCommonFirstName("Charlie")
+        .setSensitivityIndicator("R").build();
+    when(clientDao.find(sonClientId)).thenReturn(sonClient);
+    Relationship relationship = genealogist.buildRelationships(relationships, sonClientId);
+    assertTrue(relationship.getSealed());
+    assertFalse(relationship.getSensitive());
+    
+  }
 
   private ArrayList<RelationshipTo> convertToOrderedRelationships(Relationship relationship) {
     ArrayList<RelationshipTo> orderedRelationships = new ArrayList();
