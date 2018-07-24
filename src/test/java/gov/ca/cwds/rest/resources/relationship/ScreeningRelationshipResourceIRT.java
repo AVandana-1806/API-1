@@ -70,5 +70,4 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String actualJson = getStringResponse(doGetCall(RESOURCE_SCREENINGS + "/22/relationships"));
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
-
 }
