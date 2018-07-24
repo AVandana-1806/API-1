@@ -131,8 +131,8 @@ public class RelationshipFacade {
             null,
             null,
             null,
-            false,
-            false,
+            Boolean.FALSE,
+            Boolean.FALSE,
             null,
             null,
             null
@@ -160,8 +160,8 @@ public class RelationshipFacade {
             null,
             null,
             null,
-            false,
-            false,
+            Boolean.FALSE,
+            Boolean.FALSE,
             null,
             null,
             null
