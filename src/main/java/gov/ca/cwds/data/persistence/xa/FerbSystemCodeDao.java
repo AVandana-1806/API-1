@@ -52,7 +52,7 @@ public class FerbSystemCodeDao extends SystemCodeDao {
 
     try {
       final Query<SystemCode> query = session.getNamedQuery(namedQueryName)
-          .setString("foreignKeyMetaTable", foreignKeyMetaTable).setReadOnly(true)
+          .setParameter("foreignKeyMetaTable", foreignKeyMetaTable).setReadOnly(true)
           .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL);
       ret = query.list().toArray(new SystemCode[0]);
       LOGGER.info("XaSystemCodeDao.findByForeignKeyMetaTable: meta: {}, count: {}",

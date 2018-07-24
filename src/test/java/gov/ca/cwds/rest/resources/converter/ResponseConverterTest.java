@@ -33,7 +33,7 @@ public class ResponseConverterTest {
 
     @Test
     public void withDataResponseShouldReturn404StatusWhenDataIsNull(){
-        Response response = converter.withDataResponse(null);
+        Response response = converter.withDataResponse((gov.ca.cwds.rest.api.Response) null);
         assertEquals(404, response.getStatus());
     }
 
