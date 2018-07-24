@@ -1,5 +1,6 @@
 {
   "id": "${participant_id}",
+  "legacy_source_table" : "CLIENT_T",
   "first_name": "Test",
   "last_name": "Child031204",
   "gender": "male",

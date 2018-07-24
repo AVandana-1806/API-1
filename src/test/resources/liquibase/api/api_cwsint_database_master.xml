@@ -34,4 +34,5 @@
     <include file="liquibase/dml/cws_out_of_home_placement.xml"/>
     <include file="liquibase/dml/cws_placement_episode.xml"/>
     <include file="liquibase/dml/cws_placement_home.xml"/>
+    <include file="liquibase/api/data/relationships_cms_data.xml"/>
 </databaseChangeLog>

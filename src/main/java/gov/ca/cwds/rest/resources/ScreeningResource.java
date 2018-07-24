@@ -3,6 +3,8 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -109,15 +111,13 @@ public class ScreeningResource {
     return resourceDelegate.update(id, screening);
   }
 
-  // MOCK SERVICE
   /**
    * Get an {@link ScreeningRelationship}.
    *
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @UnitOfWork(value = DATASOURCE_NS, readOnly = true, flushMode = FlushMode.MANUAL,
-      transactional = false)
+  @XAUnitOfWork
   @GET
   @Path("/{screeningId}/relationships")
   @ApiResponses(
@@ -129,8 +129,7 @@ public class ScreeningResource {
       response = ScreeningRelationship.class)
   public Response getRelationshipsByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
       value = "The id of the Screening to find") String screeningId) {
-    return Response.ok().entity(relationshipFacade.getRelationshipsByScreeningId(screeningId))
-        .build();
+    return new ResponseConverter().withDataResponse(relationshipFacade.getRelationshipsByScreeningId(screeningId));
   }
 
 }
