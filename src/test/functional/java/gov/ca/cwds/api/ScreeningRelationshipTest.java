@@ -1,6 +1,6 @@
 package gov.ca.cwds.api;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 import org.junit.Before;
 import org.junit.Test;

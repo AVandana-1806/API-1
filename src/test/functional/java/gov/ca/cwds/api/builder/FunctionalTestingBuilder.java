@@ -2,6 +2,8 @@ package gov.ca.cwds.api.builder;
 
 import static io.restassured.RestAssured.given;
 
+import java.util.Map;
+
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
@@ -41,24 +43,23 @@ public class FunctionalTestingBuilder {
    */
   public Response processGetRequest(String resourcePath, String parameter, String ParameterValue,
       String token) {
-    return given().queryParam(parameter, ParameterValue).queryParam(TOKEN, token)
-        .get(resourcePath).then().contentType(ContentType.JSON).extract().response();
+    return given().queryParam(parameter, ParameterValue).queryParam(TOKEN, token).get(resourcePath)
+        .then().contentType(ContentType.JSON).extract().response();
   }
 
   /**
-   * Method to process the POST with path parameters
+   * Method to process the POST request with single and multiple path parameters
    * 
    * @param object - object
    * @param resourcePath - resourcePath
-   * @param pathParam - pathParam
-   * @param pathParamValue - pathParamValue
+   * @param parameterNameValuePairs - parameterNameValuePairs
    * @param token - token
    * @return the post response
    */
-  public Response processPostRequestWithPathParameter(Object object, String resourcePath,
-      String pathParam, String pathParamValue, String token) {
+  public Response processPostRequestWithPathParameters(Object object, String resourcePath,
+      Map<String, Object> parameterNameValuePairs, String token) {
     return given().queryParam(TOKEN, token).contentType(ContentType.JSON)
-        .pathParam(pathParam, pathParamValue).accept(ContentType.JSON).body(object).when()
+        .pathParams(parameterNameValuePairs).accept(ContentType.JSON).body(object).when()
         .post(resourcePath).then().contentType(ContentType.JSON).extract().response();
   }
 

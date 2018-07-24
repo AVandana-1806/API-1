@@ -1,4 +1,4 @@
-package gov.ca.cwds.api.hoi;
+package gov.ca.cwds.api.hoi.snapshot;
 
 import static org.hamcrest.Matchers.equalTo;
 
