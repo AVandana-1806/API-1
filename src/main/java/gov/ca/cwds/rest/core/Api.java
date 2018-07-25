@@ -64,6 +64,20 @@ public final class Api {
     private ResponseMessage() {}
   }
 
+  public static class HealthCheck {
+
+    public static final String AUTH_STATUS = "auth_status";
+    public static final String SWAGGER_STATUS = "swagger_status";
+
+    private HealthCheck() {
+    }
+  }
+
+  /**
+   * A {@code String} constant representing {@value #RESOURCE_SYSTEM_INFORMATION} API..
+   */
+  public static final String RESOURCE_SYSTEM_INFORMATION = "system-information";
+
   /**
    * A {@code String} constant representing {@value #RESOURCE_ADDRESSES} API..
    */
@@ -165,7 +179,8 @@ public final class Api {
   public static final String RESOURCE_REFERRALS = "referrals";
 
   /**
-   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT} API..
+   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT}
+   * API..
    */
   public static final String RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT = "hoi_referrals";
 
