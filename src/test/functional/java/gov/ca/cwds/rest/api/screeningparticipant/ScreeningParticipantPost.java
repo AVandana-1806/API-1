@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.FunctionalTest;
@@ -18,6 +19,7 @@ import gov.ca.cwds.rest.core.Api;
  * @author CWDS API Team
  *
  */
+@Ignore
 public class ScreeningParticipantPost extends FunctionalTest {
   String resourcePath;
   private FunctionalTestingBuilder functionalTestingBuilder;

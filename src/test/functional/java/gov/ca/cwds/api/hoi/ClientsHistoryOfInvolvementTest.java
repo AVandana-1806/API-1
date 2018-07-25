@@ -23,14 +23,13 @@ import gov.ca.cwds.rest.core.Api;
 import io.restassured.response.Response;
 
 /**
- * Functional Testing for hoi referrals end point with Social Worker Privilege Only(GVR_ENTC = 1084)
- * 
  * @author CWDS API Team
+ *
  */
-public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
+public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
 
-  String referralsPath;
   String resourcePath;
+  String referralsPath;
   private FunctionalTestingBuilder functionalTestingBuilder;
 
   /**
@@ -39,7 +38,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
   @Before
   public void setup() {
     referralsPath = getResourceUrlFor("/" + Api.RESOURCE_REFERRALS);
-    resourcePath = getResourceUrlFor("/" + Api.RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT);
+    resourcePath = getResourceUrlFor("/" + Api.RESOURCE_CLIENT + "/" + Api.HISTORY_OF_INVOLVEMENTS);
     functionalTestingBuilder = new FunctionalTestingBuilder();
   }
 
@@ -48,65 +47,67 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
-  public void testSuccessToAccessNoConditionClient() throws Exception {
+  public void testSocialWorkerCanAccessToNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then().body("isEmpty()",
-        Matchers.is(false));
+    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then().body("referrals[]",
+        Matchers.notNullValue());
   }
 
   /**
-   * @throws Exception - Exception
+   * @throws Exception
    * 
    */
   @Test
-  public void failedToAccessSameCountySensitiveClient() throws Exception {
+  public void testSocialWorkerCantAccessToSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
-        .body("isEmpty()", Matchers.is(true)).statusCode(200);
+        .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
   /**
-   * @throws Exception - Exception
+   * @throws Exception
    * 
    */
   @Test
-  public void failedToAccessSameCountySealedClient() throws Exception {
+  public void testSocialWorkerCantAccessToDifferentCountySensitiveClient() throws Exception {
+    Map<String, Object> queryParams = new HashMap<String, Object>();
+    queryParams.put("clientIds", "9PIxHucCON");
+    queryParams.put(functionalTestingBuilder.TOKEN, token);
+    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
+        .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
+  }
+
+  /**
+   * @throws Exception
+   * 
+   */
+  @Test
+  public void testSocialWorkerCantAccessToSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
-        .body("isEmpty()", Matchers.is(true)).statusCode(200);
+        .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
   /**
+   * @throws Exception
    * 
    */
   @Test
-  public void failedToAccessDifferentCountySensitiveClient() {
-    Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", "9PIxHucCON");
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
-        .body("isEmpty()", Matchers.is(true)).statusCode(200);
-  }
-
-  /**
-   * 
-   */
-  @Test
-  public void failedToAccessDifferentCountySealedClient() {
+  public void testSocialWorkerCantToAccessToDifferentCountySealedClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
-        .body("isEmpty()", Matchers.is(true)).statusCode(200);
+        .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
   protected String findVictimClientId(String sensitivityIndicator, String incidentCounty)

@@ -205,6 +205,11 @@ public final class Api {
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
 
   /**
+   * A {@code String} constant representing {@value #HISTORY_OF_INVOLVEMENTS} API.
+   */
+  public static final String HISTORY_OF_INVOLVEMENTS = "history_of_involvements";
+
+  /**
    * Identifer for CMS DB2 datasource.
    */
   public static final String DATASOURCE_CMS = Datasource.CMS;
