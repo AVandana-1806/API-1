@@ -1,18 +1,24 @@
 package gov.ca.cwds.api.hoi;
 
-import static io.dropwizard.testing.FixtureHelpers.fixture;
-
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.Participant;
+import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.response.Response;
 
@@ -23,9 +29,7 @@ import io.restassured.response.Response;
  */
 public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
 
-  private static String HOI_REFERRAL_NO_CONDITIONS_RESPONSE =
-      fixture("gov/ca/cwds/rest/api/fixtures/hoi-referral-no-conditions-response.json");
-
+  String referralsPath;
   String resourcePath;
   private FunctionalTestingBuilder functionalTestingBuilder;
 
@@ -34,6 +38,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    */
   @Before
   public void setup() {
+    referralsPath = getResourceUrlFor("/" + Api.RESOURCE_REFERRALS);
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT);
     functionalTestingBuilder = new FunctionalTestingBuilder();
   }
@@ -44,34 +49,37 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testSuccessToAccessNoConditionClient() throws Exception {
+    String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", "CFOmFrm057");
+    queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    Response response = functionalTestingBuilder.processGetRequest(resourcePath, queryParams);
-    String actualJson = response.asString();
-    JSONAssert.assertEquals(HOI_REFERRAL_NO_CONDITIONS_RESPONSE, actualJson,
-        JSONCompareMode.NON_EXTENSIBLE);
+    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then().body("isEmpty()",
+        Matchers.is(false));
   }
 
   /**
+   * @throws Exception - Exception
    * 
    */
   @Test
-  public void failedToAccessSameCountySensitiveClient() {
+  public void failedToAccessSameCountySensitiveClient() throws Exception {
+    String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", "B5mi8Qr00T");
+    queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
   }
 
   /**
+   * @throws Exception - Exception
    * 
    */
   @Test
-  public void failedToAccessSameCountySealedClient() {
+  public void failedToAccessSameCountySealedClient() throws Exception {
+    String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", "4kgIiDy00T");
+    queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
@@ -99,6 +107,23 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     queryParams.put(functionalTestingBuilder.TOKEN, token);
     functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
+  }
+
+  protected String findVictimClientId(String sensitivityIndicator, String incidentCounty)
+      throws IOException, JsonParseException, JsonMappingException {
+    ScreeningToReferral referrals = new ScreeningToReferralResourceBuilder().setEndedAt(null)
+        .setAssigneeStaffId(userInfo.getStaffId()).setIncidentCounty(incidentCounty)
+        .setLimitedAccessCode(sensitivityIndicator).createScreeningToReferral();
+    Response response =
+        functionalTestingBuilder.processPostRequest(referrals, referralsPath, token);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JodaModule());
+    ScreeningToReferral screeningToReferral =
+        mapper.readValue(response.asString(), ScreeningToReferral.class);
+
+    Optional<Participant> victim = screeningToReferral.getParticipants().stream()
+        .filter(value -> value.getRoles().contains("Victim")).findFirst();
+    return victim.get().getLegacyDescriptor().getId();
   }
 
 }
