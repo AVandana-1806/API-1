@@ -547,7 +547,7 @@ public class CountyOwnership implements PersistentObject, Serializable {
    */
   @Override
   public Serializable getPrimaryKey() {
-    return entityId;
+    return getEntityId();
   }
 
   /**

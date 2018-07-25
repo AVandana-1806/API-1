@@ -4,5 +4,7 @@
   "relative_id": "6YtTyyc0ND",
   "relationship_type": 190,
   "same_home_status": "U",
-  "absent_parent_indicator": true
+  "absent_parent_indicator": true,
+  "start_date" : "2018-07-19",
+  "end_date" : "2019-07-19"
 }

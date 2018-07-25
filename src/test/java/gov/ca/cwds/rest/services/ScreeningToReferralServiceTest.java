@@ -749,9 +749,13 @@ public class ScreeningToReferralServiceTest {
     Long personId = 1L;
     Long relationId = 2L;
     int relationshipType = 123;
+    Date startDate= new Date();
+    Date endDate= new Date();
+    String legacyId = "456ABC123D";
+
 
     ScreeningRelationship relationship = new ScreeningRelationship(id, personId.toString(),
-        relationId.toString(), relationshipType, true, "N");
+        relationId.toString(), relationshipType, true, "N", new Date(), new Date(), "1234567890");
     Set<ScreeningRelationship> relationships = new HashSet<>();
     relationships.add(relationship);
 
@@ -785,10 +789,13 @@ public class ScreeningToReferralServiceTest {
     String personId = "QWER";
     String relationId = "ZXCV";
     int relationshipType = 123;
+    Date startDate= new Date();
+    Date endDate= new Date();
+    String legacyId = "456ABC123D";
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
     ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N", startDate, endDate, legacyId);
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();

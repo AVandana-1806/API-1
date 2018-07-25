@@ -1,0 +1,12 @@
+[
+  {
+    "id": "5",
+    "client_id": "1004",
+    "relative_id": "1005",
+    "relationship_type": 190,
+    "absent_parent_indicator": true,
+    "same_home_status": "U",
+    "start_date": "2018-07-19",
+    "end_date": "2019-07-19"
+  }
+]

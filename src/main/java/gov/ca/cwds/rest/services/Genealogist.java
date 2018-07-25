@@ -54,35 +54,35 @@ public class Genealogist {
 
     if (clientIsPrimary) {
       boolean relatedPersonSensitive =
-          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitive_Indicator(), "S")
+          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitiveIndicator(), "S")
               ? Boolean.TRUE
               : Boolean.FALSE;
       boolean relatedPersonSealed =
-          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitive_Indicator(), "R")
+          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitiveIndicator(), "R")
               ? Boolean.TRUE
               : Boolean.FALSE;
       relationshipTo = createRelationShipTo(relationship.getSecondaryLegacyId(),
           relationship.getPrimaryRelationshipCode(), relationship.getSecondaryRelationshipCode(),
           relationship.getSecondaryFirstName(), relationship.getSecondaryMiddleName(),
           relationship.getSecondaryLastName(), relationship.getSecondaryNameSuffix(),
-          relationship.getSecondaryGenderCode(), relationship.getSecondaryDateOfBirth(), (short) 0,
-          "", relationship.getSecondaryDateOfDeath(), relationship.getRelationshipStartDate(),
+          relationship.getSecondaryGenderCode(), relationship.getSecondaryDateOfBirth(),
+          relationship.getSecondaryDateOfDeath(), relationship.getRelationshipStartDate(),
           relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
           relationship.getSameHomeCode(), "", relatedPersonSensitive, relatedPersonSealed);
     } else {
       boolean relatedPersonSensitive =
-          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitive_Indicator(), "S")
+          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitiveIndicator(), "S")
               ? Boolean.TRUE
               : Boolean.FALSE;
       boolean relatedPersonSealed =
-          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitive_Indicator(), "R")
+          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitiveIndicator(), "R")
               ? Boolean.TRUE
               : Boolean.FALSE;
       relationshipTo = createRelationShipTo(relationship.getPrimaryLegacyId(),
           relationship.getSecondaryRelationshipCode(), relationship.getPrimaryRelationshipCode(),
           relationship.getPrimaryFirstName(), relationship.getPrimaryMiddleName(),
           relationship.getPrimaryLastName(), relationship.getPrimaryNameSuffix(),
-          relationship.getPrimaryGenderCode(), relationship.getPrimaryDateOfBirth(), (short) 0, "",
+          relationship.getPrimaryGenderCode(), relationship.getPrimaryDateOfBirth(), 
           relationship.getPrimaryDateOfDeath(), relationship.getRelationshipStartDate(),
           relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
           relationship.getSameHomeCode(), "", relatedPersonSensitive, relatedPersonSealed);
@@ -93,7 +93,7 @@ public class Genealogist {
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
       String secondaryRelation, String secondaryFirstname, String secondaryMiddleName,
       String secodnaryLastName, String nameSuffix, String relatedGender, String relatedDateOfBirth,
-      Short relatedAge, String relatedAgeUnit, String relatedDateOfDeath,
+      String relatedDateOfDeath,
       String relationshipStartDate, String relationshipEndDate, String absentParentCode,
       String sameHomeCode, String relationContext, Boolean relatedPersonSensitive,
       Boolean relatedPersonSealed) {

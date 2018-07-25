@@ -1,0 +1,24 @@
+[
+  {
+    "id": "8",
+    "client_id": "1015",
+    "relative_id": "1016",
+    "relationship_type": 205,
+    "absent_parent_indicator": true,
+    "same_home_status": "U",
+    "start_date": "2018-07-19",
+    "end_date": "2019-07-19",
+    "legacy_id": "0btlf7s004"
+  },
+  {
+    "id": "9",
+    "client_id": "1016",
+    "relative_id": "1017",
+    "relationship_type": 205,
+    "absent_parent_indicator": true,
+    "same_home_status": "U",
+    "start_date": "2018-07-19",
+    "end_date": "2019-07-19",
+    "legacy_id": "0btlf7s005"
+  }
+]

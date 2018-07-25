@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.api.screeningparticipant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +40,10 @@ public class ScreeningParticipantPost extends FunctionalTest {
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId("277").setLegacyDescriptor(legacyDescriptor).build();
+    Map<String, Object> pathParams = new HashMap<String, Object>();
+    pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameter(intakeParticipant, resourcePath, "id", "277", token)
+        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
         .then().statusCode(403);
   }
 
@@ -51,8 +56,10 @@ public class ScreeningParticipantPost extends FunctionalTest {
         new LegacyDescriptor("B0gYFaU057", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId("277").setLegacyDescriptor(legacyDescriptor).build();
+    Map<String, Object> pathParams = new HashMap<String, Object>();
+    pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameter(intakeParticipant, resourcePath, "id", "277", token)
+        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
         .then().statusCode(403);
   }
 
@@ -65,8 +72,10 @@ public class ScreeningParticipantPost extends FunctionalTest {
         new LegacyDescriptor("TbCDoJB0La", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId("277").setLegacyDescriptor(legacyDescriptor).build();
+    Map<String, Object> pathParams = new HashMap<String, Object>();
+    pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameter(intakeParticipant, resourcePath, "id", "277", token)
+        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
         .then().statusCode(403);
   }
 
@@ -79,8 +88,10 @@ public class ScreeningParticipantPost extends FunctionalTest {
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId("277").setLegacyDescriptor(legacyDescriptor).build();
+    Map<String, Object> pathParams = new HashMap<String, Object>();
+    pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameter(intakeParticipant, resourcePath, "id", "277", token)
+        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
         .then().statusCode(403);
   }
 
