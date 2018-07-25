@@ -204,7 +204,6 @@ dependencies {
 		exclude group: 'junit', module: 'junit'
 		
 	// functional testing
-    testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
     	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'	
 	}
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
