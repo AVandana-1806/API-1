@@ -53,7 +53,7 @@ public class DrmsDocument extends ReportingDomain implements Request, Response, 
 
   /**
    * @param creationTimeStamp creation TimeStamp
-   * @param drmsDocumentTemplateId drms Document Template Id
+   * @param drmsDocumentTemplateId DRMS Document Template Id
    * @param fingerprintStaffPerson finger print StaffPerson
    * @param staffPersonId - staffPersonid
    * @param handleName - handle Name

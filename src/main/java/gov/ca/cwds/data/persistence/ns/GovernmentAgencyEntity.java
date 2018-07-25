@@ -1,9 +1,8 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,19 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.util.FerbDateUtils;
+
 /**
  * CWDS API Team
  */
-
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity.findByCrossReportId",
     query = "FROM gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity"
         + " WHERE crossReportId = :crossReportId")
-
 @Entity
 @Table(name = "agencies")
 public class GovernmentAgencyEntity implements PersistentObject {
@@ -33,14 +34,9 @@ public class GovernmentAgencyEntity implements PersistentObject {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agencies_id_seq")
-  @GenericGenerator(
-      name = "agencies_id_seq",
-      strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator",
-      parameters = {
-          @org.hibernate.annotations.Parameter(
-              name = "sequence_name", value = "agencies_id_seq")
-      }
-  )
+  @GenericGenerator(name = "agencies_id_seq",
+      strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator", parameters = {
+          @org.hibernate.annotations.Parameter(name = "sequence_name", value = "agencies_id_seq")})
   private String id;
 
   @Basic

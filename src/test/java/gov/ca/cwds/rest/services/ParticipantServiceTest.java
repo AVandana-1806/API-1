@@ -238,7 +238,7 @@ public class ParticipantServiceTest {
     verify(csecHistoryService).updateCsecHistoriesByClientId(argThat(new ArgumentMatcher<String>() {
       @Override
       public boolean matches(String clientId) {
-        assertEquals("098UijH1gf", clientId);
+        assertEquals("1234567ABC", clientId);
         return true;
       }
     }), argThat(new ArgumentMatcher<List<CsecHistory>>() {
@@ -248,7 +248,7 @@ public class ParticipantServiceTest {
         assertEquals(1, csecs.size());
         CsecHistory csecHistory = csecs.get(0);
         assertNotNull(csecHistory);
-        assertEquals("098UijH1gf", csecHistory.getChildClient());
+        assertEquals("1234567ABC", csecHistory.getChildClient());
         assertEquals(LocalDate.parse("2018-05-28"), csecHistory.getStartDate());
         assertEquals(LocalDate.parse("2018-05-29"), csecHistory.getEndDate());
         SexualExploitationType sexualExploitationType = csecHistory.getSexualExploitationType();
@@ -378,7 +378,7 @@ public class ParticipantServiceTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
-        .contains("There is no CSEC code id provided for client with id: 098UijH1gf"));
+        .contains("There is no CSEC code id provided for client with id: 1234567ABC"));
   }
 
   @Test
@@ -645,9 +645,12 @@ public class ParticipantServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void testClientDoesNotExistFail() throws Exception {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
     defaultReporter = new ParticipantResourceBuilder()
         .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).createReporterParticipant();
-    defaultVictim = new ParticipantResourceBuilder().createPerpParticipant();
+    defaultVictim = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
+        .createPerpParticipant();
     String badLegacyId = "IUKNOWNIDI";
 
     LegacyDescriptor descriptor =
@@ -970,7 +973,7 @@ public class ParticipantServiceTest {
         .processSafelySurrenderedBabies(argThat(new ArgumentMatcher<String>() {
           @Override
           public boolean matches(String childClientId) {
-            assertEquals("098UijH1gf", childClientId);
+            assertEquals("1234567ABC", childClientId);
             return true;
           }
         }), argThat(new ArgumentMatcher<String>() {
@@ -1001,9 +1004,8 @@ public class ParticipantServiceTest {
   }
 
   @SuppressWarnings("javadoc")
-  @Test(expected = ServiceException.class)
-  public void shouldThrowServiceExceptionWhenUpdateClientThrowsPersistenceException()
-      throws Exception {
+  @Test
+  public void shouldReportExceptionWhenUpdateClientThrowsPersistenceException() {
     String victimClientLegacyId = "ABC123DSAF";
 
     LegacyDescriptor descriptor =
@@ -1027,6 +1029,7 @@ public class ParticipantServiceTest {
     when(clientService.update(any(String.class), any())).thenThrow(new PersistenceException());
     participantService.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
+    assertEquals(messageBuilder.getMessages().size(), 1);
   }
 
   @Test

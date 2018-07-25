@@ -92,7 +92,7 @@ public class InvestigationAddress extends ReportingDomain implements Request, Re
   }
 
   /**
-   * constructing InvestigationAddress object from ClientAddress(CMS) persistenced object
+   * constructing InvestigationAddress object from ClientAddress(CMS) persisted object
    * 
    * @param persistedClientAddress - client address object
    * @param cmsRecordDescriptor - legacy record descriptor
@@ -115,7 +115,6 @@ public class InvestigationAddress extends ReportingDomain implements Request, Re
    * @param cmsRecordDescriptor - legacy record descriptor
    */
   public InvestigationAddress(Reporter reporter, CmsRecordDescriptor cmsRecordDescriptor) {
-
     this.streetAddress = trim(reporter.getStreetAddress());
     this.city = trim(reporter.getCity());
     this.state = reporter.getStateCd();

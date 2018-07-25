@@ -133,7 +133,7 @@ public class ScreeningToReferralTest {
     DateTime dateTime = DateTime.parse("2018-06-11T11:47:07.524-07:00");
     DateTime dateTimeUTC = dateTime.withZone(DateTimeZone.UTC);
     LegacyDescriptor legacyDescriptor =
-        new LegacyDescriptor("098UijH1gf", null, dateTimeUTC, LegacyTable.CLIENT.getName(), null);
+        new LegacyDescriptor(null, null, dateTimeUTC, LegacyTable.CLIENT.getName(), null);
     Participant participant = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
         .createVictimParticipant();
     participants.add(participant);

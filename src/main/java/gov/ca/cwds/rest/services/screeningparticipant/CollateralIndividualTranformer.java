@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,10 +46,9 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
     String state = IntakeCodeCache.global()
         .getIntakeCodeForLegacySystemCode(collateralIndividual.getStateCode());
 
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays
-        .asList(new AddressIntakeApi(null, null, streetAddress, collateralIndividual.getCity(),
-            state, getZip(collateralIndividual), null, legacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = Collections.singletonList(
+        new AddressIntakeApi(null, null, streetAddress, collateralIndividual.getCity(),
+            state, getZip(collateralIndividual), null, legacyDescriptor));
 
     String phone = collateralIndividual.getPrimaryPhoneNo() != null
         ? collateralIndividual.getPrimaryPhoneNo().toString()
@@ -65,11 +65,14 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
   }
 
   private String getZip(CollateralIndividual collateralIndividual) {
-    String zip = collateralIndividual.getZipNumber().toString();
-    if (collateralIndividual.getZipSuffixNumber() != null) {
-      return collateralIndividual.getZipNumber() + "-" + collateralIndividual.getZipSuffixNumber();
-    }
-    return zip;
+    return collateralIndividual.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (collateralIndividual.getZipSuffixNumber() != null) { return
+     * collateralIndividual.getZipNumber() + "-" + collateralIndividual.getZipSuffixNumber(); }
+     * return zip;
+     */
   }
 
 }

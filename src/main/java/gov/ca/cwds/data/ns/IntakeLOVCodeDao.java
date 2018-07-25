@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -30,20 +31,22 @@ public class IntakeLOVCodeDao extends BaseDaoImpl<IntakeLOVCodeEntity> {
   }
 
   /**
-   * Find map of IntakeLOVCodeEntity by Set of intake codes
+   * Find map of IntakeLOVCodeEntity by Set of intake codes.
    *
    * @param intakeCodes Set of intake codes
    * @return map where key is an intake code and value is an IntakeLOVCodeEntity
    */
+  @SuppressWarnings("unchecked")
   public Map<String, IntakeLOVCodeEntity> findIntakeLOVCodesByIntakeCodes(Set<String> intakeCodes) {
     if (intakeCodes == null || intakeCodes.isEmpty()) {
       return new HashMap<>();
     }
-    @SuppressWarnings("unchecked") final Query<IntakeLOVCodeEntity> query = this.getSessionFactory()
-        .getCurrentSession()
-        .getNamedQuery(constructNamedQueryName("findIntakeLOVCodesByIntakeCodes"))
-        .setParameter("intakeCodes", intakeCodes);
+    final Query<IntakeLOVCodeEntity> query =
+        this.grabSession().getNamedQuery(constructNamedQueryName("findIntakeLOVCodesByIntakeCodes"))
+            .setReadOnly(true).setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL)
+            .setParameter("intakeCodes", intakeCodes);
     return query.list().stream()
         .collect(Collectors.toMap(IntakeLOVCodeEntity::getIntakeCode, c -> c));
   }
+
 }

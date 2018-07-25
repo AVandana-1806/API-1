@@ -40,7 +40,7 @@ public class ParticipantIntakeApiResourceBuilder {
       + "  \"ethnicity_detail\": [\n" + "    \"Mexican\"\n" + "  ]\n" + "}";
   String screeningId = "12345";
   Set<String> roles = new HashSet<>(Arrays.asList("Victim"));
-  Set<AddressIntakeApi> addresses = new HashSet<>();
+  List<AddressIntakeApi> addresses = new ArrayList<>();
   Set<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers = new HashSet<>();
   Boolean sealed = false;
   Boolean sensitive = false;
@@ -224,7 +224,7 @@ public class ParticipantIntakeApiResourceBuilder {
    * @param addresses - addresses
    * @return the addresses
    */
-  public ParticipantIntakeApiResourceBuilder setAddresses(Set<AddressIntakeApi> addresses) {
+  public ParticipantIntakeApiResourceBuilder setAddresses(List<AddressIntakeApi> addresses) {
     this.addresses = addresses;
     return this;
   }

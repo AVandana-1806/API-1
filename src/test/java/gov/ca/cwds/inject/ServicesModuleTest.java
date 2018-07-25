@@ -17,18 +17,18 @@ import com.google.inject.Injector;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
-import gov.ca.cwds.data.cms.SystemCodeDao;
-import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
+import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.inject.DataAccessModuleTest.TestDataAccessModule;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.cms.GovernmentOrganizationService;
 import gov.ca.cwds.rest.services.cms.SystemCodeService;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 import io.dropwizard.setup.Bootstrap;
 
-public class ServicesModuleTest {
+public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
 
   public static class TestServicesModule extends AbstractModule {
 
@@ -51,17 +51,16 @@ public class ServicesModuleTest {
 
   }
 
-  SystemCodeDao systemCodeDao;
-  SystemMetaDao systemMetaDao;
   IntakeLovDao intakeLovDao;
   SystemCodeService systemCodeService;
   IntakeLovService intakeLovService;
   ServicesModule target;
 
+  @Override
   @Before
   public void setup() throws Exception {
-    systemCodeDao = mock(SystemCodeDao.class);
-    systemMetaDao = mock(SystemMetaDao.class);
+    super.setup();
+
     intakeLovDao = mock(IntakeLovDao.class);
     systemCodeService = new SystemCodeService(systemCodeDao, systemMetaDao);
     intakeLovService = new IntakeLovService(intakeLovDao);
@@ -113,25 +112,6 @@ public class ServicesModuleTest {
     MessageBuilder actual = target.provideMessageBuilder();
     assertThat(actual, is(notNullValue()));
   }
-
-  @Test
-  public void provideSystemCodeService_A$SystemCodeDao$SystemMetaDao() throws Exception {
-    SystemCodeService actual = target.provideSystemCodeService(systemCodeDao, systemMetaDao, null);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
-  public void provideIntakeCodeService_A$IntakeLovDao() throws Exception {
-    IntakeLovService actual = target.provideIntakeLovService(intakeLovDao);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  // @Test
-  // public void provideSystemCodeCache_A$SystemCodeService() throws Exception {
-  // gov.ca.cwds.rest.api.domain.cms.SystemCodeCache actual =
-  // target.provideSystemCodeCache(systemCodeService);
-  // assertThat(actual, is(notNullValue()));
-  // }
 
   @Test
   public void provideCmsSystemCodeSerializer_A$SystemCodeCache() throws Exception {

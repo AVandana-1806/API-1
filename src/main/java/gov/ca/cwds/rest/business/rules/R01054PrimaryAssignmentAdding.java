@@ -19,10 +19,13 @@ import gov.ca.cwds.rest.services.ServiceException;
  * R - 01054 Prmary Assignment Adding
  * <p>
  * Rule Text<br>
- * When adding a Primary Assignment (to a CASE or REFERRAL) set the CASE/REFERRAL.Government_Entity_Type to the CWS_Office.Government_Entity_Type of the Primary Assignment.
+ * When adding a Primary Assignment (to a CASE or REFERRAL) set the
+ * CASE/REFERRAL.Government_Entity_Type to the CWS_Office.Government_Entity_Type of the Primary
+ * Assignment.
  * <p>
  * Access Logic<br>
- * Set CASE/REFERRAL.Government_Entity_Type = ASSIGNMENT (where .Type_Of_Assignment_Code = 'P')&gt; CASELOAD&gt; ASSIGNMENT_UNIT&gt; CWS_OFFICE.Government_Entity_Type.
+ * Set CASE/REFERRAL.Government_Entity_Type = ASSIGNMENT (where .Type_Of_Assignment_Code = 'P')&gt;
+ * CASELOAD&gt; ASSIGNMENT_UNIT&gt; CWS_OFFICE.Government_Entity_Type.
  */
 public class R01054PrimaryAssignmentAdding implements RuleAction {
   private ReferralDao referralDao;
@@ -31,8 +34,15 @@ public class R01054PrimaryAssignmentAdding implements RuleAction {
   private CwsOfficeDao cwsOfficeDao;
   private Assignment assignment;
 
+  /**
+   * @param assignment - assignment
+   * @param referralDao - referralDao
+   * @param caseLoadDao - caseLoadDao
+   * @param assignmentUnitDao - assignmentUnitDao
+   * @param cwsOfficeDao - cwsOfficeDao
+   */
   public R01054PrimaryAssignmentAdding(Assignment assignment, ReferralDao referralDao,
-       CaseLoadDao caseLoadDao, AssignmentUnitDao assignmentUnitDao, CwsOfficeDao cwsOfficeDao) {
+      CaseLoadDao caseLoadDao, AssignmentUnitDao assignmentUnitDao, CwsOfficeDao cwsOfficeDao) {
     this.assignment = assignment;
     this.referralDao = referralDao;
     this.caseLoadDao = caseLoadDao;
@@ -44,13 +54,16 @@ public class R01054PrimaryAssignmentAdding implements RuleAction {
   public void execute() {
     if ("P".equals(assignment.getTypeOfAssignmentCode())) {
       CaseLoad caseLoad = caseLoadDao.find(assignment.getFkCaseLoad());
-      validateOnNull(caseLoad, "Cannot find caseLoad for assignment: " + assignment.getPrimaryKey());
+      validateOnNull(caseLoad,
+          "Cannot find caseLoad for assignment: " + assignment.getPrimaryKey());
 
       AssignmentUnit assignmentUnit = assignmentUnitDao.find(caseLoad.getFkAssignmentUnit());
-      validateOnNull(assignmentUnit, "Cannot find assignmentUnit for caseLoad: " + caseLoad.getPrimaryKey());
+      validateOnNull(assignmentUnit,
+          "Cannot find assignmentUnit for caseLoad: " + caseLoad.getPrimaryKey());
 
       CwsOffice cwsOffice = cwsOfficeDao.find(assignmentUnit.getFkCwsOffice());
-      validateOnNull(cwsOffice, "Cannot find cwsOffice for assignmentUnit: " + assignmentUnit.getPrimaryKey());
+      validateOnNull(cwsOffice,
+          "Cannot find cwsOffice for assignmentUnit: " + assignmentUnit.getPrimaryKey());
 
       short governmentEntityType = cwsOffice.getGovernmentEntityType();
 
@@ -58,10 +71,11 @@ public class R01054PrimaryAssignmentAdding implements RuleAction {
       String establishedForCode = assignment.getEstablishedForCode();
       if (ReferralAssignment.FOLDED_KEY_CODE.equals(establishedForCode)) {
         Referral referral = referralDao.find(establishedForId);
-        validateOnNull(referral, "Cannot find referral for assignment: " + assignment.getPrimaryKey());
+        validateOnNull(referral,
+            "Cannot find referral for assignment: " + assignment.getPrimaryKey());
 
         referral.setGovtEntityType(governmentEntityType);
-        referralDao.getSessionFactory().getCurrentSession().merge(referral);
+        referralDao.grabSession().merge(referral);
       }
     }
   }
@@ -71,6 +85,5 @@ public class R01054PrimaryAssignmentAdding implements RuleAction {
       throw new ServiceException(message);
     }
   }
-
 
 }

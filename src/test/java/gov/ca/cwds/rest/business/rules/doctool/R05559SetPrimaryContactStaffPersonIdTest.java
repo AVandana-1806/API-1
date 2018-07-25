@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +62,7 @@ import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.StaffPersonEntityBuilder;
 import gov.ca.cwds.helper.CmsIdGenerator;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Allegation;
@@ -78,7 +80,6 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantService;
-import gov.ca.cwds.rest.services.ReferralSatefyAlertsService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -168,7 +169,6 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private gov.ca.cwds.data.persistence.cms.Referral referral;
   private Validator validator;
@@ -265,7 +265,6 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
 
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     referralService =
         new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
@@ -275,8 +274,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
         crossReportService, participantService, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
-        governmentOrganizationCrossReportService, clientRelationshipDao,
-        referralSatefyAlertsService);
+        governmentOrganizationCrossReportService, clientRelationshipDao);
   }
 
   /**
@@ -409,7 +407,9 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
 
     CmsIdGenerator generator = new CmsIdGenerator();
     for (Participant participant : participants) {
-      participant.setLegacyId(generator.generate());
+      LegacyDescriptor legacyDescriptor =
+          new LegacyDescriptor(generator.generate(), null, new DateTime(), null, null);
+      participant.setLegacyDescriptor(legacyDescriptor);
     }
     clientParticipants.addParticipants(participants);
     when(participantService.saveParticipants(any(), any(), any(), any(), any()))

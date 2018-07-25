@@ -11,10 +11,10 @@ import java.text.SimpleDateFormat;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

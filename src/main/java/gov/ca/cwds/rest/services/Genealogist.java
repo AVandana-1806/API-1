@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.cms.ClientDao;
@@ -48,35 +50,58 @@ public class Genealogist {
 
   private RelationshipTo createBar(RelationshipWrapper relationship, boolean clientIsPrimary) {
     RelationshipTo relationshipTo;
+
+
     if (clientIsPrimary) {
+      boolean relatedPersonSensitive =
+          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitiveIndicator(), "S")
+              ? Boolean.TRUE
+              : Boolean.FALSE;
+      boolean relatedPersonSealed =
+          StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitiveIndicator(), "R")
+              ? Boolean.TRUE
+              : Boolean.FALSE;
       relationshipTo = createRelationShipTo(relationship.getSecondaryLegacyId(),
           relationship.getPrimaryRelationshipCode(), relationship.getSecondaryRelationshipCode(),
-          relationship.getSecondaryFirstName(), relationship.getSecondaryLastName(),
-          relationship.getSecondaryNameSuffix(), relationship.getSecondaryGenderCode(),
-          relationship.getSecondaryDateOfBirth(), relationship.getSecondaryDateOfDeath(),
-          relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
-          relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
+          relationship.getSecondaryFirstName(), relationship.getSecondaryMiddleName(),
+          relationship.getSecondaryLastName(), relationship.getSecondaryNameSuffix(),
+          relationship.getSecondaryGenderCode(), relationship.getSecondaryDateOfBirth(),
+          relationship.getSecondaryDateOfDeath(), relationship.getRelationshipStartDate(),
+          relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
+          relationship.getSameHomeCode(), "", relatedPersonSensitive, relatedPersonSealed);
     } else {
+      boolean relatedPersonSensitive =
+          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitiveIndicator(), "S")
+              ? Boolean.TRUE
+              : Boolean.FALSE;
+      boolean relatedPersonSealed =
+          StringUtils.equalsAnyIgnoreCase(relationship.getPrimarySensitiveIndicator(), "R")
+              ? Boolean.TRUE
+              : Boolean.FALSE;
       relationshipTo = createRelationShipTo(relationship.getPrimaryLegacyId(),
           relationship.getSecondaryRelationshipCode(), relationship.getPrimaryRelationshipCode(),
-          relationship.getPrimaryFirstName(), relationship.getPrimaryLastName(),
-          relationship.getPrimaryNameSuffix(), relationship.getPrimaryGenderCode(),
-          relationship.getPrimaryDateOfBirth(), relationship.getPrimaryDateOfDeath(),
-          relationship.getRelationshipStartDate(), relationship.getRelationshipEndDate(),
-          relationship.getAbsentParentCode(), relationship.getSameHomeCode(), "");
+          relationship.getPrimaryFirstName(), relationship.getPrimaryMiddleName(),
+          relationship.getPrimaryLastName(), relationship.getPrimaryNameSuffix(),
+          relationship.getPrimaryGenderCode(), relationship.getPrimaryDateOfBirth(), 
+          relationship.getPrimaryDateOfDeath(), relationship.getRelationshipStartDate(),
+          relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
+          relationship.getSameHomeCode(), "", relatedPersonSensitive, relatedPersonSealed);
     }
     return relationshipTo;
   }
 
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
-      String secondaryRelation, String secondaryFirstname, String secodnaryLastName,
-      String nameSuffix, String relatedGender, String relatedDateOfBirth, String relatedDateOfDeath,
+      String secondaryRelation, String secondaryFirstname, String secondaryMiddleName,
+      String secodnaryLastName, String nameSuffix, String relatedGender, String relatedDateOfBirth,
+      String relatedDateOfDeath,
       String relationshipStartDate, String relationshipEndDate, String absentParentCode,
-      String sameHomeCode, String relationContext) {
-    return new RelationshipTo(secondaryFirstname, secodnaryLastName, nameSuffix, relatedGender,
-        relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate, relationshipEndDate,
-        absentParentCode, sameHomeCode, secondaryRelation, relationContext, primaryRelationCode,
-        relationId);
+      String sameHomeCode, String relationContext, Boolean relatedPersonSensitive,
+      Boolean relatedPersonSealed) {
+    return new RelationshipTo(secondaryFirstname, secondaryMiddleName, secodnaryLastName,
+        nameSuffix, relatedGender, relatedDateOfBirth,
+        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
+        sameHomeCode, secondaryRelation, relationContext, primaryRelationCode, relationId,
+        relatedPersonSensitive, relatedPersonSealed);
 
   }
 

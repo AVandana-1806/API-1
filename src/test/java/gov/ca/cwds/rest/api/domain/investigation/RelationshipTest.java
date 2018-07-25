@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +22,7 @@ import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.investigation.RelationshipEntityBuilder;
 import gov.ca.cwds.fixture.investigation.RelationshipToEntityBuilder;
 import gov.ca.cwds.rest.api.domain.DomainChef;
+import gov.ca.cwds.rest.business.rules.CalendarEnum;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -30,6 +31,7 @@ public class RelationshipTest {
 
   private ObjectMapper MAPPER = new ObjectMapper();
   private String tableName = "CLIENT_T";
+  private String newTableName = "CLN_RELT";
   private String id = "1234567ABC";
 
   private CmsRecordDescriptor cmsRecordDescriptor =
@@ -38,7 +40,7 @@ public class RelationshipTest {
   private String middleName = "R";
   private String lastName = "Greene";
   private String dateOfBirth = "2000-10-01";
-  private String suffixTitle = "";
+  private String suffixName = "";
   private String gender = "M";
   private String dateOfDeath = "2001-10-01";
   private Boolean sensitive = Boolean.FALSE;
@@ -49,7 +51,6 @@ public class RelationshipTest {
   @Before
   public void setup() {
     relationshipsTo.add(relationshipTo);
-
   }
 
   @Test
@@ -60,14 +61,15 @@ public class RelationshipTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    Relationship relationship = new Relationship(id, dateOfBirth, firstName, middleName, lastName,
-        suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+    Relationship relationship = new Relationship(id, dateOfBirth, firstName,
+        middleName, lastName, suffixName, gender, dateOfDeath, sensitive, sealed,
+        cmsRecordDescriptor, relationshipsTo);
 
     assertThat(id, is(equalTo(relationship.getId())));
     assertThat(firstName, is(equalTo(relationship.getFirstName())));
     assertThat(middleName, is(equalTo(relationship.getMiddleName())));
     assertThat(lastName, is(equalTo(relationship.getLastName())));
-    assertThat(suffixTitle, is(equalTo(relationship.getSuffixName())));
+    assertThat(suffixName, is(equalTo(relationship.getSuffixName())));
     assertThat(gender, is(equalTo(relationship.getGender())));
     assertThat(dateOfDeath, is(equalTo(relationship.getDateOfDeath())));
     assertThat(sensitive, is(equalTo(relationship.getSensitive())));
@@ -168,19 +170,61 @@ public class RelationshipTest {
   }
 
   @Test
+  public void shouldCalculateAgeInYears() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusYears(age);
+    Relationship relationship = new RelationshipEntityBuilder()
+        .setDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationship.getAge(), is(equalTo(age)));
+    assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.YEARS.getName())));
+    
+  }
+  
+  @Test
+  public void shouldCalculateAgeInMonths() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusMonths(age);
+    Relationship relationship = new RelationshipEntityBuilder()
+        .setDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationship.getAge(), is(equalTo(age)));
+    assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.MONTHS.getName())));
+    
+  }
+
+  @Test
+  public void shouldCalculateAgeInDays() {
+    Short age = 2;
+    LocalDate today = LocalDate.now();
+    LocalDate dateOfBirth = today.minusDays(age);
+    Relationship relationship = new RelationshipEntityBuilder()
+        .setDateOfBirth(dateOfBirth.toString())
+        .build();
+    assertThat(relationship.getAge(), is(equalTo(age)));
+    assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.DAYS.getName())));    
+  }
+  
+  @Test
+  public void shouldSetValuesUsingEntityBuilder() {
+    Relationship relationship = new RelationshipEntityBuilder()
+        .setMiddleName(middleName)
+        .setSuffixTitle(suffixName)
+        .setDateOfDeath(dateOfDeath)
+        .setSealed(sealed)
+        .build();
+    assertThat(relationship.getMiddleName(), is(equalTo(middleName)));
+    assertThat(relationship.getSuffixName(), is(equalTo(suffixName)));
+    assertThat(relationship.getDateOfDeath(), is(equalTo(dateOfDeath)));
+    assertThat(relationship.getSealed(), is(equalTo(sealed)));
+   }
+
+  @Test
   public void equalsHashCodeWork() {
     EqualsVerifier.forClass(Relationship.class).suppress(Warning.NONFINAL_FIELDS).verify();
   }
-
-  // @Test
-  // @Ignore
-  // public void testSerializedOutput()
-  // throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
-  // Relationship safetyAlerts = new RelationshipEntityBuilder().build();
-  // final String expected =
-  // MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(safetyAlerts);
-  // System.out.println(expected);
-  // }
 
   @Test
   public void deserializesFromJSON() throws Exception {

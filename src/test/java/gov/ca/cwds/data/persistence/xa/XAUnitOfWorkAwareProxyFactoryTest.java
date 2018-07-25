@@ -64,35 +64,16 @@ public class XAUnitOfWorkAwareProxyFactoryTest extends Doofenshmirtz<Addresses> 
     assertThat(actual, is(notNullValue()));
   }
 
-  // @Test
-  // public void create_A$Class$Class$Object() throws Exception {
-  // Class<Object> clazz = xa;
-  // Class<?> constructorParamType = mock(Class.class);
-  // Object constructorArguments = null;
-  // Object actual = target.create(clazz, constructorParamType, constructorArguments);
-  // Object expected = null;
-  // assertThat(actual, is(equalTo(expected)));
-  // }
-
-  // @Test
-  // public void create_A$Class$ClassArray$ObjectArray() throws Exception {
-  // final Class<?> clazz = AddressService.class;
-  // Class<?>[] constructorParamTypes = new Class<?>[] {};
-  // Object[] constructorArguments = new Object[] {};
-  // Object actual = target.create(clazz, constructorParamTypes, constructorArguments);
-  // Object expected = null;
-  // assertThat(actual, is(equalTo(expected)));
-  // }
-
   @Test
-  public void newAspect_A$() throws Exception {
-    XAUnitOfWorkAspect actual = target.newAspect();
+  public void create_A$Class$Class$Object() throws Exception {
+    Object actual =
+        target.create(XAUnitOfWorkAwareProxyFactoryTest.class, new Class<?>[] {}, new Object[] {});
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
-  public void newAspect_A$ImmutableMap() throws Exception {
-    XAUnitOfWorkAspect actual = target.newAspect(sessionFactories);
+  public void newAspect_A$() throws Exception {
+    XAUnitOfWorkAspect actual = target.newAspect();
     assertThat(actual, is(notNullValue()));
   }
 

@@ -45,6 +45,7 @@
   "phone_numbers": [],
   "sealed": false,
   "sensitive": false,
+  "probation_youth": true,
   "legacy_descriptor": {
     "legacy_id": "9C7kKgc0CN",
     "legacy_ui_id": "0522-3101-9120-2000767",

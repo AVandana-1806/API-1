@@ -1,7 +1,7 @@
 package gov.ca.cwds.data;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.hibernate.stat.Statistics;
 
@@ -11,10 +11,14 @@ import org.hibernate.stat.Statistics;
 public final class HibernateStatisticsConsumerRegistry {
 
   // one statistics consumer per bundle is currently enough
-  private static Map<String, HibernateStatisticsConsumer> consumerMap = new HashMap<>();
+  private static Map<String, HibernateStatisticsConsumer> consumerMap = new ConcurrentHashMap<>();
 
   @FunctionalInterface
   public interface HibernateStatisticsConsumer {
+
+    default void prepare(Statistics hibernateStatistics) {
+    }
+
     void consume(Statistics hibernateStatistics);
   }
 
@@ -31,9 +35,17 @@ public final class HibernateStatisticsConsumerRegistry {
     consumerMap.remove(bundleTag);
   }
 
+  public static void prepareHibernateStatisticsConsumer(String bundleTag,
+      Statistics hibernateStatistics) {
+    if (consumerMap.containsKey(bundleTag)) {
+      consumerMap.get(bundleTag).prepare(hibernateStatistics);
+    }
+  }
+
   public static void provideHibernateStatistics(String bundleTag, Statistics hibernateStatistics) {
     if (consumerMap.containsKey(bundleTag)) {
       consumerMap.get(bundleTag).consume(hibernateStatistics);
     }
   }
+
 }

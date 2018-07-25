@@ -1,21 +1,24 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import com.google.inject.Inject;
+
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.submit.Gender;
 
 /**
@@ -24,15 +27,28 @@ import gov.ca.cwds.rest.services.submit.Gender;
  */
 public class ClientTransformer implements ParticipantMapper<Client> {
 
+  @Inject
+  private AuthorizationService authorizationService;
+
+  @Inject
+  private PlacementEpisodeDao placementEpisodeDao;
+
   @Override
   public ParticipantIntakeApi tranform(Client client) {
+    // Ensure Client are authorized
+    String clientId = client.getId();
+    authorizationService.ensureClientAccessAuthorized(clientId);
     IntakeRaceAndEthnicityConverter intakeRaceAndEthnicityConverter =
         new IntakeRaceAndEthnicityConverter();
-    IntakeAddressConverter intakeAddressConverter = new IntakeAddressConverter();
-    LegacyDescriptor legacyDescriptor =
-        new LegacyDescriptor(client.getId(), null, new DateTime(client.getLastUpdatedTime()),
-            LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription());
 
+    IntakeAddressConverter intakeAddressConverter = new IntakeAddressConverter();
+    List<PlacementEpisode> placementEpisodes = placementEpisodeDao.findByClientId(clientId);
+    List<AddressIntakeApi> addresses =
+        intakeAddressConverter.getPlacementHomeAddresses(placementEpisodes);
+
+    LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor(clientId, null, new DateTime(client.getLastUpdatedTime()),
+            LegacyTable.CLIENT.getName(), LegacyTable.CLIENT.getDescription());
     String gender = StringUtils.isNotBlank(client.getGenderCode())
         ? (Gender.findByCmsDescription(client.getGenderCode().toUpperCase())).getNsDescription()
         : null;
@@ -40,8 +56,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     List<String> languages = getLanguages(client);
     String races = intakeRaceAndEthnicityConverter.createRace(client);
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
-    Set<AddressIntakeApi> addresses = new HashSet<>(intakeAddressConverter.convert(client));
-    addresses = Collections.unmodifiableSet(addresses);
+    addresses.addAll(intakeAddressConverter.convert(client));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
         client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, null, null,
@@ -94,4 +109,17 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     return sensitive;
   }
 
+  /**
+   * @param authorizationService - authorizationService
+   */
+  public void setAuthorizationService(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
+  }
+
+  /**
+   * @param placementEpisodeDao - placementEpisodeDao
+   */
+  public void setPlacementEpisodeDao(PlacementEpisodeDao placementEpisodeDao) {
+    this.placementEpisodeDao = placementEpisodeDao;
+  }
 }

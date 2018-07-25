@@ -1,5 +1,16 @@
 package gov.ca.cwds.rest;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Map;
+
+import javax.servlet.DispatcherType;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.codahale.metrics.servlets.AdminServlet;
 import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
@@ -21,11 +32,6 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jetty.NonblockingServletHolder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.EnumSet;
-import java.util.Map;
-import javax.servlet.DispatcherType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Core execution class of CWDS REST API server application.
@@ -58,6 +64,15 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
    * @throws Exception if startup fails
    */
   public static void main(final String[] args) throws Exception {
+    LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n");
+
+    // Clean up XA transaction log files.
+    final String[] extensions = {"log", "lck"};
+    final Collection<File> tmFiles =
+        FileUtils.listFiles(new File(System.getProperty("user.dir")), extensions, false);
+    LOGGER.info("XA transaction files: {}", tmFiles);
+    tmFiles.stream().forEach(File::delete);
+
     new ApiApplication().run(args);
   }
 
@@ -120,9 +135,9 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     LOGGER.info("PaperTrailInterceptor: {}",
         applicationModule.getDataAccessModule().getPaperTrailInterceptor());
 
-    Map<String, String> env = System.getenv();
-    for (Map.Entry entry : env.entrySet()) {
-      LOGGER.info("******************* environment variables ***********************************");
+    final Map<String, String> env = System.getenv();
+    LOGGER.info("******************* environment variables ***********************************");
+    for (Map.Entry<String, String> entry : env.entrySet()) {
       LOGGER.info("{}={}", entry.getKey(), entry.getValue());
     }
   }

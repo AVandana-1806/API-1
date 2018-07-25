@@ -5,7 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import org.apache.shiro.authz.AuthorizationException;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
@@ -14,6 +20,7 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.services.auth.AuthorizationService;
 
 /**
  * @author CWDS API Team
@@ -22,6 +29,19 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 public class ClientTransformerTest {
 
   private ClientTransformer clientTransformer = new ClientTransformer();
+  private AuthorizationService authorizationService;
+  private PlacementEpisodeDao placementEpisodeDao;
+
+  @Before
+  public void setup() {
+    authorizationService = mock(AuthorizationService.class);
+    doThrow(AuthorizationException.class).when(authorizationService)
+        .ensureClientAccessAuthorized("authorizedId");
+    clientTransformer.setAuthorizationService(authorizationService);
+
+    placementEpisodeDao = mock(PlacementEpisodeDao.class);
+    clientTransformer.setPlacementEpisodeDao(placementEpisodeDao);
+  }
 
   /**
    * Initialize intake code cache
@@ -144,6 +164,18 @@ public class ClientTransformerTest {
     Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     assertThat(participantIntakeApi.getSealed(), is(equalTo(true)));
+  }
+
+  /**
+   * 
+   */
+  @Test(expected = AuthorizationException.class)
+  public void testTranformSealedIndicator1() {
+    doThrow(AuthorizationException.class).when(authorizationService)
+        .ensureClientAccessAuthorized(anyString());
+    clientTransformer.setAuthorizationService(authorizationService);
+    Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
+    clientTransformer.tranform(client);
   }
 
 }

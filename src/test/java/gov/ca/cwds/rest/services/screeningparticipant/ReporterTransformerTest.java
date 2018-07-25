@@ -7,8 +7,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -78,8 +80,8 @@ public class ReporterTransformerTest {
   public void testConvertExpectdVsActual() {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc0987654", null, lastUpdated,
         LegacyTable.REPORTER.getName(), LegacyTable.REPORTER.getDescription());
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays.asList(new AddressIntakeApi(null, null,
-        "2751 First Street", "Sacramento", "CA", "95833-0", null, legacyDescriptor)));
+    List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
+        "2751 First Street", "Sacramento", "CA", "95833", null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers =
         new HashSet<>(Arrays.asList(new PhoneNumber(null, "6199221167", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,17 +29,20 @@ import gov.ca.cwds.data.legacy.cms.entity.SafetyAlert;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.County;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SafetyAlertActivationReasonType;
 import gov.ca.cwds.data.persistence.cms.Referral;
+import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
  * @author CWDS API Team
  *
  */
-public class ReferralSatefyAlertsServiceTest {
+public class ReferralSafetyAlertsServiceTest {
 
   /**
    * Initialize intake code cache
@@ -49,8 +53,8 @@ public class ReferralSatefyAlertsServiceTest {
   private CountiesDao countiesDao;
   private SafetyAlertActivationReasonTypeDao safetyAlertActivationReasonTypeDao;
   private SafetyAlertService safetyAlertService;
-  private ReferralSatefyAlertsService referralSatefyAlertsService =
-      new ReferralSatefyAlertsService();
+  private ReferralSafetyAlertsService referralSafetyAlertsService =
+      new ReferralSafetyAlertsService();
 
   /**
    * 
@@ -71,8 +75,16 @@ public class ReferralSatefyAlertsServiceTest {
   public void testSaveSafetyAlertsSuccessfully() {
     SafetyAlerts safetyAlerts =
         new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Danger Fellow");
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+        new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
+    Participant victim =
+        new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor).createParticipant();
+    Participant Perp = new ParticipantResourceBuilder().setGender("M").createParticipant();
+    Participant reporter =
+        new ParticipantResourceBuilder().setGender("M").createReporterParticipant();
+    Set<Participant> ScreeeningParticpants = new HashSet<>(Arrays.asList(victim, Perp, reporter));
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
-        .setSafetyAlerts(safetyAlerts.getAlerts())
+        .setParticipants(ScreeeningParticpants).setSafetyAlerts(safetyAlerts.getAlerts())
         .setSafetyAlertInformationn(safetyAlerts.getAlertInformation()).createScreeningToReferral();
     ClientParticipants clientParticipants = new ClientParticipants();
     Set<Participant> participants = screeningToReferral.getParticipants();
@@ -88,13 +100,13 @@ public class ReferralSatefyAlertsServiceTest {
     safetyAlertActivationReasonType.setSystemId((short) 6401);
     when(safetyAlertActivationReasonTypeDao.findBySystemId(any(Short.class)))
         .thenReturn(new SafetyAlertActivationReasonType());
-    referralSatefyAlertsService.setReferralDao(referralDao);
-    referralSatefyAlertsService.setCountiesDao(countiesDao);
-    referralSatefyAlertsService
+    referralSafetyAlertsService.setReferralDao(referralDao);
+    referralSafetyAlertsService.setCountiesDao(countiesDao);
+    referralSafetyAlertsService
         .setSafetyAlertActivationReasonTypeDao(safetyAlertActivationReasonTypeDao);
-    referralSatefyAlertsService.setSafetyAlertService(safetyAlertService);
+    referralSafetyAlertsService.setSafetyAlertService(safetyAlertService);
     List<SafetyAlert> safetyAlert =
-        referralSatefyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
     assertThat(safetyAlert, is(notNullValue()));
     assertThat(safetyAlert.size(), is(equalTo(1)));
     assertThat(safetyAlert, containsInAnyOrder(hasProperty("fkClientId", is("098UijH1gf"))));
@@ -113,9 +125,9 @@ public class ReferralSatefyAlertsServiceTest {
     Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
         .setGovtEntityType((short) 1101).setScreenerNoteText("0I61FGt15L").build();
     when(referralDao.find(anyString())).thenReturn(referral);
-    referralSatefyAlertsService.setReferralDao(referralDao);
+    referralSafetyAlertsService.setReferralDao(referralDao);
     List<SafetyAlert> safetyAlert =
-        referralSatefyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
     assertThat(safetyAlert.size(), is(equalTo(0)));
   }
 

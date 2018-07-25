@@ -1,23 +1,22 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
-import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.services.ServiceException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.services.ServiceException;
+
 /**
  * {@link Response} adding an id to the {@link ClientRelationship}
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"fb-contrib:COM_COPIED_OVERRIDDEN_METHOD"})
 public class PostedClientRelationship extends ClientRelationship {
-  /**
-   * Serialization version
-   */
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")

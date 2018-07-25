@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.db.DataSourceFactory;
 
 /**
- * 
+ * Container for Ferb API configuration.
  * 
  * @author CWDS API Team
  */
@@ -20,6 +20,10 @@ public class ApiConfiguration extends BaseApiConfiguration {
   @Nullable
   @JsonProperty(value = "systemCodeCache")
   private SystemCodeCacheConfiguration systemCodeCacheConfiguration;
+
+  @Nullable
+  @JsonProperty(value = "intakeCodeCache")
+  private SystemCodeCacheConfiguration intakeCodeCacheConfiguration;
 
   public void setRsDataSourceFactory(DataSourceFactory rsDataSourceFactory) {
     this.rsDataSourceFactory = rsDataSourceFactory;
@@ -55,5 +59,14 @@ public class ApiConfiguration extends BaseApiConfiguration {
 
   public void setSystemCodeCacheConfiguration(SystemCodeCacheConfiguration systemCodeCacheConfig) {
     this.systemCodeCacheConfiguration = systemCodeCacheConfig;
+  }
+
+  public SystemCodeCacheConfiguration getIntakeCodeCacheConfiguration() {
+    return intakeCodeCacheConfiguration;
+  }
+
+  public void setIntakeCodeCacheConfiguration(
+      SystemCodeCacheConfiguration intakeCodeCacheConfiguration) {
+    this.intakeCodeCacheConfiguration = intakeCodeCacheConfiguration;
   }
 }

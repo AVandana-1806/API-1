@@ -53,6 +53,13 @@ public class IntakeLovService
   }
 
   /**
+   * @return All intake LOV's
+   */
+  protected List<IntakeLov> loadAll() {
+    return intakeLovDao.findAll();
+  }
+
+  /**
    * @param legacyCategoryId - legacyCategoryId
    * @return the intake code in the value based on the category id
    */

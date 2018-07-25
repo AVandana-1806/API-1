@@ -1,0 +1,49 @@
+{
+  "id": "${participant_id}",
+  "legacy_source_table" : "CLIENT_T",
+  "first_name": "Test",
+  "last_name": "Child031204",
+  "gender": "male",
+  "ssn": "",
+  "date_of_birth": "1999-03-12",
+  "roles": [],
+  "addresses": [
+    {
+      "messages": [],
+      "id": "${address_id}",
+      "type": "Placement Home",
+      "street_address": "2809 Tyler Avenue",
+      "city": "Riverside",
+      "state": "CA",
+      "zip": "94508",
+      "legacy_descriptor": {
+        "legacy_id": "D265A050M2",
+        "legacy_last_updated": "2004-11-09T15:49:11.000-0800",
+        "legacy_table_name": "PLC_HM_T",
+        "legacy_table_description": "Placement Home"
+      }
+    }
+  ],
+  "races": [],
+  "ethnicity": [
+    {
+      "hispanic_latino_origin": "Unknown",
+      "ethnicity_detail": []
+    }
+  ],
+  "middle_name": "",
+  "name_suffix": "",
+  "languages": [],
+  "screening_id": "36",
+  "phone_numbers": [],
+  "sealed": false,
+  "sensitive": false,
+  "legacy_id": "AcqEeTo0Ql",
+  "legacy_descriptor": {
+    "legacy_id": "AcqEeTo0Ql",
+    "legacy_last_updated": "2004-03-12T13:48:04.741-0800",
+    "legacy_table_name": "CLIENT_T",
+    "legacy_table_description": "Client"
+  },
+  "csec": []
+}

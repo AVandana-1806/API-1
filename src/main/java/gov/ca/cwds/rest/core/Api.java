@@ -2,10 +2,76 @@ package gov.ca.cwds.rest.core;
 
 /**
  * Constants defining resources locations in the API.
- *
- * @author CWDS API Tea "secondaryLanguage":1255,m
+ * 
+ * @author CWDS API Team
  */
 public final class Api {
+
+  public static class Datasource {
+
+    /**
+     * Identifer for Postgres datasource
+     */
+    public static final String NS = "ns";
+
+    /**
+     * Identifer for CMS DB2 datasource
+     */
+    public static final String CMS = "cms";
+
+    /**
+     * Identifer for CMS DB2 replicated datasources.
+     */
+    public static final String CMS_REP = "rs";
+
+    /**
+     * Identifer for CMS DB2 datasource for XA transaction
+     */
+    public static final String XA_CMS = "xa_cms";
+
+    /**
+     * Identifer for CMS DB2 datasources for XA, replicated schema.
+     */
+    public static final String XA_CMS_RS = "xa_cms_rs";
+
+    /**
+     * Identifer for NS Postgres datasources for XA transactions.
+     */
+    public static final String XA_NS = "xa_ns";
+
+    private Datasource() {}
+  }
+
+  public static class PathParam {
+
+    public static final String SCREENING_ID = "screeningId";
+    public static final String PARTICIPANT_ID = "participantId";
+    public static final String LEGACY_ID = "legacyId";
+
+
+    private PathParam() {}
+  }
+
+  public static class ResponseMessage {
+
+    public static final String BAD_REQUEST = "Unable to process JSON";
+    public static final String UNAUTHORIZED = "Not Authorized";
+    public static final String NOT_FOUND = "Not found";
+    public static final String NOT_ACCEPTABLE = "Accept Header not supported";
+    public static final String UNPROCESSABLE_ENTITY = "Unable to validate Document";
+    public static final String CONFLICT = "Conflict - already exists";
+
+    private ResponseMessage() {}
+  }
+
+  public static class HealthCheck {
+
+    public static final String AUTH_STATUS = "auth_status";
+    public static final String SWAGGER_STATUS = "swagger_status";
+
+    private HealthCheck() {
+    }
+  }
 
   /**
    * A {@code String} constant representing {@value #RESOURCE_SYSTEM_INFORMATION} API..
@@ -139,60 +205,50 @@ public final class Api {
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
 
   /**
+   * Identifer for CMS DB2 datasource.
+   */
+  public static final String DATASOURCE_CMS = Datasource.CMS;
+
+  /**
+   * Shortcut identifer for CMS DB2 datasource.
+   */
+  public static final String DS_CMS = Datasource.CMS;
+
+  /**
+   * Shortcut identifer for CARES PostgreSQL datasource.
+   */
+  public static final String DS_NS = Datasource.NS;
+
+  /**
+   * Identifer for CMS DB2 replicated datasources.
+   */
+  public static final String DATASOURCE_CMS_REP = Datasource.CMS_REP;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, transactional schema.
+   */
+  public static final String DATASOURCE_XA_CMS = Datasource.XA_CMS;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, replicated schema.
+   */
+  public static final String DATASOURCE_XA_CMS_RS = Datasource.XA_CMS_RS;
+
+  /**
+   * Identifer for NS Postgres datasources.
+   */
+  public static final String DATASOURCE_NS = Datasource.NS;
+
+  /**
+   * Identifer for NS Postgres datasources for XA transactions.
+   */
+  public static final String DATASOURCE_XA_NS = Datasource.XA_NS;
+
+  /**
    * Default private constructor
    */
   private Api() {
     // Default private constructor
-  }
-
-  public static class Datasource {
-
-    /**
-     * Identifer for Postgres datasource
-     */
-    public static final String NS = "ns";
-    /**
-     * Identifer for CMS DB2 datasource
-     */
-    public static final String CMS = "cms";
-    /**
-     * Identifer for CMS DB2 datasource for XA transaction
-     */
-    public static final String XA_CMS = "xa_cms";
-
-    private Datasource() {
-    }
-  }
-
-  public static class PathParam {
-
-    public static final String SCREENING_ID = "screeningId";
-    public static final String PARTICIPANT_ID = "participantId";
-
-    private PathParam() {
-    }
-  }
-
-  public static class ResponseMessage {
-
-    public static final String BAD_REQUEST = "Unable to process JSON";
-    public static final String UNAUTHORIZED = "Not Authorized";
-    public static final String NOT_FOUND = "Not found";
-    public static final String NOT_ACCEPTABLE = "Accept Header not supported";
-    public static final String UNPROCESSABLE_ENTITY = "Unable to validate Document";
-    public static final String CONFLICT = "Conflict - already exists";
-
-    private ResponseMessage() {
-    }
-  }
-
-  public static class HealthCheck {
-
-    public static final String AUTH_STATUS = "auth_status";
-    public static final String SWAGGER_STATUS = "swagger_status";
-
-    private HealthCheck() {
-    }
   }
 
 }

@@ -79,20 +79,20 @@ public class LZWEncoder {
   private static final boolean IS_CLASS_LOADED = loadLibs();
 
   /**
+   * <p>
    * Load native library at runtime, when the classloader loads this class. Native libraries follow
    * the naming convention of the host operating system:
+   * </p>
    * 
-   * <p>
    * <ul>
    * <li>Windows: LZW.dll</li>
    * <li>OS X: libLZW.dylib</li>
    * <li>Linux:libLZW.so</li>
    * </ul>
-   * </p>
    * 
    * @return true = native libraries load correctly
    */
-  private static final boolean loadLibs() {
+  public static boolean loadLibs() {
     LOGGER.info("LZWEncoder: user.dir={}", System.getProperty("user.dir"));
     LOGGER.info("LZWEncoder: java.library.path={}", System.getProperty("java.library.path"));
 

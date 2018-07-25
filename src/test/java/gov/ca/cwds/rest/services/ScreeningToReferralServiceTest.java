@@ -185,7 +185,6 @@ public class ScreeningToReferralServiceTest {
   private Validator validator;
   private ExternalInterfaceTables externalInterfaceTables;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   private Participant defaultVictim;
   private Participant defaultReporter;
@@ -301,7 +300,6 @@ public class ScreeningToReferralServiceTest {
     defaultPerpetrator = new ParticipantResourceBuilder().createPerpParticipant();
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
-    referralSatefyAlertsService = mock(ReferralSatefyAlertsService.class);
 
     messageBuilder = new MessageBuilder();
 
@@ -310,7 +308,7 @@ public class ScreeningToReferralServiceTest {
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, messageBuilder,
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, referralSatefyAlertsService);
+        clientRelationshipDao);
 
   }
 
@@ -748,14 +746,19 @@ public class ScreeningToReferralServiceTest {
   @Test
   public void shouldSaveRelationship() throws DataAccessServicesException {
     String id = null;
-    String personId = "QWER";
-    String relationId = "ZXCV";
+    Long personId = 1L;
+    Long relationId = 2L;
     int relationshipType = 123;
+    Date startDate= new Date();
+    Date endDate= new Date();
+    String legacyId = "456ABC123D";
 
+
+    ScreeningRelationship relationship = new ScreeningRelationship(id, personId.toString(),
+        relationId.toString(), relationshipType, true, "N", new Date(), new Date(), "1234567890");
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
     relationships.add(relationship);
+
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
 
@@ -766,6 +769,7 @@ public class ScreeningToReferralServiceTest {
     gov.ca.cwds.data.legacy.cms.entity.ClientRelationship clientRelationship =
         new gov.ca.cwds.data.legacy.cms.entity.ClientRelationship();
     clientRelationship.setIdentifier("SavedId");
+
     when(clientRelationshipService.createRelationship(any(ClientRelationshipDTO.class)))
         .thenReturn(clientRelationship);
 
@@ -774,13 +778,8 @@ public class ScreeningToReferralServiceTest {
     ArgumentCaptor<ClientRelationshipDTO> argument =
         ArgumentCaptor.forClass(ClientRelationshipDTO.class);
 
-    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
-
     verify(clientRelationshipService).createRelationship(argument.capture());
     assertEquals(clientRelationship.getIdentifier(), relationship.getId());
-    assertEquals(relationship.getClientId(), argument.getValue().getPrimaryClient().getId());
-    assertEquals(relationship.getRelativeId(), argument.getValue().getSecondaryClient().getId());
-    assertEquals(relationship.getRelationshipType(), argument.getValue().getType());
   }
 
   @Test
@@ -790,13 +789,64 @@ public class ScreeningToReferralServiceTest {
     String personId = "QWER";
     String relationId = "ZXCV";
     int relationshipType = 123;
+    Date startDate= new Date();
+    Date endDate= new Date();
+    String legacyId = "456ABC123D";
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
     ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N");
+        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N", startDate, endDate, legacyId);
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipIsNull()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    Set<ScreeningRelationship> relationships = new HashSet<>();
+    ScreeningRelationship relationship = null;
+
+    relationships.add(relationship);
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setRelationships(relationships).createScreeningToReferral();
+
+    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
+        .thenReturn("REFERRALID");
+    mockParticipantService(referral);
+
+    Response response = screeningToReferralService.create(referral);
+
+    ClientRelationshipDTO clientRelationshipDto = new ClientRelationshipDTO();
+
+    verify(clientRelationshipService, times(0)).createRelationship(any());
+  }
+
+  @Test
+  public void shouldNotCreateRelationshipWhenRelationshipsAreNonExistant()
+      throws DataAccessServicesException {
+    String id = "ASDF";
+    String personId = "QWER";
+    String relationId = "ZXCV";
+    int relationshipType = 123;
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setRelationships(null).createScreeningToReferral();
 
     when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
         .thenReturn("REFERRALID");
@@ -1233,7 +1283,7 @@ public class ScreeningToReferralServiceTest {
         crossReportService, participantService, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao, referralSatefyAlertsService);
+        clientRelationshipDao);
 
     mockParticipantService(screeningToReferral);
 

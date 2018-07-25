@@ -2,11 +2,13 @@ package gov.ca.cwds.data.ns;
 
 import java.util.List;
 
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -22,6 +24,8 @@ import gov.ca.cwds.inject.NsSessionFactory;
  */
 public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovDao.class);
+
   /**
    * Constructor.
    * 
@@ -36,24 +40,22 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
    * @param legacyCategoryId - legacyCategoryId
    * @return the intake code based on the category id
    */
+  @SuppressWarnings("unchecked")
   public List<IntakeLov> findByLegacyMetaId(String legacyCategoryId) {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacyCategoryId";
-
     final Session session = grabSession();
-    Transaction txn = joinTransaction(session);
-    boolean transactionExists = txn != null && txn.isActive();
-    txn = transactionExists ? txn : session.beginTransaction();
+    joinTransaction(session);
 
     try {
-      final Query query =
+      final Query<IntakeLov> query =
           session.getNamedQuery(namedQueryName).setParameter("legacyCategoryId", legacyCategoryId);
-      final List<IntakeLov> intakeCodes = query.list();
 
-      if (!transactionExists)
-        txn.commit();
-      return intakeCodes;
+      query.setReadOnly(true);
+      query.setCacheable(false);
+      query.setHibernateFlushMode(FlushMode.MANUAL);
+      return query.list();
     } catch (HibernateException h) {
-      txn.rollback();
+      LOGGER.error("ERROR FINDING META! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }
@@ -62,23 +64,19 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
    * @param legacySystemCodeId - legacySystemCodeId
    * @return the intakeLov
    */
+  @SuppressWarnings({"unchecked", "squid:CallToDeprecatedMethod"})
   public IntakeLov findByLegacySystemCodeId(Number legacySystemCodeId) {
     final String namedQueryName = IntakeLov.class.getName() + ".findByLegacySystemId";
-
     final Session session = grabSession();
-    Transaction txn = joinTransaction(session);
-    boolean transactionExists = txn != null && txn.isActive();
-    txn = transactionExists ? txn : session.beginTransaction();
+    joinTransaction(session);
 
     try {
-      final Query query = session.getNamedQuery(namedQueryName).setShort("legacySystemCodeId",
-          legacySystemCodeId.shortValue());
-      final IntakeLov intakeLov = (IntakeLov) query.getSingleResult();
-      if (!transactionExists)
-        txn.commit();
-      return intakeLov;
+      final Query<IntakeLov> query = session.getNamedQuery(namedQueryName).setReadOnly(true)
+          .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL)
+          .setShort("legacySystemCodeId", legacySystemCodeId.shortValue());
+      return query.getSingleResult();
     } catch (HibernateException h) {
-      txn.rollback();
+      LOGGER.error("ERROR FINDING CODE! {}", h.getMessage(), h);
       throw new DaoException(h);
     }
   }

@@ -1,11 +1,10 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -61,10 +60,9 @@ public class OtherChildInPlacemtHomeTransformer
             placementHome.getLastUpdateTime().withNano(0).format(DateTimeFormatter.ISO_DATE_TIME)),
         LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
 
-    Set<AddressIntakeApi> addresses = new HashSet<>(
-        Arrays.asList(new AddressIntakeApi(null, null, streetAddress, placementHome.getCityNm(),
-            state, getZip(placementHome), null, placemtHomeLegacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = Collections
+        .singletonList(new AddressIntakeApi(null, null, streetAddress, placementHome.getCityNm(),
+            state, getZip(placementHome), null, placemtHomeLegacyDescriptor));
 
     return new ParticipantIntakeApi(null, null, null, otherChildLegacyDescriptor, firstName, null,
         lastName, null, gender, null, null, null, otherChildInPlacemtHome.getBirthDate(),
@@ -89,10 +87,12 @@ public class OtherChildInPlacemtHomeTransformer
   }
 
   private String getZip(PlacementHome placementHome) {
-    String zip = placementHome.getZipNo();
-    if (placementHome.getZipSfxNo() != null) {
-      return placementHome.getZipNo() + "-" + placementHome.getZipSfxNo();
-    }
-    return zip;
+    return placementHome.getZipNo();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (placementHome.getZipSfxNo() != null) { return placementHome.getZipNo() + "-" +
+     * placementHome.getZipSfxNo(); } return zip;
+     */
   }
 }

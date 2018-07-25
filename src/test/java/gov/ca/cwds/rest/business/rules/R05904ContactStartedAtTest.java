@@ -24,7 +24,7 @@ public class R05904ContactStartedAtTest {
   }
 
   @Test
-  public void isValidWhenContactStartedAtEqualsReferralReceivedDateTimeReturnsFalse()
+  public void isValidWhenContactStartedAtEqualsReferralReceivedDateTimeReturnsTrue()
       throws Exception {
     Date contactStartedAtDateTime =
         DomainChef.uncookStrictTimestampString("2010-04-27T23:30:14.000-0000");
@@ -32,7 +32,7 @@ public class R05904ContactStartedAtTest {
         DomainChef.uncookStrictTimestampString("2010-04-27T23:30:14.000-0000");
     Boolean actual =
         new R05904ContactStartedAt(contactStartedAtDateTime, referralReceivedDateTime).isValid();
-    assertEquals(actual, false);
+    assertEquals(actual, true);
   }
 
   @Test

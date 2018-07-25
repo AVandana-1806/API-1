@@ -1,0 +1,157 @@
+[
+  {
+    "id": "4tp98Tq057",
+    "start_date": "1998-12-10",
+    "end_date": null,
+    "county": {
+      "id": "1084",
+      "description": "Lake"
+    },
+    "response_time": {
+      "id": "0"
+    },
+    "reporter": {
+      "id": "4tp98Tq057",
+      "first_name": "Samson",
+      "last_name": "Pevis",
+      "name_suffix": "Jr",
+      "role": "MANDATED_REPORTER",
+      "legacy_descriptor": {
+        "legacy_id": "4tp98Tq057",
+        "legacy_ui_id": "0278-3440-1878-6000317",
+        "legacy_last_updated": "1998-12-10T13:56:09.779-0800",
+        "legacy_table_name": "REPTR_T",
+        "legacy_table_description": "Reporter"
+      }
+    },
+    "assigned_social_worker": {
+      "id": "00f",
+      "first_name": "Richard",
+      "last_name": "Nixon",
+      "name_suffix": "Sr",
+      "legacy_descriptor": {
+        "legacy_id": "00f",
+        "legacy_ui_id": "00f",
+        "legacy_last_updated": "2000-08-29T13:51:39.247-0700",
+        "legacy_table_name": "STFPERST",
+        "legacy_table_description": "Staff"
+      }
+    },
+    "access_limitation": {
+      "limited_access_code": "NONE",
+      "limited_access_government_entity": {}
+    },
+    "allegations": [
+      {
+        "id": "4HiMfqs057",
+        "type": {
+          "id": "2179",
+          "description": "Physical Abuse"
+        },
+        "disposition": {
+          "id": "0"
+        },
+        "victim": {
+          "id": "CC8xSNu057",
+          "first_name": "Tommy",
+          "last_name": "Folan",
+          "name_suffix": "III",
+          "legacy_descriptor": {
+            "legacy_id": "CC8xSNu057",
+            "legacy_ui_id": "0692-7288-0214-6000317",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          }
+        },
+        "perpetrator": {
+          "id": "229xqyI057",
+          "first_name": "Kateie",
+          "last_name": "Snazel",
+          "name_suffix": "III",
+          "legacy_descriptor": {
+            "legacy_id": "229xqyI057",
+            "legacy_ui_id": "0115-5799-8883-4000317",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          }
+        },
+        "legacy_descriptor": {
+          "legacy_id": "4HiMfqs057",
+          "legacy_ui_id": "0243-4307-6336-2000317",
+          "legacy_last_updated": "1998-12-10T13:56:09.779-0800",
+          "legacy_table_name": "ALLGTN_T",
+          "legacy_table_description": "Allegation"
+        }
+      },
+      {
+        "id": "0rZlKnS057",
+        "type": {
+          "id": "5001",
+          "description": "At Risk, sibling abused"
+        },
+        "disposition": {
+          "id": "0"
+        },
+        "victim": {
+          "id": "CFOmFrm057",
+          "first_name": "Tobie",
+          "last_name": "Gradly",
+          "name_suffix": "Jr.",
+          "legacy_descriptor": {
+            "legacy_id": "CFOmFrm057",
+            "legacy_ui_id": "0695-7109-5229-0000317",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          }
+        },
+        "legacy_descriptor": {
+          "legacy_id": "0rZlKnS057",
+          "legacy_ui_id": "0049-0834-9321-8000317",
+          "legacy_last_updated": "1998-12-10T13:56:09.779-0800",
+          "legacy_table_name": "ALLGTN_T",
+          "legacy_table_description": "Allegation"
+        }
+      },
+      {
+        "id": "KiDOANO057",
+        "type": {
+          "id": "5001",
+          "description": "At Risk, sibling abused"
+        },
+        "disposition": {
+          "id": "0"
+        },
+        "victim": {
+          "id": "KPPtCIU057",
+          "first_name": "Tamie",
+          "last_name": "Bissell",
+          "name_suffix": "",
+          "legacy_descriptor": {
+            "legacy_id": "KPPtCIU057",
+            "legacy_ui_id": "1159-2905-9619-4000317",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          }
+        },
+        "legacy_descriptor": {
+          "legacy_id": "KiDOANO057",
+          "legacy_ui_id": "1176-5124-0841-8000317",
+          "legacy_last_updated": "1998-12-10T13:56:09.779-0800",
+          "legacy_table_name": "ALLGTN_T",
+          "legacy_table_description": "Allegation"
+        }
+      }
+    ],
+    "legacy_descriptor": {
+      "legacy_id": "4tp98Tq057",
+      "legacy_ui_id": "0278-3440-1878-6000317",
+      "legacy_last_updated": "1999-07-21T14:16:53.576-0700",
+      "legacy_table_name": "REFERL_T",
+      "legacy_table_description": "Referral"
+    }
+  }
+]

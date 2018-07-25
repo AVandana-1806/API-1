@@ -3,38 +3,36 @@ package gov.ca.cwds.health.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DB2DatabaseTest {
+import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
+
+public class DB2DatabaseTest extends Doofenshmirtz<ClientAddress> {
+
   DB2Database db2;
-  SessionFactory sessionFactory;
   NativeQuery query;
 
+  @Override
   @Before
-  public void setup() {
-    String sql = "select 1 from sysibm.sysdummy1";
+  public void setup() throws Exception {
+    super.setup();
+
     List results = new ArrayList();
     results.add("a result");
 
-    query = mock(NativeQuery.class);
+    query = nq;
     when(query.list()).thenReturn(results);
-
-    Session session = mock(Session.class);
-    when(session.createNativeQuery(sql)).thenReturn(query);
-
-    sessionFactory = mock(SessionFactory.class);
-    when(sessionFactory.openSession()).thenReturn(session);
+    when(session.createNativeQuery(any(String.class))).thenReturn(query);
 
     db2 = new DB2Database(sessionFactory);
   }

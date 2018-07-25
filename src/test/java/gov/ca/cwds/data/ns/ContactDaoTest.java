@@ -1,24 +1,23 @@
 package gov.ca.cwds.data.ns;
 
-import gov.ca.cwds.data.persistence.ns.ContactEntity;
-import gov.ca.cwds.rest.util.Doofenshmirtz;
-import org.hibernate.Query;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
+import java.time.LocalDateTime;
+
+import org.hibernate.query.Query;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.time.LocalDateTime;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import gov.ca.cwds.data.persistence.ns.ContactEntity;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class ContactDaoTest extends Doofenshmirtz<ContactEntity> {
 
-  /**
-   *
-   */
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
@@ -34,24 +33,17 @@ public class ContactDaoTest extends Doofenshmirtz<ContactEntity> {
 
   @Test
   public void testCreate() {
-    ContactEntity entity = new ContactEntity(
-            "1",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            "purpose",
-            "commMethod",
-            "C",
-            1,
-            "Location",
-            "Note");
+    ContactEntity entity = new ContactEntity("1", LocalDateTime.now(), LocalDateTime.now(),
+        "purpose", "commMethod", "C", 1, "Location", "Note");
     ContactEntity created = contactDao.create(entity);
     assertThat(created, is(entity));
   }
 
   @Test
   public void testFindAllNamedQueryExist() throws Exception {
-    Query query = session.getNamedQuery("gov.ca.cwds.rest.api.persistence.ns.ContactEntity.findAll");
-    assertThat(query, is(nullValue()));
+    Query query =
+        session.getNamedQuery("gov.ca.cwds.rest.api.persistence.ns.ContactEntity.findAll");
+    assertThat(query, is(notNullValue()));
   }
 
   @Test

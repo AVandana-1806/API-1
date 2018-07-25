@@ -19,7 +19,7 @@ import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 
 /**
- * Business layer object to work on {@link DrmsDocument}
+ * Business layer object to work on {@link DrmsDocument}.
  * 
  * @author CWDS API Team
  */
@@ -48,7 +48,6 @@ public class DrmsDocumentService implements
    */
   @Override
   public PostedDrmsDocument create(gov.ca.cwds.rest.api.domain.cms.DrmsDocument request) {
-
     gov.ca.cwds.rest.api.domain.cms.DrmsDocument drmsDocument = request;
 
     try {
@@ -59,10 +58,9 @@ public class DrmsDocumentService implements
       managed = drmsDocumentDao.create(managed);
       return new PostedDrmsDocument(managed);
     } catch (EntityExistsException e) {
-      LOGGER.info("drmsDocument already exists : {}", drmsDocument);
+      LOGGER.error("drmsDocument already exists : {}", drmsDocument);
       throw new ServiceException(e);
     }
-
   }
 
   @Override

@@ -1,25 +1,27 @@
 package gov.ca.cwds.rest.resources.hoi;
 
-import static gov.ca.cwds.inject.FerbHibernateBundle.CMS_BUNDLE_TAG;
-import static gov.ca.cwds.inject.FerbHibernateBundle.NS_BUNDLE_TAG;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
-import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
+import gov.ca.cwds.rest.core.Api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
+import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 
 public class InvolvementHistoryResourceIRT extends HOIBaseTest {
 
@@ -30,20 +32,21 @@ public class InvolvementHistoryResourceIRT extends HOIBaseTest {
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
 
     final InvolvementHistory actualInvolvementHistory = getInvolvementHistory(actualJson);
-    assertHOICasesAreSorted(new String[]{"Co8uaDi0DW", "IdQImWo0DW"},
+    assertHOICasesAreSorted(new String[] {"Co8uaDi0DW", "IdQImWo0DW"},
         actualInvolvementHistory.getCases());
-    assertHOIReferralsAreSorted(new String[]{"MYsSPHW0DW", "9OQhOAE0DW"},
+    assertHOIReferralsAreSorted(new String[] {"MYsSPHW0DW", "9OQhOAE0DW"},
         actualInvolvementHistory.getReferrals());
-    assertHOIScreeningsAreSorted(new String[]{"750", "885", "862"},
+    assertHOIScreeningsAreSorted(new String[] {"750", "885", "862"},
         actualInvolvementHistory.getScreenings());
 
-    assertQueryExecutionCount(CMS_BUNDLE_TAG, 27);
-    assertQueryExecutionCount(NS_BUNDLE_TAG, 5);
+    assertQueryExecutionCount(Api.DATASOURCE_CMS, 14);
+    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP);
+    assertQueryExecutionCount(Api.DATASOURCE_NS, 5);
   }
 
   private String doGet(String id) throws IOException {
-    WebTarget target = clientTestRule
-        .target(RESOURCE_SCREENINGS + "/" + id + "/history_of_involvements");
+    WebTarget target =
+        clientTestRule.target(RESOURCE_SCREENINGS + "/" + id + "/history_of_involvements");
     Response response = target.request(MediaType.APPLICATION_JSON).get();
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
@@ -75,4 +78,5 @@ public class InvolvementHistoryResourceIRT extends HOIBaseTest {
   public void testCreateNotImplemented() {
     new InvolvementHistoryService().create(null);
   }
+
 }

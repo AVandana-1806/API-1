@@ -74,15 +74,15 @@ public class GenealogistTest {
     when(clientDao.find(brotherClientId)).thenReturn(brotherClient);
 
     RelationshipWrapper client1Mother = new RelationshipWrapper("123", sonClientId, momClientId,
-        "Charlie", "Foo", "Rene", "Foo", MONTHER_SON, SON_MOTHER);
+        "Charlie", "", "Foo", "Rene", "", "Foo", MONTHER_SON, SON_MOTHER);
     RelationshipWrapper client1Father = new RelationshipWrapper("432", sonClientId, dadClientId,
-        "Charlie", "Foo", "Ralph", "Foo", FATHER_SON, SON_FATHER);
+        "Charlie", "", "Foo", "Ralph", "", "Foo", FATHER_SON, SON_FATHER);
     relationships = Arrays.asList(client1Mother, client1Father);
 
     RelationshipWrapper client1Brother = new RelationshipWrapper("123", brotherClientId,
-        sonClientId, "Ricky", "Foo", "Charlie", "Foo", BROTHER_BROTHER, BROTHER_BROTHER);
+        sonClientId, "Ricky", "", "Foo", "Charlie", "", "Foo", BROTHER_BROTHER, BROTHER_BROTHER);
     RelationshipWrapper client1Sister = new RelationshipWrapper("432", sisterClientId, sonClientId,
-        "Rebecca", "Foo", "Charlie", "Foo", BROTHER_SISTER, SISTER_BROTHER);
+        "Rebecca", "", "Foo", "Charlie", "", "Foo", BROTHER_SISTER, SISTER_BROTHER);
     secondaryOnlyRelationships = Arrays.asList(client1Brother, client1Sister);
 
     genealogist = new Genealogist(clientDao);
@@ -192,6 +192,17 @@ public class GenealogistTest {
     Relationship relationship = genealogist.buildRelationships(relationships, sonClientId);
     assertFalse(relationship.getSealed());
     assertTrue(relationship.getSensitive());
+  }
+  
+  @Test
+  public void givenAClientThatIsSealedThenRelationshipShouldBeSensitive() {
+    sonClient = new ClientEntityBuilder().setId("1").setCommonFirstName("Charlie")
+        .setSensitivityIndicator("R").build();
+    when(clientDao.find(sonClientId)).thenReturn(sonClient);
+    Relationship relationship = genealogist.buildRelationships(relationships, sonClientId);
+    assertTrue(relationship.getSealed());
+    assertFalse(relationship.getSensitive());
+    
   }
 
   private ArrayList<RelationshipTo> convertToOrderedRelationships(Relationship relationship) {

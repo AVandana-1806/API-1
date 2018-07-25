@@ -16,8 +16,10 @@ public class ScreeningDashboardResourceBuilder {
   private Date startedAt;
   
   public ScreeningDashboard build() {
-	return new ScreeningDashboard(id, reference, name, screeningDecision, 
-		screeningDecisionDetail, assignee, assigneeStaffId, startedAt);
+    ScreeningDashboard sd = new ScreeningDashboard(id, reference, name, screeningDecision, 
+        screeningDecisionDetail, assignee, assigneeStaffId);
+    sd.setStartedAt(startedAt);
+    return sd;
   }
   
   public ScreeningDashboardResourceBuilder setId(String id) {

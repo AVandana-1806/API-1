@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -45,6 +46,7 @@ import gov.ca.cwds.rest.services.cms.AllegationService;
 import gov.ca.cwds.rest.services.cms.CrossReportService;
 import gov.ca.cwds.rest.services.cms.GovernmentOrganizationCrossReportService;
 import gov.ca.cwds.rest.services.cms.ReferralService;
+import gov.ca.cwds.rest.validation.CaresValidationUtils;
 import gov.ca.cwds.rest.validation.ParticipantValidator;
 import gov.ca.cwds.rest.validation.StartDateTimeValidator;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -72,7 +74,6 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ReferralDao referralDao;
   private ClientRelationshipDao clientRelationshipDao;
-  private ReferralSatefyAlertsService referralSatefyAlertsService;
 
   /**
    * Constructor
@@ -89,7 +90,6 @@ public class ScreeningToReferralService implements CrudsService {
    * @param reminders reminders
    * @param governmentOrganizationCrossReportService governmentOrganizationCrossReportService
    * @param clientRelationshipDao clientRelationshipDao
-   * @param referralSatefyAlertsService referralSatefyAlertsService
    */
   @Inject
   public ScreeningToReferralService(ReferralService referralService,
@@ -99,8 +99,7 @@ public class ScreeningToReferralService implements CrudsService {
       ReferralDao referralDao, MessageBuilder messageBuilder,
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
       GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService,
-      ClientRelationshipDao clientRelationshipDao,
-      ReferralSatefyAlertsService referralSatefyAlertsService) {
+      ClientRelationshipDao clientRelationshipDao) {
 
     super();
     this.clientRelationshipDao = clientRelationshipDao;
@@ -115,12 +114,11 @@ public class ScreeningToReferralService implements CrudsService {
     this.allegationPerpetratorHistoryService = allegationPerpetratorHistoryService;
     this.reminders = reminders;
     this.governmentOrganizationCrossReportService = governmentOrganizationCrossReportService;
-    this.referralSatefyAlertsService = referralSatefyAlertsService;
   }
 
   @UnitOfWork(value = "cms")
   @Override
-  public Response create(Request request) {
+  public Response create(@Valid Request request) {
     ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     verifyReferralHasValidParticipants(screeningToReferral);
 
@@ -144,14 +142,12 @@ public class ScreeningToReferralService implements CrudsService {
     ClientParticipants clientParticipants = processParticipants(screeningToReferral, dateStarted,
         timeStarted, referralId, messageBuilder);
 
-    saveRelationships(screeningToReferral);
+    saveRelationships(screeningToReferral, clientParticipants);
 
     Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
-
     Set<Allegation> resultAllegations = createAllegations(screeningToReferral, referralId,
         clientParticipants.getVictimIds(), clientParticipants.getPerpetratorIds());
 
-    referralSatefyAlertsService.create(screeningToReferral, referralId, clientParticipants);
     PostedScreeningToReferral pstr =
         PostedScreeningToReferral.createWithDefaults(referralId, screeningToReferral,
             clientParticipants.getParticipants(), resultCrossReports, resultAllegations);
@@ -164,6 +160,13 @@ public class ScreeningToReferralService implements CrudsService {
         foundError = true;
       }
     }
+
+    // DRS: XA DEBUG: turn off business rules locally with system property.
+    if (foundError && CaresValidationUtils.isBusinessValidationEnabled()) {
+      LOGGER.warn("XA: DISABLE BUSINESS VALIDATION!");
+      foundError = false;
+    }
+
     if (foundError) {
       throw new BusinessValidationException(messageBuilder.getIssues());
     }
@@ -190,30 +193,32 @@ public class ScreeningToReferralService implements CrudsService {
     try {
       resultCrossReports = processCrossReports(screeningToReferral, referralId);
     } catch (ServiceException e) {
-      String message = e.getMessage();
-      logError(message, e);
+      logError(e.getMessage(), e);
     }
     return resultCrossReports;
   }
 
   private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-
     return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
   }
 
-  private void saveRelationships(ScreeningToReferral screeningToReferral) {
+  private void saveRelationships(ScreeningToReferral screeningToReferral, ClientParticipants clientParticipants ) {
+    if (screeningToReferral.getRelationships() == null) {
+      return;
+    }
     for (ScreeningRelationship relationship : screeningToReferral.getRelationships()) {
+      if (relationship == null)
+        continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
-          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship);
+          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship, clientParticipants);
           gov.ca.cwds.data.legacy.cms.entity.ClientRelationship savedRelationship =
               clientRelationshipService.createRelationship(builder.build());
           relationship.setId(savedRelationship.getIdentifier());
         } catch (DataAccessServicesException e) {
-          String message = e.getMessage();
-          logError(message, e);
+          logError(e.getMessage(), e);
         }
       }
     }
@@ -232,8 +237,7 @@ public class ScreeningToReferralService implements CrudsService {
         logError(message);
       }
     } catch (Exception e) {
-      String message = e.getMessage();
-      logError(message, e);
+      logError(e.getMessage(), e);
     }
   }
 
@@ -250,9 +254,9 @@ public class ScreeningToReferralService implements CrudsService {
   /**
    * {@inheritDoc}
    * 
-   * @see gov.ca.cwds.rest.services.CrudsService#delete(java.io.Serializable)
+   * <blockquote>
    * 
-   *      <pre>
+   * <pre>
    * 
    * DocTool Rule R - 00796 
    * 
@@ -267,7 +271,11 @@ public class ScreeningToReferralService implements CrudsService {
    * allegations. Since there is no business requirement at this time to delete a referral we will
    * not be implementing this rule. A NO-OP delete method is provided that gives a Not
    * Implemented Exception.
-   *      </pre>
+   * </pre>
+   * 
+   * </blockquote>
+   * 
+   * @see gov.ca.cwds.rest.services.CrudsService#delete(java.io.Serializable)
    */
   @Override
   public Response delete(Serializable primaryKey) {
@@ -362,7 +370,7 @@ public class ScreeningToReferralService implements CrudsService {
       String outStateLawEnforcementAddr) {
     if (outStateLawEnforcementIndicator && StringUtils.isBlank(outStateLawEnforcementAddr)) {
       String message =
-          "outStateLawEnforcementIndicator is set true, Then outStateLawEnforcementAddr can't be blank";
+          "outStateLawEnforcementIndicator is set true, then outStateLawEnforcementAddr can't be blank";
       ServiceException se = new ServiceException(message);
       logError(message, se);
     }
@@ -474,7 +482,6 @@ public class ScreeningToReferralService implements CrudsService {
     if (allegation.getLegacyId() == null || allegation.getLegacyId().isEmpty()) {
       persistAllegation(scr, referralId, processedAllegations, victimClientId, perpatratorClientId,
           allegationDispositionType, allegation);
-
     } else {
       gov.ca.cwds.rest.api.domain.cms.Allegation foundAllegation =
           this.allegationService.find(allegation.getLegacyId());
@@ -566,9 +573,7 @@ public class ScreeningToReferralService implements CrudsService {
             DomainChef.cookDate(RequestExecutionContext.instance().getRequestStartTime()));
 
     messageBuilder.addDomainValidationError(validator.validate(cmsPerpHistory));
-
     this.allegationPerpetratorHistoryService.create(cmsPerpHistory);
   }
-
 
 }

@@ -14,6 +14,7 @@ import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
 import gov.ca.cwds.rest.business.rules.CalendarEnum;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 
 /**
  * Business layer object to transform NS {@link ParticipantIntakeApi} to {@link Participant}
@@ -38,7 +39,9 @@ public class ParticipantsTransformer {
     for (ParticipantIntakeApi p : participantsIntake) {
       Set<Address> addresses = new HashSet<>();
       for (AddressIntakeApi addressIntake : p.getAddresses()) {
-        addresses.add(addressTransformer.transform(addressIntake));
+        if (!IntakeAddressConverter.PLACEMENT_HOME_INTAKE_CODE.equals(addressIntake.getType())) {
+          addresses.add(addressTransformer.transform(addressIntake));
+        }
       }
       addresses = Collections.unmodifiableSet(addresses);
       String gender = StringUtils.isNotBlank(p.getGender())

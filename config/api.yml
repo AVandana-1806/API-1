@@ -3,14 +3,14 @@ version: ${APP_VERSION:-local}
 
 shiro:
   iniConfigs: ["file:${SHIRO_CONFIG_PATH:-config/shiro.ini}"]
-
+  
 swagger:
   templateName: swagger.mustache
   assetsPath: /static
   resourcePackage: gov.ca.cwds.rest.resources
   title: CWDS API
   description: RESTful API definitions for the CWS New System.
-  logo: images/CWDS-API-Logo-Horizontal.png
+  logo: images/CWDS-API-Logo-Horizontal.png  
   showSwagger: ${SHOW_SWAGGER:-true}
   jsonUrl: ${SWAGGER_JSON_URL:-http://localhost:8080/swagger.json}
   loginUrl: ${LOGIN_URL:-http://localhost:8090/authn/login}
@@ -35,8 +35,8 @@ nsDataSourceFactory:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
       hibernate.jdbc.time_zone: America/Los_Angeles
       hibernate.id.new_generator_mappings: false
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.temp.use_jdbc_metadata_defaults: false
@@ -56,13 +56,13 @@ cmsDataSourceFactory:
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
-      hibernate.show_sql: false
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
+      hibernate.use_sql_comments: true
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
-      hibernate.connection.provider_disables_autocommit: true
+      # hibernate.connection.provider_disables_autocommit: true
       # hibernate.current_session_context_class: thread
 
 rsDataSourceFactory:
@@ -80,12 +80,16 @@ rsDataSourceFactory:
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
-      hibernate.show_sql: false
-      hibernate.format_sql: true
-      hibernate.use_sql_comments: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
+      hibernate.use_sql_comments: true
       hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 1
+
+##==========================
+## XA DATA SOURCES:
+##==========================
 
 xaCmsDataSourceFactory:
   autoCommitByDefault: false
@@ -98,19 +102,64 @@ xaCmsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 1
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+  xaProperties:
+      # Properties for DB2XADataSource
+      serverName: ${DB_CMS_HOST:-localhost}
+      portNumber: ${DB_CMS_PORT:-50000}
+      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
+      driverType: 4 # Type4 connection for DB2 DataSource
+
+xaCmsRsDataSourceFactory:
+  autoCommitByDefault: false
+  driverClass: com.ibm.db2.jcc.DB2Driver
+  user: ${DB_CWSRS_USER}
+  password: ${DB_CWSRS_PASSWORD}
+  url: ${DB_CWSRS_JDBC_URL}
+  xaDataSourceClassName: com.ibm.db2.jcc.DB2XADataSource
+  validationQuery: "/* XA/CMS Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
+  logValidationErrors: true
+  initialSize: 2
+  minSize: 2
+  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
+  minIdleTime: 1 minute
+  properties:
+      hibernate.dialect: org.hibernate.dialect.DB2Dialect
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
+      hibernate.default_schema: ${DB_CWSRS_SCHEMA}
+      hibernate.connection.autocommit: false
+      hibernate.current_session_context_class: jta
+      hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 1
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
+      # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       # Properties for DB2XADataSource
       serverName: ${DB_CMS_HOST:-localhost}
@@ -128,24 +177,28 @@ xaNsDataSourceFactory:
   logValidationErrors: true
   initialSize: 2
   minSize: 2
-  maxSize: ${DB_NS_CP_MAX_SIZE:-8}
+  maxSize: ${XA_DB_NS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
       hibernate.id.new_generator_mappings: false
-      hibernate.show_sql: false
+      hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
+      hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.current_session_context_class: jta
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
-      hibernate.transaction.factory_class: org.hibernate.resource.transaction.backend.jta.internal.JtaTransactionCoordinatorBuilderImpl
-      hibernate.connection.release_mode: auto
-      connection.release_mode: auto
-      hibernate.temp.use_jdbc_metadata_defaults: false
-      # hibernate.cache.use_second_level_cache: false
-      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-      # hibernate.cache.use_query_cache: false
+      hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
+      hibernate.connection.release_mode: after_transaction
+      connection.release_mode: after_transaction
+      hibernate.connection.isolation: 2
+      hibernate.temp.use_jdbc_metadata_defaults: true
+      hibernate.cache.use_query_cache: true
+      hibernate.cache.use_second_level_cache: false
+      connection.timerLevelForQueryTimeOut: 2
+      connection.blockingReadConnectionTimeout: 120
       # hibernate.connection.provider_disables_autocommit: true
+      # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_NS_JDBC_URL}
 
@@ -153,10 +206,10 @@ elasticsearch:
   # Screenings index
   screeningsIndex:
     # The old "elasticsearch.host" and "elasticsearch.port" will still work but not required when "elasticsearch.nodes" is provided.
-    elasticsearch.host: ${ES_HOST_SCREENINGS:-es.dev.cwds.tabordasolutions.net}
+    elasticsearch.host: ${ES_HOST_SCREENINGS:-localhost}
     elasticsearch.port: ${ES_PORT_SCREENINGS:-9300}
-    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-taborda-dev-es}
-    #Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
+    elasticsearch.cluster: ${ES_CLUSTER_SCREENINGS:-elasticsearch}
+    # Comma "," separated List of host:port pairs. Example: host1:port1,host2:port2
     elasticsearch.nodes: ${ES_NODES_SCREENINGS}
     elasticsearch.alias: ${ES_ALIAS_SCREENINGS:-screenings}
     elasticsearch.doctype: ${ES_DOCTYPE:-screening}
@@ -169,47 +222,57 @@ testConfig:
 triggertables:
   laCountySpecificCode: 19
 
-systemCodeCache:
+systemCodeCache: 
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
+
+intakeCodeCache:
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
+  # This is 365 days
+  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}
+ 
 webSecurity:
   httpResponseSecurityHeaders:
     # Prevent MIMI sniffing
     X-Content-Type-Options: nosniff
-
+    
     # Prevent click-jacking
     X-Frame-Options: deny
-
+    
     # Prevent cross site scripting
     X-XSS-Protection: 1; mode=block
-
+    
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
 
 server:
   applicationConnectors:
-  - type: http
+  - type: http 
     port: ${APP_STD_PORT:-8080}
   adminConnectors:
   - type: http
     port: ${APP_ADMIN_PORT:-8081}
-
+    
   requestLog:
     appenders:
       - type: console
 
 logging:
-  level: ${LOGLEVEL:-WARN}
+  level: ${LOGLEVEL:-INFO}
   loggers:
     "org.hibernate.SQL":
       # Use DEBUG to see SQL logged
-      level: DEBUG
+      level: ${LOGLEVEL_HIBERNATE_SQL:-DEBUG}
     "org.hibernate.type.descriptor.sql":
       # Use TRACE to see SQL parameters logged
-      level: DEBUG
+      level: ${LOGLEVEL_HIBERNATE_PARAMS:-DEBUG}
     "gov.ca.cwds.data.ApiHibernateInterceptor":
       # Use DEBUG or TRACE to see entities logged
-      level: DEBUG
+      level: ${LOGLEVEL_HIBERNATE_INTERCEPTOR:-DEBUG}
+    "com.atomikos.jdbc":
+      level: ${LOGLEVEL_XA_TRANSACTION:-DEBUG}
+    "org.eclipse.jetty":
+      level: ${LOGLEVEL_JETTY:-DEBUG}
     "io.dropwizard.server":
       level: INFO
     "io.dropwizard.jersey.DropwizardResourceConfig":
@@ -221,4 +284,5 @@ logging:
       threshold: ALL
       timeZone: UTC
       target: stdout
-      logFormat: '[%X{REMOTE_ADDRESS}] [%date{ISO8601}] [%level] [%thread] [%X{UNIQUE_ID}] [%logger] [%X{USER_ID}] [%X{REQUEST_START_TIME}]: [%message]%n'
+      logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
+ 

@@ -34,6 +34,7 @@ import gov.ca.cwds.rest.validation.ValidCounty;
  * 
  * @author CWDS API Team
  */
+//@formatter:off
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.CmsCase.findByClientIds",
     query = "FROM CmsCase WHERE fkchldClt IN :clientIds")
 
@@ -54,9 +55,10 @@ import gov.ca.cwds.rest.validation.ValidCounty;
         + "     {h-schema}CASE_T Y                  \n"
         + "     WHERE Z.FKCLIENT_0  = :clientId     \n"
         + "     AND Z.FKCLIENT_T <> :clientId       \n"
-        + "     AND Z.FKCLIENT_T = Y.FKCHLD_CLT     \n" + "   WITH UR",
+        + "     AND Z.FKCLIENT_T = Y.FKCHLD_CLT     \n" 
+        + "   FOR READ ONLY WITH UR",
     resultClass = CmsCase.class, readOnly = true)
-
+//@formatter:on
 @Entity
 @Table(name = "CASE_T")
 @JsonPropertyOrder(alphabetic = true)
@@ -180,14 +182,18 @@ public class CmsCase extends CmsPersistentObject {
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCHLD_CLT", nullable = false, updatable = false, insertable = false)
   private ChildClient childClient;
 
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
-  @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE},
+      optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKSTFPERST", nullable = false, updatable = false, insertable = false)
   private StaffPerson staffPerson;
 
@@ -213,8 +219,8 @@ public class CmsCase extends CmsPersistentObject {
 
   public CmsCase(String id, String alertText, String approvalNumber, Short approvalStatusType,
       Short caseClosureReasonType, String caseplanChildrenDetailIndVar, String closureStatementText,
-      Short countryCodeType, String countySpecificCode, String drmsNotesDoc,
-      Date emancipationDate, Date endDate, String fkchldClt, String fkreferlt, String fkstfperst,
+      Short countryCodeType, String countySpecificCode, String drmsNotesDoc, Date emancipationDate,
+      Date endDate, String fkchldClt, String fkreferlt, String fkstfperst,
       Short governmentEntityType, String icpcOutgngPlcmtStatusIndVar,
       String icpcOutgoingRequestIndVar, String limitedAccessCode, Date limitedAccessDate,
       String limitedAccessDesc, Short limitedAccessGovernmentEntityType, String caseName,
@@ -259,7 +265,6 @@ public class CmsCase extends CmsPersistentObject {
     this.staffPerson = staffPerson;
     this.riReferral = riReferral;
   }
-
 
   @Override
   public Serializable getPrimaryKey() {

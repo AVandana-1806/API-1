@@ -27,8 +27,9 @@ public class ParticipantEntityBuilder {
   private String races;
   private String ethnicity;
   private String legacySourceTable;
-  private Boolean sensitive;
-  private Boolean sealed;
+  private Boolean sensitive = Boolean.FALSE;
+  private Boolean sealed = Boolean.FALSE;
+  private Boolean probationYouth;
   private String approximateAge;
   private String approximateAgeUnits;
 
@@ -39,7 +40,7 @@ public class ParticipantEntityBuilder {
   public ParticipantEntity build() {
     return new ParticipantEntity(id, dateOfBirth, dateOfDeath, firstName, gender, lastName, ssn,
         screeningEntity, legacyId, roles, languages, middleName, nameSuffix, races, ethnicity,
-        legacySourceTable, sensitive, sealed, approximateAge, approximateAgeUnits);
+        legacySourceTable, sensitive, sealed, probationYouth, approximateAge, approximateAgeUnits);
   }
 
   public ParticipantEntityBuilder setId(String id) {

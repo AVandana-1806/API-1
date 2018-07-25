@@ -55,9 +55,6 @@ public class RIClientAddress implements ApiReferentialCheck<ClientAddress> {
   private static final String ADDRESS_ID_MISSING_ERROR =
       "ClientAddress => Address with given Identifier is not present in database";
 
-  /**
-   * Default.
-   */
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RIClientAddress.class);

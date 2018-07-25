@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -56,10 +57,9 @@ public class EducationProviderContactTransformer
         new org.joda.time.DateTime(educationProvider.getLastUpdatedTime()),
         LegacyTable.EDUCATION_PROVIDER.getName(), LegacyTable.EDUCATION_PROVIDER.getDescription());
 
-    Set<AddressIntakeApi> addresses = new HashSet<>(Arrays
-        .asList(new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(),
-            state, getZip(educationProvider), null, educationProviderLegacyDescriptor)));
-    addresses = Collections.unmodifiableSet(addresses);
+    List<AddressIntakeApi> addresses = Collections.singletonList(
+        new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(),
+            state, getZip(educationProvider), null, educationProviderLegacyDescriptor));
 
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
         Arrays.asList(new PhoneNumber(null, educationProviderContact.getPhoneNumber(), null)));
@@ -74,11 +74,13 @@ public class EducationProviderContactTransformer
   }
 
   private String getZip(EducationProvider educationProvider) {
-    String zip = educationProvider.getZipNumber().toString();
-    if (educationProvider.getZipSuffixNumber() != null) {
-      return educationProvider.getZipNumber() + "-" + educationProvider.getZipSuffixNumber();
-    }
-    return zip;
+    return educationProvider.getZipNumber().toString();
+    /**
+     * This line can be added once the referrals started accepting zip suffix
+     * 
+     * if (educationProvider.getZipSuffixNumber() != null) { return educationProvider.getZipNumber()
+     * + "-" + educationProvider.getZipSuffixNumber(); } return zip;
+     */
   }
 
 }

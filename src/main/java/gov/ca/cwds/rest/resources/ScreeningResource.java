@@ -1,9 +1,13 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -13,11 +17,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.ScreeningServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,15 +50,19 @@ import io.swagger.annotations.ApiResponses;
 public class ScreeningResource {
 
   private ResourceDelegate resourceDelegate;
+  private RelationshipFacade relationshipFacade;
 
   /**
    * Constructor
    * 
-   * @param resourceDelegate The resourceDelegate to delegate to.
+   * @param resourceDelegate the resourceDelegate to delegate to
+   * @param relationshipFacade the relationshipFacade to delegate to
    */
   @Inject
-  public ScreeningResource(@ScreeningServiceBackedResource ResourceDelegate resourceDelegate) {
+  public ScreeningResource(@ScreeningServiceBackedResource ResourceDelegate resourceDelegate,
+      RelationshipFacade relationshipFacade) {
     this.resourceDelegate = resourceDelegate;
+    this.relationshipFacade = relationshipFacade;
   }
 
   /**
@@ -60,7 +71,7 @@ public class ScreeningResource {
    * @param screening - screening
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DATASOURCE_NS)
   @POST
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
       @ApiResponse(code = 401, message = "Not Authorized"),
@@ -82,7 +93,7 @@ public class ScreeningResource {
    * @param screening the screening
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DATASOURCE_NS)
   @PUT
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
@@ -98,6 +109,27 @@ public class ScreeningResource {
       @Valid @ApiParam(required = true, hidden = false,
           value = "The screening request") gov.ca.cwds.rest.api.domain.Screening screening) {
     return resourceDelegate.update(id, screening);
+  }
+
+  /**
+   * Get an {@link ScreeningRelationship}.
+   *
+   * @param screeningId The id
+   * @return The {@link Response}
+   */
+  @XAUnitOfWork
+  @GET
+  @Path("/{screeningId}/relationships")
+  @ApiResponses(
+      value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
+          @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
+  @ApiOperation(value = "Find Relationships by screening id",
+      response = ScreeningRelationship.class)
+  public Response getRelationshipsByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
+      value = "The id of the Screening to find") String screeningId) {
+    return new ResponseConverter().withDataResponse(relationshipFacade.getRelationshipsByScreeningId(screeningId));
   }
 
 }
