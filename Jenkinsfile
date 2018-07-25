@@ -59,9 +59,11 @@ node ('tpt4-slave'){
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
    }
    stage('Integration Tests'){
-         buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: '--stacktrace -D build=${BUILD_NUMBER}'
-         publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
+         withEnv(['APP_STD_PORT=8088']) {
+            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: '--stacktrace -D build=${BUILD_NUMBER}'
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        }
+	}
    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
 			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info -D build=${BUILD_NUMBER}', tasks: 'sonarqube'
