@@ -16,18 +16,16 @@ import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
-import gov.ca.cwds.health.DB2HealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
-import gov.ca.cwds.health.resource.DB2Database;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContextFilter;
 import gov.ca.cwds.rest.filters.RequestResponseLoggingFilter;
 import io.dropwizard.db.DataSourceFactory;
@@ -113,17 +111,13 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
             injector.getInstance(RequestResponseLoggingFilter.class))
         .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
 
-    final DB2HealthCheck db2HealthCheck =
-        new DB2HealthCheck(injector.getInstance(DB2Database.class));
-    environment.healthChecks().register("db2_status", db2HealthCheck);
-
     final AuthHealthCheck authHealthCheck =
         new AuthHealthCheck(injector.getInstance(AuthServer.class));
-    environment.healthChecks().register("auth_status", authHealthCheck);
+    environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
 
     final SwaggerHealthCheck swaggerHealthCheck =
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
-    environment.healthChecks().register("swagger_status", swaggerHealthCheck);
+    environment.healthChecks().register(Api.HealthCheck.SWAGGER_STATUS, swaggerHealthCheck);
 
     injector.getInstance(SystemCodeCache.class);
     injector.getInstance(IntakeCodeCache.class);
