@@ -1,0 +1,275 @@
+{
+  "id": null,
+  "cases": [
+    {
+      "id": "HhNwKZP00R",
+      "start_date": "1999-02-03",
+      "end_date": "2000-03-02",
+      "county": {
+        "id": "1079",
+        "description": "Humboldt"
+      },
+      "service_component": {
+        "id": "1692",
+        "description": "Emergency Response"
+      },
+      "focus_child": {
+        "id": "JQBLZUB00R",
+        "first_name": "Cruella",
+        "last_name": "Timberlake",
+        "name_suffix": "",
+        "legacy_descriptor": {
+          "legacy_id": "JQBLZUB00R",
+          "legacy_ui_id": "1103-1916-1072-3000027",
+          "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+          "legacy_table_name": "CLIENT_T",
+          "legacy_table_description": "Client"
+        }
+      },
+      "assigned_social_worker": {
+        "id": "00R",
+        "first_name": "Snead",
+        "last_name": "Spiegel",
+        "name_suffix": "",
+        "legacy_descriptor": {
+          "legacy_id": "00R",
+          "legacy_ui_id": "00R",
+          "legacy_last_updated": "2000-11-02T16:35:16.441-0800",
+          "legacy_table_name": "STFPERST",
+          "legacy_table_description": "Staff"
+        }
+      },
+      "access_limitation": {
+        "limited_access_code": "NONE",
+        "limited_access_government_entity": {}
+      },
+      "parents": [
+        {
+          "id": "SJIhYMV00R",
+          "first_name": "Carlos",
+          "last_name": "Richie",
+          "name_suffix": "",
+          "legacy_descriptor": {
+            "legacy_id": "SJIhYMV00R",
+            "legacy_ui_id": "1608-0894-7440-3000027",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          },
+          "relationship": {
+            "id": "205",
+            "description": "Father/Daughter (Birth)"
+          },
+          "limited_access_code": "NONE"
+        }
+      ],
+      "legacy_descriptor": {
+        "legacy_id": "HhNwKZP00R",
+        "legacy_ui_id": "1005-3514-7453-1000027",
+        "legacy_last_updated": "2010-10-01T15:26:53.539-0700",
+        "legacy_table_name": "CASE_T",
+        "legacy_table_description": "Case"
+      }
+    },
+    {
+      "id": "1lLxKgF00R",
+      "start_date": "1999-02-03",
+      "county": {
+        "id": "1079",
+        "description": "Humboldt"
+      },
+      "service_component": {
+        "id": "1692",
+        "description": "Emergency Response"
+      },
+      "focus_child": {
+        "id": "FwZqmln00R",
+        "first_name": "Crismore",
+        "last_name": "Plett",
+        "name_suffix": "",
+        "legacy_descriptor": {
+          "legacy_id": "FwZqmln00R",
+          "legacy_ui_id": "0905-6689-9030-7000027",
+          "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+          "legacy_table_name": "CLIENT_T",
+          "legacy_table_description": "Client"
+        }
+      },
+      "assigned_social_worker": {
+        "id": "00R",
+        "first_name": "Snead",
+        "last_name": "Spiegel",
+        "name_suffix": "",
+        "legacy_descriptor": {
+          "legacy_id": "00R",
+          "legacy_ui_id": "00R",
+          "legacy_last_updated": "2000-11-02T16:35:16.441-0800",
+          "legacy_table_name": "STFPERST",
+          "legacy_table_description": "Staff"
+        }
+      },
+      "access_limitation": {
+        "limited_access_code": "NONE",
+        "limited_access_government_entity": {}
+      },
+      "parents": [
+        {
+          "id": "SKZIn6B00R",
+          "first_name": "Carlatta",
+          "last_name": "Josland",
+          "name_suffix": "",
+          "legacy_descriptor": {
+            "legacy_id": "SKZIn6B00R",
+            "legacy_ui_id": "1609-2509-0339-5000027",
+            "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+            "legacy_table_name": "CLIENT_T",
+            "legacy_table_description": "Client"
+          },
+          "relationship": {
+            "id": "252",
+            "description": "Mother/Son (Birth)"
+          },
+          "limited_access_code": "NONE"
+        }
+      ],
+      "legacy_descriptor": {
+        "legacy_id": "1lLxKgF00R",
+        "legacy_ui_id": "0100-1829-2259-5000027",
+        "legacy_last_updated": "2000-03-02T10:42:15.470-0800",
+        "legacy_table_name": "CASE_T",
+        "legacy_table_description": "Case"
+      }
+    }
+  ],
+  "referrals": [
+    {
+      "id": "LNE73Hn00R",
+      "start_date": "1999-02-04",
+      "end_date": null,
+      "county": {
+        "id": "1084",
+        "description": "Lake"
+      },
+      "response_time": {
+        "id": "1516",
+        "description": "3 Day"
+      },
+      "reporter": {
+        "role": "ANONYMOUS_REPORTER"
+      },
+      "assigned_social_worker": {
+        "id": "00e",
+        "first_name": "Thomas",
+        "last_name": "Jefferson",
+        "name_suffix": "Sr",
+        "legacy_descriptor": {
+          "legacy_id": "00e",
+          "legacy_ui_id": "00e",
+          "legacy_last_updated": "2000-08-29T13:51:39.247-0700",
+          "legacy_table_name": "STFPERST",
+          "legacy_table_description": "Staff"
+        }
+      },
+      "access_limitation": {
+        "limited_access_code": "NONE",
+        "limited_access_government_entity": {}
+      },
+      "allegations": [
+        {
+          "id": "71QU0Kx00R",
+          "type": {
+            "id": "2178",
+            "description": "General Neglect"
+          },
+          "disposition": {
+            "id": "0"
+          },
+          "victim": {
+            "id": "FwZqmln00R",
+            "first_name": "Crismore",
+            "last_name": "Plett",
+            "name_suffix": "",
+            "legacy_descriptor": {
+              "legacy_id": "FwZqmln00R",
+              "legacy_ui_id": "0905-6689-9030-7000027",
+              "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+              "legacy_table_name": "CLIENT_T",
+              "legacy_table_description": "Client"
+            }
+          },
+          "perpetrator": {
+            "id": "SKZIn6B00R",
+            "first_name": "Carlatta",
+            "last_name": "Josland",
+            "name_suffix": "",
+            "legacy_descriptor": {
+              "legacy_id": "SKZIn6B00R",
+              "legacy_ui_id": "1609-2509-0339-5000027",
+              "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+              "legacy_table_name": "CLIENT_T",
+              "legacy_table_description": "Client"
+            }
+          },
+          "legacy_descriptor": {
+            "legacy_id": "71QU0Kx00R",
+            "legacy_ui_id": "0398-9091-1779-5000027",
+            "legacy_last_updated": "1999-06-01T11:04:30.088-0700",
+            "legacy_table_name": "ALLGTN_T",
+            "legacy_table_description": "Allegation"
+          }
+        },
+        {
+          "id": "SXn4sqZ00R",
+          "type": {
+            "id": "5001",
+            "description": "At Risk, sibling abused"
+          },
+          "disposition": {
+            "id": "0"
+          },
+          "victim": {
+            "id": "K0rqEZ100R",
+            "first_name": "Crenton",
+            "last_name": "Reary",
+            "name_suffix": "",
+            "legacy_descriptor": {
+              "legacy_id": "K0rqEZ100R",
+              "legacy_ui_id": "1136-8003-0653-1000027",
+              "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+              "legacy_table_name": "CLIENT_T",
+              "legacy_table_description": "Client"
+            }
+          },
+          "perpetrator": {
+            "id": "SKZIn6B00R",
+            "first_name": "Carlatta",
+            "last_name": "Josland",
+            "name_suffix": "",
+            "legacy_descriptor": {
+              "legacy_id": "SKZIn6B00R",
+              "legacy_ui_id": "1609-2509-0339-5000027",
+              "legacy_last_updated": "2018-07-24T15:08:37.948-0700",
+              "legacy_table_name": "CLIENT_T",
+              "legacy_table_description": "Client"
+            }
+          },
+          "legacy_descriptor": {
+            "legacy_id": "SXn4sqZ00R",
+            "legacy_ui_id": "1621-3641-8441-9000027",
+            "legacy_last_updated": "1999-06-01T11:04:30.088-0700",
+            "legacy_table_name": "ALLGTN_T",
+            "legacy_table_description": "Allegation"
+          }
+        }
+      ],
+      "legacy_descriptor": {
+        "legacy_id": "LNE73Hn00R",
+        "legacy_ui_id": "1214-0845-5203-5000027",
+        "legacy_last_updated": "1999-06-01T12:03:01.131-0700",
+        "legacy_table_name": "REFERL_T",
+        "legacy_table_description": "Referral"
+      }
+    }
+  ],
+  "screenings": []
+}
