@@ -48,7 +48,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    */
   @Test
   public void testSocialWorkerCanAccessToNoConditionClient() throws Exception {
-    String clientId = createReferral("N", userInfo.getIncidentCounty());
+    String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
@@ -62,7 +62,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    */
   @Test
   public void testSocialWorkerCantAccessToSameCountySensitiveClient() throws Exception {
-    String clientId = createReferral("S", userInfo.getIncidentCounty());
+    String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
@@ -89,7 +89,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    */
   @Test
   public void testSocialWorkerCantAccessToSameCountySealedClient() throws Exception {
-    String clientId = createReferral("R", userInfo.getIncidentCounty());
+    String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
@@ -110,7 +110,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
-  protected String createReferral(String sensitivityIndicator, String incidentCounty)
+  protected String findVictimClientId(String sensitivityIndicator, String incidentCounty)
       throws IOException, JsonParseException, JsonMappingException {
     ScreeningToReferral referrals = new ScreeningToReferralResourceBuilder().setEndedAt(null)
         .setAssigneeStaffId(userInfo.getStaffId()).setIncidentCounty(incidentCounty)
