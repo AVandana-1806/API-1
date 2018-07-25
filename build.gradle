@@ -40,7 +40,7 @@ project.ext {
     mainclass = 'gov.ca.cwds.rest.ApiApplication'
     elasticsearchVersion = '5.5.0'
     log4jVersion = '2.8.2'
-    
+
     junitVersion = '4.12'
     mockitoVersion = "2.8.9"
     hamcrestVersion = "2.0.0.0"
@@ -83,11 +83,19 @@ shadowJar {
   classifier = 'dist'
   baseName = 'api'
   zip64 = true
-  mergeServiceFiles()	
+  mergeServiceFiles()
   manifest {
     attributes 'Main-Class': mainclass
   }
   version = ''
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+        attributes 'Api-Version': apiVersion
+        attributes 'Api-Build': (System.getenv("BUILD_NUMBER") ?: "IDE")
+    }
 }
 
 publishing {
@@ -160,7 +168,7 @@ dependencies {
 	}
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
-	// LOGGING:	
+	// LOGGING:
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jVersion
   	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
 	compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4jVersion
@@ -175,7 +183,7 @@ dependencies {
 	compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
-    
+
 	compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
 	compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: "org.postgresql", name: "postgresql", version: "9.4.1208.jre7"
@@ -188,7 +196,7 @@ dependencies {
 
 	compile group: 'org.hibernate', name: 'hibernate-core',    version: '5.2.17.Final'
     compile group: 'org.hibernate', name: 'hibernate-ehcache', version: '5.2.17.Final'
-    
+
 	// testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
     testCompile group: 'gov.ca.cwds.api', name: 'api-core-test-support', version: coreApiVersion
     testCompile group: 'gov.ca.cwds.cals', name: 'cws-cms-data-model', version: cwdsModelVersion
@@ -202,9 +210,9 @@ dependencies {
 	testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
 		exclude group: 'javax.servlet', module: 'javax.servlet-api'
 		exclude group: 'junit', module: 'junit'
-		
+
 	// functional testing
-    	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'	
+    	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
 	}
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
     testCompile group: 'io.rest-assured', name: 'json-schema-validator', version: '3.0.7'
@@ -212,7 +220,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/nl.jqno.equalsverifier/equalsverifier
 	testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
 	testCompile group: "com.github.fge", name: "json-schema-validator", version: "2.2.6"
-	
+
 	// https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
 	testCompile group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.19'
 
