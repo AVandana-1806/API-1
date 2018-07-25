@@ -33,6 +33,7 @@ public class SystemInformationResource {
 
   private static final String API_BUILD = "Api-Build";
   private static final String API_VERSION = "Api-Version";
+  private static final String N_A = "N/A";
 
   private final String applicationName;
   private final String applicationVersion;
@@ -47,9 +48,9 @@ public class SystemInformationResource {
     this.environment = environment;
     final Attributes manifestProperties = getManifestProperties();
     String value = manifestProperties.getValue(API_VERSION);
-    this.applicationVersion = StringUtils.isBlank(value) ? "N/A" : value;
+    this.applicationVersion = StringUtils.isBlank(value) ? N_A : value;
     value = manifestProperties.getValue(API_BUILD);
-    this.buildNumber = StringUtils.isBlank(value) ? "N/A" : value;
+    this.buildNumber = StringUtils.isBlank(value) ? N_A : value;
   }
 
   /**
