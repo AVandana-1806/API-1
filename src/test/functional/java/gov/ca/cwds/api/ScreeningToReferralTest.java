@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import io.restassured.http.ContentType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
@@ -35,6 +36,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   @Test
+  @Ignore
   public void return500ErrorWhenIncorrectStaffPerson() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setName("IncorrectStaffPerson")
@@ -65,6 +67,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   @Test
+  @Ignore
   public void return201SuccessForValidReferrals() {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setName("return201SuccessForValidReferrals").setAssigneeStaffId("aaw")

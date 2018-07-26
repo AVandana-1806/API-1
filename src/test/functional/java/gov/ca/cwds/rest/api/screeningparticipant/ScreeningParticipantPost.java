@@ -19,7 +19,6 @@ import gov.ca.cwds.rest.core.Api;
  * @author CWDS API Team
  *
  */
-@Ignore
 public class ScreeningParticipantPost extends FunctionalTest {
   String resourcePath;
   private FunctionalTestingBuilder functionalTestingBuilder;
@@ -37,6 +36,7 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddSameCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
@@ -53,6 +53,7 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddSameCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B0gYFaU057", null, null, LegacyTable.CLIENT.getName(), null);
@@ -69,6 +70,7 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddDifferentCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("TbCDoJB0La", null, null, LegacyTable.CLIENT.getName(), null);
@@ -85,6 +87,7 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddDifferentCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);
