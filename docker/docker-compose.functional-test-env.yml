@@ -45,9 +45,10 @@ services:
     volumes:
       - ${PWD}/docker/ferb-test/config/shiro_v2.ini:/opt/cws-api/config/shiro_v2.ini
     environment:
-      SWAGGER_JSON_URL: http://ferbapi.local.cwds.io/swagger.json
-      SWAGGER_CALLBACK_URL: http://ferbapi.local.cwds.io/swagger
-      LOGIN_URL: http://perry.local.cwds.io/perry/authn/login
+      SWAGGER_JSON_URL: http://ferb:8082/swagger.json
+      SWAGGER_CALLBACK_URL: http://ferb:8082/swagger
+      SWAGGER_TOKEN_URL: http://perry:8083/perry//authn/token
+      LOGIN_URL: http://perry:8083/perry/authn/login
       DB_CMS_USER: db2inst1
       DB_CMS_PASSWORD: db2inst1
       DB_CMS_JDBC_URL: jdbc:db2://db2:50000/DB0TDEV
@@ -113,7 +114,7 @@ services:
       DB2INST1_USER: "db2inst1"
       DB2INST1_PASSWORD: "db2inst1"
   db:
-    image: ${POSTGRES_IMAGE_VERSION:-cwds/postgresql_data:0.7.1_555-RC}
+    image: ${POSTGRES_IMAGE_VERSION:-cwds/postgresql_data:latest}
     ports:
       - "5432:5432"
     environment:
