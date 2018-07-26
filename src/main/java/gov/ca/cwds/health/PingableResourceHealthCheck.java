@@ -1,6 +1,7 @@
 package gov.ca.cwds.health;
 
 import com.codahale.metrics.health.HealthCheck;
+
 import gov.ca.cwds.health.resource.Pingable;
 
 public abstract class PingableResourceHealthCheck extends HealthCheck {
@@ -14,10 +15,10 @@ public abstract class PingableResourceHealthCheck extends HealthCheck {
 
   @Override
   protected Result check() throws Exception {
-    if (resource.ping()){
+    if (resource.ping()) {
       return Result.healthy();
-    }else{
-      return Result.unhealthy(errorMessage + " " + resource.getMessage());
+    } else {
+      return Result.unhealthy(errorMessage + ", " + resource.getMessage());
     }
   }
 }
