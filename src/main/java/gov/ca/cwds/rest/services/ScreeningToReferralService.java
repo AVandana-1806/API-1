@@ -284,11 +284,11 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   @Override
-  public gov.ca.cwds.rest.api.domain.cms.Referral find(Serializable primaryKey) {
+  public gov.ca.cwds.rest.api.domain.cms.PostedReferral find(Serializable primaryKey) {
     assert primaryKey instanceof String;
     gov.ca.cwds.data.persistence.cms.Referral persistedReferral = referralDao.find(primaryKey);
     if (persistedReferral != null) {
-      return new gov.ca.cwds.rest.api.domain.cms.Referral(persistedReferral);
+      return new gov.ca.cwds.rest.api.domain.cms.PostedReferral(persistedReferral);
     }
     return null;
   }
