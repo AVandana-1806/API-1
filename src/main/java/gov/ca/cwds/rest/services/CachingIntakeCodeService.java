@@ -141,6 +141,11 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
     return ret;
   }
 
+  @Override
+  public long getCacheSize() {
+    return intakeCodeCache.size();
+  }
+
   /**
    * Get cached object identified by given cache key.
    * 

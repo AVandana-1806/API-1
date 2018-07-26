@@ -78,4 +78,13 @@ public interface IntakeCodeCache extends ApiMarker {
    */
   List<IntakeLov> getAll();
 
+  /**
+   * Get number of items in cache.
+   * 
+   * @return Number of items in cache. If returns -1 then, size is unknown.
+   */
+  default long getCacheSize() {
+    return -1;
+  }
+
 }

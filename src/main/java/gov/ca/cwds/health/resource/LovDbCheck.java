@@ -26,7 +26,6 @@ public class LovDbCheck implements Pingable {
     lovTableCounts.put("INTAKE_ONLY_LOV_CATEGORIES", 4);
     lovTableCounts.put("INTAKE_LOV_CODES", 527);
     lovTableCounts.put("INTAKE_ONLY_LOV_CODES", 13);
-    lovTableCounts.put("INTAKE_ONLY_LOV_CODES", 13);
     lovTableCounts.put("SYSTEM_CODES", 4274);
     lovTableCounts.put("VW_INTAKE_LOV", 542);
   }
@@ -69,10 +68,12 @@ public class LovDbCheck implements Pingable {
     final Query<?> query = session.createNativeQuery("SELECT count(*) FROM " + tableName);
     int count = ((BigInteger) query.list().get(0)).intValue();
 
-    if (count != expectedCount) {
+    if (count < expectedCount) {
       ok = false;
-      addMessage("Expected " + expectedCount + " in table " + tableName + " but found " + count);
     }
+
+    addMessage(
+        "[Expected at least " + expectedCount + " in " + tableName + ", found " + count + "]");
 
     return ok;
   }
