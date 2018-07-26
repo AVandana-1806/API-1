@@ -9,8 +9,8 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import gov.ca.cwds.health.resource.AuthServer;
-import gov.ca.cwds.health.resource.DB2Database;
-import gov.ca.cwds.rest.ElasticsearchConfiguration;
+import gov.ca.cwds.health.resource.LovDbCheck;
+import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
@@ -26,45 +26,28 @@ public class HealthCheckModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(DB2Database.class);
-    bind(AuthServer.class);
     bind(String.class).annotatedWith(Names.named("http-media")).toInstance(MediaType.TEXT_HTML);
     bind(String.class).annotatedWith(Names.named("json-media"))
         .toInstance(MediaType.APPLICATION_JSON);
-  }
-
-  @Named("swagger-url")
-  @Provides
-  public Client getName(final Environment environment) {
-    return buildClient(environment, "AuthHealthCheckRESTClient");
+    bind(AuthServer.class);
+    bind(SwaggerEndpoint.class);
+    bind(LovDbCheck.class);
   }
 
   @Named("authClient")
   @Provides
   public Client getAuthClient(final Environment environment) {
-    return buildClient(environment, "AuthHealthCheckRESTClient");
-  }
-
-  @Named("searchClient")
-  @Provides
-  public Client getEsClient(final Environment environment) {
-    return buildClient(environment, "searchHealthCheckRestClient");
+    return buildClient(environment, "AuthHealthCheckRestClient");
   }
 
   @Named("swaggerClient")
   @Provides
   public Client getSwaggerClient(final Environment environment) {
-    return buildClient(environment, "swaggerHealthCheckRestClient");
+    return buildClient(environment, "SwaggerHealthCheckRestClient");
   }
 
   private Client buildClient(Environment environment, String name) {
     return new JerseyClientBuilder(environment).build(name);
-  }
-
-  @Named("search-url")
-  @Provides
-  private String getElasticSearchUrl(ElasticsearchConfiguration esConfig) {
-    return esConfig.getElasticsearchHost();
   }
 
   @Named("auth-url")

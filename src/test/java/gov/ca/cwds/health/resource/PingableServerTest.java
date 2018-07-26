@@ -1,14 +1,16 @@
 package gov.ca.cwds.health.resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class PingableServerTest {
   Client wsClient;
 
   @Before
-  public void setup(){
+  public void setup() {
     wsResponse = mock(Response.class);
     when(wsResponse.getStatus()).thenReturn(200);
     WebTarget webtarget = mock(WebTarget.class);
@@ -37,34 +39,34 @@ public class PingableServerTest {
   }
 
   @Test
-  public void shouldReturnTrueWhenA200StatusIsReceived(){
+  public void shouldReturnTrueWhenA200StatusIsReceived() {
     assertTrue("Expected a valid ping", pingable.ping());
   }
 
   @Test
-  public void shouldReturnTrueWhenA302StatusIsReceived(){
+  public void shouldReturnTrueWhenA302StatusIsReceived() {
     when(wsResponse.getStatus()).thenReturn(302);
     assertTrue("Expected a valid ping", pingable.ping());
   }
 
 
-    @Test
-  public void shouldReturnfalseWhenA500StatusIsReceived(){
+  @Test
+  public void shouldReturnfalseWhenA500StatusIsReceived() {
     when(wsResponse.getStatus()).thenReturn(500);
     PingableServer pingable = new PingableServer(wsClient, url, mediaType);
     assertFalse("Expected a invalid ping", pingable.ping());
   }
 
   @Test
-  public void shouldContainMessageWhenUnsuccessful(){
+  public void shouldContainMessageWhenUnsuccessful() {
     int statusCode = 500;
-    String message = "Status:" + statusCode;
+    String message = "Status: 500, URL: someserver.com";
     when(wsResponse.getStatus()).thenReturn(statusCode);
     PingableServer pingable = new PingableServer(wsClient, url, mediaType);
 
     pingable.ping();
 
-    assertEquals("Expected error message to contain the status code",
-        message, pingable.getMessage());
+    assertEquals("Expected error message to contain the status code", message,
+        pingable.getMessage());
   }
 }

@@ -1,13 +1,13 @@
 package gov.ca.cwds.health;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.codahale.metrics.health.HealthCheck.Result;
-import gov.ca.cwds.health.resource.Pingable;
 import org.junit.Before;
 import org.junit.Test;
+
+import gov.ca.cwds.health.resource.Pingable;
 
 public class PingableResourceHealthCheckTest {
   private static final boolean HEALTHY = true;
@@ -17,7 +17,7 @@ public class PingableResourceHealthCheckTest {
   PingableResourceHealthCheck healthCheck;
 
   @Before
-  public void setup(){
+  public void setup() {
     pingable = mock(Pingable.class);
     when(pingable.ping()).thenReturn(true);
 
@@ -42,7 +42,7 @@ public class PingableResourceHealthCheckTest {
     when(pingable.getMessage()).thenReturn(resourceErrorMsg);
     when(pingable.ping()).thenReturn(false);
 
-    String expectedMessage = message + " " + resourceErrorMsg;
+    String expectedMessage = message + ", " + resourceErrorMsg;
     assertEquals(expectedMessage, healthCheck.check().getMessage());
   }
 }

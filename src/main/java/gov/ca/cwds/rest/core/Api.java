@@ -68,9 +68,11 @@ public final class Api {
 
     public static final String AUTH_STATUS = "auth_status";
     public static final String SWAGGER_STATUS = "swagger_status";
+    public static final String LOV_DB_STATUS = "lov_db_status";
+    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache_status";
+    public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache_status";
 
-    private HealthCheck() {
-    }
+    private HealthCheck() {}
   }
 
   /**
@@ -179,8 +181,7 @@ public final class Api {
   public static final String RESOURCE_REFERRALS = "referrals";
 
   /**
-   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT}
-   * API..
+   * A {@code String} constant representing {@value #RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT} API..
    */
   public static final String RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT = "hoi_referrals";
 

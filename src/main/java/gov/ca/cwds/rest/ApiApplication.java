@@ -16,10 +16,15 @@ import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
+import gov.ca.cwds.health.IntakeCodeCacheHealthCheck;
+import gov.ca.cwds.health.LovHealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
+import gov.ca.cwds.health.SystemCodeCacheHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
+import gov.ca.cwds.health.resource.LovDbCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
@@ -115,6 +120,16 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         new AuthHealthCheck(injector.getInstance(AuthServer.class));
     environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
 
+    final LovHealthCheck lovHealthCheck =
+        new LovHealthCheck(injector.getInstance(LovDbCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.LOV_DB_STATUS, lovHealthCheck);
+
+    environment.healthChecks().register(Api.HealthCheck.INTAKE_LOV_CODE_CACHE_STATUS,
+        new IntakeCodeCacheHealthCheck());
+
+    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODE_CACHE_STATUS,
+        new SystemCodeCacheHealthCheck());
+
     final SwaggerHealthCheck swaggerHealthCheck =
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
     environment.healthChecks().register(Api.HealthCheck.SWAGGER_STATUS, swaggerHealthCheck);
@@ -153,6 +168,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
           nsDataSourceFactory.getProperties().get(HIBERNATE_DEFAULT_SCHEMA_PROPERTY_NAME));
     } catch (Exception e) {
       LOGGER.error("INTAKE_NS DB upgrade failed. ", e);
+      throw new RuntimeException("INTAKE_NS DB upgrade failed", e);
     }
 
     LOGGER.info("Finished Upgrading INTAKE_NS DB");
