@@ -4,6 +4,7 @@ import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -130,6 +131,27 @@ public class ScreeningResource {
   public Response getRelationshipsByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
       value = "The id of the Screening to find") String screeningId) {
     return new ResponseConverter().withDataResponse(relationshipFacade.getRelationshipsByScreeningId(screeningId));
+  }
+
+  /**
+   * Get an {@link ScreeningRelationship}.
+   *
+   * @param screeningId The id
+   * @return The {@link Response}
+   */
+  @UnitOfWork(DATASOURCE_NS)
+  @GET
+  @Path("/{screeningId}/relationshipsWithCandidates")
+  @ApiResponses(
+      value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
+          @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
+  @ApiOperation(value = "Find Relationships by screening id",
+      response = ScreeningRelationshipsWithCandidates.class)
+  public Response getRelationshipsWithCandidatesByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
+      value = "The id of the Screening to find") String screeningId) {
+    return new ResponseConverter().withDataResponse(relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
   }
 
 }

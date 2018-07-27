@@ -10,6 +10,8 @@ import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import java.util.ArrayList;
@@ -72,6 +74,35 @@ public class RelationshipFacade {
 
     // select and return
     return result;
+  }
+
+  public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(
+      String screeningId) {
+    if (StringUtils.isEmpty(screeningId)) {
+      return Collections.emptyList();
+    }
+
+    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
+    List<gov.ca.cwds.rest.api.Response> relationships = getRelationshipsByScreeningId(screeningId);
+    relationships.forEach(e -> {
+          ScreeningRelationship screeningRelationship = (ScreeningRelationship) e;
+          ParticipantEntity participantEntity = participantDao
+              .findByScreeningIdAndParticipantId(screeningId, screeningRelationship.getClientId());
+          ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
+              participantEntity.getId(), participantEntity.getDateOfBirth(),
+              participantEntity.getFirstName(), participantEntity.getMiddleName(),
+              participantEntity.getLastName(), participantEntity.getNameSuffix(),
+              participantEntity.getGender(), participantEntity.getDateOfDeath(),
+              participantEntity.getSensitive(), participantEntity.getSealed(),
+              new CmsRecordDescriptor("", "", "", ""),
+              new HashSet<>(),
+              new HashSet<>()
+          );
+          relationshipsWithCandidates.add(screeningRelationshipsWithCandidates);
+        }
+    );
+
+    return relationshipsWithCandidates;
   }
 
   private List<ScreeningRelationship> updateRelationships(
@@ -213,7 +244,7 @@ public class RelationshipFacade {
     }
 
     List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
-    lagacyRelationships.forEach(e->{
+    lagacyRelationships.forEach(e -> {
       boolean update = false;
       for (Relationship relationship : nsRelationships) {
         if (e.getId().equals(relationship.getLegacyId())) {
