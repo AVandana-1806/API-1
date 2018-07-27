@@ -16,7 +16,7 @@ public abstract class PingableResourceHealthCheck extends HealthCheck {
   @Override
   protected Result check() throws Exception {
     if (resource.ping()) {
-      return Result.healthy();
+      return Result.healthy(resource.getMessage());
     } else {
       return Result.unhealthy(errorMessage + ", " + resource.getMessage());
     }
