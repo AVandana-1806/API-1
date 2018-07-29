@@ -1,17 +1,18 @@
 package gov.ca.cwds.data.cms;
 
-import gov.ca.cwds.data.BaseDaoImpl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.inject.CmsSessionFactory;
-import org.hibernate.query.Query;
 
 /**
  * Hibernate DAO for DB2 {@link StaffPerson}.

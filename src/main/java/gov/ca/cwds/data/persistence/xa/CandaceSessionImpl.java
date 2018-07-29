@@ -50,7 +50,7 @@ import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
- * Hibernate session facade. Adds logging and facilitates XA transactions.
+ * Hibernate session facade that adds logging and facilitates XA transactions.
  * 
  * @author CWDS API Team
  */
