@@ -134,11 +134,13 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
         clientRelationshipDao.findBySecondaryClientIds(clientIds);
     hcd.setRelationshipsBySecondaryClients(relationshipsBySecondaryClients);
 
-    final Collection<ClientRelationship> allRelationshipsByPrimaryClients = new ArrayList<>();
+    final Collection<ClientRelationship> allRelationshipsByPrimaryClients =
+        new ArrayList<>(relationshipsByPrimaryClients.size());
     relationshipsByPrimaryClients.values().forEach(allRelationshipsByPrimaryClients::addAll);
     hcd.setAllRelationshipsByPrimaryClients(allRelationshipsByPrimaryClients);
 
-    final Collection<ClientRelationship> allRelationshipsBySecondaryClients = new ArrayList<>();
+    final Collection<ClientRelationship> allRelationshipsBySecondaryClients =
+        new ArrayList<>(relationshipsBySecondaryClients.size());
     relationshipsBySecondaryClients.values().forEach(allRelationshipsBySecondaryClients::addAll);
     hcd.setAllRelationshipsBySecondaryClients(allRelationshipsBySecondaryClients);
   }
@@ -165,6 +167,10 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
     if (!cmsCases.isEmpty()) {
       final Collection<String> staffPersonIds =
           cmsCases.values().stream().map(CmsCase::getFkstfperst).collect(Collectors.toSet());
+
+      // DRS: SNAP-370: HOI Performance
+      // Staff user data change infrequently.
+      // TODO: cache somehow.
       final Map<String, StaffPerson> staffPersons = staffPersonDao.findByIds(staffPersonIds);
       cmsCases.values().forEach(c -> c.setStaffPerson(staffPersons.get(c.getFkstfperst())));
       hcd.setCmsCases(cmsCases);

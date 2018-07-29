@@ -30,7 +30,12 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 
 /**
- * {@link PersistentObject} representing a Client Relationship
+ * {@link PersistentObject} representing a Client Relationship.
+ * 
+ * <p>
+ * DRS: SNAP-370: HOI Performance. TODO: rewrite as a hierarchy query or similar construct. Pull
+ * client relationships at once.
+ * </p>
  *
  * @author CWDS API Team
  */
