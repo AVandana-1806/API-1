@@ -74,12 +74,12 @@ public class HOIReferralService extends
 
   @Override
   public HOIReferralResponse handleFind(HOIRequest hoiRequest) {
-    final Collection<String> authorizedClientIds =
-        authorizationService.filterClientIds(hoiRequest.getClientIds().stream()
-            .filter(Objects::nonNull).collect(Collectors.toSet()));
+    final Collection<String> authorizedClientIds = authorizationService.filterClientIds(
+        hoiRequest.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
       return new HOIReferralResponse();
     }
+
     final ReferralClient[] referralClients = referralClientDao.findByClientIds(authorizedClientIds);
     if (referralClients.length == 0) {
       return new HOIReferralResponse();
@@ -98,6 +98,7 @@ public class HOIReferralService extends
           hrd.getReferralsSelfReportedIndicators().get(referral.getId()), county);
       hoiReferrals.add(hoiReferral);
     }
+
     hoiReferrals.sort((r1, r2) -> r2.getStartDate().compareTo(r1.getStartDate()));
     return new HOIReferralResponse(hoiReferrals);
   }
@@ -107,7 +108,7 @@ public class HOIReferralService extends
     final Map<String, Boolean> referralsSelfReportedIndicators = new HashMap<>();
 
     for (ReferralClient referralClient : referralClients) {
-      String referralId = referralClient.getReferralId();
+      final String referralId = referralClient.getReferralId();
       referralIds.add(referralId);
       if (!referralsSelfReportedIndicators.containsKey(referralId)) {
         referralsSelfReportedIndicators.put(referralId, Boolean.FALSE);
@@ -128,10 +129,10 @@ public class HOIReferralService extends
   }
 
   private void loadStaffPersons(HOIReferralsData hrd) {
-    Collection<String> staffPersonIds =
+    final Collection<String> staffPersonIds =
         hrd.getReferrals().values().stream().map(Referral::getPrimaryContactStaffPersonId)
             .filter(Objects::nonNull).collect(Collectors.toSet());
-    Map<String, StaffPerson> staffPersonsMap = staffPersonDao.findByIds(staffPersonIds);
+    final Map<String, StaffPerson> staffPersonsMap = staffPersonDao.findByIds(staffPersonIds);
     for (Referral referral : hrd.getReferrals().values()) {
       String staffPersonId = referral.getPrimaryContactStaffPersonId();
       referral.setStaffPerson(staffPersonsMap.get(staffPersonId));
@@ -139,7 +140,7 @@ public class HOIReferralService extends
   }
 
   private void loadAllegationsWithClients(HOIReferralsData hrd) {
-    Map<String, Set<Allegation>> referralAllegationsMap =
+    final Map<String, Set<Allegation>> referralAllegationsMap =
         allegationDao.findAllegationsWithClientsByReferralIds(hrd.getReferralIds());
     for (Referral referral : hrd.getReferrals().values()) {
       referral.setAllegations(referralAllegationsMap.getOrDefault(referral.getId(), null));
