@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.referrals.validation;
+package gov.ca.cwds.api.referrals.validation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;

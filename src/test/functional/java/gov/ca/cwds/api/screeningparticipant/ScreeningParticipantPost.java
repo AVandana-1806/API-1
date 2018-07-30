@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.api.screeningparticipant;
+package gov.ca.cwds.api.screeningparticipant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,6 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void particpantCreateFailedToAddSameCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
@@ -87,7 +86,6 @@ public class ScreeningParticipantPost extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void particpantCreateFailedToAddDifferentCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);
