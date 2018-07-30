@@ -45,8 +45,8 @@ public class ScreeningParticipantPost extends FunctionalTest {
     Map<String, Object> pathParams = new HashMap<String, Object>();
     pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
-        .then().statusCode(403);
+        .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
+        .statusCode(403);
   }
 
   /**
@@ -62,8 +62,8 @@ public class ScreeningParticipantPost extends FunctionalTest {
     Map<String, Object> pathParams = new HashMap<String, Object>();
     pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
-        .then().statusCode(403);
+        .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
+        .statusCode(403);
   }
 
   /**
@@ -79,8 +79,8 @@ public class ScreeningParticipantPost extends FunctionalTest {
     Map<String, Object> pathParams = new HashMap<String, Object>();
     pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
-        .then().statusCode(403);
+        .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
+        .statusCode(403);
   }
 
   /**
@@ -96,8 +96,8 @@ public class ScreeningParticipantPost extends FunctionalTest {
     Map<String, Object> pathParams = new HashMap<String, Object>();
     pathParams.put("id", 277);
     functionalTestingBuilder
-        .processPostRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token)
-        .then().statusCode(403);
+        .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
+        .statusCode(403);
   }
 
 }

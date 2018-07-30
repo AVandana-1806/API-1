@@ -30,7 +30,7 @@ public class FunctionalTestingBuilder {
    * @param token - token
    * @return the response
    */
-  public Response processPostRequest(Object object, String resourcePath, String token) {
+  public Response postRequest(Object object, String resourcePath, String token) {
     return given().queryParam(TOKEN, token).contentType(ContentType.JSON).accept(ContentType.JSON)
         .body(object).when().post(resourcePath).then().extract().response();
   }
@@ -43,7 +43,7 @@ public class FunctionalTestingBuilder {
    * @param token - token
    * @return the response
    */
-  public Response processGetRequest(String resourcePath, Map<String, Object> parametersMap) {
+  public Response getRequest(String resourcePath, Map<String, Object> parametersMap) {
     return given().queryParams(parametersMap).get(resourcePath).then().contentType(ContentType.JSON)
         .extract().response();
   }
@@ -57,7 +57,7 @@ public class FunctionalTestingBuilder {
    * @param token - token
    * @return the post response
    */
-  public Response processPostRequestWithPathParameters(Object object, String resourcePath,
+  public Response postRequestWithPathParameters(Object object, String resourcePath,
       Map<String, Object> parameterNameValuePairs, String token) {
     return given().queryParam(TOKEN, token).contentType(ContentType.JSON)
         .pathParams(parameterNameValuePairs).accept(ContentType.JSON).body(object).when()
@@ -73,7 +73,7 @@ public class FunctionalTestingBuilder {
    * @param token - token
    * @return the post response
    */
-  public Response processDeleteRequestWithPathParameters(Object object, String resourcePath,
+  public Response deleteRequestWithPathParameters(Object object, String resourcePath,
       Map<String, Object> parameterNameValuePairs, String token) {
     return given().queryParam(TOKEN, token).contentType(ContentType.JSON)
         .pathParams(parameterNameValuePairs).accept(ContentType.JSON).body(object).when()
@@ -89,7 +89,7 @@ public class FunctionalTestingBuilder {
    * @param token - token
    * @return the post response
    */
-  public Response processPutRequestWithPathParameters(Object object, String resourcePath,
+  public Response putRequestWithPathParameters(Object object, String resourcePath,
       Map<String, Object> parameterNameValuePairs, String token) {
     return given().queryParam(TOKEN, token).contentType(ContentType.JSON)
         .pathParams(parameterNameValuePairs).accept(ContentType.JSON).body(object).when()
