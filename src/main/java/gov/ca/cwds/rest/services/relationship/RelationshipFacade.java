@@ -12,12 +12,14 @@ import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
+import gov.ca.cwds.rest.api.domain.investigation.RelationshipTo;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -84,25 +86,43 @@ public class RelationshipFacade {
 
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
     List<gov.ca.cwds.rest.api.Response> relationships = getRelationshipsByScreeningId(screeningId);
-    relationships.forEach(e -> {
-          ScreeningRelationship screeningRelationship = (ScreeningRelationship) e;
-          ParticipantEntity participantEntity = participantDao
-              .findByScreeningIdAndParticipantId(screeningId, screeningRelationship.getClientId());
-          ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
-              participantEntity.getId(), participantEntity.getDateOfBirth(),
-              participantEntity.getFirstName(), participantEntity.getMiddleName(),
-              participantEntity.getLastName(), participantEntity.getNameSuffix(),
-              participantEntity.getGender(), participantEntity.getDateOfDeath(),
-              participantEntity.getSensitive(), participantEntity.getSealed(),
-              new CmsRecordDescriptor("", "", "", ""),
-              new HashSet<>(),
-              new HashSet<>()
-          );
-          relationshipsWithCandidates.add(screeningRelationshipsWithCandidates);
-        }
-    );
+
+
+
+
+//    relationships.forEach(e -> {
+//          ScreeningRelationship screeningRelationship = (ScreeningRelationship) e;
+//          ParticipantEntity participantEntity = participantDao
+//              .findByScreeningIdAndParticipantId(screeningId, screeningRelationship.getClientId());
+//          ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
+//              participantEntity.getId(), participantEntity.getDateOfBirth(),
+//              participantEntity.getFirstName(), participantEntity.getMiddleName(),
+//              participantEntity.getLastName(), participantEntity.getNameSuffix(),
+//              participantEntity.getGender(), participantEntity.getDateOfDeath(),
+//              participantEntity.getSensitive(), participantEntity.getSealed(),
+//              new CmsRecordDescriptor("", "", "", ""),
+//              getRelationshipTos(((ScreeningRelationship) e).getClientId(), relationshipsByClientId, participantsById),
+//              new HashSet<>()
+//          );
+//          relationshipsWithCandidates.add(screeningRelationshipsWithCandidates);
+//        }
+//    );
 
     return relationshipsWithCandidates;
+  }
+
+//  private Map<String, Set<ParticipantEntity>> getAllReletiveParticipants(Set<ScreeningRelationship> relationships) {
+//    Map<String, Set<ParticipantEntity>> relativeParticipants
+//  }
+
+  private Set<RelationshipTo> getRelationshipTos(String clientId, Map<String, Set<ScreeningRelationship>> relationshipsByClientId, Map<String, ParticipantEntity> participantsById) {
+    Set<RelationshipTo> relationshipTos = new HashSet<>();
+    Set<ScreeningRelationship> relationships = relationshipsByClientId.get(clientId);
+    relationships.forEach(e->{
+      ParticipantEntity participantEntity = participantsById.get(e.getRelativeId());
+      RelationshipTo relationshipTo = new RelationshipTo();
+    });
+    return relationshipTos;
   }
 
   private List<ScreeningRelationship> updateRelationships(
