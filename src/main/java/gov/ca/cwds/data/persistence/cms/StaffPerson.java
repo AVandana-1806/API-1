@@ -5,7 +5,6 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -35,7 +34,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
     query = "FROM StaffPerson WHERE id IN :ids")
 @Entity
 @Table(name = "STFPERST")
-@Cacheable(true)
+// @Cacheable
 public class StaffPerson extends CmsPersistentObject {
 
   @Id

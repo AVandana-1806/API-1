@@ -120,6 +120,7 @@ xaCmsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
+      hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
@@ -158,6 +159,7 @@ xaCmsRsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
+      hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:

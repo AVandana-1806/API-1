@@ -5,7 +5,6 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,7 +63,7 @@ import gov.ca.cwds.rest.validation.ValidCounty;
 @Table(name = "CASE_T")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Cacheable
+// @Cacheable
 public class CmsCase extends CmsPersistentObject {
 
   private static final long serialVersionUID = 1L;

@@ -215,6 +215,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+    LOGGER.trace("CandaceSessionFactoryImpl.createEntityManager");
     return pick().createEntityManager(synchronizationType);
   }
 
@@ -233,11 +234,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
+    LOGGER.trace("CandaceSessionFactoryImpl.createEntityManager(SynchronizationType, Map)");
     return pick().createEntityManager(synchronizationType, map);
   }
 
   @Override
   public StatelessSessionBuilder withStatelessOptions() {
+    LOGGER.info("CandaceSessionFactoryImpl.withStatelessOptions");
     return pick().withStatelessOptions();
   }
 

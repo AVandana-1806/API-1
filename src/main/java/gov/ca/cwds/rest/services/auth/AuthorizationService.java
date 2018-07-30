@@ -15,7 +15,7 @@ import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.security.annotations.Authorize;
 
 /**
- * Service to check that logged in staff person is authorized to access entities
+ * Service to check that logged-in staff person is authorized to access entities.
  * 
  * @author CWDS API Team
  */
