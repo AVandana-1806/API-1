@@ -13,8 +13,6 @@ import java.util.Set;
  */
 public class ScreeningRelationshipsWithCandidates extends Relationship {
 
-  public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
   @JsonProperty("candidate_to")
   private Set<RelationshipTo> relatedCandidatesTo;
 
@@ -25,9 +23,9 @@ public class ScreeningRelationshipsWithCandidates extends Relationship {
       CmsRecordDescriptor cmsRecordDescriptor,
       Set<RelationshipTo> relatedTo,
       Set<RelationshipTo> relatedCandidatesTo) {
-    super(id, dateOfBirth == null ? "" : simpleDateFormat.format(dateOfBirth), firstName,
+    super(id, dateOfBirth == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(dateOfBirth), firstName,
         middleName, lastName, suffixName,
-        gender, dateOfDeath == null ? "" : simpleDateFormat.format(dateOfDeath),
+        gender, dateOfDeath == null ? "" : new SimpleDateFormat("yyyy-MM-dd").format(dateOfDeath),
         sensitive, sealed, cmsRecordDescriptor, relatedTo);
     this.relatedCandidatesTo = relatedCandidatesTo;
   }
