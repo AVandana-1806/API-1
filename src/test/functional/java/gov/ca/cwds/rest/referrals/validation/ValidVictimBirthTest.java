@@ -49,7 +49,7 @@ public class ValidVictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.processPostRequest(referral, referralPath, token).then()
+    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
             equalTo("Victim's should have either of the value DOB or approximateAge"))
         .and().statusCode(422);
@@ -66,7 +66,7 @@ public class ValidVictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.processPostRequest(referral, referralPath, token).then()
+    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
             equalTo("Victim's approximateAgeUnits must be set if approximateAge is set"))
         .and().statusCode(422);
@@ -85,8 +85,8 @@ public class ValidVictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.processPostRequest(referral, referralPath, token).then()
-        .statusCode(201).and().body("legacy_id", notNullValue());
+    functionalTestingBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
+        .body("legacy_id", notNullValue());
   }
 
   /**
@@ -101,8 +101,8 @@ public class ValidVictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.processPostRequest(referral, referralPath, token).then()
-        .statusCode(201).and().body("legacy_id", notNullValue());
+    functionalTestingBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
+        .body("legacy_id", notNullValue());
   }
 
   private ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,

@@ -55,7 +55,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then().body("isEmpty()",
+    functionalTestingBuilder.getRequest(resourcePath, queryParams).then().body("isEmpty()",
         Matchers.is(false));
   }
 
@@ -70,7 +70,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
+    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
   }
 
@@ -85,7 +85,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
+    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
   }
 
@@ -97,7 +97,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "9PIxHucCON");
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
+    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
   }
 
@@ -109,7 +109,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");
     queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.processGetRequest(resourcePath, queryParams).then()
+    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
         .body("isEmpty()", Matchers.is(true)).statusCode(200);
   }
 
@@ -118,8 +118,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     ScreeningToReferral referrals = new ScreeningToReferralResourceBuilder().setEndedAt(null)
         .setAssigneeStaffId(userInfo.getStaffId()).setIncidentCounty(incidentCounty)
         .setLimitedAccessCode(sensitivityIndicator).createScreeningToReferral();
-    Response response =
-        functionalTestingBuilder.processPostRequest(referrals, referralsPath, token);
+    Response response = functionalTestingBuilder.postRequest(referrals, referralsPath, token);
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JodaModule());
     ScreeningToReferral screeningToReferral =
