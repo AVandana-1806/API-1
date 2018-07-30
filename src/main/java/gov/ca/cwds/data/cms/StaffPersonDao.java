@@ -35,7 +35,7 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
   /**
    * Find StaffPersons by id's
    *
-   * @param ids Set of StaffPerson id-s
+   * @param ids Set of StaffPerson id's
    * @return map where key is a StaffPerson id and value is a StaffPerson itself
    */
   public Map<String, StaffPerson> findByIds(Collection<String> ids) {
@@ -43,7 +43,7 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
       return new HashMap<>();
     }
     @SuppressWarnings("unchecked")
-    final Query<StaffPerson> query = this.getSessionFactory().getCurrentSession()
+    final Query<StaffPerson> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByIds")).setParameter("ids", ids);
     CaresQueryAccelerator.readOnlyQuery(query);
     return query.list().stream().collect(Collectors.toMap(StaffPerson::getId, s -> s));

@@ -8,6 +8,7 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -50,7 +51,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @Table(name = "CLN_RELT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-// @Cacheable
+@Cacheable
 public class ClientRelationship extends CmsPersistentObject {
 
   private static final long serialVersionUID = 1L;

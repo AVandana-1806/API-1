@@ -35,7 +35,7 @@ public class CaresQueryAccelerator {
     q.setFetchSize(100);
     q.setHibernateFlushMode(FlushMode.MANUAL);
     q.setTimeout(90); // 90 seconds tops
-    q.setLockOptions(LockOptions.READ);
+    q.setLockOptions(LockOptions.NONE);
   }
 
 }

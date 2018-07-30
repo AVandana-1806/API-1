@@ -74,6 +74,7 @@ public class HOIReferralService extends
 
   @Override
   public HOIReferralResponse handleFind(HOIRequest hoiRequest) {
+    LOGGER.debug("HOIReferralService.handleFind: hoiRequest: {}", hoiRequest);
     final Collection<String> authorizedClientIds = authorizationService.filterClientIds(
         hoiRequest.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
@@ -134,7 +135,7 @@ public class HOIReferralService extends
             .filter(Objects::nonNull).collect(Collectors.toSet());
     final Map<String, StaffPerson> staffPersonsMap = staffPersonDao.findByIds(staffPersonIds);
     for (Referral referral : hrd.getReferrals().values()) {
-      String staffPersonId = referral.getPrimaryContactStaffPersonId();
+      final String staffPersonId = referral.getPrimaryContactStaffPersonId();
       referral.setStaffPerson(staffPersonsMap.get(staffPersonId));
     }
   }
