@@ -38,7 +38,7 @@ public class StaffPersonService implements TypedCrudsService<String, StaffPerson
   @UnitOfWork(value = "cms")
   @Override
   public gov.ca.cwds.rest.api.domain.PostedStaffPerson find(String primaryKey) {
-    gov.ca.cwds.data.persistence.cms.StaffPerson persistedStaffPerson =
+    final gov.ca.cwds.data.persistence.cms.StaffPerson persistedStaffPerson =
         staffPersonDao.find(primaryKey);
     if (persistedStaffPerson != null) {
       return new PostedStaffPerson(persistedStaffPerson);

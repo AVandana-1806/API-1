@@ -33,7 +33,7 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
   }
 
   /**
-   * Find StaffPersons by id-s
+   * Find StaffPersons by id's
    *
    * @param ids Set of StaffPerson id-s
    * @return map where key is a StaffPerson id and value is a StaffPerson itself

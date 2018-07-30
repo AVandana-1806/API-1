@@ -359,7 +359,6 @@ public class ReferralService implements
     return foundCode;
   }
 
-
   private void createReferralAddress(ScreeningToReferral screeningToReferral,
       MessageBuilder messageBuilder) {
     try {
@@ -436,7 +435,6 @@ public class ReferralService implements
 
   private String createLongText(String countySpecificCode, String textDescription,
       MessageBuilder messageBuilder) {
-
     LongText longText = new LongText(countySpecificCode, textDescription);
     PostedLongText postedLongText = longTextService.create(longText);
 
