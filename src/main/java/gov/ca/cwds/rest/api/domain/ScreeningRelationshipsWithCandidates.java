@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class ScreeningRelationshipsWithCandidates extends Relationship {
 
-  private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   @JsonProperty("candidate_to")
   private Set<RelationshipTo> relatedCandidatesTo;
