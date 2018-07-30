@@ -43,7 +43,7 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 /**
  * <p>
  * This service handles user requests to get all the cases involved for the given client id.
- * <p>
+ * </p>
  *
  * @author CWDS API Team
  */
@@ -169,7 +169,7 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
           cmsCases.values().stream().map(CmsCase::getFkstfperst).collect(Collectors.toSet());
 
       // DRS: SNAP-370: HOI Performance
-      // Staff user data change infrequently. Cache it.
+      // Staff user data change very infrequently. Cache it.
       final Map<String, StaffPerson> staffPersons = staffPersonDao.findByIds(staffPersonIds);
       cmsCases.values().forEach(c -> c.setStaffPerson(staffPersons.get(c.getFkstfperst())));
       hcd.setCmsCases(cmsCases);
