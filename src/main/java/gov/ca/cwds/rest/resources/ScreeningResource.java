@@ -143,13 +143,13 @@ public class ScreeningResource {
    */
   @UnitOfWork(DATASOURCE_NS)
   @GET
-  @Path("/{screeningId}/relationshipsWithCandidates")
+  @Path("/{screeningId}/relationships_with_candidates")
   @ApiResponses(
       value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
-  @ApiOperation(value = "Find Relationships by screening id",
+  @ApiOperation(value = "Find Relationships by screening id with candidates",
       response = ScreeningRelationshipsWithCandidates.class)
   public Response getRelationshipsWithCandidatesByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
       value = "The id of the Screening to find") String screeningId) throws IOException {
