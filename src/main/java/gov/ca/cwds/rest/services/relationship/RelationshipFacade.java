@@ -78,53 +78,6 @@ public class RelationshipFacade {
     return result;
   }
 
-  public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(
-      String screeningId) {
-    if (StringUtils.isEmpty(screeningId)) {
-      return Collections.emptyList();
-    }
-
-    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
-    List<gov.ca.cwds.rest.api.Response> relationships = getRelationshipsByScreeningId(screeningId);
-
-
-
-
-//    relationships.forEach(e -> {
-//          ScreeningRelationship screeningRelationship = (ScreeningRelationship) e;
-//          ParticipantEntity participantEntity = participantDao
-//              .findByScreeningIdAndParticipantId(screeningId, screeningRelationship.getClientId());
-//          ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
-//              participantEntity.getId(), participantEntity.getDateOfBirth(),
-//              participantEntity.getFirstName(), participantEntity.getMiddleName(),
-//              participantEntity.getLastName(), participantEntity.getNameSuffix(),
-//              participantEntity.getGender(), participantEntity.getDateOfDeath(),
-//              participantEntity.getSensitive(), participantEntity.getSealed(),
-//              new CmsRecordDescriptor("", "", "", ""),
-//              getRelationshipTos(((ScreeningRelationship) e).getClientId(), relationshipsByClientId, participantsById),
-//              new HashSet<>()
-//          );
-//          relationshipsWithCandidates.add(screeningRelationshipsWithCandidates);
-//        }
-//    );
-
-    return relationshipsWithCandidates;
-  }
-
-//  private Map<String, Set<ParticipantEntity>> getAllReletiveParticipants(Set<ScreeningRelationship> relationships) {
-//    Map<String, Set<ParticipantEntity>> relativeParticipants
-//  }
-
-  private Set<RelationshipTo> getRelationshipTos(String clientId, Map<String, Set<ScreeningRelationship>> relationshipsByClientId, Map<String, ParticipantEntity> participantsById) {
-    Set<RelationshipTo> relationshipTos = new HashSet<>();
-    Set<ScreeningRelationship> relationships = relationshipsByClientId.get(clientId);
-    relationships.forEach(e->{
-      ParticipantEntity participantEntity = participantsById.get(e.getRelativeId());
-      RelationshipTo relationshipTo = new RelationshipTo();
-    });
-    return relationshipTos;
-  }
-
   private List<ScreeningRelationship> updateRelationships(
       List<ClientRelationship> shouldBeUpdated) {
     Date updatedAt = RequestExecutionContext.instance().getRequestStartTime();
