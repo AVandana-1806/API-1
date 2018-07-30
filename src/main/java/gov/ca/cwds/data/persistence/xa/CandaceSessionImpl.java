@@ -807,59 +807,70 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public boolean isFetchProfileEnabled(String name) throws UnknownProfileException {
+    LOGGER.trace("CandanceSessionImpl.isFetchProfileEnabled: name: {}", name);
     return session.isFetchProfileEnabled(name);
   }
 
   @Override
   public void enableFetchProfile(String name) throws UnknownProfileException {
+    LOGGER.trace("CandanceSessionImpl.enableFetchProfile: name: {}", name);
     session.enableFetchProfile(name);
   }
 
   @Override
   public void disableFetchProfile(String name) throws UnknownProfileException {
+    LOGGER.trace("CandanceSessionImpl.disableFetchProfile: name: {}", name);
     session.disableFetchProfile(name);
   }
 
   @Override
   public TypeHelper getTypeHelper() {
+    LOGGER.trace("CandanceSessionImpl.getTypeHelper");
     return session.getTypeHelper();
   }
 
   @Override
   public LobHelper getLobHelper() {
+    LOGGER.trace("CandanceSessionImpl.getLobHelper");
     return session.getLobHelper();
   }
 
   @Override
   public void addEventListeners(SessionEventListener... listeners) {
+    LOGGER.trace("CandanceSessionImpl.addEventListeners: listeners: {}", (Object[]) listeners);
     session.addEventListeners(listeners);
   }
 
   @Override
   public Query createQuery(String queryString) {
-    LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}", queryString);
+    LOGGER.debug("CandanceSessionImpl.createQuery(String): queryString: {}", queryString);
     return session.createQuery(queryString);
   }
 
   @Override
   public <T> Query<T> createQuery(String queryString, Class<T> resultType) {
-    LOGGER.debug("CandanceSessionImpl.createQuery: queryString: {}, resultType: {}", queryString,
-        resultType);
+    LOGGER.debug(
+        "CandanceSessionImpl.createQuery(String, Class<T>): queryString: {}, resultType: {}",
+        queryString, resultType);
     return session.createQuery(queryString, resultType);
   }
 
   @Override
   public <T> Query<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery<T>): criteriaQuery: {}",
+        criteriaQuery);
     return session.createQuery(criteriaQuery);
   }
 
   @Override
   public Query createQuery(CriteriaUpdate updateQuery) {
+    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): updateQuery: {}", updateQuery);
     return session.createQuery(updateQuery);
   }
 
   @Override
   public Query createQuery(CriteriaDelete deleteQuery) {
+    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): deleteQuery: {}", deleteQuery);
     return session.createQuery(deleteQuery);
   }
 
@@ -876,6 +887,7 @@ public class CandaceSessionImpl implements Session {
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
+  @SuppressWarnings("unchecked")
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
     LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,

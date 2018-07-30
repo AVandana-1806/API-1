@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
+import gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator;
 import gov.ca.cwds.inject.CmsSessionFactory;
 
 /**
@@ -44,6 +45,7 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
     @SuppressWarnings("unchecked")
     final Query<StaffPerson> query = this.getSessionFactory().getCurrentSession()
         .getNamedQuery(constructNamedQueryName("findByIds")).setParameter("ids", ids);
+    CaresQueryAccelerator.readOnlyQuery(query);
     return query.list().stream().collect(Collectors.toMap(StaffPerson::getId, s -> s));
   }
 
