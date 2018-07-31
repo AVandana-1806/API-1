@@ -17,6 +17,8 @@ import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 /**
  * Construct an interceptor to monitor stack traces for any injected class.
  *
+ * <h3>Sample Usage</h3>
+ *
  * <blockquote>
  *
  * <pre>
@@ -37,12 +39,12 @@ public class PhineasMethodLoggerInterceptor
   private static final Logger LOGGER =
       LoggerFactory.getLogger(PhineasMethodLoggerInterceptor.class);
 
-  protected final Map<Method, AtomicLong> totalCounts = new ConcurrentHashMap<>();
+  private final Map<Method, AtomicLong> totalCounts = new ConcurrentHashMap<>();
 
-  private static final ThreadLocal<Map<Method, AtomicLong>> requestCalls =
+  private final ThreadLocal<Map<Method, AtomicLong>> requestCalls =
       ThreadLocal.withInitial(HashMap::new);
 
-  protected long incrementCount(Method m, Map<Method, AtomicLong> map) {
+  private long incrementCount(Method m, Map<Method, AtomicLong> map) {
     AtomicLong count;
 
     if (map.containsKey(m)) {
@@ -55,11 +57,23 @@ public class PhineasMethodLoggerInterceptor
     return count.incrementAndGet();
   }
 
-  protected long incrementTotalCount(Method m) {
+  /**
+   * Increment total method calls across all requests.
+   * 
+   * @param m intercepted method
+   * @return total calls across all requests
+   */
+  protected final long incrementTotalCount(Method m) {
     return incrementCount(m, totalCounts);
   }
 
-  protected long incrementRequestCount(Method m) {
+  /**
+   * Increment total method calls for <strong>this request</strong>.
+   * 
+   * @param m intercepted method
+   * @return total calls for this request
+   */
+  protected final long incrementRequestCount(Method m) {
     return incrementCount(m, requestCalls.get());
   }
 

@@ -1,8 +1,5 @@
 package gov.ca.cwds.inject;
 
-import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.prepareHibernateStatisticsConsumer;
-import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibernateStatistics;
-
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -10,12 +7,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
@@ -29,11 +24,9 @@ import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
-import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.PhineasMethodLoggerInterceptor;
-import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
@@ -43,9 +36,6 @@ import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
-import gov.ca.cwds.rest.core.Api;
-import gov.ca.cwds.rest.filters.RequestExecutionContext;
-import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
@@ -91,8 +81,6 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryIm
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.hibernate.UnitOfWorkAspect;
-import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 
 /**
  * Identifies all CWDS API business layer (aka, service) classes available for dependency injection
@@ -102,93 +90,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
  */
 public class ServicesModule extends AbstractModule {
 
-  static final Logger LOGGER = LoggerFactory.getLogger(ServicesModule.class);
-
-  /**
-   * AOP method interceptor manages database transactions outside of DropWizard resource classes.
-   *
-   * @author CWDS API Team
-   */
-  public static class UnitOfWorkInterceptor implements org.aopalliance.intercept.MethodInterceptor {
-
-    UnitOfWorkAwareProxyFactory proxyFactory;
-
-    @Inject
-    @CmsSessionFactory
-    SessionFactory cmsSessionFactory;
-
-    @Inject
-    @CwsRsSessionFactory
-    SessionFactory rsSessionFactory;
-
-    @Inject
-    @NsSessionFactory
-    SessionFactory nsSessionFactory;
-
-    @Override
-    public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      final Method m = mi.getMethod();
-      final RequestExecutionContext ctx = RequestExecutionContext.instance();
-      LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
-          m.getName());
-
-      // If already in an XA transaction, skip this @UnitOfWork.
-      if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-        LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
-            m.getDeclaringClass(), m.getName());
-        return mi.proceed();
-      }
-
-      // Use our wrapped (Candace) session factories and related wrappers.
-      final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-      final String name = annotation.value().trim();
-      SessionFactory currentSessionFactory;
-
-      // Find the right session factory.
-      switch (name) {
-        case Api.DS_CMS:
-          currentSessionFactory = cmsSessionFactory;
-          break;
-        case Api.DATASOURCE_CMS_REP:
-          currentSessionFactory = rsSessionFactory;
-          break;
-        case Api.DS_NS:
-          currentSessionFactory = nsSessionFactory;
-          break;
-        default:
-          throw new IllegalStateException("Unknown datasource! " + annotation.value());
-      }
-
-      // Build the aspect with our wrapped session factory, not a hibernate bundle:
-      proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory);
-      final UnitOfWorkAspect aspect =
-          proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
-
-      try {
-        // Not XA, so clear XA flags.
-        BaseAuthorizationDao.clearXaMode();
-        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-
-        aspect.beforeStart(annotation);
-        final Session session = currentSessionFactory.getCurrentSession();
-        session.doWork(new WorkFerbUserInfo()); // Fine for all datasources.
-
-        prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
-        final Object result = mi.proceed();
-        provideHibernateStatistics(name, currentSessionFactory.getStatistics());
-        aspect.afterEnd();
-
-        return result;
-      } catch (Exception e) {
-        LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
-        aspect.onError();
-        throw e;
-      } finally {
-        aspect.onFinish();
-      }
-    }
-
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServicesModule.class);
 
   /**
    * AOP method interception for Ferb annotation {@link XAUnitOfWork}. Automatically manages
@@ -204,6 +106,8 @@ public class ServicesModule extends AbstractModule {
    */
   public static class XAUnitOfWorkInterceptor
       implements org.aopalliance.intercept.MethodInterceptor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XAUnitOfWorkInterceptor.class);
 
     XAUnitOfWorkAwareProxyFactory proxyFactory;
 

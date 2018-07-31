@@ -7,8 +7,6 @@ import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
 
-import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
-import gov.ca.cwds.data.legacy.cms.dao.TribalMembershipVerificationDao;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,10 +70,12 @@ import gov.ca.cwds.data.dao.contact.DeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.IndividualDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.ReferralClientDeliveredServiceDao;
 import gov.ca.cwds.data.es.ElasticsearchDao;
+import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafetyAlertDao;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
+import gov.ca.cwds.data.legacy.cms.dao.TribalMembershipVerificationDao;
 import gov.ca.cwds.data.ns.AddressDao;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
@@ -630,11 +630,11 @@ public class DataAccessModule extends AbstractModule {
       provideElasticsearchClients(apiConfiguration);
     }
 
-    Map<String, ElasticsearchDao> esDaos = new HashMap<>();
+    final Map<String, ElasticsearchDao> esDaos = new HashMap<>();
     for (Map.Entry<String, Client> esKey : clients.entrySet()) {
-      ElasticsearchConfiguration config =
+      final ElasticsearchConfiguration config =
           apiConfiguration.getElasticsearchConfigurations().get(esKey.getKey());
-      ElasticsearchDao dao = new ElasticsearchDao(esKey.getValue(), config);
+      final ElasticsearchDao dao = new ElasticsearchDao(esKey.getValue(), config);
       esDaos.put(esKey.getKey(), dao);
     }
     return esDaos;
@@ -651,11 +651,11 @@ public class DataAccessModule extends AbstractModule {
       ApiConfiguration apiConfiguration) {
     if (clients == null) {
       clients = new ConcurrentHashMap<>();
-      Map<String, ElasticsearchConfiguration> esConfigs =
+      final Map<String, ElasticsearchConfiguration> esConfigs =
           apiConfiguration.getElasticsearchConfigurations();
 
       for (Map.Entry<String, ElasticsearchConfiguration> esConfigKey : esConfigs.entrySet()) {
-        ElasticsearchConfiguration config = esConfigs.get(esConfigKey.getKey());
+        final ElasticsearchConfiguration config = esConfigs.get(esConfigKey.getKey());
         TransportClient transportClient = ElasticUtils.buildElasticsearchClient(config);
         clients.put(esConfigKey.getKey(), transportClient);
       }
