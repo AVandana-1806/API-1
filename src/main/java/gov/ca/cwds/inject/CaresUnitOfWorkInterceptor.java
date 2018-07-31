@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,14 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.hibernate.UnitOfWorkAspect;
 
 /**
- * AOP method interceptor manages database transactions outside of DropWizard resource classes.
- *
+ * AOP method interceptor manages database transactions outside of DropWizard resource classes using
+ * annotation {@code @UnitOfWork}.
+ * 
+ * <p>
+ * Note that this interceptor is re-entrant; nested {@code @UnitOfWork} annotations for a previously
+ * encountered datasource will not grab new sessions or connections.
+ * </p>
+ * 
  * <h3>Sample Usage</h3>
  *
  * <blockquote>
@@ -41,11 +46,11 @@ import io.dropwizard.hibernate.UnitOfWorkAspect;
  *
  * @author CWDS API Team
  */
-public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
+public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UnitOfWorkInterceptor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CaresUnitOfWorkInterceptor.class);
 
   @Inject
   @CmsSessionFactory
@@ -120,7 +125,7 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
     boolean firstUnitOfWork = false;
 
     if (requestAspects.get().containsKey(name)) {
-      LOGGER.debug("Resuse @UnitOfWork aspect: class: {}, method: {}", m.getDeclaringClass(),
+      LOGGER.info("RE-USE @UnitOfWork aspect: class: {}, method: {}", m.getDeclaringClass(),
           m.getName());
       aspect = requestAspects.get().get(name);
     } else {
@@ -132,9 +137,8 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
       requestAspects.get().put(name, aspect);
       aspect.beforeStart(annotation);
 
-      // Set client information on the JDBC connection
-      final Session session = currentSessionFactory.getCurrentSession();
-      session.doWork(new WorkFerbUserInfo()); // Fine for all datasources.
+      // Set client information on the JDBC connection.
+      currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo());
       prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
     }
 

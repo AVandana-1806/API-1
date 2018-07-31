@@ -205,7 +205,7 @@ public class ServicesModule extends AbstractModule {
     bind(TickleService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
-    final UnitOfWorkInterceptor interceptor = new UnitOfWorkInterceptor();
+    final CaresUnitOfWorkInterceptor interceptor = new CaresUnitOfWorkInterceptor();
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(UnitOfWork.class), interceptor);
     requestInjection(interceptor);
 

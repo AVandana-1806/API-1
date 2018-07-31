@@ -86,11 +86,11 @@ public class PhineasMethodLoggerInterceptor
   public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
     try {
       final Method m = mi.getMethod();
-      LOGGER.info("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
+      LOGGER.debug("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
           m.getName());
       CaresStackUtils.logStack();
 
-      LOGGER.info("Phineas interceptor: before method: {}", m);
+      LOGGER.trace("Phineas interceptor: before method: {}", m);
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
       final long requestCalls = incrementRequestCount(m);
