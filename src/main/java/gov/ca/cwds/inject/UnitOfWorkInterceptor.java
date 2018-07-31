@@ -118,10 +118,14 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
     // Does this request already have an aspect for this session factory?
     UnitOfWorkAspect aspect;
     boolean firstUnitOfWork = false;
+
     if (requestAspects.get().containsKey(name)) {
+      LOGGER.debug("Resuse @UnitOfWork aspect: class: {}, method: {}", m.getDeclaringClass(),
+          m.getName());
       aspect = requestAspects.get().get(name);
     } else {
-      LOGGER.debug("New @UnitOfWork aspect");
+      LOGGER.info("****** NEW @UnitOfWork aspect: class: {}, method: {} ******",
+          m.getDeclaringClass(), m.getName());
       firstUnitOfWork = true;
       aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
           .newAspect(ImmutableMap.of(name, currentSessionFactory));
