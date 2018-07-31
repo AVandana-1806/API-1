@@ -288,10 +288,10 @@ logging:
       target: stdout
       logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
     - type: file
-      currentLogFilename: /var/log/ferb.log
+      currentLogFilename: ferb.log
       threshold: ALL
       archive: true
-      archivedLogFilenamePattern: /var/log/ferb-%d.log
+      archivedLogFilenamePattern: ferb-%d.log
       archivedFileCount: 5
       timeZone: UTC
       logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
