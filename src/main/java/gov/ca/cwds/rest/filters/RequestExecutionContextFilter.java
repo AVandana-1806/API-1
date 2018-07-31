@@ -57,10 +57,10 @@ public class RequestExecutionContextFilter implements Filter {
       final Date requestStartTime =
           (Date) RequestExecutionContext.instance().get(Parameter.REQUEST_START_TIME);
       final String requestStartTimeStr = DomainChef.cookTimestamp(requestStartTime);
-      LOGGER.info("started request at {}", requestStartTimeStr);
 
       try {
         final String userId = RequestExecutionContext.instance().getUserId();
+        LOGGER.info("user {} started request at {}", userId, requestStartTimeStr);
         MDC.put("userLog", userId);
 
         chain.doFilter(httpServletRequest, httpServletResponse);

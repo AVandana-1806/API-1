@@ -16,7 +16,7 @@
 		<!-- We will assign a value to 'userLog' via Java code -->
 		<discriminator>
 			<key>userLog</key>
-			<defaultValue>main</defaultValue>
+			<defaultValue>userLog</defaultValue>
 		</discriminator>
 
 		<sift>
@@ -50,7 +50,7 @@
 
 	<logger name="gov.ca.cwds" level="debug" additivity="false">
 		<appender-ref ref="FILE-THREAD" />
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="STDOUT" />>
 	</logger>
 	
 	<root level="warn">
