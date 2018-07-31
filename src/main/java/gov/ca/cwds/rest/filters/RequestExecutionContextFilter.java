@@ -60,13 +60,13 @@ public class RequestExecutionContextFilter implements Filter {
 
       try {
         final String userId = RequestExecutionContext.instance().getUserId();
-        LOGGER.info("user {} started request at {}", userId, requestStartTimeStr);
-        MDC.put("userLog", userId);
+        LOGGER.warn("user id {} started request at {}", userId, requestStartTimeStr);
+        MDC.put("userId", userId);
 
         chain.doFilter(httpServletRequest, httpServletResponse);
       } finally {
-        MDC.remove("userLog"); // remove the logging context, no matter what happens
         RequestExecutionContextImpl.stopRequest(); // mark request as "done", no matter what happens
+        MDC.remove("userId"); // remove the logging context, no matter what happens
       }
     }
   }
