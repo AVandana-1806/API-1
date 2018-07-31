@@ -32,6 +32,7 @@ import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
+import gov.ca.cwds.data.persistence.xa.PhineasMethodLoggerInterceptor;
 import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
