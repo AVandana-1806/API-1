@@ -4,10 +4,7 @@ import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.prepareHibern
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibernateStatistics;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -26,7 +23,6 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
-import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.CmsSystemCodeSerializer;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
@@ -105,7 +101,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
  */
 public class ServicesModule extends AbstractModule {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServicesModule.class);
+  static final Logger LOGGER = LoggerFactory.getLogger(ServicesModule.class);
 
   /**
    * AOP method interceptor manages database transactions outside of DropWizard resource classes.
@@ -243,60 +239,6 @@ public class ServicesModule extends AbstractModule {
       } finally {
         LOGGER.info("XAUnitOfWorkInterceptor: Finish XA");
         aspect.onFinish();
-      }
-    }
-
-  }
-
-  /**
-   * Construct an interceptor to monitor stack traces for any injected class.
-   *
-   * <blockquote>
-   *
-   * <pre>
-   * final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
-   * bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
-   * requestInjection(daoInterceptor);
-   * </pre>
-   *
-   * </blockquote>
-   *
-   * @author CWDS API Team
-   */
-  public static class PhineasMethodLoggerInterceptor
-      implements org.aopalliance.intercept.MethodInterceptor {
-
-    protected final Map<Method, AtomicLong> countMap = new ConcurrentHashMap<>();
-
-    protected long incrementCount(Method m) {
-      AtomicLong value;
-
-      if (countMap.containsKey(m)) {
-        value = countMap.get(m);
-      } else {
-        value = new AtomicLong(0L);
-        countMap.put(m, value);
-      }
-
-      return value.incrementAndGet();
-    }
-
-    @Override
-    public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
-      try {
-        final Method m = mi.getMethod();
-        LOGGER.info("stack for method call: class: {}, method: {}", m.getDeclaringClass(),
-            m.getName());
-        CaresStackUtils.logStack();
-
-        LOGGER.info("Phineas interceptor: before method: {}", m);
-        final Object result = mi.proceed();
-        final long callCount = incrementCount(m);
-        LOGGER.info("Phineas interceptor: after  method: {}, callCount: {}", m, callCount);
-        return result;
-      } catch (Exception e) {
-        LOGGER.error("Phineas interceptor: ERROR PRINTING STACK TRACE! {}", e.getMessage(), e);
-        throw e;
       }
     }
 
