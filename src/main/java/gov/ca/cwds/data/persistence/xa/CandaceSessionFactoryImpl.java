@@ -75,6 +75,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {
     super();
+    LOGGER.info("ctor(String,SessionFactory,SessionFactory)");
     this.sessionFactoryName = makeSessionFactoryName(sessionFactoryName);
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
@@ -83,6 +84,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
       FerbHibernateBundle xaHibernateBundle) {
     super();
+    LOGGER.info("ctor(HibernateBundle,FerbHibernateBundle)");
     this.sessionFactoryName = makeSessionFactoryName(xaHibernateBundle.name());
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
@@ -258,7 +260,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Statistics getStatistics() {
-    // IDEA: separate and store statistics by request.
+    // IDEA: store statistics by request.
     LOGGER.debug("CandaceSessionFactoryImpl.getStatistics");
     return pick().getStatistics();
   }
@@ -302,7 +304,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.info("******** CandaceSessionFactoryImpl.close ********");
+    LOGGER.warn("******** CandaceSessionFactoryImpl.close ********");
     local.set(null);
     pick().close();
     CaresStackUtils.logStack();

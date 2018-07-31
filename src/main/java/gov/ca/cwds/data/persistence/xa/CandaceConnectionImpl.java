@@ -40,7 +40,7 @@ public class CandaceConnectionImpl implements Connection {
   protected final Connection con;
 
   public CandaceConnectionImpl(Connection con) {
-    LOGGER.trace("ctor: con class: {}", con.getClass().getName());
+    LOGGER.warn("ctor: con class: {}", con.getClass().getName());
     this.con = con;
   }
 

@@ -32,6 +32,8 @@ import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 public class PhineasMethodLoggerInterceptor
     implements org.aopalliance.intercept.MethodInterceptor, RequestExecutionContextCallback {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Logger LOGGER =
       LoggerFactory.getLogger(PhineasMethodLoggerInterceptor.class);
 

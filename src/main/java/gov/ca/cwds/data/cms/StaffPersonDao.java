@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -21,6 +23,8 @@ import gov.ca.cwds.inject.CmsSessionFactory;
  * @author CWDS API Team
  */
 public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(StaffPersonDao.class);
 
   /**
    * Constructor
@@ -38,11 +42,12 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
    * @param ids Set of StaffPerson id's
    * @return map where key is a StaffPerson id and value is a StaffPerson itself
    */
+  @SuppressWarnings("unchecked")
   public Map<String, StaffPerson> findByIds(Collection<String> ids) {
     if (ids == null || ids.isEmpty()) {
       return new HashMap<>();
     }
-    @SuppressWarnings("unchecked")
+    LOGGER.info("StaffPersonDao.findByIds: ids: {}", ids);
     final Query<StaffPerson> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByIds")).setParameter("ids", ids);
     CaresQueryAccelerator.readOnlyQuery(query);

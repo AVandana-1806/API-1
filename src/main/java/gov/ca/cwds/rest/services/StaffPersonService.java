@@ -36,12 +36,6 @@ public class StaffPersonService implements TypedCrudsService<String, StaffPerson
   /**
    * {@inheritDoc}
    * 
-   * <p>
-   * DRS: Why is {@code @UnitOfWork} on this service method instead of on a calling resource??
-   * DropWizard's {@code UnitOfWorkAspect} opens a <strong>NEW CONNECTION</strong> for every
-   * annotation encountered!
-   * </p>
-   * 
    * @see gov.ca.cwds.rest.services.CrudsService#find(java.io.Serializable)
    */
   @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
