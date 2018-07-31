@@ -455,6 +455,8 @@ static SYSTEMTIME * g_win_tm = nullptr;
 // GETLOCALTIME:
 //==============================
 
+// DRS: Microsoft is eager to impose standards on others but hypocritically not follow said standards themselves.
+// Evil empire indeed.
 SYSTEMTIME standardTimeToWindowsTime(const std::tm & a_tm, const int millis) {
     SYSTEMTIME retval;
     logVerbose("\nstandardTimeToWindowsTime: a_tm.tm_hour: ", a_tm.tm_hour);
@@ -513,6 +515,9 @@ void GetLocalTime (SYSTEMTIME * out_win_tm, SYSTEMTIME * in_win_tm = nullptr) {
     }
 }
 
+//
+// Print Microsoft's non-standard time to stdout.
+//
 inline void printWinTime(std::ostream & os, const SYSTEMTIME & win_tm) {
     using namespace std;
     cout << "\n\nWindows time:"
@@ -526,6 +531,9 @@ inline void printWinTime(std::ostream & os, const SYSTEMTIME & win_tm) {
          << endl;
 }
 
+//
+// Redirect Microsoft's non-standard time to an outbound stream.
+//
 std::ostream & operator <<( std::ostream & os, const SYSTEMTIME & win_tm ) {
 	printWinTime(os, win_tm);
 	return os;
@@ -552,12 +560,17 @@ std::string timePointToString(T&& tp) {
     return result;
 }
 
+// 
+// Stream Clock and Duration implementations to out stream.
+// RedHat and Amazon Linux installs may lack a C++14 compliant compiler. Just suffer.
+// 
 template<typename Clock, typename Duration>
-std::ostream &operator<<( std::ostream &stream, const std::chrono::time_point<Clock, Duration> &time_point ) {
+std::ostream & operator << ( std::ostream &stream, const std::chrono::time_point<Clock, Duration> &time_point ) {
   const time_t time = Clock::to_time_t(time_point);
 #if __CRAPPY_COMPILER__ || __DAVE_IS_LOSING_IT__ || __GNUC__ > 4 || \
     ((__GNUC__ == 4) && __GNUC_MINOR__ > 8 && __GNUC_REVISION__ > 1)
-  // Func put_time implemented in later versions of GNU g++. Prez Trump: "SAD!"
+  // Func put_time implemented in ***LATER VERSIONS*** of GNU g++. 
+  // Prez Trump: "SAD!"
   struct tm tm;
   localtime_r(&time, &tm);
   return stream << std::put_time(&tm, "c");
@@ -598,6 +611,8 @@ std::tm parseIso8601Date(const char * iso_8601, WORD * millis) {
 //==============================
 // RANDGEN CONSTANTS:
 //==============================
+
+// Aka, I don't speak Hungarian, and neither do you. Get a decent IDE. And a life. Nerds.
 
 constexpr const int nSZ_KEY           = 10;
 constexpr const int nSZ_KEYSTAFFID    =  3;
@@ -676,6 +691,7 @@ static char *       Itoa               (int nIn, char *szOut, int nOutputSize);
 static double       StrToDouble        (const char *szSrcStr, int nSrcBase, double *pnPowVec);
 
 // DRS: linker error on some platforms: lstrcpynA redefinition.
+// I'm sure that a wicked linker option could avoid this but may incur other errors.
 // inline static char * StrCpyN (char *szDst, const char *szSrc, int nLen);
 
 static double TimestampToDouble(LPSYSTEMTIME lpTime);
@@ -686,8 +702,11 @@ std::string generateKeys(const std::string & staff_id, int make_n_keys, const st
 // DLL PUBLIC FUNCTIONS:
 //==============================
 
+// Don't be intimidated by directives like WINAPI. 
+// That defines who is responsible for cleaning up the stack, the caller or callee.
+
 void        WINAPI _export ckMakeNewKey           (const char *szUIStaffId, char *szKey);
-void        WINAPI _export MakeTimestampStr       (char *szUITimestamp);
+void        WINAPI _export MakeTimestampStr       (char       *szUITimestamp);
 void        WINAPI _export NewKeyFromStaffId      (const char *szStaffId, char *szKey);
 void        WINAPI _export MakeKeyAndTimeStamp    (const char *szStaffId, char *szKey, char *szTimeStamp);
 void        WINAPI _export NewKeyFromUIStaffId    (const char *szUIStaffId, char *szKey);
@@ -711,6 +730,8 @@ printf_alias TRACE = std::printf;
 #define sprintf_s std::snprintf
 
 // DRS: not included from string.h in Clang/LLVM??
+// Welcome to the world of Apple vs. Microsoft vs. IBM vs. Redhat.
+
 // errno_t strcat_s(char *restrict dest, rsize_t destsz, const char *restrict src);
 // strcat_s(const_cast<char*>(CreateTimestampStr(szKey)), nSZ_KEY + 1, szStaffId);
 
@@ -722,12 +743,17 @@ void strcat_s(char * dest, rsize_t destsz, const char * src) {
     std::strncat(dest, src, destsz);
 }
 
+// args: BOOL is obvious.
+// LPCSTR is a "far pointer to null-terminated character string."
+// 16-bit pointers are not large enough to address all allocated memory, so they point to memory segments with "near" and "far" pointers.
+// 32-bit architectures killed off near/far pointers, and in 64-bit they're pointless.
+// In 64-bit land, LPCSTR = a regular C string.
 void AssertTrace (BOOL bExp, LPCSTR pszFormat, ...) {
     if ( !bExp ) {
         va_list arglist;
         va_start( arglist, pszFormat );
-        vprintf( pszFormat, arglist );
-        va_end( arglist ); // must release the vargs.
+        vprintf ( pszFormat, arglist );
+        va_end  ( arglist ); // MUST release the vargs.
     }
 }
 

@@ -39,9 +39,9 @@ public class PhineasMethodLoggerInterceptor
   private static final Logger LOGGER =
       LoggerFactory.getLogger(PhineasMethodLoggerInterceptor.class);
 
-  private final Map<Method, AtomicLong> totalCounts = new ConcurrentHashMap<>();
+  private static final Map<Method, AtomicLong> totalCounts = new ConcurrentHashMap<>();
 
-  private final ThreadLocal<Map<Method, AtomicLong>> requestCalls =
+  private static final ThreadLocal<Map<Method, AtomicLong>> requestCalls =
       ThreadLocal.withInitial(HashMap::new);
 
   private long incrementCount(Method m, Map<Method, AtomicLong> map) {

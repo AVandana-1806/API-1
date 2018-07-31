@@ -16,6 +16,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.google.inject.Inject;
 
@@ -59,8 +60,12 @@ public class RequestExecutionContextFilter implements Filter {
       LOGGER.info("started request at {}", requestStartTimeStr);
 
       try {
+        final String userId = RequestExecutionContext.instance().getUserId();
+        MDC.put("userLog", userId);
+
         chain.doFilter(httpServletRequest, httpServletResponse);
       } finally {
+        MDC.remove("userLog"); // remove the logging context, no matter what happens
         RequestExecutionContextImpl.stopRequest(); // mark request as "done", no matter what happens
       }
     }

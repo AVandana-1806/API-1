@@ -65,7 +65,7 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
   SessionFactory nsSessionFactory;
 
   // SessionFactory by name.
-  private final ThreadLocal<Map<String, UnitOfWorkAspect>> requestAspects =
+  private static final ThreadLocal<Map<String, UnitOfWorkAspect>> requestAspects =
       ThreadLocal.withInitial(HashMap::new);
 
   @Override
@@ -146,7 +146,7 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
 
       if (firstUnitOfWork) {
         provideHibernateStatistics(name, currentSessionFactory.getStatistics());
-        aspect.afterEnd();
+        aspect.afterEnd(); // commit
       }
 
       return result;
