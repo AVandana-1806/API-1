@@ -69,15 +69,9 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
       ThreadLocal.withInitial(HashMap::new);
 
   @Override
-  public void startRequest(RequestExecutionContext ctx) {
+  protected void resetRequest() {
+    super.resetRequest();
     requestAspects.get().clear();
-    super.startRequest(ctx);
-  }
-
-  @Override
-  public void endRequest(RequestExecutionContext ctx) {
-    requestAspects.get().clear();
-    super.endRequest(ctx);
   }
 
   @Override
@@ -142,6 +136,7 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
       prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
     }
 
+    boolean barfed = false;
     try {
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
@@ -157,12 +152,14 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
       return result;
     } catch (Exception e) {
       LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
+      barfed = true;
       aspect.onError();
       throw e;
     } finally {
       LOGGER.debug("Unit of work finished");
-      if (firstUnitOfWork) {
+      if (barfed || firstUnitOfWork) {
         aspect.onFinish();
+        resetRequest();
       }
     }
   }
