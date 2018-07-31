@@ -33,7 +33,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "squid:S2160"})
 @Entity
 @Table(name = "ASGNM_T")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
