@@ -15,7 +15,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 
 /**
- * Construct an interceptor to monitor stack traces for any injected class.
+ * AOP interceptor tracks usage of any injected class.
  *
  * <h3>Sample Usage</h3>
  *
@@ -57,6 +57,11 @@ public class PhineasMethodLoggerInterceptor
     return count.incrementAndGet();
   }
 
+  private void resetRequest() {
+    LOGGER.trace("reset request containers");
+    requestCalls.get().clear();
+  }
+
   /**
    * Increment total method calls across all requests.
    * 
@@ -93,7 +98,7 @@ public class PhineasMethodLoggerInterceptor
           requestCalls);
       return result;
     } catch (Exception e) {
-      LOGGER.error("Phineas interceptor: ERROR PRINTING STACK TRACE! {}", e.getMessage(), e);
+      LOGGER.error("Phineas interceptor: ERROR! {}", e.getMessage(), e);
       throw e;
     }
   }
@@ -105,12 +110,14 @@ public class PhineasMethodLoggerInterceptor
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
-    requestCalls.get().clear();
+    LOGGER.trace("start request");
+    resetRequest();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    requestCalls.get().clear();
+    LOGGER.trace("end request");
+    resetRequest();
   }
 
 }

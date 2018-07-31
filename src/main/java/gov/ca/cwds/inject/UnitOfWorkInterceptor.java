@@ -4,6 +4,8 @@ import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.prepareHibern
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibernateStatistics;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +23,6 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.hibernate.UnitOfWorkAspect;
-import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 
 /**
  * AOP method interceptor manages database transactions outside of DropWizard resource classes.
@@ -46,8 +47,6 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitOfWorkInterceptor.class);
 
-  UnitOfWorkAwareProxyFactory proxyFactory;
-
   @Inject
   @CmsSessionFactory
   SessionFactory cmsSessionFactory;
@@ -59,6 +58,22 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
   @Inject
   @NsSessionFactory
   SessionFactory nsSessionFactory;
+
+  // SessionFactory by name.
+  private final ThreadLocal<Map<String, UnitOfWorkAspect>> requestAspects =
+      ThreadLocal.withInitial(HashMap::new);
+
+  @Override
+  public void startRequest(RequestExecutionContext ctx) {
+    requestAspects.get().clear();
+    super.startRequest(ctx);
+  }
+
+  @Override
+  public void endRequest(RequestExecutionContext ctx) {
+    requestAspects.get().clear();
+    super.endRequest(ctx);
+  }
 
   @Override
   public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
@@ -94,24 +109,42 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
         throw new IllegalStateException("Unknown datasource! " + annotation.value());
     }
 
-    // Build the aspect with our wrapped session factory, not a hibernate bundle:
-    proxyFactory = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory);
-    final UnitOfWorkAspect aspect =
-        proxyFactory.newAspect(ImmutableMap.of(name, currentSessionFactory));
+    LOGGER.debug("session factory: {}", name);
 
-    try {
-      // Not XA, so clear XA flags.
-      BaseAuthorizationDao.clearXaMode();
-      RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    // Not XA, so clear XA flags.
+    BaseAuthorizationDao.clearXaMode();
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
 
+    // Does this request already have an aspect for this session factory?
+    UnitOfWorkAspect aspect;
+    boolean firstUnitOfWork = false;
+    if (requestAspects.get().containsKey(name)) {
+      aspect = requestAspects.get().get(name);
+    } else {
+      LOGGER.debug("New @UnitOfWork aspect");
+      firstUnitOfWork = true;
+      aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
+          .newAspect(ImmutableMap.of(name, currentSessionFactory));
+      requestAspects.get().put(name, aspect);
       aspect.beforeStart(annotation);
+
+      // Set client information on the JDBC connection
       final Session session = currentSessionFactory.getCurrentSession();
       session.doWork(new WorkFerbUserInfo()); // Fine for all datasources.
-
       prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
+    }
+
+    try {
       final Object result = mi.proceed();
-      provideHibernateStatistics(name, currentSessionFactory.getStatistics());
-      aspect.afterEnd();
+      final long totalCalls = incrementTotalCount(m);
+      final long requestCalls = incrementRequestCount(m);
+      LOGGER.info("@UnitOfWork interceptor: after  method: {}, total: {}, request: {}", m,
+          totalCalls, requestCalls);
+
+      if (firstUnitOfWork) {
+        provideHibernateStatistics(name, currentSessionFactory.getStatistics());
+        aspect.afterEnd();
+      }
 
       return result;
     } catch (Exception e) {
@@ -120,7 +153,9 @@ public class UnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
       throw e;
     } finally {
       LOGGER.debug("Unit of work finished");
-      aspect.onFinish();
+      if (firstUnitOfWork) {
+        aspect.onFinish();
+      }
     }
   }
 

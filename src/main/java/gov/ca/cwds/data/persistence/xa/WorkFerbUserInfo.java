@@ -60,23 +60,27 @@ public class WorkFerbUserInfo implements Work {
     con.setAutoCommit(false);
 
     if (con instanceof DB2Connection) {
-      // https://vsis-www.informatik.uni-hamburg.de/oldServer/teaching/ws-06.07/dbms/materialien/db2-manuals/db2aje90.pdf
-      // Properties start on page 232.
-      LOGGER.info("DB2 connection, set user info");
-      con.setClientInfo("ApplicationName", PROGRAM_NAME);
-      con.setClientInfo("clientProgramName", PROGRAM_NAME);
-      con.setClientInfo("clientWorkstation", IP_ADDRESS);
-      con.setClientInfo("clientAccountingInformation", userId);
-      con.setClientInfo("ClientUser", userId);
+      try {
+        // https://vsis-www.informatik.uni-hamburg.de/oldServer/teaching/ws-06.07/dbms/materialien/db2-manuals/db2aje90.pdf
+        // Properties start on page 232.
+        LOGGER.info("DB2 connection, set user info");
+        con.setClientInfo("ApplicationName", PROGRAM_NAME);
+        con.setClientInfo("clientProgramName", PROGRAM_NAME);
+        con.setClientInfo("clientWorkstation", IP_ADDRESS);
+        con.setClientInfo("clientAccountingInformation", userId);
+        con.setClientInfo("ClientUser", userId);
 
-      final DB2Connection db2con = (DB2Connection) con;
-      db2con.setDB2ClientAccountingInformation(userId);
-      db2con.setDB2ClientApplicationInformation(userId);
-      db2con.setDB2ClientProgramId(userId);
-      db2con.setDB2ClientUser(staffId);
-      db2con.setDB2ClientWorkstation(WORKSTATION);
+        final DB2Connection db2con = (DB2Connection) con;
+        db2con.setDB2ClientAccountingInformation(userId);
+        db2con.setDB2ClientApplicationInformation(userId);
+        db2con.setDB2ClientProgramId(userId);
+        db2con.setDB2ClientUser(staffId);
+        db2con.setDB2ClientWorkstation(WORKSTATION);
 
-      // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
+        // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
+      } catch (Exception e) {
+        LOGGER.warn("Unsupported client info", e);
+      }
     }
   }
 
