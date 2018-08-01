@@ -5,12 +5,14 @@ import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT
 
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.rest.core.Api.PathParam;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -79,6 +81,17 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
     final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
         .getNamedQuery(constructNamedQueryName("findByScreeningId"))
         .setParameter(PathParam.SCREENING_ID, screeningId);
+    return query.list();
+  }
+
+  public List<ParticipantEntity> findByIds(Set<String> ids) {
+    if (CollectionUtils.isEmpty(ids)) {
+      return new ArrayList<>();
+    }
+
+    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
+        .getNamedQuery(constructNamedQueryName("findByParticipantsId"))
+        .setParameter(PathParam.PARTICIPANT_IDS, ids);
     return query.list();
   }
 

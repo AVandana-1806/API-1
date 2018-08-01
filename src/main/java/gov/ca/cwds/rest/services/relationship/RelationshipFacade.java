@@ -9,7 +9,7 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
-import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.fixture.investigation.RelationshipToEntityBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,95 +53,138 @@ public class RelationshipFacade {
     this.cmsClientDao = cmsClientDao;
   }
 
-  public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidates(String screeningId) {
+  public List<ScreeningRelationshipsWithCandidates> getRelationshipsWithCandidatesByScreeningId(
+      String screeningId) {
     if (StringUtils.isEmpty(screeningId)) {
       return Collections.emptyList();
     }
 
-    List<gov.ca.cwds.rest.api.Response> result = new ArrayList<>();
-
-    Set<ParticipantEntity> allScreeningParticipants = new HashSet<>(
-        participantDao.getByScreeningId(screeningId));
-    List<gov.ca.cwds.rest.api.Response> allScreeningRelationships = getRelationshipsByScreeningId(
+    List<gov.ca.cwds.rest.api.Response> relationshipsResponse = getRelationshipsByScreeningId(
         screeningId);
-    List<ParticipantEntity> participantsWithoutRelationships = getParticipantsWithoutRelationships(
-        allScreeningParticipants, allScreeningRelationships);
-
-    Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsMappedByParticipant = getMappedRelationshipsByParticipant(
-        allScreeningRelationships, allScreeningParticipants);
-    Set<ParticipantEntity> primaryParticipants = relationshipsMappedByParticipant.keySet();
-
-    List<gov.ca.cwds.rest.api.Response> screeningRelationshipsWithCandidates = getRelationshipsWithCandidates(
-        relationshipsMappedByParticipant, participantsWithoutRelationships, primaryParticipants);
-
-    return screeningRelationshipsWithCandidates;
-  }
-
-  private List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidates(
-      Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsMappedByParticipant,
-      List<ParticipantEntity> participantsWithoutRelationships, Set<ParticipantEntity> primaryParticipants) {
-    if (CollectionUtils.isEmpty(primaryParticipants)) {
+    if (CollectionUtils.isEmpty(relationshipsResponse)) {
       return Collections.emptyList();
     }
 
-    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
-
-    primaryParticipants.forEach(e->{
-      relationshipsWithCandidates.add(getRelationshipWitCandidates(e, relationshipsMappedByParticipant.get(e)));
-    });
+    List<ScreeningRelationship> screeningRelationships = formResponse(relationshipsResponse);
+    Set<String> participantIds = getParticipantIds(screeningRelationships);
+    List<ParticipantEntity> allParticipants = participantDao.findByIds(participantIds);
+    Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant = getRelationshipsMappedByPrimaryParticipant(
+        screeningRelationships, allParticipants);
+    List<ScreeningRelationshipsWithCandidates> relationshipsWithCandidates = buildRelationshipsWitCandidates(
+        relationshipsByPrimaryParticipant, allParticipants);
 
     return relationshipsWithCandidates;
   }
 
-  private Response getRelationshipWitCandidates(ParticipantEntity e,
-      List<ScreeningRelationship> screeningRelationships) {
-    // TODO: continue here - ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates();
+  private List<ScreeningRelationshipsWithCandidates> buildRelationshipsWitCandidates(
+      Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant,
+      List<ParticipantEntity> allParticipants) {
+    if (MapUtils.isEmpty(relationshipsByPrimaryParticipant) || CollectionUtils
+        .isEmpty(allParticipants)) {
+      return Collections.emptyList();
+    }
+
+    List<ScreeningRelationshipsWithCandidates> relationshipsWithCandidates = new ArrayList<>();
+    relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
+      if (CollectionUtils.isNotEmpty(relationships)) {
+        relationshipsWithCandidates
+            .add(buildRelationshipWithCandidates(participant, relationships, allParticipants));
+      }
+    });
+    return relationshipsWithCandidates;
+  }
+
+  private ScreeningRelationshipsWithCandidates buildRelationshipWithCandidates(
+      ParticipantEntity participant, List<ScreeningRelationship> relationships,
+      List<ParticipantEntity> allParticipants) {
+    List<RelationshipTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
     return null;
   }
 
-  private Map<ParticipantEntity, List<ScreeningRelationship>> getMappedRelationshipsByParticipant(
-      List<gov.ca.cwds.rest.api.Response> allScreeningRelationships,
-      Set<ParticipantEntity> allScreeningParticipants) {
-    Map<ParticipantEntity, List<ScreeningRelationship>> participantEntityListMap = new HashMap<>();
-    if (CollectionUtils.isEmpty(allScreeningRelationships) || CollectionUtils
-        .isEmpty(allScreeningParticipants)) {
-      return participantEntityListMap;
+  private List<RelationshipTo> getRelationshipsTo(List<ScreeningRelationship> relationships,
+      List<ParticipantEntity> allParticipants) {
+    if (CollectionUtils.isEmpty(relationships) || CollectionUtils.isEmpty(allParticipants)) {
+      return Collections.emptyList();
     }
 
-    allScreeningRelationships.forEach(e -> {
-      Optional<ParticipantEntity> participantEntity = allScreeningParticipants.stream()
-          .filter(b -> ((ScreeningRelationship) e).getClientId().equals(b.getId())).findAny();
-      if (participantEntity.isPresent()) {
-        if (participantEntityListMap.get(participantEntity) == null) {
-          participantEntityListMap.put(participantEntity.get(), new ArrayList<>());
-        }
-
-        participantEntityListMap.get(participantEntity).add((ScreeningRelationship) e);
-      }
-    });
-
-    return participantEntityListMap;
+    List<RelationshipTo> relationshipTos = new ArrayList<>();
+    relationships.forEach(e ->
+        relationshipTos.add(buildRelationshipTo(e, allParticipants))
+    );
+    return relationshipTos;
   }
 
-  private List<ParticipantEntity> getParticipantsWithoutRelationships(
-      final Set<ParticipantEntity> allScreeningParticipants,
-      final List<gov.ca.cwds.rest.api.Response> allScreeningRelationships) {
-    List<ParticipantEntity> participantEntities = new ArrayList<>();
-    if (CollectionUtils.isEmpty(allScreeningRelationships) || CollectionUtils
-        .isEmpty(allScreeningParticipants)) {
-      return participantEntities;
+  private RelationshipTo buildRelationshipTo(ScreeningRelationship relationship,
+      List<ParticipantEntity> allParticipants) {
+    ParticipantEntity relatedParticipant = allParticipants.stream()
+        .filter(e -> relationship.getRelativeId().equals(e.getId())).findFirst().orElse(null);
+
+    // TODO: implement setters
+    RelationshipToEntityBuilder builder = new RelationshipToEntityBuilder();
+    builder.setTableName("");
+    builder.setId("");
+    builder.setRelatedFirstName("");
+    builder.setRelatedMiddleName("");
+    builder.setRelatedLastName("");
+    builder.setRelatedNameSuffix("");
+    builder.setRelatedGenderCode("");
+    builder.setRelationship("");
+    builder.setRelationshipToPerson("");
+    builder.setCmsRecordDescriptor(new CmsRecordDescriptor());
+    builder.setRelationshipContext("");
+    builder.setAbsentParentCode("");
+    builder.setSameHomeCode("");
+    builder.setRelatedDateOfBirth("");
+    builder.setRelatedDateOfDeath("");
+    builder.setRelationshipStartDate("");
+    builder.setRelationshipEndDate("");
+    builder.setRelatedPersonSensitive(false);
+    builder.setRelatedPersonSealed(false);
+
+    return builder.build();
+  }
+
+  private Map<ParticipantEntity, List<ScreeningRelationship>> getRelationshipsMappedByPrimaryParticipant(
+      List<ScreeningRelationship> screeningRelationships,
+      List<ParticipantEntity> allParticipants) {
+    if (CollectionUtils.isEmpty(screeningRelationships) || CollectionUtils
+        .isEmpty(allParticipants)) {
+      return Collections.emptyMap();
     }
 
-    allScreeningParticipants.forEach(a -> {
-      Optional<gov.ca.cwds.rest.api.Response> relationship = allScreeningRelationships.stream()
-          .filter(
-              e -> a.getId().equals(((ScreeningRelationship) e).getClientId()) || a.getId()
-                  .equals(((ScreeningRelationship) e).getRelativeId())).findFirst();
-      if (!relationship.isPresent()) {
-        participantEntities.add(a);
+    Map<ParticipantEntity, List<ScreeningRelationship>> mappedRelationships = new HashMap<>();
+    screeningRelationships.forEach(relationship -> {
+      Optional<ParticipantEntity> primaryParticipant = allParticipants.stream()
+          .filter(participant -> relationship.getClientId().equals(participant.getId()))
+          .findFirst();
+      if (primaryParticipant.isPresent()) {
+        if (mappedRelationships.get(primaryParticipant.get()) == null) {
+          mappedRelationships.get(primaryParticipant.get()).add(relationship);
+        }
       }
     });
-    return participantEntities;
+    return mappedRelationships;
+  }
+
+  private Set<String> getParticipantIds(List<ScreeningRelationship> screeningRelationships) {
+    if (CollectionUtils.isEmpty(screeningRelationships)) {
+      return Collections.emptySet();
+    }
+
+    Set<String> participantIds = new HashSet<>();
+    screeningRelationships.forEach(e -> {
+      participantIds.add(e.getClientId());
+      participantIds.add(e.getRelativeId());
+    });
+
+    return participantIds;
+  }
+
+  private List<ScreeningRelationship> formResponse(
+      List<gov.ca.cwds.rest.api.Response> relationshipsResponse) {
+    List<ScreeningRelationship> screeningRelationships = new ArrayList<>();
+    relationshipsResponse.forEach(e -> screeningRelationships.add((ScreeningRelationship) e));
+    return screeningRelationships;
   }
 
   public List<gov.ca.cwds.rest.api.Response> getRelationshipsByScreeningId(String screeningId) {
@@ -272,7 +316,8 @@ public class RelationshipFacade {
       newRelationship.setRelationshipType(clientRelationship.getClientRelationshipType());
       newRelationship.setCreatedAt(createdAt);
       newRelationship.setUpdatedAt(createdAt);
-      newRelationship.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
+      newRelationship
+          .setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
       newRelationship.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
       newRelationship.setLegacyId(clientRelationship.getId());
       newRelationship.setStartDate(clientRelationship.getStartDate());
