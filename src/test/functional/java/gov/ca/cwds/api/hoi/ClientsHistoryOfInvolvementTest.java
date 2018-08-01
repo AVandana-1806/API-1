@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import gov.ca.cwds.api.FunctionalTest;
-import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
@@ -31,7 +31,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
 
   String resourcePath;
   String referralsPath;
-  private FunctionalTestingBuilder functionalTestingBuilder;
+  private HttpRequestHandler httpRequestHandler;
 
   /**
    * 
@@ -40,7 +40,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
   public void setup() {
     referralsPath = getResourceUrlFor("/" + Api.RESOURCE_REFERRALS);
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_CLIENT + "/" + Api.HISTORY_OF_INVOLVEMENTS);
-    functionalTestingBuilder = new FunctionalTestingBuilder();
+    httpRequestHandler = new HttpRequestHandler();
   }
 
   /**
@@ -53,8 +53,8 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.getRequest(resourcePath, queryParams).then().body("referrals[]",
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(resourcePath, queryParams).then().body("referrals[]",
         Matchers.notNullValue());
   }
 
@@ -68,8 +68,8 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(resourcePath, queryParams).then()
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
@@ -81,8 +81,8 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
   public void testSocialWorkerCantAccessToDifferentCountySensitiveClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "9PIxHucCON");
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(resourcePath, queryParams).then()
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
@@ -96,8 +96,8 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(resourcePath, queryParams).then()
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
@@ -109,8 +109,8 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
   public void testSocialWorkerCantToAccessToDifferentCountySealedClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
-    functionalTestingBuilder.getRequest(resourcePath, queryParams).then()
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(resourcePath, queryParams).then()
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
@@ -119,7 +119,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
     ScreeningToReferral referrals = new ScreeningToReferralResourceBuilder().setEndedAt(null)
         .setAssigneeStaffId(userInfo.getStaffId()).setIncidentCounty(incidentCounty)
         .setLimitedAccessCode(sensitivityIndicator).createScreeningToReferral();
-    Response response = functionalTestingBuilder.postRequest(referrals, referralsPath, token);
+    Response response = httpRequestHandler.postRequest(referrals, referralsPath, token);
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JodaModule());
     ScreeningToReferral screeningToReferral =
