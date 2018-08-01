@@ -29,6 +29,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
  * @author CWDS API Team
  *
  */
+@SuppressWarnings("squid:S2160")
 public class CachingIntakeCodeService extends IntakeLovService implements IntakeCodeCache {
 
   private transient LoadingCache<CacheKey, Object> intakeCodeCache;
