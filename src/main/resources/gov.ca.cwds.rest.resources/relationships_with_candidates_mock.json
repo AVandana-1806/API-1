@@ -25,7 +25,7 @@
         "related_person_age_unit": "Y",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "relationship_code": "211",
+        "related_person_relationship": "211",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -41,7 +41,7 @@
         "related_person_age_unit": "",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "relationship_code": "211",
+        "related_person_relationship": "211",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -58,7 +58,7 @@
         "related_person_age_unit": "Y",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "relationship_code": "275",
+        "related_person_relationship": "275",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -75,7 +75,7 @@
         "related_person_age_unit": "D",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "relationship_code": "211",
+        "related_person_relationship": "211",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -92,7 +92,7 @@
         "related_person_age_unit": "M",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "relationship_code": "211",
+        "related_person_relationship": "211",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       }
