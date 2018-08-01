@@ -90,22 +90,6 @@ public class Relationship implements PersistentObject {
   public Relationship() {
   }
 
-  public Relationship(String id, String clientId, String relativeId, int relationshipType,
-      Date createdAt, Date updatedAt, Boolean absentParentIndicator, Boolean sameHomeStatus,
-      String legacyId, Date startDate, Date endDate) {
-    this.id = id;
-    this.clientId = clientId;
-    this.relativeId = relativeId;
-    this.relationshipType = relationshipType;
-    this.createdAt = freshDate(createdAt);
-    this.updatedAt = freshDate(updatedAt);
-    this.sameHomeStatus = sameHomeStatus;
-    this.absentParentIndicator = absentParentIndicator;
-    this.legacyId = legacyId;
-    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
-    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
   @Override
   public Serializable getPrimaryKey() {
     return getId();
