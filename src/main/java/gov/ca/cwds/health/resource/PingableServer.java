@@ -5,16 +5,11 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author CWDS API Team
  */
 @SuppressWarnings("fb-contrib:STT_TOSTRING_STORED_IN_FIELD")
 public class PingableServer implements Pingable {
-  private static final Logger LOGGER = LoggerFactory.getLogger(PingableServer.class);
-
   protected Client client;
   protected String url;
   private String message;
