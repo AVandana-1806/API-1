@@ -9,16 +9,12 @@ import java.util.TreeMap;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.NsSessionFactory;
 
 public class LovDbCheck implements Pingable {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(LovDbCheck.class);
 
   private static Map<String, Integer> lovTableCounts = new TreeMap<>();
   static {
