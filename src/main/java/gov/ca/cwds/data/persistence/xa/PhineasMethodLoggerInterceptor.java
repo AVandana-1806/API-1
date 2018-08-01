@@ -57,6 +57,9 @@ public class PhineasMethodLoggerInterceptor
     return count.incrementAndGet();
   }
 
+  /**
+   * Clear containers and other request resources.
+   */
   protected void resetRequest() {
     LOGGER.trace("reset request containers");
     requestCalls.get().clear();
