@@ -30,6 +30,7 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
     return query.getResultList();
   }
 
+  @SuppressWarnings("squid:S1166")
   public Relationship getByLegacyId(String legacyId){
     Relationship result = null;
     try {

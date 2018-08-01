@@ -13,8 +13,18 @@ public class RelationshipTest {
   public void whenCreatingRelationshipThenWeShouldBeAbleToRetrieveTheProperties() {
     Date anHourAgo = new Date(System.currentTimeMillis() - 3600 * 1000);
     Date now = new Date();
-    Relationship relationship = new Relationship("123", "PersonLegacyId", "RelationLegacydId",
-        RELATIONSHIP_TYPE, anHourAgo, now, true, false, "1111", null, null);
+
+    Relationship relationship = new Relationship();
+    relationship.setId("123");
+    relationship.setClientId("PersonLegacyId");
+    relationship.setRelativeId("RelationLegacydId");
+    relationship.setRelationshipType(RELATIONSHIP_TYPE);
+    relationship.setCreatedAt(anHourAgo);
+    relationship.setUpdatedAt(now);
+    relationship.setAbsentParentIndicator(true);
+    relationship.setSameHomeStatus(false);
+    relationship.setLegacyId("1111");
+
     assertEquals(relationship.getId(), "123");
     assertEquals(relationship.getClientId(), "PersonLegacyId");
     assertEquals(relationship.getRelativeId(), "RelationLegacydId");
