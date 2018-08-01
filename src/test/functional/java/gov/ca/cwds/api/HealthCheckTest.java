@@ -12,7 +12,7 @@ import org.junit.Test;
  *         Health Checks to check Ferb API is up and running.
  *
  */
-public class SmokeTest extends FunctionalTest {
+public class HealthCheckTest extends FunctionalTest {
 
   private String healthCheckPath;
 
@@ -31,15 +31,6 @@ public class SmokeTest extends FunctionalTest {
   public void testPerryIsAvailible() {
     given().queryParam("token", token).when().get(healthCheckPath).then()
         .body("auth_status.healthy", equalTo(true));
-  }
-
-  /**
-   * 
-   */
-  @Test
-  public void testDb2IsAvailible() {
-    given().queryParam("token", token).when().get(healthCheckPath).then().body("db2_status.healthy",
-        equalTo(true));
   }
 
   /**
