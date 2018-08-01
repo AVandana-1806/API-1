@@ -201,7 +201,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.info(
+      LOGGER.warn(
           "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource {}",
           sessionFactoryName);
       session = new CandaceSessionImpl(pick().openSession());
@@ -229,7 +229,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.info("CandaceSessionFactoryImpl.getCurrentSession: opening a new session");
+      LOGGER.warn(
+          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource {}",
+          sessionFactoryName);
       session = openSession();
     }
 
@@ -392,7 +394,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   }
 
   public String getSessionFactoryName() {
-    LOGGER.info("CandaceSessionFactoryImpl.getSessionFactoryName: sessionFactoryName: {}",
+    LOGGER.trace("CandaceSessionFactoryImpl.getSessionFactoryName: sessionFactoryName: {}",
         sessionFactoryName);
     return sessionFactoryName;
   }
