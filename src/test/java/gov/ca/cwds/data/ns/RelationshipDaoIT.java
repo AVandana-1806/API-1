@@ -67,8 +67,21 @@ public class RelationshipDaoIT implements DaoTestTemplate {
         ParticipantEntity participant2 = new ParticipantEntityBuilder().setId(null).setScreeningEntity(screeningEntity).build();
         participant1 = participantDao.create(participant1);
         participant2 = participantDao.create(participant2);
-        existingRelationship = new Relationship(null, participant1.getId(), participant2.getId(), 190,
-                new Date(), new Date(), true, false, "222", new Date(), new Date());
+
+        Date now = new Date();
+        existingRelationship = new Relationship();
+        existingRelationship.setClientId(participant1.getId());
+        existingRelationship.setRelativeId(participant2.getId());
+        existingRelationship.setRelationshipType(190);
+        existingRelationship.setCreatedAt(now);
+        existingRelationship.setUpdatedAt(now);
+        existingRelationship.setAbsentParentIndicator(true);
+        existingRelationship.setSameHomeStatus(false);
+        existingRelationship.setLegacyId("222");
+        existingRelationship.setStartDate(now);
+        existingRelationship.setEndDate(now);
+
+
         existingRelationship = relationshipDao.create(existingRelationship);
         session.flush();
     }
@@ -104,8 +117,19 @@ public class RelationshipDaoIT implements DaoTestTemplate {
     @Test
     @Override
     public void testCreate() throws Exception {
-        Relationship relationship = new Relationship(null, "ClientId", "RelationId", 190, new Date(),
-                new Date(), true, false, "111", new Date(),  new Date());
+        Date now = new Date();
+        Relationship relationship = new Relationship();
+        relationship.setClientId("ClientId");
+        relationship.setRelativeId("RelationId");
+        relationship.setRelationshipType(190);
+        relationship.setCreatedAt(now);
+        relationship.setUpdatedAt(now);
+        relationship.setAbsentParentIndicator(true);
+        relationship.setSameHomeStatus(false);
+        relationship.setLegacyId("111");
+        relationship.setStartDate(now);
+        relationship.setEndDate(now);
+
         Relationship created = relationshipDao.create(relationship);
         assertThat(created, is(relationship));
         assertNotNull(created.getId());

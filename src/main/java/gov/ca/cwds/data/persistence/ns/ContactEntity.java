@@ -55,27 +55,6 @@ public class ContactEntity implements PersistentObject {
     //Empty constructor
   }
 
-  public ContactEntity(
-      String screeningId,
-      LocalDateTime startedAt,
-      LocalDateTime endedAt,
-      String purpose,
-      String communicationMethod,
-      String status,
-      Integer service,
-      String location,
-      String note) {
-    this.screeningId = screeningId;
-    this.startedAt = startedAt;
-    this.endedAt = endedAt;
-    this.purpose = purpose;
-    this.communicationMethod = communicationMethod;
-    this.status = status;
-    this.service = service;
-    this.location = location;
-    this.note = note;
-  }
-
   @Override
   public Serializable getPrimaryKey() {
     return getId();

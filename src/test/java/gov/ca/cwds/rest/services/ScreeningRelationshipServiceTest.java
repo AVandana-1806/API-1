@@ -14,7 +14,6 @@ import gov.ca.cwds.rest.api.domain.enums.SameHomeStatus;
 import java.io.Serializable;
 import java.util.Date;
 
-import gov.ca.cwds.rest.services.investigation.ClientsRelationshipsService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,8 +32,18 @@ public class ScreeningRelationshipServiceTest {
     relationshipDao = mock(RelationshipDao.class);
     relationshipMapper = RelationshipMapper.INSTANCE;
     service = new ScreeningRelationshipService(relationshipDao, relationshipMapper);
-    relationshipEntity = new Relationship("123", "ClientID", "RelationId", 190, new Date(),
-        new Date(), true, null, "1111", null, null);
+
+    Date now = new Date();
+    relationshipEntity = new Relationship();
+    relationshipEntity.setId("123");
+    relationshipEntity.setClientId("ClientID");
+    relationshipEntity.setRelativeId("RelationId");
+    relationshipEntity.setRelationshipType(190);
+    relationshipEntity.setCreatedAt(now);
+    relationshipEntity.setUpdatedAt(now);
+    relationshipEntity.setAbsentParentIndicator(true);
+    relationshipEntity.setLegacyId("1111");
+
     relationship = new ScreeningRelationship("123", "ClientID", "RelationId", 190, true, "U", new Date(), new Date(), "1234567890");
   }
 
@@ -71,9 +80,16 @@ public class ScreeningRelationshipServiceTest {
     String newId = "123";
     Date savedDate = new Date();
     Date updatedDate = new Date();
-    relationshipEntity = new Relationship(newId, relationship.getClientId(),
-        relationship.getRelativeId(), relationship.getRelationshipType(),
-        savedDate, updatedDate, true, null, "1111", null, null);
+    relationshipEntity = new Relationship();
+    relationshipEntity.setId(newId);
+    relationshipEntity.setClientId(relationship.getClientId());
+    relationshipEntity.setRelativeId(relationship.getRelativeId());
+    relationshipEntity.setRelationshipType(relationship.getRelationshipType());
+    relationshipEntity.setCreatedAt(savedDate);
+    relationshipEntity.setUpdatedAt(updatedDate);
+    relationshipEntity.setAbsentParentIndicator(true);
+    relationshipEntity.setLegacyId("1111");
+
 
     when(relationshipDao.create(any())).thenReturn(relationshipEntity);
     ScreeningRelationship saved = (ScreeningRelationship) service.create(relationship);
@@ -99,12 +115,25 @@ public class ScreeningRelationshipServiceTest {
   @Test
   public void update() throws Exception {
     Date creationDate = new Date();
-    Relationship existingEntity = new Relationship("123", "ClientID", "RelationId", 190,
-        creationDate,
-        new Date(), true, null, "1111", null, null);
-    Relationship updatedEntity = new Relationship("123", "ClientID", "RelationId", 191,
-        creationDate,
-        new Date(), true, null, "1111", null ,null);
+    Relationship existingEntity = new Relationship();
+    existingEntity.setId("123");
+    existingEntity.setClientId("ClientID");
+    existingEntity.setRelativeId("RelationId");
+    existingEntity.setRelationshipType(190);
+    existingEntity.setCreatedAt(creationDate);
+    existingEntity.setUpdatedAt(new Date());
+    existingEntity.setAbsentParentIndicator(true);
+    existingEntity.setLegacyId("1111");
+
+    Relationship updatedEntity = new Relationship();
+    updatedEntity.setId("123");
+    updatedEntity.setClientId("ClientID");
+    updatedEntity.setRelativeId("RelationId");
+    updatedEntity.setRelationshipType(191);
+    updatedEntity.setCreatedAt(creationDate);
+    updatedEntity.setUpdatedAt(new Date());
+    updatedEntity.setAbsentParentIndicator(true);
+    updatedEntity.setLegacyId("1111");
 
     when(relationshipDao.find(any())).thenReturn(existingEntity);
     when(relationshipDao.update(any())).thenReturn(updatedEntity);

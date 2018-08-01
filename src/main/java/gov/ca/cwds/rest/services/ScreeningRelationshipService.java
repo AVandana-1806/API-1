@@ -11,7 +11,6 @@ import gov.ca.cwds.rest.api.domain.enums.SameHomeStatus;
 import java.io.Serializable;
 import java.util.Date;
 
-import gov.ca.cwds.rest.services.investigation.ClientsRelationshipsService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,11 +47,21 @@ public class ScreeningRelationshipService implements CrudsService {
     @Override
     public Response create(Request request) {
         ScreeningRelationship relationship = (ScreeningRelationship) request;
-        Relationship entity = new Relationship(null, relationship.getClientId(),
-                relationship.getRelativeId(), relationship.getRelationshipType(),
-                new Date(), new Date(), relationship.isAbsentParentIndicator(),
-                SameHomeStatus.toValue(relationship.getSameHomeStatus()), relationship.getLegacyId(), relationship.getStartDate(), relationship.getEndDate());
+
+        Date now = new Date();
+        Relationship entity = new Relationship();
+        entity.setClientId(relationship.getClientId());
+        entity.setRelativeId(relationship.getRelativeId());
+        entity.setRelationshipType(relationship.getRelationshipType());
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
+        entity.setAbsentParentIndicator(relationship.isAbsentParentIndicator());
+        entity.setSameHomeStatus(SameHomeStatus.toValue(relationship.getSameHomeStatus()));
+        entity.setLegacyId(relationship.getLegacyId());
+        entity.setStartDate(relationship.getStartDate());
+        entity.setEndDate(relationship.getEndDate());
         entity = relationshipDao.create(entity);
+
         relationship.setId(entity.getId());
         LOGGER.debug("saved relationship {}", relationship);
         return relationship;
