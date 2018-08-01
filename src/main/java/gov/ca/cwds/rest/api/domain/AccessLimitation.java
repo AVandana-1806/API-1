@@ -15,6 +15,7 @@ import gov.ca.cwds.rest.util.FerbDateUtils;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings("squid:S2160")
 public class AccessLimitation extends ApiObjectIdentity {
 
   private static final long serialVersionUID = 1L;
