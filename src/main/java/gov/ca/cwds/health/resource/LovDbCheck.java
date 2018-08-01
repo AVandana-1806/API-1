@@ -41,8 +41,9 @@ public class LovDbCheck implements Pingable {
 
     try {
       session = sessionFactory.openSession();
-      for (String tableName : lovTableCounts.keySet()) {
-        boolean tableCountOk = checkTableCount(session, tableName, lovTableCounts.get(tableName));
+      for (Map.Entry<String, Integer> entry : lovTableCounts.entrySet()) {
+        String tableName = entry.getKey();
+        boolean tableCountOk = checkTableCount(session, tableName, entry.getValue());
         ok = ok && tableCountOk;
       }
     } finally {
