@@ -25,7 +25,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  * @author CWDS API Team
  *
  */
-public class ValidatingVictimBirthTest extends FunctionalTest {
+public class VictimBirthTest extends FunctionalTest {
   String referralPath;
   private HttpRequestHandler functionalTestingBuilder;
 
