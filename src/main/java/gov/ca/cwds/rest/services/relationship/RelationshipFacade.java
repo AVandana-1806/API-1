@@ -174,13 +174,18 @@ public class RelationshipFacade {
         participantEntity2 = participantDao
             .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
       }
-      Relationship newRelationship = new Relationship(null, participantEntity1.getId(),
-          participantEntity2.getId()
-          , clientRelationship.getClientRelationshipType(), createdAt, createdAt,
-          "Y".equals(clientRelationship.getAbsentParentCode()),
-          "Y".equals(clientRelationship.getSameHomeCode()),
-          clientRelationship.getId(), clientRelationship.getStartDate(),
-          clientRelationship.getEndDate());
+      Relationship newRelationship = new Relationship();
+      newRelationship.setClientId(participantEntity1.getId());
+      newRelationship.setRelativeId(participantEntity2.getId());
+      newRelationship.setRelationshipType(clientRelationship.getClientRelationshipType());
+      newRelationship.setCreatedAt(createdAt);
+      newRelationship.setUpdatedAt(createdAt);
+      newRelationship.setAbsentParentIndicator("Y".equals(clientRelationship.getAbsentParentCode()));
+      newRelationship.setSameHomeStatus("Y".equals(clientRelationship.getSameHomeCode()));
+      newRelationship.setLegacyId(clientRelationship.getId());
+      newRelationship.setStartDate(clientRelationship.getStartDate());
+      newRelationship.setEndDate(clientRelationship.getEndDate());
+
       newRelationship = nsRelationshipDao.create(newRelationship);
       result.add(mapper.map(newRelationship));
     }

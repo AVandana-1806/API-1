@@ -31,16 +31,18 @@ public class ContactIntakeApiServiceTest {
     contactDao = mock(ContactDao.class);
     participantDao = mock(ParticipantDao.class);
     service = new ContactIntakeApiService(contactDao, participantDao);
-    entity = new ContactEntity(
-            "1",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            "purpose",
-            "commMethod",
-            "C",
-            1,
-            "Location",
-            "Note");
+
+    entity = new ContactEntity();
+    entity.setScreeningId("1");
+    entity.setStartedAt(LocalDateTime.now());
+    entity.setEndedAt(LocalDateTime.now());
+    entity.setPurpose("purpose");
+    entity.setCommunicationMethod("commMethod");
+    entity.setStatus("C");
+    entity.setService(1);
+    entity.setLocation("Location");
+    entity.setNote("Note");
+
     contactRequest = new ContactIntake(
             "1",
             LocalDateTime.now(),

@@ -33,8 +33,17 @@ public class ContactDaoTest extends Doofenshmirtz<ContactEntity> {
 
   @Test
   public void testCreate() {
-    ContactEntity entity = new ContactEntity("1", LocalDateTime.now(), LocalDateTime.now(),
-        "purpose", "commMethod", "C", 1, "Location", "Note");
+    ContactEntity entity = new ContactEntity();
+    entity.setScreeningId("1");
+    entity.setStartedAt(LocalDateTime.now());
+    entity.setEndedAt(LocalDateTime.now());
+    entity.setPurpose("purpose");
+    entity.setCommunicationMethod("commMethod");
+    entity.setStatus("C");
+    entity.setService(1);
+    entity.setLocation("Location");
+    entity.setNote("Note");
+
     ContactEntity created = contactDao.create(entity);
     assertThat(created, is(entity));
   }
