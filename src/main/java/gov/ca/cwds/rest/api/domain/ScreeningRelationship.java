@@ -61,20 +61,6 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
   public ScreeningRelationship() {
   }
 
-  public ScreeningRelationship(String id, String personId, String relationId,
-      int relationshipType, boolean absentParentIndicator, String sameHomeStatus,
-      Date startDate, Date endDate, String legacyId) {
-    this.id = id;
-    this.clientId = personId;
-    this.relativeId = relationId;
-    this.relationshipType = relationshipType;
-    this.absentParentIndicator = absentParentIndicator;
-    this.sameHomeStatus = sameHomeStatus;
-    this.legacyId = legacyId;
-    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
-    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
   public String getId() {
     return id;
   }

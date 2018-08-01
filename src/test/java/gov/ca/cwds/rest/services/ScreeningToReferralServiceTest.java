@@ -753,9 +753,18 @@ public class ScreeningToReferralServiceTest {
     Date endDate= new Date();
     String legacyId = "456ABC123D";
 
+    Date now = new Date();
 
-    ScreeningRelationship relationship = new ScreeningRelationship(id, personId.toString(),
-        relationId.toString(), relationshipType, true, "N", new Date(), new Date(), "1234567890");
+    ScreeningRelationship relationship = new ScreeningRelationship();
+    relationship.setId(id);
+    relationship.setClientId(personId.toString());
+    relationship.setRelativeId(relationId.toString());
+    relationship.setRelationshipType(relationshipType);
+    relationship.setAbsentParentIndicator(true);
+    relationship.setSameHomeStatus("N");
+    relationship.setStartDate(startDate);
+    relationship.setEndDate(endDate);
+    relationship.setLegacyId("1234567890");
     Set<ScreeningRelationship> relationships = new HashSet<>();
     relationships.add(relationship);
 
@@ -794,8 +803,16 @@ public class ScreeningToReferralServiceTest {
     String legacyId = "456ABC123D";
 
     Set<ScreeningRelationship> relationships = new HashSet<>();
-    ScreeningRelationship relationship =
-        new ScreeningRelationship(id, personId, relationId, relationshipType, true, "N", startDate, endDate, legacyId);
+    ScreeningRelationship relationship = new ScreeningRelationship();
+    relationship.setId(id);
+    relationship.setClientId(personId);
+    relationship.setRelativeId(relationId);
+    relationship.setRelationshipType(relationshipType);
+    relationship.setAbsentParentIndicator(true);
+    relationship.setSameHomeStatus("N");
+    relationship.setStartDate(startDate);
+    relationship.setEndDate(endDate);
+    relationship.setLegacyId(legacyId);
     relationships.add(relationship);
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setRelationships(relationships).createScreeningToReferral();
