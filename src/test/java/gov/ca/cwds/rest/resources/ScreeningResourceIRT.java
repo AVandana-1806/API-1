@@ -23,6 +23,7 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
 
   public static final String SCREENING_PATH = "screenings";
   public static final String RELATIONSHIPS = "relationships";
+  public static final String RELATIONSHIPS_WITH_CANDIDATES = "relationships_with_candidates";
   public static final String RELATIONSHIP_PATH = "screening_relationships";
 
   public static final String FIXTURE_GET_LIST_RELATIONSHIPS_RESPONSE_ONLY_POSTGRES_PATH = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-only-postgres.json";
@@ -62,6 +63,8 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public static final String SCREENING_ID_7 = "1107";
 
   public static final String BAD_SCREENING_ID = "3393";
+
+  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_MOCK = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-mock.json";
 
   @Test
   public void getRelationshipsByScreeningId_twoRelationsExist() throws IOException, JSONException {
@@ -185,5 +188,16 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public void getRelationshipsByScreeningId_badRequest() throws IOException {
     Response response = doGetCall(SCREENING_PATH + "/" + BAD_SCREENING_ID + "/" + RELATIONSHIPS);
     assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_mockTest()
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + 1 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+    String expectedResponse =
+        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_MOCK);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 }
