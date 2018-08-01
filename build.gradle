@@ -415,12 +415,7 @@ task pushIntegrationTestDockerVersionTagged(type:Exec, dependsOn: tagIntegration
 task pushDockerVersionTagged(type:Exec, dependsOn: tagDockerImage) {
   commandLine 'docker',  'push',  "cwds/api:$dockerTag"
 }
-task createFunctionalTests(dependsOn: [tagFunctionalTestDockerImage , createFunctionalTestDockerImage]){
-    doLast {
-        println 'Published Functional Tests'
-    }
 
-}
 task createGitTag(type:Exec) {
     commandLine "git", "tag", "$dockerTag"
 }
