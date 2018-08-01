@@ -16,8 +16,6 @@ dependencies {
     functionalTestRuntime configurations.testRuntime
 }
 
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-
 task functionalQATest(type: Test) {
     description = 'Runs the functional tests.'
     maxHeapSize = '1024m'
@@ -48,6 +46,7 @@ task smokeTest(type: Test) {
     description = 'Runs the functional tests.'
 
     maxHeapSize = '1024m'
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
 
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath = sourceSets.functionalTest.runtimeClasspath
