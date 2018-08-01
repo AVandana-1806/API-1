@@ -173,7 +173,7 @@ public class HOIScreening extends ApiObjectIdentity implements ApiTypedIdentifie
    * @see java.lang.Object#hashCode()
    */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this, false);
   }
 
@@ -183,7 +183,7 @@ public class HOIScreening extends ApiObjectIdentity implements ApiTypedIdentifie
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  public final boolean equals(Object obj) {
+  public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
 
