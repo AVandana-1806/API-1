@@ -72,6 +72,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
 
+  /**
+   * Construct from session factories directly.
+   * 
+   * @param sessionFactoryName datasource name
+   * @param normSessionFactory regular session factory
+   * @param xaSessionFactory XA session factory
+   */
   public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {
     super();
@@ -113,6 +120,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     return isXaTransaction() ? xaSessionFactory : normSessionFactory;
   }
 
+  /**
+   * Initialize once.
+   */
   protected synchronized void init() {
     if (normSessionFactory == null || xaSessionFactory == null) {
       this.normSessionFactory = hibernateBundle.getSessionFactory();
@@ -202,8 +212,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     CandaceSessionImpl session = local.get();
     if (session == null) {
       LOGGER.warn(
-          "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource {}",
-          sessionFactoryName);
+          "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource: {}, is XA: {}",
+          sessionFactoryName, isXaTransaction());
       session = new CandaceSessionImpl(pick().openSession());
       local.set(session);
     }
@@ -230,8 +240,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     Session session = local.get();
     if (session == null) {
       LOGGER.warn(
-          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource {}",
-          sessionFactoryName);
+          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource: {}, is XA: {}",
+          sessionFactoryName, isXaTransaction());
       session = openSession();
     }
 
