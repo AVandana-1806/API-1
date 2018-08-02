@@ -26,6 +26,7 @@
         "absent_parent_code": "N",
         "same_home_code": "Y",
         "indexed_person_relationship": "211",
+        "related_person_relationship": "285",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -42,6 +43,7 @@
         "absent_parent_code": "N",
         "same_home_code": "Y",
         "indexed_person_relationship": "211",
+        "related_person_relationship": "285",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -58,7 +60,8 @@
         "related_person_age_unit": "Y",
         "absent_parent_code": "N",
         "same_home_code": "Y",
-        "indexed_person_relationship": "275",
+        "indexed_person_relationship": "211",
+        "related_person_relationship": "285",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -76,6 +79,7 @@
         "absent_parent_code": "N",
         "same_home_code": "Y",
         "indexed_person_relationship": "211",
+        "related_person_relationship": "285",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       },
@@ -93,6 +97,7 @@
         "absent_parent_code": "N",
         "same_home_code": "Y",
         "indexed_person_relationship": "211",
+        "related_person_relationship": "285",
         "relationship_start_date": "2007-02-02",
         "relationship_end_date": "2008-02-02"
       }
