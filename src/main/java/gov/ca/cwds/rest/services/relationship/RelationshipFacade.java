@@ -156,8 +156,9 @@ public class RelationshipFacade {
           .findFirst();
       if (primaryParticipant.isPresent()) {
         if (mappedRelationships.get(primaryParticipant.get()) == null) {
-          mappedRelationships.get(primaryParticipant.get()).add(relationship);
+          mappedRelationships.put(primaryParticipant.get(), new ArrayList<>());
         }
+        mappedRelationships.get(primaryParticipant.get()).add(relationship);
       }
     });
     return mappedRelationships;
