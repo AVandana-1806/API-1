@@ -3,12 +3,8 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
-import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import java.io.IOException;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,11 +18,16 @@ import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -132,7 +133,8 @@ public class ScreeningResource {
       response = ScreeningRelationship.class)
   public Response getRelationshipsByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
       value = "The id of the Screening to find") String screeningId) {
-    return new ResponseConverter().withDataResponse(relationshipFacade.getRelationshipsByScreeningId(screeningId));
+    return new ResponseConverter()
+        .withDataResponse(relationshipFacade.getRelationshipsByScreeningId(screeningId));
   }
 
   /**
@@ -140,6 +142,7 @@ public class ScreeningResource {
    *
    * @param screeningId The id
    * @return The {@link Response}
+   * @throws IOException on disconnect
    */
   @UnitOfWork(DATASOURCE_NS)
   @GET
@@ -151,9 +154,13 @@ public class ScreeningResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
   @ApiOperation(value = "Find Relationships by screening id with candidates",
       response = ScreeningRelationshipsWithCandidates.class)
-  public Response getRelationshipsWithCandidatesByScreeningId(@PathParam("screeningId") @ApiParam(required = true,
-      value = "The id of the Screening to find") String screeningId) throws IOException {
-    String fixture = Resources.toString(Resources.getResource("gov.ca.cwds.rest.resources/relationships_with_candidates_mock.json"), Charsets.UTF_8).trim();
+  public Response getRelationshipsWithCandidatesByScreeningId(
+      @PathParam("screeningId") @ApiParam(required = true,
+          value = "The id of the Screening to find") String screeningId)
+      throws IOException {
+    String fixture = Resources.toString(
+        Resources.getResource("gov.ca.cwds.rest.resources/relationships_with_candidates_mock.json"),
+        Charsets.UTF_8).trim();
     return Response.ok(fixture).build();
   }
 

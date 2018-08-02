@@ -347,7 +347,8 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void evict(Object object) {
-    LOGGER.debug("CandaceSessionImpl.evict: object hash: {}", object.hashCode());
+    LOGGER.debug("CandaceSessionImpl.evict: object hash: {}",
+        object != null ? object.hashCode() : 0);
     logStack("evict");
     session.evict(object);
   }
