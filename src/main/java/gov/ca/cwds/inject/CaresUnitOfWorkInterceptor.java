@@ -108,7 +108,7 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
         throw new IllegalStateException("Unknown datasource! " + annotation.value());
     }
 
-    LOGGER.debug("session factory: {}", name);
+    LOGGER.debug("{}", name);
 
     // Not XA, so clear XA flags.
     BaseAuthorizationDao.clearXaMode();
@@ -119,12 +119,12 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
     boolean firstUnitOfWork = false;
 
     if (requestAspects.get().containsKey(name)) {
-      LOGGER.info("RE-USE @UnitOfWork aspect: class: {}, method: {}", m.getDeclaringClass(),
-          m.getName());
+      LOGGER.info("RE-USE @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+          m.getDeclaringClass(), m.getName(), name);
       aspect = requestAspects.get().get(name);
     } else {
-      LOGGER.info("****** NEW @UnitOfWork aspect: class: {}, method: {} ******",
-          m.getDeclaringClass(), m.getName());
+      LOGGER.info("NEW @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+          m.getDeclaringClass(), m.getName(), name);
       firstUnitOfWork = true;
       aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
           .newAspect(ImmutableMap.of(name, currentSessionFactory));
