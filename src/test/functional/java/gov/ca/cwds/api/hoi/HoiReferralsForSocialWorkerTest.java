@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -49,7 +48,6 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testSuccessToAccessNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -64,7 +62,6 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void failedToAccessSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -79,7 +76,6 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void failedToAccessSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
