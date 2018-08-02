@@ -53,7 +53,7 @@ public class RelationshipFacade {
     this.cmsClientDao = cmsClientDao;
   }
 
-  public List<ScreeningRelationshipsWithCandidates> getRelationshipsWithCandidatesByScreeningId(
+  public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(
       String screeningId) {
     if (StringUtils.isEmpty(screeningId)) {
       return Collections.emptyList();
@@ -70,13 +70,13 @@ public class RelationshipFacade {
     List<ParticipantEntity> allParticipants = participantDao.findByIds(participantIds);
     Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant = getRelationshipsMappedByPrimaryParticipant(
         screeningRelationships, allParticipants);
-    List<ScreeningRelationshipsWithCandidates> relationshipsWithCandidates = buildRelationshipsWitCandidates(
+    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = buildRelationshipsWitCandidates(
         relationshipsByPrimaryParticipant, allParticipants);
 
     return relationshipsWithCandidates;
   }
 
-  private List<ScreeningRelationshipsWithCandidates> buildRelationshipsWitCandidates(
+  private List<gov.ca.cwds.rest.api.Response> buildRelationshipsWitCandidates(
       Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant,
       List<ParticipantEntity> allParticipants) {
     if (MapUtils.isEmpty(relationshipsByPrimaryParticipant) || CollectionUtils
@@ -84,7 +84,7 @@ public class RelationshipFacade {
       return Collections.emptyList();
     }
 
-    List<ScreeningRelationshipsWithCandidates> relationshipsWithCandidates = new ArrayList<>();
+    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
     relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
       if (CollectionUtils.isNotEmpty(relationships)) {
         relationshipsWithCandidates
@@ -119,25 +119,22 @@ public class RelationshipFacade {
     ParticipantEntity relatedParticipant = allParticipants.stream()
         .filter(e -> relationship.getRelativeId().equals(e.getId())).findFirst().orElse(null);
 
-    // TODO: implement setters
     RelationshipToEntityBuilder builder = new RelationshipToEntityBuilder();
-    builder.setTableName("");
-    builder.setId("");
-    builder.setRelatedFirstName("");
-    builder.setRelatedMiddleName("");
-    builder.setRelatedLastName("");
-    builder.setRelatedNameSuffix("");
-    builder.setRelatedGenderCode("");
+    builder.setId(relatedParticipant.getId());
+    builder.setRelatedFirstName(relatedParticipant.getFirstName());
+    builder.setRelatedMiddleName(relatedParticipant.getMiddleName());
+    builder.setRelatedLastName(relatedParticipant.getLastName());
+    builder.setRelatedNameSuffix(relatedParticipant.getNameSuffix());
+    builder.setRelatedGenderCode(relatedParticipant.getGender());
     builder.setRelationship("");
     builder.setRelationshipToPerson("");
     builder.setCmsRecordDescriptor(new CmsRecordDescriptor());
-    builder.setRelationshipContext("");
-    builder.setAbsentParentCode("");
-    builder.setSameHomeCode("");
-    builder.setRelatedDateOfBirth("");
-    builder.setRelatedDateOfDeath("");
-    builder.setRelationshipStartDate("");
-    builder.setRelationshipEndDate("");
+    builder.setAbsentParentCode(null);
+    builder.setSameHomeCode(relationship.getSameHomeStatus());
+    builder.setRelatedDateOfBirth(null);
+    builder.setRelatedDateOfDeath(null);
+    builder.setRelationshipStartDate(null);
+    builder.setRelationshipEndDate(null);
     builder.setRelatedPersonSensitive(false);
     builder.setRelatedPersonSealed(false);
 
