@@ -157,65 +157,6 @@ public class ScreeningEntity implements PersistentObject {
   }
 
   /**
-   * Constructor
-   *
-   * @param reference The reference
-   */
-  public ScreeningEntity(String reference) {
-    this.reference = reference;
-  }
-
-  /**
-   * Constructor
-   *
-   * @param id the id
-   * @param reference The reference
-   * @param startedAt The started at date
-   * @param endedAt The endedAt date
-   * @param incidentCounty The incident county
-   * @param incidentDate The incident date
-   * @param locationType The location type
-   * @param communicationMethod The communication method
-   * @param name The name of the screening
-   * @param responseTime The response time
-   * @param screeningDecision The screening decision
-   * @param screeningDecisionDetail The screening decision detail
-   * @param narrative The narrative
-   * @param contactAddress The contact address
-   * @param participants The list of participants
-   * @param assigneeStaffId The staffId of assignee
-   * @param reportType report type
-   * @param screeningStatus screening status
-   * @param screeningContactReference The case or referral that this screening contact references
-   */
-  public ScreeningEntity(String id, String reference, Date startedAt, Date endedAt,
-      String incidentCounty, LocalDate incidentDate, String locationType,
-      String communicationMethod, String name, String responseTime, String screeningDecision,
-      String screeningDecisionDetail, String narrative, Address contactAddress,
-      String assigneeStaffId, Set<ParticipantEntity> participants, String reportType,
-      String screeningStatus, String screeningContactReference) {
-    super();
-    this.id = id;
-    this.reference = reference;
-    this.startedAt = freshDate(startedAt);
-    this.endedAt = freshDate(endedAt);
-    this.incidentCounty = incidentCounty;
-    this.incidentDate = incidentDate;
-    this.locationType = locationType;
-    this.communicationMethod = communicationMethod;
-    this.name = name;
-    this.screeningDecision = screeningDecision;
-    this.screeningDecisionDetail = screeningDecisionDetail;
-    this.narrative = narrative;
-    this.safetyAlerts = new String[1];
-    this.assigneeStaffId = assigneeStaffId;
-    this.participants = participants;
-    this.reportType = reportType;
-    this.screeningStatus = screeningStatus;
-    this.screeningContactReference = screeningContactReference;
-  }
-
-  /**
    * {@inheritDoc}
    *
    * @see gov.ca.cwds.data.persistence.PersistentObject#getPrimaryKey()

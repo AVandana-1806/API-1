@@ -66,7 +66,6 @@ public class ScreeningSummaryService
    * @return - Screening Summary object.
    */
   private ScreeningSummary findScreeningSummaryByReferralId(String referralId) {
-    ScreeningSummary screeningSummary = null;
 
     final org.hibernate.Session session = screeningDao.grabSession();
     ManagedSessionContext.bind(session);
@@ -74,11 +73,10 @@ public class ScreeningSummaryService
     final ScreeningEntity[] screeningEntities = screeningDao.findScreeningsByReferralId(referralId);
     final ScreeningEntity screeningEntity =
         screeningEntities.length > 0 ? screeningEntities[0] : null;
-    screeningSummary = screeningEntity != null
+
+    return screeningEntity != null
         ? new ScreeningSummary(screeningEntity, this.populateSimpleAllegations(screeningEntity))
         : new ScreeningSummary();
-
-    return screeningSummary;
   }
 
   /**

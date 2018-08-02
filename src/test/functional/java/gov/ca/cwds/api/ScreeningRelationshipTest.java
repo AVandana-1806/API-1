@@ -25,8 +25,18 @@ public class ScreeningRelationshipTest extends FunctionalTest {
   @Before
   public void setup() {
     resourcePath = getResourceUrlFor("/" + Api.SCREENING_RELATIONSHIPS);
-    relationship = new ScreeningRelationship("id", "Client1", "Client2", RELATIONSHIP_TYPE, true,
-        SameHomeStatus.U.getCode(), new Date(), new Date(), "1234567890");
+
+    Date now = new Date();
+    relationship = new ScreeningRelationship();
+    relationship.setId("id");
+    relationship.setClientId("Client1");
+    relationship.setRelativeId("Client2");
+    relationship.setRelationshipType(RELATIONSHIP_TYPE);
+    relationship.setAbsentParentIndicator(true);
+    relationship.setSameHomeStatus(SameHomeStatus.U.getCode());
+    relationship.setStartDate(now);
+    relationship.setEndDate(now);
+    relationship.setLegacyId("1234567890");
   }
 
   /**

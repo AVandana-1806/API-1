@@ -4,15 +4,10 @@ import static gov.ca.cwds.rest.api.domain.DomainChef.uncookISO8601Timestamp;
 
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import gov.ca.cwds.data.persistence.ns.Address;
-import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
-import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 
 @SuppressWarnings("javadoc")
 public class ScreeningEntityBuilder {
@@ -25,13 +20,11 @@ public class ScreeningEntityBuilder {
   private String locationType = "1111";
   private String communicationMethod = "2222";
   private String name = "screening name";
-  private String responseTime = "2 day";
   private String screeningDecision = "screening decision";
   private String screeningDecisionDetail = null;
   private Date startedAt;
   private Date endedAt;
   private String narrative = "screening narrative";
-  private Address contactAddress;
   private String assigneeStaffId = DEFAULT_ASSIGNEE_STAFF_ID;
   private Set<ParticipantEntity> participants = new HashSet<>();
   private String reportType = "ssb";
@@ -39,10 +32,25 @@ public class ScreeningEntityBuilder {
   private String screeningContactReference = "1234-5678-9ABC-DEFGHIJ";
 
   public ScreeningEntity build() {
-    return new ScreeningEntity(id, reference, startedAt, endedAt, incidentCounty, incidentDate,
-        locationType, communicationMethod, name, responseTime, screeningDecision,
-        screeningDecisionDetail, narrative, contactAddress, assigneeStaffId, participants,
-        reportType, screeningStatus, screeningContactReference);
+    ScreeningEntity screeningEntity = new ScreeningEntity();
+    screeningEntity.setId(id);
+    screeningEntity.setReference(reference);
+    screeningEntity.setStartedAt(startedAt);
+    screeningEntity.setEndedAt(endedAt);
+    screeningEntity.setIncidentCounty(incidentCounty);
+    screeningEntity.setIncidentDate(incidentDate);
+    screeningEntity.setLocationType(locationType);
+    screeningEntity.setCommunicationMethod(communicationMethod);
+    screeningEntity.setName(name);
+    screeningEntity.setScreeningDecision(screeningDecision);
+    screeningEntity.setScreeningDecisionDetail(screeningDecisionDetail);
+    screeningEntity.setNarrative(narrative);
+    screeningEntity.setAssigneeStaffId(assigneeStaffId);
+    screeningEntity.setParticipants(participants);
+    screeningEntity.setReportType(reportType);
+    screeningEntity.setScreeningStatus(screeningStatus);
+    screeningEntity.setScreeningContactReference(screeningContactReference);
+    return screeningEntity;
   }
 
   public ScreeningEntityBuilder setId(String id) {
