@@ -37,43 +37,27 @@ public class InvestigationService implements TypedCrudsService<String, Investiga
 
   private static final String STUB_DATA_KEY = "999999";
 
+  @Inject
   private InvestigationDao investigationDao;
+  @Inject
   private StaffPersonDao staffPersonDao;
+  @Inject
   private AddressDao addressDao;
-
+  @Inject
   private LongTextService longTextService;
+  @Inject
   private PeopleService peopleService;
+  @Inject
   private AllegationService allegationService;
+  @Inject
   private ContactService contactService;
+  @Inject
   private ScreeningSummaryService screeningSummaryService;
 
   private Investigation validInvestigation = new InvestigationEntityBuilder().build();
 
-  /**
-   * 
-   * @param investigationDao - investigationDao
-   * @param staffPersonDao - staffPersonDao
-   * @param addressDao - addressDao
-   * @param longTextService - longText Service
-   * @param peopleService - People Service
-   * @param allegationService - Allegation Service
-   * @param contactService - contact service
-   * @param screeningSummaryService - Screening Summary Service
-   */
-  @Inject
-  public InvestigationService(InvestigationDao investigationDao, StaffPersonDao staffPersonDao,
-      AddressDao addressDao, LongTextService longTextService, PeopleService peopleService,
-      AllegationService allegationService, ContactService contactService,
-      ScreeningSummaryService screeningSummaryService) {
-    super();
-    this.investigationDao = investigationDao;
-    this.addressDao = addressDao;
-    this.staffPersonDao = staffPersonDao;
-    this.longTextService = longTextService;
-    this.peopleService = peopleService;
-    this.allegationService = allegationService;
-    this.contactService = contactService;
-    this.screeningSummaryService = screeningSummaryService;
+  public InvestigationService() {
+    //comment is required by sonar
   }
 
   private synchronized Investigation returnInvestigationStub() {
