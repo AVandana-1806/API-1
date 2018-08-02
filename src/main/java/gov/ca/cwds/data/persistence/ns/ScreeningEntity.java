@@ -43,10 +43,10 @@ import gov.ca.cwds.data.persistence.PersistentObject;
     query = "FROM ScreeningEntity WHERE referralId = :referralId")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ScreeningEntity.findScreeningsByClientIds",
     query = "SELECT s FROM ScreeningEntity s JOIN s.participants p WHERE p.legacyId IN :clientIds")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "screenings")
 public class ScreeningEntity implements PersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "id")

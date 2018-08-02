@@ -25,10 +25,10 @@ import gov.ca.cwds.data.persistence.ns.papertrail.HasPaperTrail;
  * @author Intake Team 4
  */
 @NamedQuery(name = FIND_BY_PARTICIPANT_ID, query = FIND_BY_PARTICIPANT_ID_QUERY)
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "phone_numbers")
 public class PhoneNumbers implements PersistentObject, HasPaperTrail, Identifiable<String> {
+  private static final long serialVersionUID = 1L;
 
   public static final String FIND_BY_PARTICIPANT_ID =
       "gov.ca.cwds.data.persistence.ns.PhoneNumbers.findByParticipantId";

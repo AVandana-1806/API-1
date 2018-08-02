@@ -24,10 +24,10 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  */
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.Allegation.findByStaffId",
     query = "FROM StaffPersonCaseLoad WHERE fkStaffPerson = :staffId")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "STFCSLDT")
 public class StaffPersonCaseLoad extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "FKCASE_LDT", length = CMS_ID_LEN)
