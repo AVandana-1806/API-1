@@ -88,7 +88,7 @@ public class Relationship implements PersistentObject {
   private String legacyId;
 
   public Relationship() {
-    //required by sonar
+    //comment is required by sonar
   }
 
   @Override
