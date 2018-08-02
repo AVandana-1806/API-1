@@ -183,4 +183,35 @@ public class InvestigationService implements TypedCrudsService<String, Investiga
 
   }
 
+  void setInvestigationDao(InvestigationDao investigationDao) {
+    this.investigationDao = investigationDao;
+  }
+
+  void setStaffPersonDao(StaffPersonDao staffPersonDao) {
+    this.staffPersonDao = staffPersonDao;
+  }
+
+  void setAddressDao(AddressDao addressDao) {
+    this.addressDao = addressDao;
+  }
+
+  void setLongTextService(LongTextService longTextService) {
+    this.longTextService = longTextService;
+  }
+
+  void setPeopleService(PeopleService peopleService) {
+    this.peopleService = peopleService;
+  }
+
+  void setAllegationService(AllegationService allegationService) {
+    this.allegationService = allegationService;
+  }
+
+  void setContactService(ContactService contactService) {
+    this.contactService = contactService;
+  }
+
+  void setScreeningSummaryService(ScreeningSummaryService screeningSummaryService) {
+    this.screeningSummaryService = screeningSummaryService;
+  }
 }

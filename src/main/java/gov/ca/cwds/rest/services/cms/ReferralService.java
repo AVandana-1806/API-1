@@ -70,7 +70,7 @@ public class ReferralService implements
   @Inject
   private ReferralDao referralDao;
   @Inject
-  private NonLACountyTriggers nonLaTriggers;
+  private NonLACountyTriggers nonLaCountyTriggers;
   @Inject
   private LACountyTrigger laCountyTrigger;
   @Inject
@@ -548,8 +548,59 @@ public class ReferralService implements
     return riReferral;
   }
 
-  public NonLACountyTriggers getNonLaTriggers() {
-    return nonLaTriggers;
+  public NonLACountyTriggers getNonLaCountyTriggers() {
+    return nonLaCountyTriggers;
   }
 
+  public void setReferralDao(ReferralDao referralDao) {
+    this.referralDao = referralDao;
+  }
+
+  public void setNonLaCountyTriggers(NonLACountyTriggers nonLaCountyTriggers) {
+    this.nonLaCountyTriggers = nonLaCountyTriggers;
+  }
+
+  public void setLaCountyTrigger(LACountyTrigger laCountyTrigger) {
+    this.laCountyTrigger = laCountyTrigger;
+  }
+
+  public void setTriggerTablesDao(TriggerTablesDao triggerTablesDao) {
+    this.triggerTablesDao = triggerTablesDao;
+  }
+
+  public void setStaffpersonDao(StaffPersonDao staffpersonDao) {
+    this.staffpersonDao = staffpersonDao;
+  }
+
+  public void setAssignmentService(AssignmentService assignmentService) {
+    this.assignmentService = assignmentService;
+  }
+
+  public void setCmsDocumentService(CmsDocumentService cmsDocumentService) {
+    this.cmsDocumentService = cmsDocumentService;
+  }
+
+  public void setDrmsDocumentService(DrmsDocumentService drmsDocumentService) {
+    this.drmsDocumentService = drmsDocumentService;
+  }
+
+  public void setDrmsDocumentTemplateService(DrmsDocumentTemplateService drmsDocumentTemplateService) {
+    this.drmsDocumentTemplateService = drmsDocumentTemplateService;
+  }
+
+  public void setAddressService(AddressService addressService) {
+    this.addressService = addressService;
+  }
+
+  public void setLongTextService(LongTextService longTextService) {
+    this.longTextService = longTextService;
+  }
+
+  public void setValidator(Validator validator) {
+    this.validator = validator;
+  }
+
+  public void setRiReferral(RIReferral riReferral) {
+    this.riReferral = riReferral;
+  }
 }
