@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings("findbugs:EQ_DOESNT_OVERRIDE_EQUALS")
 public class DrmsDocument extends ReportingDomain implements Request, Response, Serializable {
 
   private static final long serialVersionUID = 1L;
