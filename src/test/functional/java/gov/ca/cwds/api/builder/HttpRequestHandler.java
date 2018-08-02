@@ -8,14 +8,14 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 /**
- * Functional Test Builder to used handle request(POST, PUT, DELETE, GET) for test, make it more
+ * Http Request Handler to used handle request(POST, PUT, DELETE, GET) for test, make it more
  * cleaner and easier to build the test classes. <a href=
  * "https://github.com/rest-assured/rest-assured/wiki/usage#path-parameters">Rest-Assured-Wiki</a>
  * 
  * @author CWDS API Team
  *
  */
-public class FunctionalTestingBuilder {
+public class HttpRequestHandler {
 
   /**
    * Token

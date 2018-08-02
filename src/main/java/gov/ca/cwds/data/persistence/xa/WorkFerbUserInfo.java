@@ -83,5 +83,4 @@ public class WorkFerbUserInfo implements Work {
       }
     }
   }
-
 }
