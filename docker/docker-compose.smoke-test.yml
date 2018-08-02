@@ -3,6 +3,7 @@ services:
   ferb-smoke-test:
     image: ${FERB_TEST_IMAGE_VERSION:-cwds/intake-api-smoketest:latest}
     environment:
+     - TEST_FILE_PATH=/ferb/conf/testConfig.yml
      - BASE_URL=${BASE_URL}
      - CALL_BACK_URL=${CALL_BACK_URL}
      - AUTH_BASE_URL=${AUTH_BASE_URL}

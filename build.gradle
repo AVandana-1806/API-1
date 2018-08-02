@@ -394,11 +394,12 @@ task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
   commandLine 'docker',  'push',  'cwds/api:latest'
 }
 
-task createFunctionalTests(type:Exec, dependsOn: tagFunctionalTestDockerImage ){
+task createFunctionalTests( dependsOn: tagFunctionalTestDockerImage){
     doLast {
-        println 'created functional test'
+        println 'created functional test container'
     }
 }
+
 
 task pushSmokeTestVersionTagged(type:Exec, dependsOn: tagSmokeTestDockerImage) {
     commandLine 'docker',  'push',  "cwds/intake-api-smoketest:$dockerTag"
@@ -432,9 +433,7 @@ task pushGitTag(type:Exec, dependsOn: createGitTag) {
     }
 }
 task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
-                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest,
-                               pushFunctionalTestDockerVersionTagged,
-                               pushSmokeTestVersionTagged] ) {
+                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest] ) {
     doLast {
         println 'Published'
     }
