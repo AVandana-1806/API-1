@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.Dao;
 import gov.ca.cwds.data.cms.ReferralDao;
 import gov.ca.cwds.data.cms.StaffPersonDao;
 import gov.ca.cwds.data.persistence.cms.Assignment;
@@ -68,63 +67,40 @@ public class ReferralService implements
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ReferralService.class);
 
+  @Inject
   private ReferralDao referralDao;
+  @Inject
   private NonLACountyTriggers nonLaTriggers;
+  @Inject
   private LACountyTrigger laCountyTrigger;
+  @Inject
   private TriggerTablesDao triggerTablesDao;
+  @Inject
   private StaffPersonDao staffpersonDao;
-
-  private Validator validator;
+  @Inject
   private AssignmentService assignmentService;
+  @Inject
   private CmsDocumentService cmsDocumentService;
+  @Inject
   private DrmsDocumentService drmsDocumentService;
+  @Inject
   private DrmsDocumentTemplateService drmsDocumentTemplateService;
+  @Inject
   private AddressService addressService;
+  @Inject
   private LongTextService longTextService;
+  @Inject
+  private Validator validator;
+  @Inject
   private RIReferral riReferral;
 
   /**
    * Constructor
    *
-   * @param referralDao The {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.Referral}
-   *        objects.
-   * @param nonLaTriggers The {@link Dao} handling
-   *        {@link gov.ca.cwds.rest.business.rules.NonLACountyTriggers} objects
-   * @param laCountyTrigger The {@link Dao} handling
-   *        {@link gov.ca.cwds.rest.business.rules.LACountyTrigger} objects
-   * @param triggerTablesDao The {@link Dao} handling
-   *        {@link gov.ca.cwds.data.rules.TriggerTablesDao} objects
-   * @param staffpersonDao The {@link Dao} handling
-   *        {@link gov.ca.cwds.data.persistence.cms.StaffPerson} objects
-   * @param assignmentService the Assignment Service
-   * @param validator the validator used for entity validation
-   * @param cmsDocumentService the service for storing Cms Documents
-   * @param drmsDocumentService the service for generating DRMS Documents
-   * @param drmsDocumentTemplateService the service for DRMS Document Templates
-   * @param addressService the service for creating addresses
-   * @param longTextService the longText Service
-   * @param riReferral FK to Referral
    */
   @Inject
-  public ReferralService(final ReferralDao referralDao, NonLACountyTriggers nonLaTriggers,
-      LACountyTrigger laCountyTrigger, TriggerTablesDao triggerTablesDao,
-      StaffPersonDao staffpersonDao, AssignmentService assignmentService, Validator validator,
-      CmsDocumentService cmsDocumentService, DrmsDocumentService drmsDocumentService,
-      DrmsDocumentTemplateService drmsDocumentTemplateService, AddressService addressService,
-      LongTextService longTextService, RIReferral riReferral) {
-    this.referralDao = referralDao;
-    this.nonLaTriggers = nonLaTriggers;
-    this.laCountyTrigger = laCountyTrigger;
-    this.triggerTablesDao = triggerTablesDao;
-    this.staffpersonDao = staffpersonDao;
-    this.assignmentService = assignmentService;
-    this.validator = validator;
-    this.cmsDocumentService = cmsDocumentService;
-    this.drmsDocumentService = drmsDocumentService;
-    this.drmsDocumentTemplateService = drmsDocumentTemplateService;
-    this.addressService = addressService;
-    this.longTextService = longTextService;
-    this.riReferral = riReferral;
+  public ReferralService() {
+    //comment is required by sonar
   }
 
   /**
