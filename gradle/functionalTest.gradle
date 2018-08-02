@@ -42,6 +42,7 @@ task functionalQATest(type: Test) {
     }
 
 }
+
 task smokeTest(type: Test) {
     description = 'Runs the functional tests.'
 
@@ -66,9 +67,7 @@ task smokeTest(type: Test) {
         html.destination = "$buildDir/reports/smoke-test"
         junitXml.destination = "$buildDir/smoke-test-results"
     }
-
 }
-
 
 check.dependsOn functionalQATest
 
