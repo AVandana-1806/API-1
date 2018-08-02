@@ -1,8 +1,6 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.rest.api.Response;
@@ -13,7 +11,7 @@ import gov.ca.cwds.rest.services.ServiceException;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S3437", "squid:S2160"})
+@SuppressWarnings({"squid:S3437", "squid:S2160", "findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
 public class PostedAssignment extends Assignment {
 
   private static final long serialVersionUID = 1L;
@@ -41,23 +39,4 @@ public class PostedAssignment extends Assignment {
     return id;
   }
 
-  /**
-   * {@inheritDoc}
-   *
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, false);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, false);
-  }
 }

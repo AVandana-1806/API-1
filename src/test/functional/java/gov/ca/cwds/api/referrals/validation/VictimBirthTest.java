@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.referrals.validation;
+package gov.ca.cwds.api.referrals.validation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import gov.ca.cwds.api.FunctionalTest;
-import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
@@ -25,9 +25,9 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  * @author CWDS API Team
  *
  */
-public class ValidVictimBirthTest extends FunctionalTest {
+public class VictimBirthTest extends FunctionalTest {
   String referralPath;
-  private FunctionalTestingBuilder functionalTestingBuilder;
+  private HttpRequestHandler functionalTestingBuilder;
 
   /**
    * 
@@ -35,7 +35,7 @@ public class ValidVictimBirthTest extends FunctionalTest {
   @Before
   public void setup() {
     referralPath = getResourceUrlFor(ResourceEndPoint.REFERRALS.getResourcePath());
-    functionalTestingBuilder = new FunctionalTestingBuilder();
+    functionalTestingBuilder = new HttpRequestHandler();
   }
 
   /**
