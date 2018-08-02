@@ -78,11 +78,10 @@ public class CandaceSessionImpl implements Session {
         final PersistentObject po = (PersistentObject) obj;
         LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
             po.getPrimaryKey());
-        CaresStackUtils.logStack();
       } else {
         LOGGER.info("CandaceSessionImpl.{}", methodMsg);
-        CaresStackUtils.logStack();
       }
+      CaresStackUtils.logStack();
     }
   }
 
@@ -333,7 +332,6 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void setDefaultReadOnly(boolean readOnly) {
     LOGGER.debug("CandaceSessionImpl.setDefaultReadOnly: readOnly: {}", readOnly);
-    logStack("flush");
     session.setDefaultReadOnly(readOnly);
   }
 
@@ -349,6 +347,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void evict(Object object) {
+    LOGGER.debug("CandaceSessionImpl.evict: object hash: {}", object.hashCode());
     logStack("evict");
     session.evict(object);
   }
