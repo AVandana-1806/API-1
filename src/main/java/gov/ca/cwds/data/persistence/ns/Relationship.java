@@ -6,7 +6,6 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -18,27 +17,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.hibernate.annotations.GenericGenerator;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 
-@NamedQuery(
-    name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
-    query =
-        "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId "
-            +
-            "OR r.participantTo.screeningId = :screeningId")
-@NamedQuery(
-    name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
+import gov.ca.cwds.data.persistence.PersistentObject;
+
+@NamedQuery(name = FIND_RELATIONSHIPS_BY_SCREENING_ID,
+    query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :screeningId "
+        + "OR r.participantTo.screeningId = :screeningId")
+@NamedQuery(name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
     query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")
 
 @Entity
 @Table(name = "relationships")
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Relationship implements PersistentObject {
 
-  public static final String FIND_RELATIONSHIPS_BY_SCREENING_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByScreeningId";
-  public static final String FIND_RELATIONSHIPS_BY_LEGACY_ID = "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByLegacyId";
+  public static final String FIND_RELATIONSHIPS_BY_SCREENING_ID =
+      "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByScreeningId";
+  public static final String FIND_RELATIONSHIPS_BY_LEGACY_ID =
+      "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByLegacyId";
 
   @Id
   @GenericGenerator(name = "relationships_id",
@@ -87,8 +86,7 @@ public class Relationship implements PersistentObject {
   @Column(name = "legacy_id")
   private String legacyId;
 
-  public Relationship() {
-  }
+  public Relationship() {}
 
   @Override
   public Serializable getPrimaryKey() {

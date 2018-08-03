@@ -41,6 +41,7 @@ public class OtherAdultInPlacemtHome extends BaseOtherAdultInPlacemtHome {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude

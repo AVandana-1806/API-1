@@ -1,21 +1,23 @@
 package gov.ca.cwds.rest.api.domain;
 
+import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.ws.rs.DefaultValue;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gov.ca.cwds.rest.api.Request;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import javax.ws.rs.DefaultValue;
-
-public class ScreeningRelationship extends ReportingDomain implements Request,
-    gov.ca.cwds.rest.api.Response {
+@SuppressWarnings("common-java:DuplicatedBlocks")
+public class ScreeningRelationship extends ReportingDomain
+    implements Request, gov.ca.cwds.rest.api.Response {
 
   @JsonProperty("id")
-  @ApiModelProperty(required = true, value = "Screening Relationship Id",
-      example = "12345")
+  @ApiModelProperty(required = true, value = "Screening Relationship Id", example = "12345")
   private String id;
 
   @JsonProperty("client_id")
@@ -25,18 +27,18 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
   private String clientId;
 
   @JsonProperty("relative_id")
-  @ApiModelProperty(required = true,
-      value = "The Id for the the primary client's relative", example = "ABC987")
+  @ApiModelProperty(required = true, value = "The Id for the the primary client's relative",
+      example = "ABC987")
   private String relativeId;
 
   @JsonProperty("relationship_type")
-  @ApiModelProperty(required = true,
-      value = "The relationship type code", example = "190")
+  @ApiModelProperty(required = true, value = "The relationship type code", example = "190")
   private int relationshipType;
 
   @JsonProperty("absent_parent_indicator")
   @ApiModelProperty(required = true,
-      value = "This indicates if the parent CLIENT is absent for the child with whom the relationship is being defined", example = "true")
+      value = "This indicates if the parent CLIENT is absent for the child with whom the relationship is being defined",
+      example = "true")
   private boolean absentParentIndicator;
 
   @JsonProperty("same_home_status")
@@ -58,8 +60,7 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
   @ApiModelProperty(value = "This indicates the legacy ID of relationship", example = "A1b2x")
   private String legacyId;
 
-  public ScreeningRelationship() {
-  }
+  public ScreeningRelationship() {}
 
   public String getId() {
     return id;
@@ -162,10 +163,8 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
       return false;
     }
     ScreeningRelationship that = (ScreeningRelationship) o;
-    return relationshipType == that.relationshipType
-        && Objects.equals(id, that.id)
-        && Objects.equals(clientId, that.clientId)
-        && Objects.equals(relativeId, that.relativeId);
+    return relationshipType == that.relationshipType && Objects.equals(id, that.id)
+        && Objects.equals(clientId, that.clientId) && Objects.equals(relativeId, that.relativeId);
   }
 
   @Override
