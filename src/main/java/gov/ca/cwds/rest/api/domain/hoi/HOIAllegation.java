@@ -12,6 +12,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeDescriptor;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings("squid:S2160")
 public class HOIAllegation extends ApiObjectIdentity implements ApiTypedIdentifier<String> {
 
   private static final long serialVersionUID = 1L;

@@ -43,13 +43,13 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
     query = "FROM ReferralClient WHERE referralId = :referralId")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.ReferralClient.findByClientIds",
     query = "FROM ReferralClient WHERE clientId in :clientIds")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "REFR_CLT")
 @IdClass(ReferralClient.PrimaryKey.class)
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferralClient extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Hibernate annotation {@link IdClass} requires that members match the id columns of the parent

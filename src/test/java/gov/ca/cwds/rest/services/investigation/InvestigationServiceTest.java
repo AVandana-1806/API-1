@@ -68,8 +68,15 @@ public class InvestigationServiceTest {
     this.contactService = mock(ContactService.class);
     this.screeningSummaryService = mock(ScreeningSummaryService.class);
 
-    investigationService = new InvestigationService(investigationDao, staffPersonDao, addressDao,
-        longTextService, peopleService, allegationService, contactService, screeningSummaryService);
+    investigationService = new InvestigationService();
+    investigationService.setInvestigationDao(investigationDao);
+    investigationService.setStaffPersonDao(staffPersonDao);
+    investigationService.setAddressDao(addressDao);
+    investigationService.setLongTextService(longTextService);
+    investigationService.setPeopleService(peopleService);
+    investigationService.setAllegationService(allegationService);
+    investigationService.setContactService(contactService);
+    investigationService.setScreeningSummaryService(screeningSummaryService);
 
     investigationStub = new InvestigationEntityBuilder().build();
 

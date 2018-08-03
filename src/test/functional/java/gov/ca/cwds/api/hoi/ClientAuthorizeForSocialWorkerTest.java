@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.api.FunctionalTest;
-import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.http.ContentType;
 
@@ -20,7 +20,7 @@ import io.restassured.http.ContentType;
 public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
 
   String resourcePath;
-  private FunctionalTestingBuilder functionalTestingBuilder;
+  private HttpRequestHandler httpRequestHandler;
 
   /**
    * 
@@ -28,7 +28,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
   @Before
   public void setup() {
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_AUTHORIZE + "/client" + "/{id}");
-    functionalTestingBuilder = new FunctionalTestingBuilder();
+    httpRequestHandler = new HttpRequestHandler();
   }
 
   /**
@@ -36,7 +36,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testSuccessToAuthorizeSocialWorkerOnly() {
-    given().pathParam("id", "CFOmFrm057").queryParam(functionalTestingBuilder.TOKEN, token)
+    given().pathParam("id", "CFOmFrm057").queryParam(httpRequestHandler.TOKEN, token)
         .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
         .statusCode(200);
   }
@@ -46,7 +46,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testToAuthorizeSameCountySensitive() {
-    given().pathParam("id", "B5mi8Qr00T").queryParam(functionalTestingBuilder.TOKEN, token)
+    given().pathParam("id", "B5mi8Qr00T").queryParam(httpRequestHandler.TOKEN, token)
         .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
         .statusCode(403);
   }
@@ -56,7 +56,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testToAuthorizeDifferentCountySensitive() {
-    given().pathParam("id", "9PIxHucCON").queryParam(functionalTestingBuilder.TOKEN, token)
+    given().pathParam("id", "9PIxHucCON").queryParam(httpRequestHandler.TOKEN, token)
         .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
         .statusCode(403);
   }
@@ -66,7 +66,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testToAuthorizeSameCountySealed() {
-    given().pathParam("id", "4kgIiDy00T").queryParam(functionalTestingBuilder.TOKEN, token)
+    given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
         .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
         .statusCode(403);
   }
@@ -76,7 +76,7 @@ public class ClientAuthorizeForSocialWorkerTest extends FunctionalTest {
    */
   @Test
   public void testToAuthorizeDifferentCountySealed() {
-    given().pathParam("id", "AIwcGUp0Nu").queryParam(functionalTestingBuilder.TOKEN, token)
+    given().pathParam("id", "AIwcGUp0Nu").queryParam(httpRequestHandler.TOKEN, token)
         .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
         .statusCode(403);
   }

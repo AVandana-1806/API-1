@@ -28,12 +28,13 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "ALPRHIST")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AllegationPerpetratorHistory extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
+
   protected static final String DATE_FORMAT = DomainChef.DATE_FORMAT;
 
   @Id

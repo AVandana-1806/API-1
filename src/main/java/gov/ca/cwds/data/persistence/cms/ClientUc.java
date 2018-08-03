@@ -18,12 +18,12 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "CLINT_UC")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientUc extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "PKTBL_ID", length = CMS_ID_LEN)

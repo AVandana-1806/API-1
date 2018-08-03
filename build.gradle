@@ -354,6 +354,10 @@ task createGradleCache(type: Copy) {
     into 'build/gradle_cache'
 }
 
+task createSmokeTestDockerImage (type:Exec, dependsOn: shadowJar) {
+    commandLine 'docker',  'build',  '-t',  'cwds/intake-api-smoketest', '-f', 'docker/DockerfileSmokeTests', '.'
+}
+
 task createFunctionalTestDockerImage (type:Exec, dependsOn: createGradleCache) {
   commandLine 'docker', 'build', '--file', 'docker/DockerfileTests',  '-t', 'cwds/api-functional-test', '.'
 }
@@ -364,6 +368,10 @@ task createIntegrationTestDockerImage (type:Exec, dependsOn: shadowJar) {
 
 task createDockerImage(type:Exec, dependsOn: shadowJar) {
   commandLine 'docker',  'build',  '-t',  'cwds/api', '-f', 'Dockerfile', '.'
+}
+
+task tagSmokeTestDockerImage(type:Exec, dependsOn: createSmokeTestDockerImage) {
+    commandLine 'docker',  'tag',  'cwds/intake-api-smoketest',  "cwds/intake-api-smoketest:$dockerTag"
 }
 
 task tagFunctionalTestDockerImage(type:Exec, dependsOn: createFunctionalTestDockerImage) {
@@ -386,6 +394,21 @@ task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
   commandLine 'docker',  'push',  'cwds/api:latest'
 }
 
+task createFunctionalTests( dependsOn: tagFunctionalTestDockerImage){
+    doLast {
+        println 'created functional test container'
+    }
+}
+
+
+task pushSmokeTestVersionTagged(type:Exec, dependsOn: tagSmokeTestDockerImage) {
+    commandLine 'docker',  'push',  "cwds/intake-api-smoketest:$dockerTag"
+}
+
+task pushFunctionalTestDockerVersionTagged(type:Exec, dependsOn: createFunctionalTests) {
+    commandLine 'docker',  'push',  "cwds/api-functional-test:$dockerTag"
+}
+
 task pushIntegrationTestDockerVersionTagged(type:Exec, dependsOn: tagIntegrationTestDockerImage) {
   commandLine 'docker',  'push',  "cwds/api-integration-test:$dockerTag"
 }
@@ -393,12 +416,7 @@ task pushIntegrationTestDockerVersionTagged(type:Exec, dependsOn: tagIntegration
 task pushDockerVersionTagged(type:Exec, dependsOn: tagDockerImage) {
   commandLine 'docker',  'push',  "cwds/api:$dockerTag"
 }
-task createFunctionalTests(dependsOn: [tagFunctionalTestDockerImage , createFunctionalTestDockerImage]){
-    doLast {
-        println 'Published Functional Tests'
-    }
 
-}
 task createGitTag(type:Exec) {
     commandLine "git", "tag", "$dockerTag"
 }
@@ -415,8 +433,7 @@ task pushGitTag(type:Exec, dependsOn: createGitTag) {
     }
 }
 task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
-                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest,
-                               createFunctionalTests] ) {
+                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest] ) {
     doLast {
         println 'Published'
     }

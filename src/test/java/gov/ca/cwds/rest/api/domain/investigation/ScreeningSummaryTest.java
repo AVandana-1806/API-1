@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -98,10 +97,22 @@ public class ScreeningSummaryTest {
     Set<ParticipantEntity> participantEntities = new HashSet<>();
     ParticipantEntity participantEntity = new ParticipantEntity();
     participantEntities.add(participantEntity);
-    ScreeningEntity screeningEntity =
-        new ScreeningEntity(null, referrence, startedAt, endedAt, incidentCounty, incidentDate,
-            locationType, communicationMethod, name, responseTime, screeningDecision, null,
-            narrative, screeningAddress, null, participantEntities, "ssb", "Open", null);
+
+    ScreeningEntity screeningEntity = new ScreeningEntity();
+    screeningEntity.setReference(referrence);
+    screeningEntity.setStartedAt(startedAt);
+    screeningEntity.setEndedAt(endedAt);
+    screeningEntity.setIncidentCounty(incidentCounty);
+    screeningEntity.setIncidentDate(incidentDate);
+    screeningEntity.setLocationType(locationType);
+    screeningEntity.setCommunicationMethod(communicationMethod);
+    screeningEntity.setName(name);
+    screeningEntity.setScreeningDecision(screeningDecision);
+    screeningEntity.setNarrative(narrative);
+    screeningEntity.setNarrative(narrative);
+    screeningEntity.setParticipants(participantEntities);
+    screeningEntity.setReference("ssb");
+    screeningEntity.setScreeningStatus("Open");
 
     ScreeningSummary screeningSummary = new ScreeningSummary(screeningEntity, simpleAllegations);
     assertThat(screeningSummary.getName(), is(equalTo(screeningEntity.getName())));

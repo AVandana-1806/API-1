@@ -52,7 +52,6 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @NamedQuery(name = FIND_REFERRALS_WITH_REPORTERS_BY_IDS,
     query = "FROM Referral ref LEFT OUTER JOIN FETCH ref.reporter rep WHERE ref.id IN :ids")
 @Entity
@@ -60,6 +59,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Referral extends CmsPersistentObject implements AccessLimitationAware {
+  private static final long serialVersionUID = 1L;
 
   public static final String FIND_REFERRALS_WITH_REPORTERS_BY_IDS =
       "gov.ca.cwds.data.persistence.cms.Referral.findReferralsWithReportersByIds";

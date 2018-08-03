@@ -7,10 +7,9 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
@@ -21,7 +20,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  */
 public class ScreeningToReferralTest extends FunctionalTest {
   String referralPath;
-  private FunctionalTestingBuilder functionalTestingBuilder;
+  private HttpRequestHandler httpRequestHandler;
 
   /**
    * 
@@ -29,7 +28,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   @Before
   public void setup() {
     referralPath = getResourceUrlFor(ResourceEndPoint.REFERRALS.getResourcePath());
-    functionalTestingBuilder = new FunctionalTestingBuilder();
+    httpRequestHandler = new HttpRequestHandler();
   }
 
   /**
@@ -44,12 +43,11 @@ public class ScreeningToReferralTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void return500ErrorWhenIncorrectStaffPerson() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setName("IncorrectStaffPerson").setAssigneeStaffId("bad").createScreeningToReferral();
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details[0].user_message", equalTo(
             "There was an error processing your request. It has been logged with unique incident id"))
         .and()
@@ -67,7 +65,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
         new ScreeningToReferralResourceBuilder().setName("return500ErrorWhenNoVictimIsPresent")
             .setassigneeStaffId("NONE").setParticipants(null).createScreeningToReferral();
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message",
             hasItem("must contain at least one victim, only one reporter, and compatible roles"))
         .and().statusCode(422);
@@ -77,13 +75,12 @@ public class ScreeningToReferralTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void return201SuccessForValidReferrals() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setName("return201SuccessForValidReferrals").setAssigneeStaffId(userInfo.getStaffId())
         .setIncidentCounty(userInfo.getIncidentCounty()).createScreeningToReferral();
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
+    httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
   }
 }

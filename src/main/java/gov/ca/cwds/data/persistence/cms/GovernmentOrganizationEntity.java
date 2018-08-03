@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "GV_ORG_T")
 @JsonPropertyOrder(alphabetic = true)
@@ -28,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.GovernmentOrganizationEntity.findAll",
     query = "FROM GovernmentOrganizationEntity ORDER BY governmentOrganizationType")
 public class GovernmentOrganizationEntity extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "IDENTIFIER", nullable = false, length = CMS_ID_LEN)

@@ -1,0 +1,18 @@
+version: '2.3'
+services:
+  ferb-smoke-test:
+    image: ${FERB_TEST_IMAGE_VERSION:-cwds/intake-api-smoketest:latest}
+    environment:
+     - TEST_FILE_PATH=/ferb/conf/testConfig.yml
+     - BASE_URL=${BASE_URL}
+     - CALL_BACK_URL=${CALL_BACK_URL}
+     - AUTH_BASE_URL=${AUTH_BASE_URL}
+     - PERRY_LOGIN_URL=${PERRY_LOGIN_URL}
+     - AUTH_LOGIN_URL=${AUTH_LOGIN_URL}
+     - VALIDATE_URL=${VALIDATE_URL}
+     - TOKEN_URL=${TOKEN_URL}
+     - LOG_OUT_URL=${LOG_OUT_URL}
+    volumes:
+      - ./ferb-test/config/:/ferb/conf
+      - ./ferb-test/reports/smokeTest:/ferb/build/reports
+      - ./ferb-test/logs/smokeTest:/ferb/logs

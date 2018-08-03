@@ -257,9 +257,8 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    * Call Hibernate {@link Session#doWork(Work)} to execute JDBC statements in the same session.
    * 
    * @return a connection
-   * @throws SQLException on database error
    */
-  protected Connection getConnection() throws SQLException {
+  protected Connection getConnection() {
     final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
     dao.grabSession().doWork(work);
     final Connection con = work.getConnection();

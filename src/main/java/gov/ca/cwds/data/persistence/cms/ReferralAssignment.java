@@ -25,8 +25,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity(name = "ReferralAssignment")
 @DiscriminatorValue(value = "REFERRAL")
 @PrimaryKeyJoinColumn(name = "IDENTIFIER")
-@SuppressWarnings("serial")
 public class ReferralAssignment extends BaseAssignment {
+  private static final long serialVersionUID = 1L;
 
   public static final String FOLDED_KEY_CODE = "R";
 

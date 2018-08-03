@@ -144,10 +144,22 @@ public class R00796ScreeningToReferralDeleteTest {
     staffpersonDao = mock(StaffPersonDao.class);
     riReferral = mock(RIReferral.class);
     clientRelationshipDao = mock(ClientRelationshipDao.class);
-    referralService =
-        new ReferralService(referralDao, nonLACountyTriggers, laCountyTrigger, triggerTablesDao,
-            staffpersonDao, assignmentService, validator, cmsDocumentService, drmsDocumentService,
-            drmsDocumentTemplateService, addressService, longTextService, riReferral);
+
+    referralService = new ReferralService();
+    referralService.setReferralDao(referralDao);
+    referralService.setNonLaCountyTriggers(nonLACountyTriggers);
+    referralService.setLaCountyTrigger(laCountyTrigger);
+    referralService.setTriggerTablesDao(triggerTablesDao);
+    referralService.setStaffpersonDao(staffpersonDao);
+    referralService.setAssignmentService(assignmentService);
+    referralService.setValidator(validator);
+    referralService.setCmsDocumentService(cmsDocumentService);
+    referralService.setDrmsDocumentService(drmsDocumentService);
+    referralService.setDrmsDocumentTemplateService(drmsDocumentTemplateService);
+    referralService.setDrmsDocumentTemplateService(drmsDocumentTemplateService);
+    referralService.setAddressService(addressService);
+    referralService.setLongTextService(longTextService);
+    referralService.setRiReferral(riReferral);
 
     clientDao = mock(ClientDao.class);
     staffpersonDao = mock(StaffPersonDao.class);

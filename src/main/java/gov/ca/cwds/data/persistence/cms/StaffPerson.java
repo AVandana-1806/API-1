@@ -29,12 +29,12 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.StaffPerson.findByIds",
     query = "FROM StaffPerson WHERE id IN :ids")
 @Entity
 @Table(name = "STFPERST")
 public class StaffPerson extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "IDENTIFIER", length = 3)

@@ -17,10 +17,10 @@ import org.hibernate.annotations.Type;
  *
  * @author Intake Team 4
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "versions")
 public class PaperTrail implements PersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "id")

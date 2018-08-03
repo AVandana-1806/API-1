@@ -34,6 +34,7 @@ public class ScreeningRelationshipServiceTest {
     service = new ScreeningRelationshipService(relationshipDao, relationshipMapper);
 
     Date now = new Date();
+
     relationshipEntity = new Relationship();
     relationshipEntity.setId("123");
     relationshipEntity.setClientId("ClientID");
@@ -44,7 +45,16 @@ public class ScreeningRelationshipServiceTest {
     relationshipEntity.setAbsentParentIndicator(true);
     relationshipEntity.setLegacyId("1111");
 
-    relationship = new ScreeningRelationship("123", "ClientID", "RelationId", 190, true, "U", new Date(), new Date(), "1234567890");
+    relationship = new ScreeningRelationship();
+    relationship.setId("123");
+    relationship.setClientId("ClientID");
+    relationship.setRelativeId("RelationId");
+    relationship.setRelationshipType(190);
+    relationship.setAbsentParentIndicator(true);
+    relationship.setSameHomeStatus("U");
+    relationship.setStartDate(now);
+    relationship.setEndDate(now);
+    relationship.setLegacyId("1234567890");
   }
 
   @Test
@@ -114,14 +124,15 @@ public class ScreeningRelationshipServiceTest {
   
   @Test
   public void update() throws Exception {
-    Date creationDate = new Date();
+    Date now = new Date();
+
     Relationship existingEntity = new Relationship();
     existingEntity.setId("123");
     existingEntity.setClientId("ClientID");
     existingEntity.setRelativeId("RelationId");
     existingEntity.setRelationshipType(190);
-    existingEntity.setCreatedAt(creationDate);
-    existingEntity.setUpdatedAt(new Date());
+    existingEntity.setCreatedAt(now);
+    existingEntity.setUpdatedAt(now);
     existingEntity.setAbsentParentIndicator(true);
     existingEntity.setLegacyId("1111");
 
@@ -130,16 +141,25 @@ public class ScreeningRelationshipServiceTest {
     updatedEntity.setClientId("ClientID");
     updatedEntity.setRelativeId("RelationId");
     updatedEntity.setRelationshipType(191);
-    updatedEntity.setCreatedAt(creationDate);
-    updatedEntity.setUpdatedAt(new Date());
+    updatedEntity.setCreatedAt(now);
+    updatedEntity.setUpdatedAt(now);
     updatedEntity.setAbsentParentIndicator(true);
     updatedEntity.setLegacyId("1111");
 
     when(relationshipDao.find(any())).thenReturn(existingEntity);
     when(relationshipDao.update(any())).thenReturn(updatedEntity);
 
-    ScreeningRelationship relationshipForUpdate = new ScreeningRelationship("123", "ClientID",
-        "RelationId", 191, true, "U", new Date(), new Date(), "1234567890");
+    ScreeningRelationship relationshipForUpdate = new ScreeningRelationship();
+    relationshipForUpdate.setId("123");
+    relationshipForUpdate.setClientId("ClientID");
+    relationshipForUpdate.setRelativeId("RelationId");
+    relationshipForUpdate.setRelationshipType(191);
+    relationshipForUpdate.setAbsentParentIndicator(true);
+    relationshipForUpdate.setSameHomeStatus("U");
+    relationshipForUpdate.setStartDate(now);
+    relationshipForUpdate.setEndDate(now);
+    relationshipForUpdate.setLegacyId("1234567890");
+
     ScreeningRelationship updated = (ScreeningRelationship) service
         .update("123", relationshipForUpdate);
 
@@ -147,7 +167,7 @@ public class ScreeningRelationshipServiceTest {
     assertEquals(updatedEntity.getClientId(), updated.getClientId());
     assertEquals(updatedEntity.getRelativeId(), updated.getRelativeId());
     assertEquals(updatedEntity.getRelationshipType(), updated.getRelationshipType());
-    assertEquals(updatedEntity.getCreatedAt(), creationDate);
+    assertEquals(updatedEntity.getCreatedAt(), now);
     assertEquals(updatedEntity.isAbsentParentIndicator(), updated.isAbsentParentIndicator());
     assertEquals(updatedEntity.getSameHomeStatus(),
         SameHomeStatus.toValue(updated.getSameHomeStatus()));

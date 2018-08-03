@@ -39,12 +39,12 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  */
 @NamedQuery(name = FIND_ALLEGATIONS_WITH_CLIENTS_BY_REFERRAL_IDS,
     query = "FROM Allegation al INNER JOIN FETCH al.victim v LEFT OUTER JOIN FETCH al.perpetrator p WHERE al.referralId IN :referralIds")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "ALLGTN_T")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Allegation extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   public static final String FIND_ALLEGATIONS_WITH_CLIENTS_BY_REFERRAL_IDS = "gov.ca.cwds.data.persistence.cms.Allegation.findAllegationsWithClientsByReferralIds";
 

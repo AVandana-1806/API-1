@@ -9,8 +9,8 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeDescriptor;
 import gov.ca.cwds.rest.api.domain.cms.SystemMeta;
 
-@SuppressWarnings("serial")
 public class TestSystemCodeCache implements SystemCodeCache {
+  private static final long serialVersionUID = 1L;
 
   public TestSystemCodeCache() {
     register();

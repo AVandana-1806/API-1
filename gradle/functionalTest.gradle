@@ -1,4 +1,3 @@
-
 sourceSets {
     functionalTest {
         java.srcDir 'src/test/functional/java'
@@ -18,20 +17,13 @@ dependencies {
 }
 
 task functionalQATest(type: Test) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the functional tests.'
-
     maxHeapSize = '1024m'
+
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
 
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath = sourceSets.functionalTest.runtimeClasspath
-
-    binResultsDir = file("$buildDir/functional-test-results/binary/functionalTest")
-
-    reports {
-        html.destination = "$buildDir/reports/functional-test"
-        junitXml.destination = "$buildDir/functional-test-results"
-    }
 
     println "The following Functonal Test Conf File will override the default if not null" + System.getenv("TEST_FILE_PATH")
     println "Your shell path is:" + System.env.PATH
@@ -41,6 +33,40 @@ task functionalQATest(type: Test) {
     ]
 
     mustRunAfter tasks.test
+
+    exclude "**/SmokeTestSuite.class"
+    binResultsDir = file("$buildDir/functional-test-results/binary/functionalTest")
+    reports {
+        html.destination = "$buildDir/reports/functional-test"
+        junitXml.destination = "$buildDir/functional-test-results"
+    }
+
+}
+
+task smokeTest(type: Test) {
+    description = 'Runs the functional tests.'
+
+    maxHeapSize = '1024m'
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath = sourceSets.functionalTest.runtimeClasspath
+
+    println "The following Functonal Test Conf File will override the default if not null" + System.getenv("TEST_FILE_PATH")
+    println "Your shell path is:" + System.env.PATH
+    environment 'TEST_FILE_PATH', System.getenv('TEST_FILE_PATH')
+    systemProperties = [
+            TEST_FILE_PATH: System.getProperty('TEST_FILE_PATH')
+    ]
+
+    mustRunAfter tasks.test
+
+    include "**/SmokeTestSuite.class"
+    binResultsDir = file("$buildDir/smoke-test-results/binary/smokeTest")
+    reports {
+        html.destination = "$buildDir/reports/smoke-test"
+        junitXml.destination = "$buildDir/smoke-test-results"
+    }
 }
 
 check.dependsOn functionalQATest

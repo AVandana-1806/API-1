@@ -29,6 +29,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
  * @author CWDS API Team
  *
  */
+@SuppressWarnings("squid:S2160")
 public class CachingIntakeCodeService extends IntakeLovService implements IntakeCodeCache {
 
   private transient LoadingCache<CacheKey, Object> intakeCodeCache;
@@ -133,9 +134,9 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
     List<IntakeLov> ret = new ArrayList<>();
     Map<CacheKey, Object> intakeLovs = intakeCodeCache.asMap();
 
-    for (CacheKey key : intakeLovs.keySet()) {
-      if (CacheKey.SYSTEM_CODE_ID_TYPE.equals(key.getType())) {
-        ret.add((IntakeLov) intakeLovs.get(key));
+    for (Map.Entry<CacheKey, Object> entry : intakeLovs.entrySet()) {
+      if (CacheKey.SYSTEM_CODE_ID_TYPE.equals(entry.getKey().getType())) {
+        ret.add((IntakeLov) entry.getValue());
       }
     }
     return ret;

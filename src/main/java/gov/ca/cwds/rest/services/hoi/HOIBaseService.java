@@ -10,6 +10,7 @@ import org.slf4j.Logger;
  *
  * @author CWDS API Team
  */
+@SuppressWarnings("squid:S1609")
 public interface HOIBaseService {
 
   /**

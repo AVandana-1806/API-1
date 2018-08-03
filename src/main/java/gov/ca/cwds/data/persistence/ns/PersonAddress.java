@@ -21,7 +21,6 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "participant_addresses")
 @AssociationOverrides({
@@ -30,6 +29,7 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
     @AssociationOverride(name = "personAddressId.address",
         joinColumns = @JoinColumn(name = "address_id"))})
 public class PersonAddress extends NsPersistentObject implements Serializable {
+  private static final long serialVersionUID = 1L;
 
   @EmbeddedId
   private PersonAddressId personAddressId = new PersonAddressId();
