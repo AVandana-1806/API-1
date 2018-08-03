@@ -45,9 +45,9 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
    */
   public Set<String> findLegacyIdListByScreeningId(String screeningId) {
     @SuppressWarnings("unchecked")
-    final Query<String> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID)
-        .setParameter(PathParam.SCREENING_ID, screeningId);
+    final Query<String> query =
+        this.grabSession().getNamedQuery(ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID)
+            .setParameter(PathParam.SCREENING_ID, screeningId);
     return new HashSet<>(query.list());
   }
 
@@ -61,9 +61,9 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
       return new HashMap<>();
     }
     @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(FIND_PARTICIPANTS_BY_SCREENING_IDS)
-        .setParameter("screeningIds", screeningIds);
+    final Query<ParticipantEntity> query =
+        this.grabSession().getNamedQuery(FIND_PARTICIPANTS_BY_SCREENING_IDS)
+            .setParameter("screeningIds", screeningIds);
     final Map<String, Set<ParticipantEntity>> result = new HashMap<>(screeningIds.size());
     for (ParticipantEntity participantEntity : query.list()) {
       final String screeningId = participantEntity.getScreeningId();
@@ -77,9 +77,9 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
 
   public List<ParticipantEntity> getByScreeningId(String screeningId) {
     @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(constructNamedQueryName("findByScreeningId"))
-        .setParameter(PathParam.SCREENING_ID, screeningId);
+    final Query<ParticipantEntity> query =
+        this.grabSession().getNamedQuery(constructNamedQueryName("findByScreeningId"))
+            .setParameter(PathParam.SCREENING_ID, screeningId);
     CaresQueryAccelerator.readOnlyQuery(query);
     return query.list();
   }
@@ -87,7 +87,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   public ParticipantEntity findByScreeningIdAndParticipantId(String screeningId,
       String participantId) {
     @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
+    final Query<ParticipantEntity> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByScreeningIdAndParticipantId"))
         .setParameter(PathParam.SCREENING_ID, screeningId)
         .setParameter(PathParam.PARTICIPANT_ID, participantId);
@@ -97,10 +97,10 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
 
   public ParticipantEntity findByScreeningIdAndLegacyId(String screeningId, String legacyId) {
     @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(FIND_BY_SCREENING_ID_AND_LEGACY_ID)
-        .setParameter(PathParam.SCREENING_ID, screeningId)
-        .setParameter(PathParam.LEGACY_ID, legacyId);
+    final Query<ParticipantEntity> query =
+        this.grabSession().getNamedQuery(FIND_BY_SCREENING_ID_AND_LEGACY_ID)
+            .setParameter(PathParam.SCREENING_ID, screeningId)
+            .setParameter(PathParam.LEGACY_ID, legacyId);
     CaresQueryAccelerator.readOnlyQuery(query);
     return query.uniqueResult();
   }
