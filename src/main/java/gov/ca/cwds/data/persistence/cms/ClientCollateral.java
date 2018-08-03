@@ -40,7 +40,6 @@ import gov.ca.cwds.rest.validation.ValidSystemCodeId;
     uniqueConstraints = {@UniqueConstraint(columnNames = {"FKCLIENT_T", "FKCOLTRL_T"})})
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class ClientCollateral extends CmsPersistentObject {
 
   private static final long serialVersionUID = 1L;
@@ -81,6 +80,7 @@ public class ClientCollateral extends CmsPersistentObject {
   @ToStringExclude
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCLIENT_T", nullable = false, updatable = false, insertable = false)
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   private Client client;
 
   @HashCodeExclude
@@ -88,6 +88,7 @@ public class ClientCollateral extends CmsPersistentObject {
   @ToStringExclude
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCOLTRL_T", nullable = false, updatable = false, insertable = false)
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   private CollateralIndividual collateralIndividual;
 
   /**
