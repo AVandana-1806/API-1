@@ -22,7 +22,7 @@ public class CaresStackUtils {
 
   public static void logStack() {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    if (ctx != null && ctx.isXaTransaction() && LOGGER.isDebugEnabled()) {
+    if (ctx != null && LOGGER.isDebugEnabled()) {
       try {
         final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         Arrays.stream(stack, 0, stack.length - 1)

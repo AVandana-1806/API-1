@@ -69,16 +69,17 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
    * @throws Exception if startup fails
    */
   public static void main(final String[] args) throws Exception {
-    LOGGER.info("\n\n** Starting Ferb. More Phineas, less Candace **\n");
+    LOGGER.info("\n\n\t**** Starting Ferb. More Phineas, less Candace ****\n");
+    new ApiApplication().run(args);
+  }
 
+  protected void nukeXaFiles() {
     // Clean up XA transaction log files.
     final String[] extensions = {"log", "lck"};
     final Collection<File> tmFiles =
         FileUtils.listFiles(new File(System.getProperty("user.dir")), extensions, false);
     LOGGER.info("XA transaction files: {}", tmFiles);
     tmFiles.stream().forEach(File::delete);
-
-    new ApiApplication().run(args);
   }
 
   /**
@@ -94,6 +95,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
 
   @Override
   public void runInternal(final ApiConfiguration configuration, final Environment environment) {
+    nukeXaFiles();
     if (configuration.isUpgradeDbOnStart()) {
       upgradeNsDb(configuration);
     }
@@ -116,6 +118,10 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
             injector.getInstance(RequestResponseLoggingFilter.class))
         .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
 
+    // -----------------------
+    // Health checks:
+    // -----------------------
+
     final AuthHealthCheck authHealthCheck =
         new AuthHealthCheck(injector.getInstance(AuthServer.class));
     environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
@@ -134,15 +140,18 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
     environment.healthChecks().register(Api.HealthCheck.SWAGGER_STATUS, swaggerHealthCheck);
 
+    // -----------------------
+    // Specialty singletons:
+    // -----------------------
+
     injector.getInstance(SystemCodeCache.class);
     injector.getInstance(IntakeCodeCache.class);
 
-    // ERROR: "binder can only be called inside configure" -- but can't call it in configure()
-    // either.
+    // ERROR: "binder can only be called inside configure" -- but can't call it in configure().
     // Chicken and egg dilemma: HibernateBundle demands that Hibernate interceptors be constructed
-    // before DAO's, entities, session factories, etc.
-    // Without succumbing to convoluted Guice listeners, "assisted injection", or statics, this is
-    // the best we can do.
+    // ***before*** DAO's, entities, session factories, etc.
+    // Without succumbing to convoluted Guice listeners, "assisted injection", or static methods,
+    // this is the best we can do.
     // BETTER: inject a **delegate** with all dependencies.
     final PaperTrailDao paperTrailDao = InjectorHolder.INSTANCE.getInstance(PaperTrailDao.class);
     applicationModule.getDataAccessModule().getPaperTrailInterceptor()

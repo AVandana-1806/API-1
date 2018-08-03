@@ -8,6 +8,7 @@ import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,34 +30,40 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 
 /**
- * {@link PersistentObject} representing a Client Relationship
+ * {@link PersistentObject} representing a Client Relationship.
+ * 
+ * <p>
+ * DRS: SNAP-370: HOI Performance. Consider rewriting as a hierarchy query or similar construct.
+ * Pull client relationships all at once.
+ * </p>
  *
  * @author CWDS API Team
  */
-@NamedQuery(
-    name = FIND_CLIENT_RELATIONSHIP_BY_PRIMARY_CLIENT_ID,
+@NamedQuery(name = FIND_CLIENT_RELATIONSHIP_BY_PRIMARY_CLIENT_ID,
     query = "FROM gov.ca.cwds.data.persistence.cms.ClientRelationship WHERE primaryClientId = :primaryClientId")
-@NamedQuery(
-    name = FIND_CLIENT_RELATIONSHIP_BY_SECONDARY_CLIENT_ID,
+@NamedQuery(name = FIND_CLIENT_RELATIONSHIP_BY_SECONDARY_CLIENT_ID,
     query = "FROM gov.ca.cwds.data.persistence.cms.ClientRelationship WHERE secondaryClientId = :secondaryClientId")
-@NamedQuery(
-    name = FIND_CLIENT_RELATIONSHIPS_BY_PRIMARY_CLIENT_IDS,
+@NamedQuery(name = FIND_CLIENT_RELATIONSHIPS_BY_PRIMARY_CLIENT_IDS,
     query = "FROM gov.ca.cwds.data.persistence.cms.ClientRelationship WHERE primaryClientId IN :clientIds")
-@NamedQuery(
-    name = FIND_CLIENT_RELATIONSHIPS_BY_SECONDARY_CLIENT_IDS,
+@NamedQuery(name = FIND_CLIENT_RELATIONSHIPS_BY_SECONDARY_CLIENT_IDS,
     query = "FROM gov.ca.cwds.data.persistence.cms.ClientRelationship WHERE secondaryClientId IN :clientIds")
 @Entity
 @Table(name = "CLN_RELT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Cacheable
 public class ClientRelationship extends CmsPersistentObject {
 
   private static final long serialVersionUID = 1L;
 
-  public static final String FIND_CLIENT_RELATIONSHIP_BY_PRIMARY_CLIENT_ID = "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipByPrimaryClientId";
-  public static final String FIND_CLIENT_RELATIONSHIP_BY_SECONDARY_CLIENT_ID = "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipBySecondaryClientId";
-  public static final String FIND_CLIENT_RELATIONSHIPS_BY_PRIMARY_CLIENT_IDS = "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipsByPrimaryClientIds";
-  public static final String FIND_CLIENT_RELATIONSHIPS_BY_SECONDARY_CLIENT_IDS = "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipsBySecondaryClientIds";
+  public static final String FIND_CLIENT_RELATIONSHIP_BY_PRIMARY_CLIENT_ID =
+      "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipByPrimaryClientId";
+  public static final String FIND_CLIENT_RELATIONSHIP_BY_SECONDARY_CLIENT_ID =
+      "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipBySecondaryClientId";
+  public static final String FIND_CLIENT_RELATIONSHIPS_BY_PRIMARY_CLIENT_IDS =
+      "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipsByPrimaryClientIds";
+  public static final String FIND_CLIENT_RELATIONSHIPS_BY_SECONDARY_CLIENT_IDS =
+      "gov.ca.cwds.data.persistence.cms.ClientRelationship.findClientRelationshipsBySecondaryClientIds";
 
   @Column(name = "ABSENT_CD")
   private String absentParentCode;
@@ -101,7 +108,7 @@ public class ClientRelationship extends CmsPersistentObject {
    * Constructor
    *
    * @param absentParentCode indicates if the parent CLIENT is absent for the child with whom the
-   * relationship is being defined (N)
+   *        relationship is being defined (N)
    * @param clientRelationshipType Client Relationship Type from System Code table
    * @param endDate date the relationship ended
    * @param secondaryClientId Mandatory Foreign key that includes a secondary individual as a CLIENT
@@ -259,8 +266,8 @@ public class ClientRelationship extends CmsPersistentObject {
   }
 
   private boolean isReverseRelation(ClientRelationship relation1, ClientRelationship relation2) {
-    return isPrimarySameAsSecondary(relation1, relation2) && isSecondarySameAsPrimary(relation1,
-        relation2);
+    return isPrimarySameAsSecondary(relation1, relation2)
+        && isSecondarySameAsPrimary(relation1, relation2);
   }
 
   private boolean isPrimarySameAsSecondary(ClientRelationship relation1,
@@ -272,4 +279,5 @@ public class ClientRelationship extends CmsPersistentObject {
       ClientRelationship relation2) {
     return relation1.getSecondaryClientId().equals(relation2.getPrimaryClientId());
   }
+
 }

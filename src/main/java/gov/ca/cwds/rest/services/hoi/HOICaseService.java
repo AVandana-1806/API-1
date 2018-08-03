@@ -1,15 +1,14 @@
 package gov.ca.cwds.rest.services.hoi;
 
-import gov.ca.cwds.data.cms.StaffPersonDao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import gov.ca.cwds.data.Dao;
 import gov.ca.cwds.data.cms.CaseDao;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
+import gov.ca.cwds.data.cms.StaffPersonDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.cms.CmsCase;
@@ -43,7 +43,7 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 /**
  * <p>
  * This service handles user requests to get all the cases involved for the given client id.
- * <p>
+ * </p>
  *
  * @author CWDS API Team
  */
@@ -62,9 +62,10 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   /**
    * @param caseDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.CmsCase} objects
    * @param clientDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.Client} objects
-   * @param clientRelationshipDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.ClientRelationship}
+   * @param clientRelationshipDao {@link Dao} handling
+   *        {@link gov.ca.cwds.data.persistence.cms.ClientRelationship}
    * @param staffPersonDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.StaffPerson}
-   * objects
+   *        objects
    * @param authorizationService - authorizationService
    */
   @Inject
@@ -96,9 +97,8 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    */
   @Override
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
-    final Collection<String> authorizedClientIds =
-        authorizationService.filterClientIds(hoiRequest.getClientIds().stream()
-            .filter(Objects::nonNull).collect(Collectors.toSet()));
+    final Collection<String> authorizedClientIds = authorizationService.filterClientIds(
+        hoiRequest.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
       return new HOICaseResponse();
     }
@@ -124,25 +124,27 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   }
 
   private void loadRelationshipsByClients(Collection<String> clientIds, HOICasesData hcd) {
-    Map<String, Collection<ClientRelationship>> relationshipsByPrimaryClients =
+    final Map<String, Collection<ClientRelationship>> relationshipsByPrimaryClients =
         clientRelationshipDao.findByPrimaryClientIds(clientIds);
     hcd.setRelationshipsByPrimaryClients(relationshipsByPrimaryClients);
 
-    Map<String, Collection<ClientRelationship>> relationshipsBySecondaryClients =
+    final Map<String, Collection<ClientRelationship>> relationshipsBySecondaryClients =
         clientRelationshipDao.findBySecondaryClientIds(clientIds);
     hcd.setRelationshipsBySecondaryClients(relationshipsBySecondaryClients);
 
-    Collection<ClientRelationship> allRelationshipsByPrimaryClients = new ArrayList<>();
+    final Collection<ClientRelationship> allRelationshipsByPrimaryClients =
+        new ArrayList<>(relationshipsByPrimaryClients.size());
     relationshipsByPrimaryClients.values().forEach(allRelationshipsByPrimaryClients::addAll);
     hcd.setAllRelationshipsByPrimaryClients(allRelationshipsByPrimaryClients);
 
-    Collection<ClientRelationship> allRelationshipsBySecondaryClients = new ArrayList<>();
+    final Collection<ClientRelationship> allRelationshipsBySecondaryClients =
+        new ArrayList<>(relationshipsBySecondaryClients.size());
     relationshipsBySecondaryClients.values().forEach(allRelationshipsBySecondaryClients::addAll);
     hcd.setAllRelationshipsBySecondaryClients(allRelationshipsBySecondaryClients);
   }
 
   private void loadClients(HOICasesData hcd) {
-    Collection<String> ids = new HashSet<>(hcd.getAllClientIds());
+    final Collection<String> ids = new HashSet<>(hcd.getAllClientIds());
     ids.addAll(getClientIdsFromRelations(hcd));
     hcd.setAllClients(clientDao.findClientsByIds(ids));
   }
@@ -161,9 +163,11 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   private void loadCmsCases(HOICasesData hcd) {
     final Map<String, CmsCase> cmsCases = caseDao.findByClientIds(hcd.getAllClientIds());
     if (!cmsCases.isEmpty()) {
-      final Collection<String> staffPersonIds = cmsCases.values().stream()
-          .map(CmsCase::getFkstfperst)
-          .collect(Collectors.toSet());
+      final Collection<String> staffPersonIds =
+          cmsCases.values().stream().map(CmsCase::getFkstfperst).collect(Collectors.toSet());
+
+      // DRS: SNAP-370: HOI Performance
+      // Staff user data change very infrequently. Cache it.
       final Map<String, StaffPerson> staffPersons = staffPersonDao.findByIds(staffPersonIds);
       cmsCases.values().forEach(c -> c.setStaffPerson(staffPersons.get(c.getFkstfperst())));
       hcd.setCmsCases(cmsCases);
@@ -181,10 +185,9 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
     parents.addAll(hoiParentsFactory.buildParentsByPrimaryRelationship(focusChildClient, hcd));
     parents.addAll(hoiParentsFactory.buildParentsBySecondaryRelationship(focusChildClient, hcd));
 
-    return new HOICaseFactory()
-        .createHOICase(cmsCase, constructCounty(cmsCase.getGovernmentEntityType()),
-            constructServiceComponent(cmsCase), constructFocusChild(focusChildClient),
-            constructAssignedSocialWorker(cmsCase), parents);
+    return new HOICaseFactory().createHOICase(cmsCase,
+        constructCounty(cmsCase.getGovernmentEntityType()), constructServiceComponent(cmsCase),
+        constructFocusChild(focusChildClient), constructAssignedSocialWorker(cmsCase), parents);
   }
 
   private HOISocialWorker constructAssignedSocialWorker(CmsCase cmsCase) {
@@ -204,8 +207,8 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
   }
 
   private HOIVictim constructFocusChild(Client client) {
-    String clientId = client.getId();
-    LegacyDescriptor legacyDescriptor =
+    final String clientId = client.getId();
+    final LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor(clientId, CmsKeyIdGenerator.getUIIdentifierFromKey(clientId),
             new DateTime(client.getLastUpdatedTime()), LegacyTable.CLIENT.getName(),
             LegacyTable.CLIENT.getDescription());

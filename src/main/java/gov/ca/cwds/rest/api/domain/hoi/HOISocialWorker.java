@@ -9,9 +9,6 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
  */
 public class HOISocialWorker extends HOIPerson {
 
-  /**
-   * Default serialization version.
-   */
   private static final long serialVersionUID = 1L;
 
   /**
