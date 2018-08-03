@@ -1,24 +1,23 @@
 package gov.ca.cwds.api;
 
 import static io.restassured.RestAssured.given;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import gov.ca.cwds.api.builder.FunctionalTestingBuilder;
+import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
 
 public class ClientRelationshipTest extends FunctionalTest {
 
   String clientRelationshipPath;
-  private FunctionalTestingBuilder functionalTestingBuilder;
+  private HttpRequestHandler httpRequestHandler;
   
   @Before
   public void setup() {
     clientRelationshipPath = getResourceUrlFor(ResourceEndPoint.CLIENTS_RELATIONSHIPS.getResourcePath());
-    functionalTestingBuilder = new FunctionalTestingBuilder();
+    httpRequestHandler = new HttpRequestHandler();
   }
   
   @Test
@@ -28,15 +27,17 @@ public class ClientRelationshipTest extends FunctionalTest {
 
   @Test
   public void shouldReturnKnownRelationshipsOfPerson() {
-    String clientId = "1234567ABC";
+    String clientId = "0LIZAWH00h";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
+    queryParams.put(httpRequestHandler.TOKEN, token);
+//    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
+//    System.out.println(response.body().asString());
     
-    functionalTestingBuilder.getRequest(clientRelationshipPath, queryParams)
+    httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
       .assertThat()
-      .body("relationship_to.related_person_first_name", Matchers.hasItems("Anna","babe","Nina","Lawrence"))
+      .body("relationship_to.related_person_first_name", Matchers.hasItems("Non-victim1","Perp1","Victim1","Victim2"))
       .and()
       .statusCode(200);
     
@@ -47,11 +48,11 @@ public class ClientRelationshipTest extends FunctionalTest {
     String clientId = "1234567ABC";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
+    queryParams.put(httpRequestHandler.TOKEN, token);
     
-    functionalTestingBuilder.getRequest(clientRelationshipPath, queryParams)
+    httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
-      .body("isEmpty()", Matchers.is(true))
+      .assertThat().body("", Matchers.hasSize(1))
       .and()
       .statusCode(200);
   }
@@ -61,11 +62,23 @@ public class ClientRelationshipTest extends FunctionalTest {
     String clientId = "1234567ABC";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
-    queryParams.put(functionalTestingBuilder.TOKEN, token);
+    queryParams.put(httpRequestHandler.TOKEN, token);
     
-    functionalTestingBuilder.getRequest(clientRelationshipPath, queryParams)
+    httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
       .statusCode(403);    
+  }
+  
+  @Test
+  public void shouldReturnEmptyWhenClientDoesNotExists() {
+    String clientId = "1234567ABC";
+    Map<String, Object> queryParams = new HashMap<String, Object>();
+    queryParams.put("clientIds", clientId);
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    
+    httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
+      .then()
+      .statusCode(200);    
   }
     
 }
