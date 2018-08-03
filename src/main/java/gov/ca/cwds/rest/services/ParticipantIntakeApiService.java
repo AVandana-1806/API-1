@@ -205,10 +205,7 @@ public class ParticipantIntakeApiService implements
       throw new ServiceException("NULL argument for CREATE participant");
     }
 
-    if (participant.getLegacyId() == null && participant.getLegacyDescriptor() != null) {
-      participant.setLegacyId(participant.getLegacyDescriptor().getId());
-      participant.setLegacySourceTable(participant.getLegacyDescriptor().getTableName());
-    }
+    setLegacyIdAndTable(participant);
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 
@@ -256,6 +253,7 @@ public class ParticipantIntakeApiService implements
       throw new ServiceException("NULL argument for UPDATE participant");
     }
 
+    setLegacyIdAndTable(participant);
     String screeningId = resourceParameters.getScreeningId();
     String participantId = resourceParameters.getParticipantId();
     if (!ObjectUtils.allNotNull(screeningId, participantId)) {
@@ -295,6 +293,13 @@ public class ParticipantIntakeApiService implements
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
     return participantIntakeApiPosted;
+  }
+
+  private void setLegacyIdAndTable(ParticipantIntakeApi participant) {
+    if (participant.getLegacyId() == null && participant.getLegacyDescriptor() != null) {
+      participant.setLegacyId(participant.getLegacyDescriptor().getId());
+      participant.setLegacySourceTable(participant.getLegacyDescriptor().getTableName());
+    }
   }
 
   private List<AddressIntakeApi> createParticipantAddresses(
