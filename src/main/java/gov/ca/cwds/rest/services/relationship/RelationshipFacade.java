@@ -97,17 +97,23 @@ public class RelationshipFacade {
   private ScreeningRelationshipsWithCandidates buildRelationshipWithCandidates(
       ParticipantEntity participant, List<ScreeningRelationship> relationships,
       List<ParticipantEntity> allParticipants) {
-    List<RelationshipTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
-    return null;
+    Set<RelationshipTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
+    ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
+        participant.getId(), participant.getDateOfBirth(), participant.getFirstName(),
+        participant.getMiddleName(), participant.getLastName(), participant.getNameSuffix(),
+        participant.getGender(), participant.getDateOfDeath(), participant.getSensitive(),
+        participant.getSealed(), null, relationshipTos, null);
+
+    return screeningRelationshipsWithCandidates;
   }
 
-  private List<RelationshipTo> getRelationshipsTo(List<ScreeningRelationship> relationships,
+  private Set<RelationshipTo> getRelationshipsTo(List<ScreeningRelationship> relationships,
       List<ParticipantEntity> allParticipants) {
     if (CollectionUtils.isEmpty(relationships) || CollectionUtils.isEmpty(allParticipants)) {
-      return Collections.emptyList();
+      return Collections.emptySet();
     }
 
-    List<RelationshipTo> relationshipTos = new ArrayList<>();
+    Set<RelationshipTo> relationshipTos = new HashSet<>();
     relationships.forEach(e ->
         relationshipTos.add(buildRelationshipTo(e, allParticipants))
     );
