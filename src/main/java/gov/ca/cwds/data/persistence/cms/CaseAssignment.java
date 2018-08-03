@@ -25,8 +25,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity(name = "CaseAssignment")
 @DiscriminatorValue(value = "CASEX")
 @PrimaryKeyJoinColumn(name = "IDENTIFIER")
-@SuppressWarnings("serial")
 public class CaseAssignment extends BaseAssignment {
+  private static final long serialVersionUID = 1L;
 
   public static final String FOLDED_KEY_CODE = "C";
 

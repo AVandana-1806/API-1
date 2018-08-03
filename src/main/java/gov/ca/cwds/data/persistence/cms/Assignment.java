@@ -46,10 +46,10 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
         + "AND C.onHoldIndicator = 'N' " + "ORDER BY C.archiveAssociationIndicator DESC")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.Assignment.findAssignmentsByReferralId",
     query = "FROM Assignment WHERE referral.id = :referralId")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "ASGNM_T")
 public class Assignment extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "IDENTIFIER", length = CMS_ID_LEN)

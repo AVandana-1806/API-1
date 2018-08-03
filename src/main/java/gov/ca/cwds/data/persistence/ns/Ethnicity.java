@@ -26,10 +26,10 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
     query = "FROM Ethnicity")
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.Ethnicity.findAllUpdatedAfter",
     query = "FROM Ethnicity WHERE lastUpdatedTime > :after")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "ethnicity")
 public class Ethnicity extends NsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_ethnicity")

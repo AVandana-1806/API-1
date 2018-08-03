@@ -36,12 +36,12 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "CRSS_RPT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CrossReport extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Column(name = "FKREFERL_T", length = CMS_ID_LEN)
   private String referralId;

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -38,6 +39,12 @@ public class CmsNSHelper {
 
   public Map<String, Map<CrudsService, Response>> handleResponse(
       Map<CrudsService, Request> cmsRequests, Map<CrudsService, Request> nsRequests) {
+    Boolean nonXaMarker = null;
+    if (!RequestExecutionContext.instance().isXaTransaction()) {
+      nonXaMarker = Boolean.TRUE;
+    }
+    Optional<Boolean> nonXa = Optional.ofNullable(nonXaMarker);
+
     final boolean isXa = RequestExecutionContext.instance().isXaTransaction();
     LOGGER.info("CmsNSHelper.handleResponse: isNonXa: {}", isXa);
     final Map<CrudsService, Response> cmsResponse = new HashMap<>();
@@ -52,9 +59,8 @@ public class CmsNSHelper {
     final Session sessionNS = nsSessionFactory.getCurrentSession();
 
     try {
-      if (!isXa) {
-        ManagedSessionContext.bind(sessionCMS); // NOSONAR
-      }
+      nonXa.ifPresent(nxa -> ManagedSessionContext.bind(sessionCMS)); // NOSONAR);
+
       final Transaction transactionCMS = sessionCMS.getTransaction();
 
       for (Entry<CrudsService, Request> cmsRequestsService : cmsRequests.entrySet()) {
@@ -62,24 +68,21 @@ public class CmsNSHelper {
           final CrudsService service = cmsRequestsService.getKey();
           referral = service.create(cmsRequests.get(service));
           cmsResponse.put(service, referral);
-          if (!isXa) {
-            sessionCMS.flush();
-          }
+
+          nonXa.ifPresent(nxa -> sessionCMS.flush());
+
         } catch (Exception e) {
           LOGGER.error("EXCEPTION CREATING CMS! {}", e.getMessage(), e);
 
           // NOT IN XA TRANSACTIONS!
           // Throwing an exception should suffice.
-          if (!isXa) {
-            transactionCMS.rollback();
-          }
+          nonXa.ifPresent(nxa -> transactionCMS.rollback());
+
           throw e;
         }
       }
 
-      if (!isXa) {
-        ManagedSessionContext.bind(sessionNS); // NOSONAR
-      }
+      nonXa.ifPresent(nxa -> ManagedSessionContext.bind(sessionNS)); // NOSONAR
 
       final Transaction transactionNS = sessionNS.getTransaction();
 
@@ -88,37 +91,36 @@ public class CmsNSHelper {
           final CrudsService service = nsRequestsService.getKey();
           person = service.create(nsRequests.get(service));
           nsResponse.put(service, person);
-          if (!isXa) {
-            sessionNS.flush();
-          }
+
+          nonXa.ifPresent(nxa -> sessionNS.flush());
+
         } catch (Exception e) {
           LOGGER.error("EXCEPTION CREATING NS! {}", e.getMessage(), e);
 
           // NOT IN XA TRANSACTIONS!
           // Throwing an exception should suffice.
-          if (!isXa) {
+          nonXa.ifPresent(nxa -> {
             transactionNS.rollback();
             transactionCMS.rollback();
-          }
-
+          });
           throw e;
         }
         try {
           // NOT IN XA TRANSACTIONS!
-          if (!isXa) {
+          nonXa.ifPresent(nxa -> {
             transactionCMS.commit();
             transactionNS.commit();
-          }
+          });
         } catch (Exception e) {
           LOGGER.error("EXCEPTION ON COMMIT! {}", e.getMessage(), e);
           throw e;
         }
       }
     } finally {
-      if (!isXa) {
+      nonXa.ifPresent(nxa -> {
         ManagedSessionContext.unbind(cmsSessionFactory); // NOSONAR
         ManagedSessionContext.unbind(nsSessionFactory); // NOSONAR
-      }
+      });
     }
 
     response.put("cms", cmsResponse);

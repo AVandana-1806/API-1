@@ -27,13 +27,13 @@ import gov.ca.cwds.data.persistence.PersistentObject;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "EXTINF_T")
 @IdClass(ExternalInterface.PrimaryKey.class)
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExternalInterface implements PersistentObject, Serializable {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Hibernate annotation {@link IdClass} requires that members match the id columns of the parent

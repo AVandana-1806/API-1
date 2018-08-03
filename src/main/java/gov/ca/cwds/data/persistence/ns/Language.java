@@ -25,10 +25,10 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.Language.findAll", query = "FROM Language")
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.Language.findAllUpdatedAfter",
     query = "FROM Language WHERE lastUpdatedTime > :after")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "language")
 public class Language extends NsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_language")

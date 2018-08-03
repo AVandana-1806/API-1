@@ -11,7 +11,7 @@ import gov.ca.cwds.rest.services.ServiceException;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("findbugs:EQ_DOESNT_OVERRIDE_EQUALS")
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS", "squid:S2160"})
 public class PostedAllegation extends Allegation {
 
   private static final long serialVersionUID = 1L;
