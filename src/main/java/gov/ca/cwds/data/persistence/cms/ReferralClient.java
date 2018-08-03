@@ -48,6 +48,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @IdClass(ReferralClient.PrimaryKey.class)
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class ReferralClient extends CmsPersistentObject {
   private static final long serialVersionUID = 1L;
 
@@ -200,7 +201,6 @@ public class ReferralClient extends CmsPersistentObject {
    * Doesn't actually load the data. Just checks the existence of the parent client record.
    * </p>
    */
-  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
@@ -208,7 +208,6 @@ public class ReferralClient extends CmsPersistentObject {
   @JoinColumn(name = "FKCLIENT_T", nullable = false, updatable = false, insertable = false)
   private Client client;
 
-  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
