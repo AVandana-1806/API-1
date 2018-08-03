@@ -214,8 +214,8 @@ public class ScreeningService implements CrudsService {
     final boolean success = RestStatus.OK == status || RestStatus.CREATED == status;
 
     if (!success) {
-      throw new ServiceException(
-          "Could not index screening. Status: " + status.getStatus() + ", Response: " + response);
+      throw new ServiceException("Could not index screening. Status: "
+          + (status != null ? status.getStatus() : "unknown") + ", Response: " + response);
     }
 
     return response;
@@ -252,6 +252,7 @@ public class ScreeningService implements CrudsService {
     if (screeningAddressEntities.size() > 1) {
       throw new ServiceException("Screening should have no more then 1 address");
     }
+
     for (ScreeningAddressEntity screeningAddressEntity : screeningAddressEntities) {
       final Addresses addressEntity = addressesDao.find(screeningAddressEntity.getAddressId());
       final AddressIntakeApi address = addressMapper.map(addressEntity);

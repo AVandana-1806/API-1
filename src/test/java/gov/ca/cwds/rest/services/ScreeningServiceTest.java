@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
@@ -77,6 +78,9 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     when(esClient.prepareIndex(any(), any(), any())).thenReturn(indexRequestBuilder);
     when(indexRequestBuilder.get()).thenReturn(indexResponse);
 
+    final ScreeningEntity screeningEntity = new ScreeningEntity();
+    when(screeningDao.find(any(Serializable.class))).thenReturn(screeningEntity);
+
     target = new ScreeningService();
     target.setEsDao(esDao);
     target.setScreeningDao(screeningDao);
@@ -98,24 +102,24 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
   @Test
   public void testCreate() {
     when(indexResponse.status()).thenReturn(RestStatus.CREATED);
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
-    Screening actual = target.create(screening);
+    final Screening actual = target.create(screening);
     assertThat(actual, is(screening));
   }
 
   @Test
   public void testUpdate() {
     when(indexResponse.status()).thenReturn(RestStatus.OK);
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "ssb", "Open", null);
-    Screening actual = target.update("abc", screening);
+    final Screening actual = target.update("abc", screening);
     assertThat(actual, is(screening));
   }
 
   @Test
   public void testUpdatePrimaryKeyValueMismatch() {
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
     try {
       target.update("abcd", screening);
@@ -134,19 +138,15 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     }
   }
 
-  @Test
+  @Test(expected = ServiceException.class)
   public void testUpdateRequestObjectTypMismatchn() {
-    Request request = new Screening();
-    try {
-      target.update("abc", request);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
+    final Request request = new Screening();
+    target.update("abc", request);
   }
 
   @Test
   public void testCreateRequestObjectTypMismatchn() {
-    Request request = new Screening();
+    final Request request = new Screening();
     try {
       target.create(request);
       fail("Expected exception");
@@ -156,26 +156,26 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
   @Test
   public void testFindScreeningDashboard() throws Exception {
-    ScreeningWrapper sw1 = new ScreeningWrapperEntityBuilder().build();
-    ScreeningWrapper sw2 = new ScreeningWrapperEntityBuilder().build();
+    final ScreeningWrapper sw1 = new ScreeningWrapperEntityBuilder().build();
+    final ScreeningWrapper sw2 = new ScreeningWrapperEntityBuilder().build();
 
-    List<ScreeningWrapper> screenings = new ArrayList<>();
+    final List<ScreeningWrapper> screenings = new ArrayList<>();
     screenings.add(sw1);
     screenings.add(sw2);
     when(screeningDao.findScreeningsByUserId(any())).thenReturn(screenings);
 
-    ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
-    List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
+    final ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
+    final List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
     assertThat(screeningDashboard.size(), is(2));
   }
 
   @Test
   public void testFindScreeningDashboardWhenEmptyShouldBeZero() throws Exception {
-    List<ScreeningWrapper> screenings = new ArrayList<>();
+    final List<ScreeningWrapper> screenings = new ArrayList<>();
     when(screeningDao.findScreeningsByUserId(any())).thenReturn(screenings);
 
-    ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
-    List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
+    final ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
+    final List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
     assertThat(screeningDashboard.size(), is(0));
   }
 
@@ -189,33 +189,33 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     assertThat(target, notNullValue());
   }
 
-  @Test
+  @Test(expected = NotImplementedException.class)
   public void find_A$Serializable() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
-    Response actual = target.find(primaryKey);
-    Response expected = null;
+    final Response actual = target.find(primaryKey);
+    final Response expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void findScreeningDashboard_A$() throws Exception {
-    Response actual = target.findScreeningDashboard();
+    final Response actual = target.findScreeningDashboard();
     assertThat(actual, is(notNullValue()));
   }
 
-  @Test
+  @Test(expected = NotImplementedException.class)
   public void delete_A$Serializable() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
-    Response actual = target.delete(primaryKey);
-    Response expected = null;
+    final Response actual = target.delete(primaryKey);
+    final Response expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
-  @Test
+  @Test(expected = NullPointerException.class)
   public void create_A$Request() throws Exception {
     final Request request = new Screening();
-    Screening actual = target.create(request);
-    Screening expected = null;
+    final Screening actual = target.create(request);
+    final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -223,40 +223,40 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
   public void update_A$Serializable$Request() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
     final Request request = new Screening();
-    Screening actual = target.update(primaryKey, request);
-    Screening expected = null;
+    final Screening actual = target.update(primaryKey, request);
+    final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void getScreening_A$String() throws Exception {
-    String id = null;
-    Screening actual = target.getScreening(id);
-    Screening expected = null;
+    final String id = DEFAULT_CLIENT_ID;
+    final Screening actual = target.getScreening(id);
+    final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void createScreening_A$Screening() throws Exception {
-    Screening screening = new Screening();
-    Screening actual = target.createScreening(screening);
-    Screening expected = null;
+    final Screening screening = new Screening();
+    final Screening actual = target.createScreening(screening);
+    final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void updateScreening_A$String$Screening() throws Exception {
-    String id = null;
-    Screening screening = new Screening();
+    final String id = DEFAULT_CLIENT_ID;
+    final Screening screening = new Screening();
 
-    Screening actual = target.updateScreening(id, screening);
-    Screening expected = null;
+    final Screening actual = target.updateScreening(id, screening);
+    final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void setEsDao_A$ElasticsearchDao() throws Exception {
-    ElasticsearchDao esDao = mock(ElasticsearchDao.class);
+    final ElasticsearchDao esDao = mock(ElasticsearchDao.class);
     target.setEsDao(esDao);
   }
 
