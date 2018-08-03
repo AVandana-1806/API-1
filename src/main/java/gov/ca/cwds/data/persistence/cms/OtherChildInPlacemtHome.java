@@ -39,6 +39,7 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @Table(name = "OTH_KIDT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class OtherChildInPlacemtHome extends BaseOtherChildInPlacemtHome {
 
   private static final long serialVersionUID = 1L;
