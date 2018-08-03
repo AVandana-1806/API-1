@@ -26,7 +26,7 @@ import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
-import gov.ca.cwds.data.persistence.xa.PhineasMethodLoggerInterceptor;
+import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
@@ -215,7 +215,7 @@ public class ServicesModule extends AbstractModule {
     requestInjection(xaInterceptor);
 
     // Monitor DAO activity.
-    final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+    final CaresMethodInterceptor daoInterceptor = new CaresMethodInterceptor();
     bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
     requestInjection(daoInterceptor);
 

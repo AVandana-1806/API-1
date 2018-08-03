@@ -84,7 +84,7 @@ public class CaresUnitOfWorkInterceptorTest extends Doofenshmirtz<ClientAddress>
 
   @Test
   public void invoke_A$orgaopallianceinterceptMethodInvocation_T$Throwable() throws Throwable {
-    org.aopalliance.intercept.MethodInvocation mi =
+    final org.aopalliance.intercept.MethodInvocation mi =
         mock(org.aopalliance.intercept.MethodInvocation.class);
     try {
       target.invoke(mi);

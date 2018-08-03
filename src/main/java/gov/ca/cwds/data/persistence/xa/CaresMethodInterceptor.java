@@ -22,7 +22,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
  * <blockquote>
  *
  * <pre>
- * final PhineasMethodLoggerInterceptor daoInterceptor = new PhineasMethodLoggerInterceptor();
+ * final CaresMethodInterceptor daoInterceptor = new CaresMethodInterceptor();
  * bindInterceptor(Matchers.subclassesOf(CrudsDao.class), Matchers.any(), daoInterceptor);
  * requestInjection(daoInterceptor);
  * </pre>
@@ -31,20 +31,26 @@ import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
  *
  * @author CWDS API Team
  */
-public class PhineasMethodLoggerInterceptor
+public class CaresMethodInterceptor
     implements org.aopalliance.intercept.MethodInterceptor, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(PhineasMethodLoggerInterceptor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CaresMethodInterceptor.class);
 
   private static final Map<Method, AtomicLong> totalCounts = new ConcurrentHashMap<>();
 
   private static final ThreadLocal<Map<Method, AtomicLong>> requestCalls =
       ThreadLocal.withInitial(HashMap::new);
 
-  private long incrementCount(Method m, Map<Method, AtomicLong> map) {
+  /**
+   * Increment counts in a method count map.
+   * 
+   * @param m join point method
+   * @param map method count map
+   * @return current count
+   */
+  protected long incrementCount(Method m, Map<Method, AtomicLong> map) {
     AtomicLong count;
 
     if (map.containsKey(m)) {
@@ -93,15 +99,16 @@ public class PhineasMethodLoggerInterceptor
           m.getName());
       CaresStackUtils.logStack();
 
-      LOGGER.trace("Phineas interceptor: before method: {}", m);
+      final long start = System.currentTimeMillis();
+      LOGGER.trace("before method: {}", m);
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
       final long requestCalls = incrementRequestCount(m);
-      LOGGER.info("Phineas interceptor: after  method: {}, total: {}, request: {}", m, totalCalls,
-          requestCalls);
+      LOGGER.info("after  method: {}, total: {}, request: {}, millis: {}", m, totalCalls,
+          requestCalls, (System.currentTimeMillis() - start));
       return result;
     } catch (Exception e) {
-      LOGGER.error("Phineas interceptor: ERROR! {}", e.getMessage(), e);
+      LOGGER.error("ERROR! {}", e.getMessage(), e);
       throw e;
     }
   }

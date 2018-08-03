@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
-import gov.ca.cwds.data.persistence.xa.PhineasMethodLoggerInterceptor;
+import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
 import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
 import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
@@ -46,7 +46,7 @@ import io.dropwizard.hibernate.UnitOfWorkAspect;
  *
  * @author CWDS API Team
  */
-public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
+public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
 
   private static final long serialVersionUID = 1L;
 
