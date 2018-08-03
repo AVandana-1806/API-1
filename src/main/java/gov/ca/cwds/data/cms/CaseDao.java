@@ -1,9 +1,9 @@
 package gov.ca.cwds.data.cms;
 
 import java.util.Collection;
-
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
@@ -40,7 +40,7 @@ public class CaseDao extends CrudsDaoImpl<CmsCase> {
    */
   public Map<String, CmsCase> findByClientIds(Collection<String> clientIds) {
     @SuppressWarnings("unchecked")
-    final Query<CmsCase> query = this.getSessionFactory().getCurrentSession()
+    final Query<CmsCase> query = this.grabSession()
         .getNamedQuery("gov.ca.cwds.data.persistence.cms.CmsCase.findByClientIds");
     query.setParameterList("clientIds", clientIds, StringType.INSTANCE);
     return query.list().stream().collect(Collectors.toMap(CmsCase::getId, c -> c));
@@ -54,9 +54,8 @@ public class CaseDao extends CrudsDaoImpl<CmsCase> {
    */
   public CmsCase[] findAllRelatedByVictimClientId(String clientId) {
     @SuppressWarnings("unchecked")
-    final NativeQuery<CmsCase> query =
-        this.getSessionFactory().getCurrentSession().getNamedNativeQuery(
-            "gov.ca.cwds.data.persistence.cms.CmsCase.findAllRelatedByVictimClientId");
+    final NativeQuery<CmsCase> query = this.grabSession().getNamedNativeQuery(
+        "gov.ca.cwds.data.persistence.cms.CmsCase.findAllRelatedByVictimClientId");
     query.setParameter("clientId", clientId, StringType.INSTANCE);
     return query.list().toArray(new CmsCase[0]);
   }

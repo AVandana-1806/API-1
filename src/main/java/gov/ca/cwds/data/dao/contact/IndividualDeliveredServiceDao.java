@@ -29,9 +29,8 @@ public class IndividualDeliveredServiceDao extends CrudsDaoImpl<IndividualDelive
 
   @SuppressWarnings("unchecked")
   public IndividualDeliveredServiceEntity[] findByDeliveredServiceId(String deliveredServiceId) {
-    final Query<IndividualDeliveredServiceEntity> query =
-        this.getSessionFactory().getCurrentSession().getNamedQuery(
-            "gov.ca.cwds.data.persistence.contact.IndividualDeliveredServiceEntity.findAllForDeliveredService");
+    final Query<IndividualDeliveredServiceEntity> query = this.grabSession().getNamedQuery(
+        "gov.ca.cwds.data.persistence.contact.IndividualDeliveredServiceEntity.findAllForDeliveredService");
     query.setParameter("deliveredServiceId", deliveredServiceId, StringType.INSTANCE);
     return query.list().toArray(new IndividualDeliveredServiceEntity[0]);
   }

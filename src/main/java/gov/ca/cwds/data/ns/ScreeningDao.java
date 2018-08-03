@@ -41,9 +41,9 @@ public class ScreeningDao extends BaseDaoImpl<ScreeningEntity> {
    */
   public ScreeningEntity[] findScreeningsByReferralId(String referralId) {
     @SuppressWarnings("unchecked")
-    final Query<ScreeningEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(constructNamedQueryName("findScreeningsByReferralId"))
-        .setParameter("referralId", referralId);
+    final Query<ScreeningEntity> query =
+        this.grabSession().getNamedQuery(constructNamedQueryName("findScreeningsByReferralId"))
+            .setParameter("referralId", referralId);
     return query.list().toArray(new ScreeningEntity[0]);
   }
 
@@ -55,9 +55,9 @@ public class ScreeningDao extends BaseDaoImpl<ScreeningEntity> {
    */
   public Set<ScreeningEntity> findScreeningsByClientIds(Collection<String> clientIds) {
     @SuppressWarnings("unchecked")
-    final Query<ScreeningEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(constructNamedQueryName("findScreeningsByClientIds"))
-        .setParameter("clientIds", clientIds);
+    final Query<ScreeningEntity> query =
+        this.grabSession().getNamedQuery(constructNamedQueryName("findScreeningsByClientIds"))
+            .setParameter("clientIds", clientIds);
     return new HashSet<>(query.list());
   }
 
@@ -70,8 +70,8 @@ public class ScreeningDao extends BaseDaoImpl<ScreeningEntity> {
   public List<ScreeningWrapper> findScreeningsByUserId(String staffId) {
     @SuppressWarnings("unchecked")
     final Query<ScreeningWrapper> query =
-        this.getSessionFactory().getCurrentSession().getNamedQuery(ScreeningWrapper.FIND_BY_USER_ID)
-            .setParameter("staffId", staffId, StringType.INSTANCE);
+        this.grabSession().getNamedQuery(ScreeningWrapper.FIND_BY_USER_ID).setParameter("staffId",
+            staffId, StringType.INSTANCE);
     return query.list();
   }
 
