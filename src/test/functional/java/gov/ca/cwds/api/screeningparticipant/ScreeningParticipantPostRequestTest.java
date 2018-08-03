@@ -36,6 +36,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddSameCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
@@ -86,6 +87,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore
   public void particpantCreateFailedToAddDifferentCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);

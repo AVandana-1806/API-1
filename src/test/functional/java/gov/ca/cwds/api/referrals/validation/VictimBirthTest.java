@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -77,7 +76,6 @@ public class VictimBirthTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testSucessValidBirthDateGiven() throws JsonProcessingException {
     String dateOfBith = "2010-06-18";
     String approximateAge = null;
@@ -93,7 +91,6 @@ public class VictimBirthTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testSucessValidAgeAndAgeUnitGiven() {
     String dateOfBith = null;
     String approximateAge = "12";
