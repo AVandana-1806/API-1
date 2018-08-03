@@ -9,14 +9,20 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
-import gov.ca.cwds.fixture.investigation.RelationshipToEntityBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo.CandidateToBuilder;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo.RelatedToBuilder;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,15 +72,16 @@ public class RelationshipFacade {
     List<ParticipantEntity> allParticipants = participantDao.findByIds(participantIds);
     Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant = getRelationshipsMappedByPrimaryParticipant(
         screeningRelationships, allParticipants);
+
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = buildRelationshipsWitCandidates(
-        relationshipsByPrimaryParticipant, allParticipants);
+        relationshipsByPrimaryParticipant, allParticipants, screeningId);
 
     return relationshipsWithCandidates;
   }
 
   private List<gov.ca.cwds.rest.api.Response> buildRelationshipsWitCandidates(
       Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant,
-      List<ParticipantEntity> allParticipants) {
+      List<ParticipantEntity> allParticipants, String screeningId) {
     if (MapUtils.isEmpty(relationshipsByPrimaryParticipant) || CollectionUtils
         .isEmpty(allParticipants)) {
       return Collections.emptyList();
@@ -83,64 +90,136 @@ public class RelationshipFacade {
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
     relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
       if (CollectionUtils.isNotEmpty(relationships)) {
-        relationshipsWithCandidates
-            .add(buildRelationshipWithCandidates(participant, relationships, allParticipants));
+        Optional<ScreeningRelationshipsWithCandidates> screeningRelationshipsWithCandidates = buildRelationshipWithCandidates(
+            participant, relationships, allParticipants,
+            screeningId);
+        if (screeningRelationshipsWithCandidates.isPresent()) {
+          relationshipsWithCandidates
+              .add(screeningRelationshipsWithCandidates.get());
+        }
+
       }
     });
     return relationshipsWithCandidates;
   }
 
-  private ScreeningRelationshipsWithCandidates buildRelationshipWithCandidates(
+  private Optional<ScreeningRelationshipsWithCandidates> buildRelationshipWithCandidates(
       ParticipantEntity participant, List<ScreeningRelationship> relationships,
-      List<ParticipantEntity> allParticipants) {
-    Set<RelationshipTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
-    ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates(
-        participant.getId(), participant.getDateOfBirth(), participant.getFirstName(),
-        participant.getMiddleName(), participant.getLastName(), participant.getNameSuffix(),
-        participant.getGender(), participant.getDateOfDeath(), participant.getSensitive(),
-        participant.getSealed(), null, relationshipTos, null);
+      List<ParticipantEntity> allParticipants, String screeningId) {
+    Set<RelatedTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
+    Set<CandidateTo> candidatesTo = getCandidatesTo(participant, relationships, allParticipants);
 
-    return screeningRelationshipsWithCandidates;
+    if (!StringUtils.equals(participant.getScreeningId(), screeningId)) {
+      return Optional.empty();
+    }
+
+    ScreeningRelationshipsWithCandidatesBuilder screeningRelationshipsWithCandidatesBuilder = new ScreeningRelationshipsWithCandidatesBuilder();
+    ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = screeningRelationshipsWithCandidatesBuilder
+        .witCandidatesTo(candidatesTo)
+        .withRelatedTo(relationshipTos)
+        .withId(participant.getId()).withDateOfBirth(participant.getDateOfBirth())
+        .withFirstName(participant.getFirstName()).withMiddleName(participant.getMiddleName())
+        .withLastName(participant.getLastName())
+        .withSuffixName(participant.getNameSuffix()).withGender(participant.getGender())
+        .withDateOfDeath(participant.getDateOfDeath()).withSealed(participant.getSealed())
+        .withSensitive(participant.getSensitive()).withAge(participant.getApproximateAge())
+        .withAgeUnit(participant.getApproximateAgeUnits()).build();
+    return Optional.of(screeningRelationshipsWithCandidates);
   }
 
-  private Set<RelationshipTo> getRelationshipsTo(List<ScreeningRelationship> relationships,
+  private Set<CandidateTo> getCandidatesTo(ParticipantEntity participant,
+      List<ScreeningRelationship> relationships,
+      List<ParticipantEntity> allParticipants) {
+    if (CollectionUtils.isEmpty(allParticipants)) {
+      return Collections.emptySet();
+    }
+
+    Set<CandidateTo> candidates = new HashSet<>();
+    allParticipants.forEach(
+        relatedCandidate -> enrichCandidates(participant, relatedCandidate, relationships,
+            candidates));
+    return candidates;
+  }
+
+  private void enrichCandidates(final ParticipantEntity participant,
+      final ParticipantEntity relatedCandidate,
+      final List<ScreeningRelationship> relationships, final Set<CandidateTo> candidates) {
+
+    if (StringUtils.isEmpty(participant.getScreeningId()) ||
+        StringUtils.isEmpty(relatedCandidate.getScreeningId()) ||
+        !StringUtils.equals(participant.getScreeningId(), relatedCandidate.getScreeningId()) ||
+        StringUtils.equals(participant.getScreeningId(), relatedCandidate.getScreeningId())) {
+      return;
+    }
+
+    if (relationshipExist(participant, relatedCandidate, relationships)) {
+      return;
+    }
+
+    CandidateToBuilder builder = new CandidateToBuilder();
+    builder.withCandidateAge(relatedCandidate.getApproximateAge())
+        .withCandidateAgeUnit(relatedCandidate.getApproximateAgeUnits())
+        .withCandidateDateOfBirth(relatedCandidate.getDateOfBirth())
+        .withCandidateFirstName(relatedCandidate.getFirstName())
+        .withCandidateLastName(relatedCandidate.getLastName())
+        .withCandidateMiddleName(relatedCandidate.getMiddleName())
+        .withCandidateSuffixtName(relatedCandidate.getNameSuffix())
+        .withId(relatedCandidate.getId());
+    candidates.add(builder.build());
+  }
+
+  private boolean relationshipExist(final ParticipantEntity participant,
+      final ParticipantEntity relatedCandidate, final List<ScreeningRelationship> relationships) {
+    if (CollectionUtils.isEmpty(relationships)) {
+      return false;
+    }
+
+    Optional<ScreeningRelationship> existingRelationshiop = relationships.stream().filter(
+        e -> e.getClientId().equals(participant.getId()) && e.getRelativeId()
+            .equals(relatedCandidate.getId())).findFirst();
+    return existingRelationshiop.isPresent();
+  }
+
+  private Set<RelatedTo> getRelationshipsTo(List<ScreeningRelationship> relationships,
       List<ParticipantEntity> allParticipants) {
     if (CollectionUtils.isEmpty(relationships) || CollectionUtils.isEmpty(allParticipants)) {
       return Collections.emptySet();
     }
 
-    Set<RelationshipTo> relationshipTos = new HashSet<>();
+    Set<RelatedTo> relationshipTos = new HashSet<>();
     relationships.forEach(e ->
         relationshipTos.add(buildRelationshipTo(e, allParticipants))
     );
     return relationshipTos;
   }
 
-  private RelationshipTo buildRelationshipTo(ScreeningRelationship relationship,
+  private RelatedTo buildRelationshipTo(ScreeningRelationship relationship,
       List<ParticipantEntity> allParticipants) {
-    ParticipantEntity relatedParticipant = allParticipants.stream()
-        .filter(e -> relationship.getRelativeId().equals(e.getId())).findFirst().orElse(null);
+    Optional<ParticipantEntity> relatedParticipant = allParticipants.stream()
+        .filter(e -> relationship.getRelativeId().equals(e.getId())).findFirst();
 
-    RelationshipToEntityBuilder builder = new RelationshipToEntityBuilder();
-    builder.setId(relatedParticipant.getId());
-    builder.setRelatedFirstName(relatedParticipant.getFirstName());
-    builder.setRelatedMiddleName(relatedParticipant.getMiddleName());
-    builder.setRelatedLastName(relatedParticipant.getLastName());
-    builder.setRelatedNameSuffix(relatedParticipant.getNameSuffix());
-    builder.setRelatedGenderCode(relatedParticipant.getGender());
-    builder.setRelationship("");
-    builder.setRelationshipToPerson("");
-    builder.setCmsRecordDescriptor(new CmsRecordDescriptor());
-    builder.setAbsentParentCode(null);
-    builder.setSameHomeCode(relationship.getSameHomeStatus());
-    builder.setRelatedDateOfBirth(null);
-    builder.setRelatedDateOfDeath(null);
-    builder.setRelationshipStartDate(null);
-    builder.setRelationshipEndDate(null);
-    builder.setRelatedPersonSensitive(false);
-    builder.setRelatedPersonSealed(false);
+    if (!relatedParticipant.isPresent()) {
+      return null;
+    }
 
-    return builder.build();
+    RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
+
+    relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
+    relatedToBuilder.withRelatedAge(relatedParticipant.get().getApproximateAge())
+        .withRelatedAgeUnit(relatedParticipant.get().getApproximateAge())
+        .withRelatedDateOfBirth(relatedParticipant.get().getDateOfBirth())
+        .withRelatedFirstName(relatedParticipant.get().getFirstName())
+        .withRelatedGender(relatedParticipant.get().getGender())
+        .withRelatedLastName(relatedParticipant.get().getLastName())
+        .withRelatedMiddleName(relatedParticipant.get().getMiddleName())
+        .withRelatedNameSuffix(relatedParticipant.get().getNameSuffix())
+        .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
+        .withRelationshipEndDate(relationship.getEndDate())
+        .withRelationshipId(relationship.getId())
+        .withRelationshipStartDate(relationship.getStartDate()).withRelationshipToPerson("-1")
+        .withSameHomeCode(relationship.getSameHomeStatus());
+
+    return relatedToBuilder.build();
   }
 
   private Map<ParticipantEntity, List<ScreeningRelationship>> getRelationshipsMappedByPrimaryParticipant(
