@@ -345,7 +345,7 @@ public class ScreeningService implements CrudsService {
         allegationEntity.setCreatedAt(managedAllegationEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        allegationDao.getSessionFactory().getCurrentSession().detach(managedAllegationEntity);
+        allegationDao.grabSession().detach(managedAllegationEntity);
         allegationDao.update(allegationEntity);
         allegationIdsOld.remove(allegationEntity.getId());
       }
@@ -379,7 +379,7 @@ public class ScreeningService implements CrudsService {
         crossReportEntity.setCreatedAt(managedCrossReportEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        crossReportDao.getSessionFactory().getCurrentSession().detach(managedCrossReportEntity);
+        crossReportDao.grabSession().detach(managedCrossReportEntity);
         crossReportDao.update(crossReportEntity);
         crossReportIdsOld.remove(crossReportEntity.getId());
       }
@@ -411,7 +411,7 @@ public class ScreeningService implements CrudsService {
         agencyEntity.setCreatedAt(managedAgencyEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        agencyDao.getSessionFactory().getCurrentSession().detach(managedAgencyEntity);
+        agencyDao.grabSession().detach(managedAgencyEntity);
         agencyDao.update(agencyEntity);
       }
     }

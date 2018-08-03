@@ -29,8 +29,13 @@ public class ParticipantAddressesDao extends CrudsDaoImpl<ParticipantAddresses> 
     super(sessionFactory);
   }
 
+  /**
+   * @param participantId - participantId
+   * @return the Participant Addresses
+   */
+  @SuppressWarnings("unchecked")
   public Set<ParticipantAddresses> findByParticipantId(String participantId) {
-    final Query<ParticipantAddresses> query = this.getSessionFactory().getCurrentSession()
+    final Query<ParticipantAddresses> query = this.grabSession()
         .getNamedQuery(ParticipantAddresses.PARTICIPANT_ADDRESSES_BY_PARTICIPANT_ID)
         .setParameter(ParticipantAddresses.PARAM_PARTICIPANT_ID, participantId);
     return new HashSet<>(query.getResultList());

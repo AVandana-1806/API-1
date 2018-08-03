@@ -30,9 +30,8 @@ public class ReferralClientDeliveredServiceDao
 
   @SuppressWarnings("unchecked")
   public ReferralClientDeliveredServiceEntity[] findByReferralId(String referralId) {
-    final Query<ReferralClientDeliveredServiceEntity> query =
-        this.getSessionFactory().getCurrentSession().getNamedQuery(
-            "gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.findAllForReferralId");
+    final Query<ReferralClientDeliveredServiceEntity> query = this.grabSession().getNamedQuery(
+        "gov.ca.cwds.data.persistence.contact.ReferralClientDeliveredServiceEntity.findAllForReferralId");
     query.setParameter("referralId", referralId, StringType.INSTANCE);
     return query.list().toArray(new ReferralClientDeliveredServiceEntity[0]);
   }
