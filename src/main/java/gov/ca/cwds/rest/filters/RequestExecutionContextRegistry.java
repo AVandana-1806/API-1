@@ -20,6 +20,11 @@ public class RequestExecutionContextRegistry implements ApiMarker {
   private static final RequestContextCallbackRegistry callbackRegistry =
       new RequestContextCallbackRegistry();
 
+  /**
+   * Register a callback.
+   * 
+   * @param callback callback instance to register
+   */
   public static synchronized void registerCallback(RequestExecutionContextCallback callback) {
     callbackRegistry.register(callback);
   }

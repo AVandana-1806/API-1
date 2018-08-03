@@ -101,7 +101,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
   private void setLoggingContextParameters(String uniqueId, HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse) {
-    PerryUserIdentity user = (PerryUserIdentity) RequestExecutionContext.instance()
+    final PerryUserIdentity user = (PerryUserIdentity) RequestExecutionContext.instance()
         .get(RequestExecutionContext.Parameter.USER_IDENTITY);
 
     if (user != null) {
@@ -111,8 +111,8 @@ public class RequestResponseLoggingFilter implements Filter {
 
     loggingContext.setLogParameter(LogParameter.REMOTE_ADDRESS, httpServletRequest.getRemoteAddr());
 
-    String sessionId = httpServletRequest.getHeader(LogParameter.SESSION_ID.name());
-    String requestId = httpServletRequest.getHeader(LogParameter.REQUEST_ID.name());
+    final String sessionId = httpServletRequest.getHeader(LogParameter.SESSION_ID.name());
+    final String requestId = httpServletRequest.getHeader(LogParameter.REQUEST_ID.name());
 
     loggingContext.setLogParameter(LogParameter.REQUEST_ID,
         StringUtils.isBlank(requestId) ? uniqueId : requestId);

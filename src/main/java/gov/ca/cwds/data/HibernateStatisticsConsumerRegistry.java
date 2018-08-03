@@ -6,18 +6,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.hibernate.stat.Statistics;
 
 /**
+ * Track Hibernate statistics per request and per session factory.
+ * 
  * @author CWDS Intake Team
  */
 public final class HibernateStatisticsConsumerRegistry {
 
-  // one statistics consumer per bundle is currently enough
+  // One statistics consumer per bundle is currently enough
   private static Map<String, HibernateStatisticsConsumer> consumerMap = new ConcurrentHashMap<>();
 
   @FunctionalInterface
   public interface HibernateStatisticsConsumer {
 
-    default void prepare(Statistics hibernateStatistics) {
-    }
+    default void prepare(Statistics hibernateStatistics) {}
 
     void consume(Statistics hibernateStatistics);
   }

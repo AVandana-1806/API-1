@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.cms.RelationshipWrapper;
+import gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator;
 import gov.ca.cwds.inject.CmsSessionFactory;
 
 /**
@@ -51,6 +52,7 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
     final Query<ClientRelationship> query =
         grabSession().getNamedQuery(FIND_CLIENT_RELATIONSHIP_BY_PRIMARY_CLIENT_ID);
     query.setParameter("primaryClientId", primaryClientId, StringType.INSTANCE);
+    CaresQueryAccelerator.readOnlyQuery(query);
     return query.list().toArray(new ClientRelationship[0]);
   }
 
@@ -65,11 +67,12 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
     final Query<ClientRelationship> query =
         grabSession().getNamedQuery(FIND_CLIENT_RELATIONSHIP_BY_SECONDARY_CLIENT_ID);
     query.setParameter("secondaryClientId", secondaryClientId, StringType.INSTANCE);
+    CaresQueryAccelerator.readOnlyQuery(query);
     return query.list().toArray(new ClientRelationship[0]);
   }
 
   /**
-   * @param clientIds legacy client ID-s
+   * @param clientIds legacy client ID's
    * @return map where key is a clientId and value is the client primary relationships
    */
   @SuppressWarnings("unchecked")
@@ -81,6 +84,7 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
 
     final Query<ClientRelationship> query =
         grabSession().getNamedQuery(FIND_CLIENT_RELATIONSHIPS_BY_PRIMARY_CLIENT_IDS);
+    CaresQueryAccelerator.readOnlyQuery(query);
     query.setParameter("clientIds", clientIds);
 
     final Map<String, Collection<ClientRelationship>> relationships =
@@ -96,7 +100,7 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
   }
 
   /**
-   * @param clientIds legacy client ID-s
+   * @param clientIds legacy client ID's
    * @return map where key is a clientId and value is the client secondary relationships
    */
   @SuppressWarnings("unchecked")
@@ -108,6 +112,7 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
 
     final Query<ClientRelationship> query =
         grabSession().getNamedQuery(FIND_CLIENT_RELATIONSHIPS_BY_SECONDARY_CLIENT_IDS);
+    CaresQueryAccelerator.readOnlyQuery(query);
     query.setParameter("clientIds", clientIds);
 
     final Map<String, Collection<ClientRelationship>> relationships =
@@ -134,6 +139,7 @@ public class ClientRelationshipDao extends BaseDaoImpl<ClientRelationship> {
         grabSession().getNamedNativeQuery(FIND_ALL_RELATED_CLIENTS_BY_CLIENT_ID)
             .addEntity(RelationshipWrapper.class)
             .setParameter("clientId", clientId, StringType.INSTANCE);
+    CaresQueryAccelerator.readOnlyQuery(query);
     return query.list();
   }
 

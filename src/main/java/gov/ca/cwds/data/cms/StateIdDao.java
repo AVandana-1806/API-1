@@ -1,12 +1,16 @@
 package gov.ca.cwds.data.cms;
 
-import com.google.inject.Inject;
-import gov.ca.cwds.data.CrudsDaoImpl;
-import gov.ca.cwds.data.persistence.cms.StateId;
-import gov.ca.cwds.inject.CmsSessionFactory;
 import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+
+import com.google.inject.Inject;
+
+import gov.ca.cwds.data.CrudsDaoImpl;
+import gov.ca.cwds.data.persistence.cms.StateId;
+import gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator;
+import gov.ca.cwds.inject.CmsSessionFactory;
 
 /**
  * CWDS API Team
@@ -25,8 +29,9 @@ public class StateIdDao extends CrudsDaoImpl<StateId> {
 
   @SuppressWarnings("unchecked")
   public List<StateId> findAllByClientId(String clientId) {
-    Query query = namedQuery(getEntityClass().getName() + ".findByClientId");
+    final Query<StateId> query = namedQuery(getEntityClass().getName() + ".findByClientId");
     query.setParameter("clientId", clientId);
+    CaresQueryAccelerator.readOnlyQuery(query);
     return list(query);
   }
 
