@@ -164,4 +164,28 @@ public class CaresUnitOfWorkInterceptor extends PhineasMethodLoggerInterceptor {
     }
   }
 
+  public SessionFactory getCmsSessionFactory() {
+    return cmsSessionFactory;
+  }
+
+  public void setCmsSessionFactory(SessionFactory cmsSessionFactory) {
+    this.cmsSessionFactory = cmsSessionFactory;
+  }
+
+  public SessionFactory getRsSessionFactory() {
+    return rsSessionFactory;
+  }
+
+  public void setRsSessionFactory(SessionFactory rsSessionFactory) {
+    this.rsSessionFactory = rsSessionFactory;
+  }
+
+  public SessionFactory getNsSessionFactory() {
+    return nsSessionFactory;
+  }
+
+  public void setNsSessionFactory(SessionFactory nsSessionFactory) {
+    this.nsSessionFactory = nsSessionFactory;
+  }
+
 }
