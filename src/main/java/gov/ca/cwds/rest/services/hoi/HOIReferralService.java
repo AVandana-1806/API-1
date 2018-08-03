@@ -41,15 +41,13 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 public class HOIReferralService extends
     SimpleResourceService<HOIRequest, HOIReferral, HOIReferralResponse> implements HOIBaseService {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger LOGGER = LoggerFactory.getLogger(HOIReferralService.class);
 
-  private transient AuthorizationService authorizationService;
-  private transient ReferralClientDao referralClientDao;
-  private transient ReferralDao referralDao;
-  private transient StaffPersonDao staffPersonDao;
-  private transient AllegationDao allegationDao;
+  private AuthorizationService authorizationService;
+  private ReferralClientDao referralClientDao;
+  private ReferralDao referralDao;
+  private StaffPersonDao staffPersonDao;
+  private AllegationDao allegationDao;
 
   /**
    * Preferred constructor.
@@ -64,7 +62,6 @@ public class HOIReferralService extends
   public HOIReferralService(AuthorizationService authorizationService,
       ReferralClientDao referralClientDao, ReferralDao referralDao, StaffPersonDao staffPersonDao,
       AllegationDao allegationDao) {
-    super();
     this.authorizationService = authorizationService;
     this.referralClientDao = referralClientDao;
     this.referralDao = referralDao;

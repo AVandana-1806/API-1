@@ -28,12 +28,12 @@ import gov.ca.cwds.data.SystemCodeSerializer;
 @NamedQuery(
     name = "gov.ca.cwds.data.dao.investigation.InjuryBodyDetail.findInjuryBodyDetailsByAllegationId",
     query = "FROM InjuryBodyDetail WHERE primaryInjuryHarmDetailId = :allegationId")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "IJBD_DET")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InjuryBodyDetail extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "THIRD_ID", length = CMS_ID_LEN)

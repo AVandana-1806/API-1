@@ -26,10 +26,10 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
     query = "FROM PhoneNumber")
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.PhoneNumber.findAllUpdatedAfter",
     query = "FROM PhoneNumber WHERE lastUpdatedTime > :after")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "phone_number")
 public class PhoneNumber extends NsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_phone_number")

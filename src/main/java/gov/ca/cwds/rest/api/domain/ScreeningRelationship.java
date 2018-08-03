@@ -59,6 +59,7 @@ public class ScreeningRelationship extends ReportingDomain implements Request,
   private String legacyId;
 
   public ScreeningRelationship() {
+    //comment is required by sonar
   }
 
   public String getId() {

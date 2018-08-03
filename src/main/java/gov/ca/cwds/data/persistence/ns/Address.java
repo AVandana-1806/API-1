@@ -26,10 +26,10 @@ import gov.ca.cwds.rest.api.domain.AddressUtils;
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.Address.findAll", query = "FROM Address")
 @NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.Address.findAllUpdatedAfter",
     query = "FROM Address WHERE lastUpdatedTime > :after")
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "addresses")
 public class Address extends NsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_address_id")

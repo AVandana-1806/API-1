@@ -26,12 +26,12 @@ import org.apache.commons.lang3.builder.ToStringExclude;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "GV_XRPT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GovernmentOrganizationCrossReport extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "THIRD_ID", length = CMS_ID_LEN)

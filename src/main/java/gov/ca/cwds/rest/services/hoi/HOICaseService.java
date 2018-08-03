@@ -50,16 +50,14 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, HOICaseResponse>
     implements HOIBaseService {
 
-  private static final long serialVersionUID = 1L;
-
   private static final Logger LOGGER = LoggerFactory.getLogger(HOICaseService.class);
 
-  private transient CaseDao caseDao;
-  private transient ClientDao clientDao;
-  private transient ClientRelationshipDao clientRelationshipDao;
-  private transient StaffPersonDao staffPersonDao;
-  private transient AuthorizationService authorizationService;
-  private transient HOIParentsFactory hoiParentsFactory;
+  private CaseDao caseDao;
+  private ClientDao clientDao;
+  private ClientRelationshipDao clientRelationshipDao;
+  private StaffPersonDao staffPersonDao;
+  private AuthorizationService authorizationService;
+  private HOIParentsFactory hoiParentsFactory;
 
   /**
    * @param caseDao {@link Dao} handling {@link gov.ca.cwds.data.persistence.cms.CmsCase} objects

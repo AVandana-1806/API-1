@@ -50,7 +50,7 @@ public class GovernmentOrganizationService
 
   private final int instanceCounter;
 
-  private transient LoadingCache<String, GovernmentOrganizationResponse> governmentOrganizationResponseCache;
+  private LoadingCache<String, GovernmentOrganizationResponse> governmentOrganizationResponseCache;
 
   /**
    * Constructor
