@@ -14,13 +14,13 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeExclude;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import gov.ca.cwds.data.ns.NsPersistentObject;
 import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.rest.util.FerbDateUtils;
-import org.apache.commons.lang3.builder.HashCodeExclude;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
 /**
  * {@link NsPersistentObject} representing SafelySurrenderedBabies
@@ -29,6 +29,7 @@ import org.apache.commons.lang3.builder.ToStringExclude;
  */
 @Entity
 @Table(name = "safely_surrendered_babies")
+@SuppressWarnings({"common-java:DuplicatedBlocks"})
 public class SafelySurrenderedBabiesEntity implements PersistentObject, Serializable {
   private static final long serialVersionUID = 1L;
 

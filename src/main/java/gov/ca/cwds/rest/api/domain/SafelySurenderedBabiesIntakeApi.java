@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author CWDS API Team
  */
 @JsonSnakeCase
+@SuppressWarnings({"common-java:DuplicatedBlocks"})
 public class SafelySurenderedBabiesIntakeApi extends DomainObject {
 
   private static final long serialVersionUID = -5667060392833194010L;
