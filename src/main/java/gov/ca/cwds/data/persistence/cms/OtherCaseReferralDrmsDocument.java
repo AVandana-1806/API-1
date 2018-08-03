@@ -21,12 +21,12 @@ import java.util.Date;
  *
  * @author Intake Team 4
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "OTH_DOCT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OtherCaseReferralDrmsDocument extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Id
   @Column(name = "FKDRMSDOCT", length = CMS_ID_LEN)

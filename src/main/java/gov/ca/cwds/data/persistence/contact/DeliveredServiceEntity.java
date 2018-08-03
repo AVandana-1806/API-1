@@ -29,12 +29,12 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "DL_SVC_T")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeliveredServiceEntity extends CmsPersistentObject {
+  private static final long serialVersionUID = 1L;
 
   @Type(type = "short")
   @Column(name = "CFTLAGYC")

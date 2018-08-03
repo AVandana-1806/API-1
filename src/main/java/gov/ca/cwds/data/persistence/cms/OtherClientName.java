@@ -18,7 +18,6 @@ import gov.ca.cwds.data.persistence.PersistentObject;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.OtherClientName.findAll",
     query = "FROM OtherClientName WHERE clientId IN (SELECT id FROM Client WHERE sensitivityIndicator = 'N' AND soc158SealedClientIndicator = 'N')")
 @NamedNativeQuery(name = "gov.ca.cwds.data.persistence.cms.OtherClientName.findAllUpdatedAfter",
@@ -40,6 +39,7 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OtherClientName extends BaseOtherClientName {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Default constructor

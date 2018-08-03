@@ -60,7 +60,9 @@ public class ScreeningRelationship extends ReportingDomain
   @ApiModelProperty(value = "This indicates the legacy ID of relationship", example = "A1b2x")
   private String legacyId;
 
-  public ScreeningRelationship() {}
+  public ScreeningRelationship() {
+    // comment is required by sonar
+  }
 
   public String getId() {
     return id;

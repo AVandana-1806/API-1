@@ -17,7 +17,6 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
  * @author CWS-NS2
  *
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "person_race")
 @AssociationOverrides({
@@ -25,6 +24,7 @@ import gov.ca.cwds.data.ns.NsPersistentObject;
         joinColumns = @JoinColumn(name = "person_id")),
     @AssociationOverride(name = "personRaceId.race", joinColumns = @JoinColumn(name = "race_id"))})
 public class PersonRace extends NsPersistentObject implements Serializable {
+  private static final long serialVersionUID = 1L;
 
   @EmbeddedId
   private PersonRaceId personRaceId = new PersonRaceId();

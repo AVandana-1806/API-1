@@ -86,7 +86,9 @@ public class Relationship implements PersistentObject {
   @Column(name = "legacy_id")
   private String legacyId;
 
-  public Relationship() {}
+  public Relationship() {
+    // comment is required by sonar
+  }
 
   @Override
   public Serializable getPrimaryKey() {
