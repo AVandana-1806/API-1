@@ -473,4 +473,101 @@ public class ScreeningService implements CrudsService {
     this.screeningDao = screeningDao;
   }
 
+  public AllegationIntakeDao getAllegationDao() {
+    return allegationDao;
+  }
+
+  public void setAllegationDao(AllegationIntakeDao allegationDao) {
+    this.allegationDao = allegationDao;
+  }
+
+  public AddressesDao getAddressesDao() {
+    return addressesDao;
+  }
+
+  public void setAddressesDao(AddressesDao addressesDao) {
+    this.addressesDao = addressesDao;
+  }
+
+  public ScreeningAddressDao getScreeningAddressDao() {
+    return screeningAddressDao;
+  }
+
+  public void setScreeningAddressDao(ScreeningAddressDao screeningAddressDao) {
+    this.screeningAddressDao = screeningAddressDao;
+  }
+
+  public AgencyDao getAgencyDao() {
+    return agencyDao;
+  }
+
+  public void setAgencyDao(AgencyDao agencyDao) {
+    this.agencyDao = agencyDao;
+  }
+
+  public CrossReportDao getCrossReportDao() {
+    return crossReportDao;
+  }
+
+  public void setCrossReportDao(CrossReportDao crossReportDao) {
+    this.crossReportDao = crossReportDao;
+  }
+
+  public ParticipantIntakeApiService getParticipantIntakeApiService() {
+    return participantIntakeApiService;
+  }
+
+  public void setParticipantIntakeApiService(
+      ParticipantIntakeApiService participantIntakeApiService) {
+    this.participantIntakeApiService = participantIntakeApiService;
+  }
+
+  public ScreeningMapper getScreeningMapper() {
+    return screeningMapper;
+  }
+
+  public void setScreeningMapper(ScreeningMapper screeningMapper) {
+    this.screeningMapper = screeningMapper;
+  }
+
+  public AddressMapper getAddressMapper() {
+    return addressMapper;
+  }
+
+  public void setAddressMapper(AddressMapper addressMapper) {
+    this.addressMapper = addressMapper;
+  }
+
+  public AgencyMapper getAgencyMapper() {
+    return agencyMapper;
+  }
+
+  public void setAgencyMapper(AgencyMapper agencyMapper) {
+    this.agencyMapper = agencyMapper;
+  }
+
+  public AllegationMapper getAllegationMapper() {
+    return allegationMapper;
+  }
+
+  public void setAllegationMapper(AllegationMapper allegationMapper) {
+    this.allegationMapper = allegationMapper;
+  }
+
+  public CrossReportMapper getCrossReportMapper() {
+    return crossReportMapper;
+  }
+
+  public void setCrossReportMapper(CrossReportMapper crossReportMapper) {
+    this.crossReportMapper = crossReportMapper;
+  }
+
+  public ElasticsearchDao getEsDao() {
+    return esDao;
+  }
+
+  public ScreeningDao getScreeningDao() {
+    return screeningDao;
+  }
+
 }

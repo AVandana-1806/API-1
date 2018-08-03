@@ -26,7 +26,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import gov.ca.cwds.data.es.ElasticsearchDao;
+import gov.ca.cwds.data.ns.AllegationIntakeDao;
+import gov.ca.cwds.data.ns.CrossReportDao;
+import gov.ca.cwds.data.ns.ScreeningAddressDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.persistence.ns.CrossReportEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningWrapper;
 import gov.ca.cwds.fixture.ScreeningWrapperEntityBuilder;
@@ -37,6 +41,9 @@ import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboard;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboardList;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
+import gov.ca.cwds.rest.services.mapper.AllegationMapper;
+import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
+import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
@@ -53,6 +60,9 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
   private ScreeningDao screeningDao;
 
   @Mock
+  private AllegationIntakeDao allegationDao;
+
+  @Mock
   private Client esClient;
 
   @Mock
@@ -63,6 +73,23 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
   @Mock
   private ElasticsearchConfiguration esConfig;
+
+  @Mock
+  private ScreeningMapper screeningMapper;
+
+  @Mock
+  private AllegationMapper allegationMapper;
+
+  @Mock
+  private CrossReportDao crossReportDao;
+
+  CrossReportMapper crossReportMapper = CrossReportMapper.INSTANCE;
+
+  @Mock
+  private ScreeningAddressDao screeningAddressDao;
+
+  @Mock
+  private ParticipantIntakeApiService participantIntakeApiService;
 
   @Override
   @Before
@@ -80,10 +107,25 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
     final ScreeningEntity screeningEntity = new ScreeningEntity();
     when(screeningDao.find(any(Serializable.class))).thenReturn(screeningEntity);
+    when(screeningDao.create(screeningEntity)).thenReturn(screeningEntity);
+
+    final Screening screening = new Screening();
+    when(screeningMapper.map(any(ScreeningEntity.class))).thenReturn(screening);
+    when(screeningMapper.map(any(Screening.class))).thenReturn(screeningEntity);
+
+    final List<CrossReportEntity> crossReportEntities = new ArrayList<>();
+    when(crossReportDao.findByScreeningId(any(String.class))).thenReturn(crossReportEntities);
 
     target = new ScreeningService();
     target.setEsDao(esDao);
     target.setScreeningDao(screeningDao);
+    target.setScreeningMapper(screeningMapper);
+    target.setAllegationDao(allegationDao);
+    target.setAllegationMapper(allegationMapper);
+    target.setCrossReportDao(crossReportDao);
+    target.setCrossReportMapper(crossReportMapper);
+    target.setScreeningAddressDao(screeningAddressDao);
+    target.setParticipantIntakeApiService(participantIntakeApiService);
 
     new TestingRequestExecutionContext("0X5");
   }
@@ -144,14 +186,10 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     target.update("abc", request);
   }
 
-  @Test
+  @Test(expected = ServiceException.class)
   public void testCreateRequestObjectTypMismatchn() {
     final Request request = new Screening();
-    try {
-      target.create(request);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
+    target.create(request);
   }
 
   @Test
@@ -211,7 +249,7 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     assertThat(actual, is(equalTo(expected)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = ServiceException.class)
   public void create_A$Request() throws Exception {
     final Request request = new Screening();
     final Screening actual = target.create(request);
@@ -219,10 +257,12 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     assertThat(actual, is(equalTo(expected)));
   }
 
-  @Test
+  @Test(expected = ServiceException.class)
   public void update_A$Serializable$Request() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
-    final Request request = new Screening();
+    final Screening request = new Screening();
+    request.setId(DEFAULT_CLIENT_ID);
+
     final Screening actual = target.update(primaryKey, request);
     final Screening expected = null;
     assertThat(actual, is(equalTo(expected)));
@@ -232,26 +272,24 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
   public void getScreening_A$String() throws Exception {
     final String id = DEFAULT_CLIENT_ID;
     final Screening actual = target.getScreening(id);
-    final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void createScreening_A$Screening() throws Exception {
     final Screening screening = new Screening();
     final Screening actual = target.createScreening(screening);
-    final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void updateScreening_A$String$Screening() throws Exception {
     final String id = DEFAULT_CLIENT_ID;
-    final Screening screening = new Screening();
+    final Screening request = new Screening();
+    request.setId(DEFAULT_CLIENT_ID);
 
-    final Screening actual = target.updateScreening(id, screening);
-    final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final Screening actual = target.updateScreening(id, request);
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test
