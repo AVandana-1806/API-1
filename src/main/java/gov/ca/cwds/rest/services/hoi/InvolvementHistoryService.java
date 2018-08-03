@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
@@ -16,7 +17,6 @@ import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import io.dropwizard.hibernate.UnitOfWork;
-import org.hibernate.FlushMode;
 
 /**
  * Business layer object to work on Screening History Of Involvement.
@@ -71,7 +71,7 @@ public class InvolvementHistoryService
   @UnitOfWork(value = "ns", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromNS(InvolvementHistoryData ihd) {
-    HOIScreeningData hsd = ihd.getHoiScreeningData();
+    final HOIScreeningData hsd = ihd.getHoiScreeningData();
     if (hsd.getClientIds().isEmpty() && ihd.getScreeningId() != null) {
       // load client ID-s by incoming screening ID-s
       hsd.setClientIds(participantDao.findLegacyIdListByScreeningId(ihd.getScreeningId()));
@@ -84,19 +84,19 @@ public class InvolvementHistoryService
   @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromCMS(InvolvementHistoryData ihd) {
-    HOIScreeningData hsd = ihd.getHoiScreeningData();
+    final HOIScreeningData hsd = ihd.getHoiScreeningData();
     if (!hsd.getClientIds().isEmpty()) {
       hoiScreeningService.fetchDataFromCMS(hsd);
-      HOIRequest hoiRequest = new HOIRequest(hsd.getClientIds());
+      final HOIRequest hoiRequest = new HOIRequest(hsd.getClientIds());
       ihd.setHoiCases(hoiCaseService.handleFind(hoiRequest).getHoiCases());
       ihd.setHoiReferrals(hoiReferralService.handleFind(hoiRequest).getHoiReferrals());
     }
   }
 
   private void buildHoiScreenings(InvolvementHistoryData ihd) {
-    Set<HOIScreening> hoiScreeningSet = hoiScreeningService
-        .buildHoiScreenings(ihd.getHoiScreeningData());
-    List<HOIScreening> hoiScreenings = new ArrayList<>(hoiScreeningSet);
+    final Set<HOIScreening> hoiScreeningSet =
+        hoiScreeningService.buildHoiScreenings(ihd.getHoiScreeningData());
+    final List<HOIScreening> hoiScreenings = new ArrayList<>(hoiScreeningSet);
     if (ihd.getScreeningId() != null) {
       // exclude the screening with the incoming screening ID
       hoiScreenings.removeIf(screening -> screening.getId().equals(ihd.getScreeningId()));

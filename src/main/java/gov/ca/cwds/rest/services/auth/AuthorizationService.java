@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthorizedException;
 
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -12,10 +13,9 @@ import gov.ca.cwds.rest.api.domain.auth.AuthorizationRequest;
 import gov.ca.cwds.rest.api.domain.auth.AuthorizationResponse;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.security.annotations.Authorize;
-import org.apache.shiro.authz.UnauthorizedException;
 
 /**
- * Service to check that logged in staff person is authorized to access entities
+ * Service to check that logged-in staff person is authorized to access entities.
  * 
  * @author CWDS API Team
  */
@@ -52,7 +52,8 @@ public class AuthorizationService
     // Authorizer annotation does the work
   }
 
-  public Collection<String> filterClientIds(@Authorize("client:read:clientIds") Collection<String> clientIds) {
+  public Collection<String> filterClientIds(
+      @Authorize("client:read:clientIds") Collection<String> clientIds) {
     // Authorizer annotation does the work
     return clientIds;
   }
@@ -67,7 +68,7 @@ public class AuthorizationService
    */
   public void ensureClientAccessAuthorized(Collection<String> clientIds) {
     if (clientIds != null && !clientIds.isEmpty()) {
-      Collection<String> filteredClientIds = filterClientIds(clientIds);
+      final Collection<String> filteredClientIds = filterClientIds(clientIds);
       if (clientIds.size() != filteredClientIds.size()) {
         throw new UnauthorizedException();
       }
@@ -89,10 +90,10 @@ public class AuthorizationService
     }
 
     // Check participants
-    Set<ParticipantEntity> participants = screeningEntity.getParticipants();
+    final Set<ParticipantEntity> participants = screeningEntity.getParticipants();
     if (participants != null) {
       for (ParticipantEntity participant : participants) {
-        String participantId = participant.getLegacyId();
+        final String participantId = participant.getLegacyId();
         if (StringUtils.isNotBlank(participantId)) {
           ensureClientAccessAuthorized(participantId);
         }

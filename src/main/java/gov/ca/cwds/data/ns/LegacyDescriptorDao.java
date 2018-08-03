@@ -72,10 +72,10 @@ public class LegacyDescriptorDao extends CrudsDaoImpl<LegacyDescriptorEntity> {
       return null;
     }
     @SuppressWarnings("unchecked")
-    final Query<LegacyDescriptorEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(LegacyDescriptorEntity.FIND_BY_DESCRIBABLE_ID_AND_TYPE)
-        .setParameter("describableId", Long.valueOf(describableId))
-        .setParameter("describableType", describableType);
+    final Query<LegacyDescriptorEntity> query =
+        this.grabSession().getNamedQuery(LegacyDescriptorEntity.FIND_BY_DESCRIBABLE_ID_AND_TYPE)
+            .setParameter("describableId", Long.valueOf(describableId))
+            .setParameter("describableType", describableType);
     List<LegacyDescriptorEntity> entityList = query.getResultList();
     return entityList.isEmpty() ? null : entityList.get(0);
   }
@@ -88,10 +88,10 @@ public class LegacyDescriptorDao extends CrudsDaoImpl<LegacyDescriptorEntity> {
     Set<Long> longDescribableIds =
         describableIds.stream().map(Long::valueOf).collect(Collectors.toSet());
     @SuppressWarnings("unchecked")
-    final Query<LegacyDescriptorEntity> query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(LegacyDescriptorEntity.FIND_BY_DESCRIBABLE_IDS_AND_TYPE)
-        .setParameter("describableIds", longDescribableIds)
-        .setParameter("describableType", describableType);
+    final Query<LegacyDescriptorEntity> query =
+        this.grabSession().getNamedQuery(LegacyDescriptorEntity.FIND_BY_DESCRIBABLE_IDS_AND_TYPE)
+            .setParameter("describableIds", longDescribableIds)
+            .setParameter("describableType", describableType);
     return query.list().stream()
         .collect(Collectors.toMap(d -> String.valueOf(d.getDescribableId().longValue()), d -> d));
   }

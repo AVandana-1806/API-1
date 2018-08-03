@@ -30,8 +30,13 @@ public class ParticipantPhoneNumbersDao extends CrudsDaoImpl<ParticipantPhoneNum
     super(sessionFactory);
   }
 
+  /**
+   * @param participantId - participantId
+   * @return the ParticipantPhoneNumbers
+   */
+  @SuppressWarnings("unchecked")
   public Set<ParticipantPhoneNumbers> findByParticipantId(String participantId) {
-    final Query<ParticipantPhoneNumbers> query = this.getSessionFactory().getCurrentSession()
+    final Query<ParticipantPhoneNumbers> query = this.grabSession()
         .getNamedQuery(ParticipantPhoneNumbers.PARTICIPANT_PHONE_NUMBERS_BY_PARTICIPANT_ID)
         .setParameter(ParticipantPhoneNumbers.PARAM_PARTICIPANT_ID, participantId);
     return new HashSet<>(query.getResultList());

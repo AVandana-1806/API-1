@@ -53,4 +53,5 @@ public class HOIRequest implements Request {
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
+
 }

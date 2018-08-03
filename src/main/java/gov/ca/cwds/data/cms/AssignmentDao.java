@@ -2,6 +2,7 @@ package gov.ca.cwds.data.cms;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -35,7 +36,7 @@ public class AssignmentDao extends CrudsDaoImpl<Assignment> {
    */
   @SuppressWarnings("unchecked")
   public CaseLoad[] findCaseLoads(String staffPersonId) {
-    Query<CaseLoad> query = this.getSessionFactory().getCurrentSession()
+    final Query<CaseLoad> query = this.grabSession()
         .getNamedQuery("gov.ca.cwds.data.persistence.cms.Assignment.findCaseLoads")
         .setParameter("fkStaffPerson", staffPersonId);
     return query.list().toArray(new CaseLoad[0]);
@@ -47,8 +48,9 @@ public class AssignmentDao extends CrudsDaoImpl<Assignment> {
    * @param referralId referral ID
    * @return the assignments
    */
+  @SuppressWarnings("unchecked")
   public Set<Assignment> findAssignmentsByReferralId(String referralId) {
-    Query<Assignment> query = this.getSessionFactory().getCurrentSession()
+    final Query<Assignment> query = this.grabSession()
         .getNamedQuery("gov.ca.cwds.data.persistence.cms.Assignment.findAssignmentsByReferralId")
         .setParameter("referralId", referralId);
     return new HashSet(query.list());

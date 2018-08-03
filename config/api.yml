@@ -120,6 +120,7 @@ xaCmsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
+      hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
@@ -158,6 +159,7 @@ xaCmsRsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
+      hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
@@ -278,11 +280,21 @@ logging:
     "io.dropwizard.jersey.DropwizardResourceConfig":
       level: INFO
     "AUDIT":
-      level: ${LOGLEVEL:-ALL}
+      level: ${LOGLEVEL:-TRACE}
   appenders:
-    - type: console
+#    - type: console
+#    threshold: DEBUG
+#    timeZone: UTC
+#    target: stdout
+#    logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
+    - type: file
+      currentLogFilename: /Users/dsmith/ferb.log
       threshold: ALL
+      queueSize: 512
+      discardingThreshold: 0
+      maxFileSize: 20MB
+      archive: true
+      archivedLogFilenamePattern: /Users/dsmith/ferb-%i.log
+      archivedFileCount: 5
       timeZone: UTC
-      target: stdout
       logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
- 

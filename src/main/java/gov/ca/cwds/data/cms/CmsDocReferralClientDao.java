@@ -38,7 +38,7 @@ public class CmsDocReferralClientDao extends CrudsDaoImpl<CmsDocReferralClient> 
   @SuppressWarnings("unchecked")
   public List<CmsDocReferralClient> listDocReferralClient(String docHandle) {
     final NativeQuery<CmsDocReferralClient> query =
-        this.getSessionFactory().getCurrentSession().getNamedNativeQuery("DocReferalClient");
+        this.grabSession().getNamedNativeQuery("DocReferalClient");
     query.setParameter("docHandle", docHandle, StringType.INSTANCE);
     return query.list();
   }

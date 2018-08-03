@@ -1,6 +1,9 @@
 package gov.ca.cwds.rest.services;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
@@ -35,15 +38,12 @@ public class StaffPersonService implements TypedCrudsService<String, StaffPerson
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#find(java.io.Serializable)
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @Override
   public gov.ca.cwds.rest.api.domain.PostedStaffPerson find(String primaryKey) {
-    gov.ca.cwds.data.persistence.cms.StaffPerson persistedStaffPerson =
+    final gov.ca.cwds.data.persistence.cms.StaffPerson persistedStaffPerson =
         staffPersonDao.find(primaryKey);
-    if (persistedStaffPerson != null) {
-      return new PostedStaffPerson(persistedStaffPerson);
-    }
-    return null;
+    return (persistedStaffPerson != null) ? new PostedStaffPerson(persistedStaffPerson) : null;
   }
 
   /**
