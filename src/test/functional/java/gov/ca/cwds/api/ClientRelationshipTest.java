@@ -4,10 +4,13 @@ import static io.restassured.RestAssured.given;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
-import gov.ca.cwds.api.builder.ResourceEndPoint;
+import io.restassured.response.Response;
 
 public class ClientRelationshipTest extends FunctionalTest {
 
@@ -16,7 +19,9 @@ public class ClientRelationshipTest extends FunctionalTest {
   
   @Before
   public void setup() {
-    clientRelationshipPath = getResourceUrlFor(ResourceEndPoint.CLIENTS_RELATIONSHIPS.getResourcePath());
+    clientRelationshipPath = getResourceUrlFor("/");
+
+//    clientRelationshipPath = getResourceUrlFor(ResourceEndPoint.CLIENTS_RELATIONSHIPS.getResourcePath());
     httpRequestHandler = new HttpRequestHandler();
   }
   
@@ -28,41 +33,46 @@ public class ClientRelationshipTest extends FunctionalTest {
   @Test
   public void shouldReturnKnownRelationshipsOfPerson() {
     String clientId = "0LIZAWH00h";
+    clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", clientId);
     queryParams.put(httpRequestHandler.TOKEN, token);
-//    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
-//    System.out.println(response.body().asString());
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
       .assertThat()
-      .body("relationship_to.related_person_first_name", Matchers.hasItems("Non-victim1","Perp1","Victim1","Victim2"))
+      .body("relationship_to.legacy_descriptor.legacy_id", Matchers.hasItems("GkKl1Q900h", "DDA9oZd00h", "GjRyRJh00h", "P2Yok4X00h"))
       .and()
       .statusCode(200);
     
   }
   
   @Test
-  public void shouldReturnEmptyWhenPersonHasNoKnownRelationships() {
-    String clientId = "1234567ABC";
+  public void shouldReturnEmptyWhenPersonHasNoRelationships() {
+    String clientId = "AbA4BJy0Aq";
+    clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", clientId);
     queryParams.put(httpRequestHandler.TOKEN, token);
-    
+//    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
+//    System.out.println(response.body().asString());
+  
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
-      .assertThat().body("", Matchers.hasSize(1))
+      .assertThat()
+      .body("relationship_to", empty())
       .and()
       .statusCode(200);
   }
   
   @Test
-  public void shouldReturnErrorWhenUserNotAughoriziedToAccessClient() {
-    String clientId = "1234567ABC";
+  @Ignore
+  // should sealed and sensitive restrictions by applied by GET /clients{id}/relationships??
+  public void shouldReturnErrorWhenUserNotAuthoriziedToAccessClient() {
+    String clientId = "Rv6aDQ1007";
+    clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", clientId);
     queryParams.put(httpRequestHandler.TOKEN, token);
+    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
+    System.out.println(response.body().asString());
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
@@ -71,13 +81,16 @@ public class ClientRelationshipTest extends FunctionalTest {
   
   @Test
   public void shouldReturnEmptyWhenClientDoesNotExists() {
-    String clientId = "1234567ABC";
+    String clientId = "AhrZzTH04y";
+    clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
-    queryParams.put("clientIds", clientId);
     queryParams.put(httpRequestHandler.TOKEN, token);
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
+      .assertThat()
+      .body("relationship_to", emptyOrNullString())
+      .and()
       .statusCode(200);    
   }
     
