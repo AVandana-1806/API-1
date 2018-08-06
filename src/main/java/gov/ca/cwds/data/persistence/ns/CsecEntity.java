@@ -39,9 +39,11 @@ public class CsecEntity implements PersistentObject, Serializable {
   @Column(name = "csec_code_id")
   private String csecCodeId;
 
+  @SuppressWarnings("squid:S3437")
   @Column(name = "start_date")
   private LocalDate startDate;
 
+  @SuppressWarnings("squid:S3437")
   @Column(name = "end_date")
   private LocalDate endDate;
 
