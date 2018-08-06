@@ -40,10 +40,10 @@ public class CsecEntity implements PersistentObject, Serializable {
   private String csecCodeId;
 
   @Column(name = "start_date")
-  private transient LocalDate startDate;
+  private LocalDate startDate;
 
   @Column(name = "end_date")
-  private transient LocalDate endDate;
+  private LocalDate endDate;
 
   public CsecEntity() {
     // required by third party library
