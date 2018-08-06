@@ -1,15 +1,18 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
 import java.io.Serializable;
 import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.NamedQuery;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
  * CWDS API Team
@@ -26,7 +29,7 @@ public class CsecEntity implements PersistentObject, Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 
@@ -37,13 +40,13 @@ public class CsecEntity implements PersistentObject, Serializable {
   private String csecCodeId;
 
   @Column(name = "start_date")
-  private LocalDate startDate;
+  private transient LocalDate startDate;
 
   @Column(name = "end_date")
-  private LocalDate endDate;
+  private transient LocalDate endDate;
 
   public CsecEntity() {
-    //required by third party library
+    // required by third party library
   }
 
   public Integer getId() {
@@ -102,7 +105,8 @@ public class CsecEntity implements PersistentObject, Serializable {
 
     CsecEntity that = (CsecEntity) o;
 
-    if (participantId != null ? !participantId.equals(that.participantId) : that.participantId != null) {
+    if (participantId != null ? !participantId.equals(that.participantId)
+        : that.participantId != null) {
       return false;
     }
     return csecCodeId != null ? csecCodeId.equals(that.csecCodeId) : that.csecCodeId == null;
