@@ -18,6 +18,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
@@ -314,6 +316,60 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         example = "2001-10-01")
     private String relationshipEndDate;
 
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+
+      if (!(o instanceof RelatedTo)) {
+        return false;
+      }
+
+      RelatedTo relatedTo = (RelatedTo) o;
+
+      return new EqualsBuilder()
+          .append(relationshipId, relatedTo.relationshipId)
+          .append(relatedPersonId, relatedTo.relatedPersonId)
+          .append(relatedFirstName, relatedTo.relatedFirstName)
+          .append(relatedMiddleName, relatedTo.relatedMiddleName)
+          .append(relatedLastName, relatedTo.relatedLastName)
+          .append(relatedNameSuffix, relatedTo.relatedNameSuffix)
+          .append(relatedGender, relatedTo.relatedGender)
+          .append(relatedDateOfBirth, relatedTo.relatedDateOfBirth)
+          .append(relatedAge, relatedTo.relatedAge)
+          .append(relatedAgeUnit, relatedTo.relatedAgeUnit)
+          .append(absentParentCode, relatedTo.absentParentCode)
+          .append(sameHomeCode, relatedTo.sameHomeCode)
+          .append(relationshipToPerson, relatedTo.relationshipToPerson)
+          .append(relatedPersonRelationship, relatedTo.relatedPersonRelationship)
+          .append(relationshipStartDate, relatedTo.relationshipStartDate)
+          .append(relationshipEndDate, relatedTo.relationshipEndDate)
+          .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(17, 37)
+          .append(relationshipId)
+          .append(relatedPersonId)
+          .append(relatedFirstName)
+          .append(relatedMiddleName)
+          .append(relatedLastName)
+          .append(relatedNameSuffix)
+          .append(relatedGender)
+          .append(relatedDateOfBirth)
+          .append(relatedAge)
+          .append(relatedAgeUnit)
+          .append(absentParentCode)
+          .append(sameHomeCode)
+          .append(relationshipToPerson)
+          .append(relatedPersonRelationship)
+          .append(relationshipStartDate)
+          .append(relationshipEndDate)
+          .toHashCode();
+    }
+
     public static final class RelatedToBuilder {
 
       private RelatedTo relatedTo;
@@ -327,6 +383,12 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         relatedTo.relationshipId = relationshipId;
         return this;
       }
+
+      public RelatedToBuilder withRelatedPersonId(String personId) {
+        relatedTo.relatedPersonId = personId;
+        return this;
+      }
+
 
       public RelatedToBuilder withRelatedFirstName(String relatedFirstName) {
         relatedTo.relatedFirstName = relatedFirstName;
@@ -514,6 +576,46 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     private String candidateAgeUnit;
 
     private CandidateTo() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+
+      if (!(o instanceof CandidateTo)) {
+        return false;
+      }
+
+      CandidateTo that = (CandidateTo) o;
+
+      return new EqualsBuilder()
+          .append(candidateAge, that.candidateAge)
+          .append(candidateId, that.candidateId)
+          .append(candidateFirstName, that.candidateFirstName)
+          .append(candidateMiddleName, that.candidateMiddleName)
+          .append(candidateLastName, that.candidateLastName)
+          .append(candidateSuffixtName, that.candidateSuffixtName)
+          .append(candidateGender, that.candidateGender)
+          .append(candidateDateOfBirth, that.candidateDateOfBirth)
+          .append(candidateAgeUnit, that.candidateAgeUnit)
+          .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(17, 37)
+          .append(candidateId)
+          .append(candidateFirstName)
+          .append(candidateMiddleName)
+          .append(candidateLastName)
+          .append(candidateSuffixtName)
+          .append(candidateGender)
+          .append(candidateDateOfBirth)
+          .append(candidateAge)
+          .append(candidateAgeUnit)
+          .toHashCode();
     }
 
     public static final class CandidateToBuilder {

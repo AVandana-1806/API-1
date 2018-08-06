@@ -3,10 +3,12 @@ package gov.ca.cwds.rest.services.relationship;
 import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
+import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
+import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
@@ -31,6 +33,7 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,18 +44,42 @@ public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
+  private static final Map<String, SystemCode> codesMappedByDescription = new HashMap<>();
+  private static final Map<Short, SystemCode> codesMappedById = new HashMap<>();
+
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
+  private final SystemCodeDao systemCodeDao;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
+      SystemCodeDao systemCodeDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
+    this.systemCodeDao = systemCodeDao;
+    initSystemCodes();
+  }
+
+  private void initSystemCodes() {
+    if (!MapUtils.isEmpty(codesMappedByDescription)) {
+      return;
+    }
+
+      SystemCode[] systemCodes = this.systemCodeDao.findByForeignKeyMetaTable("CLNTRELC");
+    if (Arrays.isNullOrEmpty(systemCodes)) {
+      return;
+    }
+
+    if (MapUtils.isEmpty(codesMappedByDescription)) {
+      java.util.Arrays.stream(systemCodes)
+          .forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
+      java.util.Arrays.stream(systemCodes).forEach(e -> codesMappedById.put(e.getSystemId(), e));
+    }
   }
 
   public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(
@@ -70,6 +97,7 @@ public class RelationshipFacade {
     List<ScreeningRelationship> screeningRelationships = formResponse(relationshipsResponse);
     Set<String> participantIds = getParticipantIds(screeningRelationships);
     List<ParticipantEntity> allParticipants = participantDao.findByIds(participantIds);
+    allParticipants.addAll(participantDao.getByScreeningId(screeningId));
     Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant = getRelationshipsMappedByPrimaryParticipant(
         screeningRelationships, allParticipants);
 
@@ -148,7 +176,7 @@ public class RelationshipFacade {
     if (StringUtils.isEmpty(participant.getScreeningId()) ||
         StringUtils.isEmpty(relatedCandidate.getScreeningId()) ||
         !StringUtils.equals(participant.getScreeningId(), relatedCandidate.getScreeningId()) ||
-        StringUtils.equals(participant.getScreeningId(), relatedCandidate.getScreeningId())) {
+        StringUtils.equals(participant.getId(), relatedCandidate.getId())) {
       return;
     }
 
@@ -207,6 +235,7 @@ public class RelationshipFacade {
     relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
     relatedToBuilder.withRelatedAge(relatedParticipant.get().getApproximateAge())
         .withRelatedAgeUnit(relatedParticipant.get().getApproximateAge())
+        .withRelatedPersonId(relatedParticipant.get().getId())
         .withRelatedDateOfBirth(relatedParticipant.get().getDateOfBirth())
         .withRelatedFirstName(relatedParticipant.get().getFirstName())
         .withRelatedGender(relatedParticipant.get().getGender())
@@ -216,7 +245,8 @@ public class RelationshipFacade {
         .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
         .withRelationshipEndDate(relationship.getEndDate())
         .withRelationshipId(relationship.getId())
-        .withRelationshipStartDate(relationship.getStartDate()).withRelationshipToPerson("-1")
+        .withRelationshipStartDate(relationship.getStartDate()).withRelationshipToPerson(
+        String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())))
         .withSameHomeCode(relationship.getSameHomeStatus());
 
     return relatedToBuilder.build();
@@ -499,5 +529,29 @@ public class RelationshipFacade {
       }
     }
     return result;
+  }
+
+  private short getOppositeSystemCode(short systemCodeId) {
+    short oppositeCode = -1;
+
+    SystemCode systemCode = codesMappedById.get(systemCodeId);
+    if (systemCode != null) {
+      String str = systemCode.getShortDescription();
+      if (StringUtils.isNoneEmpty(str)) {
+        String[] descriptionArray = str.split("/");
+        if (descriptionArray != null && descriptionArray.length == 2) {
+          String part3 = "";
+          if (descriptionArray[1].contains("(")) {
+            part3 = descriptionArray[1].substring(descriptionArray[1].indexOf("("), descriptionArray[1].indexOf(")") + 1);
+            descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
+            part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
+          }
+          String oppositeDescription = descriptionArray[1] + "/" + descriptionArray[0]  + part3;
+          oppositeCode = codesMappedByDescription.get(oppositeDescription).getSystemId();
+        }
+      }
+    }
+
+    return oppositeCode;
   }
 }
