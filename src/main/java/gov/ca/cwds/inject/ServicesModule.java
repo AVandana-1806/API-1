@@ -31,6 +31,7 @@ import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
@@ -203,6 +204,7 @@ public class ServicesModule extends AbstractModule {
     bind(StaffPersonIdRetriever.class);
     bind(StaffPersonService.class);
     bind(TickleService.class);
+    bind(DroolsService.class);
 
     // Enable AOP for DropWizard @UnitOfWork.
     final CaresUnitOfWorkInterceptor interceptor = new CaresUnitOfWorkInterceptor();
