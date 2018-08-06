@@ -37,10 +37,12 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @Table(name = "OTH_ADLT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class OtherAdultInPlacemtHome extends BaseOtherAdultInPlacemtHome {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude

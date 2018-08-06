@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author CWDS API Team
  */
 @JsonSnakeCase
+@SuppressWarnings({"common-java:DuplicatedBlocks"})
 public class SafelySurenderedBabiesIntakeApi extends DomainObject {
 
   private static final long serialVersionUID = -5667060392833194010L;
@@ -43,6 +44,7 @@ public class SafelySurenderedBabiesIntakeApi extends DomainObject {
   @Size(max = 1)
   private String parentGuardProvMedQuestion;
 
+  @SuppressWarnings("squid:S3437")
   @JsonProperty("med_questionaire_return_date")
   @ApiModelProperty(value = "Questionaire Return Date", example = "1992-05-18")
   private LocalDate medQuestionaireReturnDate;
