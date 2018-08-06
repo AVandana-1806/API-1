@@ -11,6 +11,7 @@ import gov.ca.cwds.data.persistence.cms.ClientRelationship;
 import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
+import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
@@ -70,7 +71,7 @@ public class RelationshipFacade {
       return;
     }
 
-      SystemCode[] systemCodes = this.systemCodeDao.findByForeignKeyMetaTable("CLNTRELC");
+    SystemCode[] systemCodes = this.systemCodeDao.findByForeignKeyMetaTable("CLNTRELC");
     if (Arrays.isNullOrEmpty(systemCodes)) {
       return;
     }
@@ -90,9 +91,6 @@ public class RelationshipFacade {
 
     List<gov.ca.cwds.rest.api.Response> relationshipsResponse = getRelationshipsByScreeningId(
         screeningId);
-    if (CollectionUtils.isEmpty(relationshipsResponse)) {
-      return Collections.emptyList();
-    }
 
     List<ScreeningRelationship> screeningRelationships = formResponse(relationshipsResponse);
     Set<String> participantIds = getParticipantIds(screeningRelationships);
@@ -110,25 +108,38 @@ public class RelationshipFacade {
   private List<gov.ca.cwds.rest.api.Response> buildRelationshipsWitCandidates(
       Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant,
       List<ParticipantEntity> allParticipants, String screeningId) {
-    if (MapUtils.isEmpty(relationshipsByPrimaryParticipant) || CollectionUtils
-        .isEmpty(allParticipants)) {
+    if (CollectionUtils.isEmpty(allParticipants)) {
       return Collections.emptyList();
     }
 
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
-    relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
-      if (CollectionUtils.isNotEmpty(relationships)) {
-        Optional<ScreeningRelationshipsWithCandidates> screeningRelationshipsWithCandidates = buildRelationshipWithCandidates(
-            participant, relationships, allParticipants,
-            screeningId);
-        if (screeningRelationshipsWithCandidates.isPresent()) {
-          relationshipsWithCandidates
-              .add(screeningRelationshipsWithCandidates.get());
-        }
 
-      }
-    });
+    if (MapUtils.isEmpty(relationshipsByPrimaryParticipant)) {
+      allParticipants.forEach(e -> {
+        getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
+            e, relationshipsByPrimaryParticipant.get(e));
+      });
+    } else {
+      relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
+        if (CollectionUtils.isNotEmpty(relationships)) {
+          getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
+              participant, relationships);
+        }
+      });
+    }
     return relationshipsWithCandidates;
+  }
+
+  private void getRelationshipWithCandidates(List<ParticipantEntity> allParticipants,
+      String screeningId, List<Response> relationshipsWithCandidates, ParticipantEntity participant,
+      List<ScreeningRelationship> relationships) {
+    Optional<ScreeningRelationshipsWithCandidates> screeningRelationshipsWithCandidates = buildRelationshipWithCandidates(
+        participant, relationships, allParticipants,
+        screeningId);
+    if (screeningRelationshipsWithCandidates.isPresent()) {
+      relationshipsWithCandidates
+          .add(screeningRelationshipsWithCandidates.get());
+    }
   }
 
   private Optional<ScreeningRelationshipsWithCandidates> buildRelationshipWithCandidates(
@@ -204,7 +215,9 @@ public class RelationshipFacade {
 
     Optional<ScreeningRelationship> existingRelationshiop = relationships.stream().filter(
         e -> e.getClientId().equals(participant.getId()) && e.getRelativeId()
-            .equals(relatedCandidate.getId())).findFirst();
+            .equals(relatedCandidate.getId())
+            || e.getClientId().equals(relatedCandidate.getId()) && e.getRelativeId()
+            .equals(participant.getId())).findFirst();
     return existingRelationshiop.isPresent();
   }
 
@@ -363,6 +376,10 @@ public class RelationshipFacade {
       ParticipantEntity participantEntity2;
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
+        if (client == null) {
+          continue;
+        }
+
         participantEntity1 = participantDao.create(new ParticipantEntity(
             null,
             client.getBirthDate(),
@@ -392,6 +409,9 @@ public class RelationshipFacade {
       }
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
+        if (client == null) {
+          continue;
+        }
         participantEntity2 = participantDao.create(new ParticipantEntity(
             null,
             client.getBirthDate(),
@@ -542,11 +562,12 @@ public class RelationshipFacade {
         if (descriptionArray != null && descriptionArray.length == 2) {
           String part3 = "";
           if (descriptionArray[1].contains("(")) {
-            part3 = descriptionArray[1].substring(descriptionArray[1].indexOf("("), descriptionArray[1].indexOf(")") + 1);
+            part3 = descriptionArray[1]
+                .substring(descriptionArray[1].indexOf("("), descriptionArray[1].indexOf(")") + 1);
             descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
             part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
           }
-          String oppositeDescription = descriptionArray[1] + "/" + descriptionArray[0]  + part3;
+          String oppositeDescription = descriptionArray[1] + "/" + descriptionArray[0] + part3;
           oppositeCode = codesMappedByDescription.get(oppositeDescription).getSystemId();
         }
       }

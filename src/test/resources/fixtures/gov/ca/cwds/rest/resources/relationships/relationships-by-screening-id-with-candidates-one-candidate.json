@@ -1,0 +1,41 @@
+[
+  {
+    "id": "2019",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Alex4",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [
+      {
+        "relationship_id": "11",
+        "related_person_id": "2020",
+        "related_person_first_name": "Alex4",
+        "related_person_middle_name": "T",
+        "related_person_last_name": "Pfeiffer",
+        "related_person_name_suffix": "Jr",
+        "related_person_gender": "male",
+        "related_person_date_of_birth": "1999-11-15",
+        "absent_parent_code": "Y",
+        "same_home_code": "U",
+        "indexed_person_relationship": "203",
+        "related_person_relationship": "188",
+        "relationship_start_date": "2018-07-19"
+      }
+    ],
+    "candidate_to": [
+      {
+        "candidate_id": "2021",
+        "candidate_first_name": "Alex4",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      }
+    ]
+  }
+]
