@@ -100,7 +100,15 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     bootstrap.addBundle(new SundialBundle<ApiConfiguration>() {
       @Override
       public SundialConfiguration getSundialConfiguration(ApiConfiguration configuration) {
-        return configuration.getSundial();
+        SundialConfiguration config = new SundialConfiguration();
+        config.setThreadPoolSize("10");
+        config.setPerformShutdown("true");
+        config.setWaitOnShutdown("false");
+        config.setStartDelay("5");
+        config.setStartOnLoad("true");
+        config.setGlobalLockOnLoad("false");
+        config.setAnnotatedJobsPackageName("gov.ca.cwds.jobs");
+        return config;
       }
     });
   }

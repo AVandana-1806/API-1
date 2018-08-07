@@ -247,15 +247,6 @@ webSecurity:
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
 
-sundial:
-  thread-pool-size: 10
-  shutdown-on-unload: true
-  wait-on-shutdown: false
-  start-delay-seconds: 0
-  start-scheduler-on-load: true
-  global-lock-on-load: false
-  annotated-jobs-package-name: gov.ca.cwds.jobs
- 
 server:
   applicationConnectors:
   - type: http 
