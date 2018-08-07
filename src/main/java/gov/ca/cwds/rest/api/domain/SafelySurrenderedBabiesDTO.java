@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.dto.BaseDTO;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.validation.ValidSystemCodeId;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author CWDS API Team
  */
 @ApiModel
-public class SafelySurrenderedBabies extends ReportingDomain implements Request, Response {
+public class SafelySurrenderedBabiesDTO extends BaseDTO implements Request, Response {
 
   private static final long serialVersionUID = 1L;
 
@@ -73,7 +74,7 @@ public class SafelySurrenderedBabies extends ReportingDomain implements Request,
   /**
    * No-argument constructor
    */
-  public SafelySurrenderedBabies() {
+  public SafelySurrenderedBabiesDTO() {
     super();
   }
 

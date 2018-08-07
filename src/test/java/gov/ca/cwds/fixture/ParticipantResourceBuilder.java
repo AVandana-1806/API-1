@@ -12,7 +12,7 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
@@ -46,7 +46,7 @@ public class ParticipantResourceBuilder {
   Set<gov.ca.cwds.rest.api.domain.Address> addresses;
   RaceAndEthnicity raceAndEthnicity;
   List<Csec> csecs;
-  SafelySurrenderedBabies safelySurrenderedBabies;
+  SafelySurrenderedBabiesDTO safelySurrenderedBabies;
 
   /**
    * 

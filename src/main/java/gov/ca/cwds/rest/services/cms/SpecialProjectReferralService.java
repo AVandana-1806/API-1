@@ -229,7 +229,7 @@ public class SpecialProjectReferralService implements
    */
   public void processSafelySurrenderedBabies(String childClientId, String referralId,
       LocalDate referralReceivedDate, LocalTime referralRecievedTime,
-      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies ssb) {
+      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO ssb) {
 
     LocalDateTime now = LocalDateTime.now();
 
@@ -311,7 +311,7 @@ public class SpecialProjectReferralService implements
   }
 
   private void performSubmissionValidation(
-      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies safelySurrenderedBabies)
+      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO safelySurrenderedBabies)
       throws DroolsException {
 
     Optional.ofNullable(validator.validate(safelySurrenderedBabies)).ifPresent(violations -> {
@@ -327,7 +327,7 @@ public class SpecialProjectReferralService implements
     }
   }
 
-  private DroolsConfiguration<gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies> createConfiguration() {
+  private DroolsConfiguration<gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO> createConfiguration() {
     return SafelySurrenderBabiesDroolsConfiguration.INSTANCE;
   }
 

@@ -63,7 +63,7 @@ import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Role;
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.ChildClient;
@@ -992,11 +992,11 @@ public class ParticipantServiceTest {
           public boolean matches(LocalTime referralReceivedTime) {
             return true;
           }
-        }), argThat(new ArgumentMatcher<gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies>() {
+        }), argThat(new ArgumentMatcher<gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO>() {
           @Override
-          public boolean matches(gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies ssb) {
+          public boolean matches(gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO ssb) {
             assertNotNull(ssb);
-            SafelySurrenderedBabies expected = new SafelySurrenderedBabiesBuilder().build();
+            SafelySurrenderedBabiesDTO expected = new SafelySurrenderedBabiesBuilder().build();
             assertEquals(expected, ssb);
             return true;
           }
