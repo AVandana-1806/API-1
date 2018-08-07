@@ -669,7 +669,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (StringUtils.isEmpty(candidateAge)) {
           return this;
         }
-        candidateTo.candidateAge = Short.valueOf(candidateAge);
+        candidateTo.candidateAge = Short.parseShort(candidateAge);
         return this;
       }
 

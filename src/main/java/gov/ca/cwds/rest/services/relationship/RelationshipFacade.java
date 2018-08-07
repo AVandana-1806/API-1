@@ -45,8 +45,8 @@ public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
-  private static final Map<String, SystemCode> codesMappedByDescription = new HashMap<>();
-  private static final Map<Short, SystemCode> codesMappedById = new HashMap<>();
+  private final Map<String, SystemCode> codesMappedByDescription = new HashMap<>();
+  private final Map<Short, SystemCode> codesMappedById = new HashMap<>();
 
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
@@ -569,8 +569,10 @@ public class RelationshipFacade {
         if (descriptionArray != null && descriptionArray.length == 2) {
           String part3 = "";
           if (descriptionArray[1].contains("(")) {
+            int indexStart = descriptionArray[1].indexOf("(");
+            int indexEnd = descriptionArray[1].indexOf(")");
             part3 = descriptionArray[1]
-                .substring(descriptionArray[1].indexOf("("), descriptionArray[1].indexOf(")") + 1);
+                .substring(indexStart, ++indexEnd);
             descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
             part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
           }
