@@ -539,6 +539,9 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
 
   public static final class CandidateTo implements Serializable {
 
+    private CandidateTo() {
+    }
+
     @JsonProperty("candidate_id")
     @ApiModelProperty(value = "Id")
     private String candidateId;
@@ -566,9 +569,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
-
-    private CandidateTo() {
-    }
 
     @Override
     public boolean equals(Object o) {

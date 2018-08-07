@@ -221,7 +221,7 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
-      throws IOException, JSONException {
+      throws IOException {
     Response response = doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS);
     assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
   }
@@ -231,7 +231,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);

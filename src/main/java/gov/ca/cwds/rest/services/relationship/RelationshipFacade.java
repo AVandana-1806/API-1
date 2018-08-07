@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author CWDS TPT-3 Team
  */
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
@@ -99,10 +100,8 @@ public class RelationshipFacade {
     Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant = getRelationshipsMappedByPrimaryParticipant(
         screeningRelationships, allParticipants);
 
-    List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = buildRelationshipsWitCandidates(
+    return buildRelationshipsWitCandidates(
         relationshipsByPrimaryParticipant, allParticipants, screeningId, screeningRelationships);
-
-    return relationshipsWithCandidates;
   }
 
   private List<gov.ca.cwds.rest.api.Response> buildRelationshipsWitCandidates(
@@ -148,9 +147,6 @@ public class RelationshipFacade {
       ParticipantEntity participant, List<ScreeningRelationship> relationships,
       List<ScreeningRelationship> allScreeningRelationships,
       List<ParticipantEntity> allParticipants, String screeningId) {
-    Set<RelatedTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
-    Set<CandidateTo> candidatesTo = getCandidatesTo(participant, allScreeningRelationships,
-        allParticipants);
 
     if (!StringUtils.equals(participant.getScreeningId(), screeningId)) {
       return Optional.empty();
@@ -158,8 +154,9 @@ public class RelationshipFacade {
 
     ScreeningRelationshipsWithCandidatesBuilder screeningRelationshipsWithCandidatesBuilder = new ScreeningRelationshipsWithCandidatesBuilder();
     ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates = screeningRelationshipsWithCandidatesBuilder
-        .witCandidatesTo(candidatesTo)
-        .withRelatedTo(relationshipTos)
+        .witCandidatesTo(getCandidatesTo(participant, allScreeningRelationships,
+            allParticipants))
+        .withRelatedTo(getRelationshipsTo(relationships, allParticipants))
         .withId(participant.getId()).withDateOfBirth(participant.getDateOfBirth())
         .withFirstName(participant.getFirstName()).withMiddleName(participant.getMiddleName())
         .withLastName(participant.getLastName())
@@ -571,8 +568,8 @@ public class RelationshipFacade {
         if (descriptionArray != null && descriptionArray.length == 2) {
           String part3 = "";
           if (descriptionArray[1].contains("(")) {
-            int indexStart = descriptionArray[1].indexOf("(");
-            int indexEnd = descriptionArray[1].indexOf(")");
+            int indexStart = descriptionArray[1].indexOf('(');
+            int indexEnd = descriptionArray[1].indexOf(')');
             part3 = descriptionArray[1]
                 .substring(indexStart, ++indexEnd);
             descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
