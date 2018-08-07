@@ -249,16 +249,17 @@ public class RelationshipFacade {
 
     RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
 
+    ParticipantEntity participantEntity = relatedParticipant.get();
     relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
-    relatedToBuilder.withRelatedAge(relatedParticipant.get().getApproximateAge());
-    relatedToBuilder.withRelatedAgeUnit(relatedParticipant.get().getApproximateAgeUnits());
-    relatedToBuilder.withRelatedPersonId(relatedParticipant.get().getId());
-    relatedToBuilder.withRelatedDateOfBirth(relatedParticipant.get().getDateOfBirth());
-    relatedToBuilder.withRelatedFirstName(relatedParticipant.get().getFirstName());
-    relatedToBuilder.withRelatedGender(relatedParticipant.get().getGender());
-    relatedToBuilder.withRelatedLastName(relatedParticipant.get().getLastName());
-    relatedToBuilder.withRelatedMiddleName(relatedParticipant.get().getMiddleName());
-    relatedToBuilder.withRelatedNameSuffix(relatedParticipant.get().getNameSuffix());
+    relatedToBuilder.withRelatedAge(participantEntity.getApproximateAge());
+    relatedToBuilder.withRelatedAgeUnit(participantEntity.getApproximateAgeUnits());
+    relatedToBuilder.withRelatedPersonId(participantEntity.getId());
+    relatedToBuilder.withRelatedDateOfBirth(participantEntity.getDateOfBirth());
+    relatedToBuilder.withRelatedFirstName(participantEntity.getFirstName());
+    relatedToBuilder.withRelatedGender(participantEntity.getGender());
+    relatedToBuilder.withRelatedLastName(participantEntity.getLastName());
+    relatedToBuilder.withRelatedMiddleName(participantEntity.getMiddleName());
+    relatedToBuilder.withRelatedNameSuffix(participantEntity.getNameSuffix());
     relatedToBuilder
         .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()));
     relatedToBuilder.withRelationshipEndDate(relationship.getEndDate());
