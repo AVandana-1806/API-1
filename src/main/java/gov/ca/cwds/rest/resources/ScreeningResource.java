@@ -142,7 +142,6 @@ public class ScreeningResource {
    *
    * @param screeningId The id
    * @return The {@link Response}
-   * @throws IOException on disconnect
    */
   @UnitOfWork(DATASOURCE_NS)
   @GET
