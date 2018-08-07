@@ -93,7 +93,7 @@ public class StaffPersonService implements CrudsService {
       managed = staffPersonDao.create(managed);
       return new PostedStaffPerson(managed);
     } catch (EntityExistsException e) {
-      LOGGER.info("StaffPerson already exists : {}", staffPerson);
+      LOGGER.warn("StaffPerson already exists : {}", staffPerson);
       throw new ServiceException(e);
     }
   }
@@ -120,7 +120,7 @@ public class StaffPersonService implements CrudsService {
       managed = staffPersonDao.update(managed);
       return new gov.ca.cwds.rest.api.domain.cms.StaffPerson(managed);
     } catch (EntityNotFoundException e) {
-      LOGGER.info("StaffPerson not found : {}", staffPerson);
+      LOGGER.warn("StaffPerson not found : {}", staffPerson);
       throw new ServiceException(e);
     }
   }

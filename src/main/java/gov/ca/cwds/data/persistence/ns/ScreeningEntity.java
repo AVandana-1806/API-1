@@ -66,6 +66,7 @@ public class ScreeningEntity implements PersistentObject {
   @Column(name = "incident_county")
   private String incidentCounty;
 
+  @SuppressWarnings("squid:S3437")
   @Column(name = "incident_date")
   private LocalDate incidentDate;
 

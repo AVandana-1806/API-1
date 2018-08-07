@@ -1,8 +1,9 @@
 package gov.ca.cwds.rest.services.hoi;
 
-import gov.ca.cwds.data.persistence.cms.Referral;
 import java.util.Collection;
 import java.util.Map;
+
+import gov.ca.cwds.data.persistence.cms.Referral;
 
 class HOIReferralsData {
 
@@ -40,4 +41,5 @@ class HOIReferralsData {
   void setReferrals(Map<String, Referral> referrals) {
     this.referrals = referrals;
   }
+
 }

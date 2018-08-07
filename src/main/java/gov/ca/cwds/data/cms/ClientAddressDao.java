@@ -41,11 +41,12 @@ public class ClientAddressDao extends CrudsDaoImpl<ClientAddress> {
    * @param clientId - client id
    * @return the existing address and client
    */
+  @SuppressWarnings("unchecked")
   public List<ClientAddress> findByAddressAndClient(String addressId, String clientId) {
     List<ClientAddress> clientAddresses = new ArrayList<>();
     if (addressId != null && clientId != null) {
       try {
-        final Query<ClientAddress> query = this.getSessionFactory().getCurrentSession()
+        final Query<ClientAddress> query = this.grabSession()
             .getNamedQuery("gov.ca.cwds.data.persistence.cms.ClientAddress.findByAddressAndClient")
             .setParameter("addressId", addressId).setParameter("clientId", clientId);
         clientAddresses.addAll(query.list());

@@ -3,12 +3,8 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
-import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import java.io.IOException;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,11 +18,16 @@ import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -141,6 +142,7 @@ public class ScreeningResource {
    *
    * @param screeningId The id
    * @return The {@link Response}
+   * @throws IOException on disconnect
    */
   @UnitOfWork(DATASOURCE_NS)
   @GET

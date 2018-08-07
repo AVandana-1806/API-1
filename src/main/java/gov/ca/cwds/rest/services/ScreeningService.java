@@ -56,7 +56,7 @@ import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
 
 /**
- * Business layer object to work on {@link Screening}
+ * Business layer object to work on {@link Screening}.
  *
  * @author CWDS API Team
  */
@@ -125,10 +125,10 @@ public class ScreeningService implements CrudsService {
   }
 
   private ScreeningDashboardList getScreeningsOfUser(String staffId) {
-    List<ScreeningWrapper> screenings = screeningDao.findScreeningsByUserId(staffId);
-    List<ScreeningDashboard> screeningDashboard = new ArrayList<>(screenings.size());
+    final List<ScreeningWrapper> screenings = screeningDao.findScreeningsByUserId(staffId);
+    final List<ScreeningDashboard> screeningDashboard = new ArrayList<>(screenings.size());
     for (ScreeningWrapper screening : screenings) {
-      ScreeningDashboard thisScreening = new ScreeningDashboard(screening);
+      final ScreeningDashboard thisScreening = new ScreeningDashboard(screening);
       screeningDashboard.add(thisScreening);
     }
     return new ScreeningDashboardList(screeningDashboard);
@@ -166,7 +166,7 @@ public class ScreeningService implements CrudsService {
   public Screening update(Serializable primaryKey, Request request) {
     assert primaryKey instanceof String;
     assert request instanceof Screening;
-    Screening screening = (Screening) request;
+    final Screening screening = (Screening) request;
 
     if (!primaryKey.equals(screening.getId())) {
       throw new ServiceException(
@@ -201,67 +201,69 @@ public class ScreeningService implements CrudsService {
    */
   private IndexResponse index(Request request) {
     assert request instanceof Screening;
-    Screening screening = (Screening) request;
-    String screeningJson = toJson(screening);
+    final Screening screening = (Screening) request;
+    final String screeningJson = toJson(screening);
 
-    IndexRequestBuilder builder =
+    final IndexRequestBuilder builder =
         esDao.getClient().prepareIndex(esDao.getConfig().getElasticsearchAlias(),
             esDao.getConfig().getElasticsearchDocType(), screening.getId());
     builder.setSource(screeningJson, XContentType.JSON);
 
-    IndexResponse response = builder.get();
-    RestStatus status = response.status();
-    boolean success = RestStatus.OK == status || RestStatus.CREATED == status;
+    final IndexResponse response = builder.get();
+    final RestStatus status = response.status();
+    final boolean success = RestStatus.OK == status || RestStatus.CREATED == status;
 
     if (!success) {
-      throw new ServiceException(
-          "Could not index screening. Status: " + status.getStatus() + ", Response: " + response);
+      throw new ServiceException("Could not index screening. Status: "
+          + (status != null ? status.getStatus() : "unknown") + ", Response: " + response);
     }
 
     return response;
   }
 
   public Screening getScreening(String id) {
-    ScreeningEntity screeningEntity = screeningDao.find(id);
+    final ScreeningEntity screeningEntity = screeningDao.find(id);
     if (screeningEntity == null) {
       throw new ServiceException("Screening with id=" + id + " is not found");
     }
-    Screening screening = screeningMapper.map(screeningEntity);
 
-    String screeningId = screeningEntity.getId();
+    final Screening screening = screeningMapper.map(screeningEntity);
+    final String screeningId = screeningEntity.getId();
 
-    List<AllegationEntity> allegationEntities = allegationDao.findByScreeningId(screeningId);
-    Set<AllegationIntake> allegations = allegationMapper.map(allegationEntities);
+    final List<AllegationEntity> allegationEntities = allegationDao.findByScreeningId(screeningId);
+    final Set<AllegationIntake> allegations = allegationMapper.map(allegationEntities);
     screening.getAllegations().addAll(allegations);
 
-    List<CrossReportEntity> crossReportEntities = crossReportDao.findByScreeningId(screeningId);
-    Set<CrossReportIntake> crossReports = crossReportMapper.map(crossReportEntities);
+    final List<CrossReportEntity> crossReportEntities =
+        crossReportDao.findByScreeningId(screeningId);
+    final Set<CrossReportIntake> crossReports = crossReportMapper.map(crossReportEntities);
     screening.getCrossReports().addAll(crossReports);
 
     for (CrossReportIntake crossReport : crossReports) {
-      List<GovernmentAgencyEntity> agencyEntities =
+      final List<GovernmentAgencyEntity> agencyEntities =
           agencyDao.findByCrossReportId(crossReport.getId());
-      Set<gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake> agencies =
+      final Set<gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake> agencies =
           agencyMapper.map(agencyEntities);
       crossReport.getAgencies().addAll(agencies);
     }
 
-    List<ScreeningAddressEntity> screeningAddressEntities =
+    final List<ScreeningAddressEntity> screeningAddressEntities =
         screeningAddressDao.findByScreeningId(screeningId);
     if (screeningAddressEntities.size() > 1) {
       throw new ServiceException("Screening should have no more then 1 address");
     }
+
     for (ScreeningAddressEntity screeningAddressEntity : screeningAddressEntities) {
-      Addresses addressEntity = addressesDao.find(screeningAddressEntity.getAddressId());
-      AddressIntakeApi address = addressMapper.map(addressEntity);
+      final Addresses addressEntity = addressesDao.find(screeningAddressEntity.getAddressId());
+      final AddressIntakeApi address = addressMapper.map(addressEntity);
       screening.setIncidentAddress(address);
     }
 
-    List<ParticipantEntity> participantEntities =
+    final List<ParticipantEntity> participantEntities =
         participantIntakeApiService.getByScreeningId(screeningId);
 
     for (ParticipantEntity participantEntity : participantEntities) {
-      ParticipantIntakeApi participantIntakeApi = participantIntakeApiService
+      final ParticipantIntakeApi participantIntakeApi = participantIntakeApiService
           .find(new ParticipantResourceParameters(id, participantEntity.getId()));
       screening.getParticipantIntakeApis().add(participantIntakeApi);
     }
@@ -276,10 +278,11 @@ public class ScreeningService implements CrudsService {
     }
     validateParticipants(screening);
 
-    ScreeningEntity screeningEntity = screeningMapper.map(screening);
+    final ScreeningEntity screeningEntity = screeningMapper.map(screening);
     screeningEntity.setScreeningStatus(ScreeningStatus.OPEN.getStatus());
     ScreeningEntity createdScreeningEntity = screeningDao.create(screeningEntity);
-    String screeningId = createdScreeningEntity.getId();
+
+    final String screeningId = createdScreeningEntity.getId();
     screening.setId(screeningId);
 
     createUpdateDeleteCrossReports(screening);
@@ -298,7 +301,7 @@ public class ScreeningService implements CrudsService {
       throw new ServiceException("Primary key mismatch, [" + id + " != " + screening.getId() + "]");
     }
 
-    ScreeningEntity screeningEntity = screeningMapper.map(screening);
+    final ScreeningEntity screeningEntity = screeningMapper.map(screening);
     screeningDao.update(screeningEntity);
 
     createUpdateDeleteCrossReports(screening);
@@ -319,20 +322,22 @@ public class ScreeningService implements CrudsService {
   }
 
   private void createUpdateDeleteAllegations(Screening screening) {
-    Set<Integer> allegationIdsOld = allegationDao.findByScreeningId(screening.getId()).stream()
-        .map(AllegationEntity::getId).collect(Collectors.toSet());
+    final Set<Integer> allegationIdsOld = allegationDao.findByScreeningId(screening.getId())
+        .stream().map(AllegationEntity::getId).collect(Collectors.toSet());
 
     for (AllegationIntake allegation : screening.getAllegations()) {
-      AllegationEntity allegationEntity = allegationMapper.map(allegation);
+      final AllegationEntity allegationEntity = allegationMapper.map(allegation);
       allegationEntity.setScreeningId(screening.getId());
-      Date now = new Date();
+
+      final Date now = new Date();
       allegationEntity.setUpdatedAt(now);
       if (allegationEntity.getId() == null) {
         allegationEntity.setCreatedAt(now);
-        AllegationEntity createdAllegationEntity = allegationDao.create(allegationEntity);
+        final AllegationEntity createdAllegationEntity = allegationDao.create(allegationEntity);
         allegation.setId(String.valueOf(createdAllegationEntity.getId()));
       } else {
-        AllegationEntity managedAllegationEntity = allegationDao.find(allegationEntity.getId());
+        final AllegationEntity managedAllegationEntity =
+            allegationDao.find(allegationEntity.getId());
         if (managedAllegationEntity == null) {
           throw new ServiceException(
               "Cannot update allegation that doesn't exist. id = " + allegationEntity.getId());
@@ -340,7 +345,7 @@ public class ScreeningService implements CrudsService {
         allegationEntity.setCreatedAt(managedAllegationEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        allegationDao.getSessionFactory().getCurrentSession().detach(managedAllegationEntity);
+        allegationDao.grabSession().detach(managedAllegationEntity);
         allegationDao.update(allegationEntity);
         allegationIdsOld.remove(allegationEntity.getId());
       }
@@ -351,20 +356,22 @@ public class ScreeningService implements CrudsService {
   }
 
   private void createUpdateDeleteCrossReports(Screening screening) {
-    Set<String> crossReportIdsOld = crossReportDao.findByScreeningId(screening.getId()).stream()
-        .map(CrossReportEntity::getId).collect(Collectors.toSet());
+    final Set<String> crossReportIdsOld = crossReportDao.findByScreeningId(screening.getId())
+        .stream().map(CrossReportEntity::getId).collect(Collectors.toSet());
 
     for (CrossReportIntake crossReport : screening.getCrossReports()) {
-      CrossReportEntity crossReportEntity = crossReportMapper.map(crossReport);
+      final CrossReportEntity crossReportEntity = crossReportMapper.map(crossReport);
       crossReportEntity.setScreeningId(screening.getId());
-      Date now = new Date();
+
+      final Date now = new Date();
       crossReportEntity.setUpdatedAt(now);
       if (crossReportEntity.getId() == null) {
         crossReportEntity.setCreatedAt(now);
-        CrossReportEntity createdCrossReportEntity = crossReportDao.create(crossReportEntity);
+        final CrossReportEntity createdCrossReportEntity = crossReportDao.create(crossReportEntity);
         crossReport.setId(createdCrossReportEntity.getId());
       } else {
-        CrossReportEntity managedCrossReportEntity = crossReportDao.find(crossReportEntity.getId());
+        final CrossReportEntity managedCrossReportEntity =
+            crossReportDao.find(crossReportEntity.getId());
         if (managedCrossReportEntity == null) {
           throw new ServiceException(
               "Cannot update cross report that doesn't exist. id = " + crossReportEntity.getId());
@@ -372,7 +379,7 @@ public class ScreeningService implements CrudsService {
         crossReportEntity.setCreatedAt(managedCrossReportEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        crossReportDao.getSessionFactory().getCurrentSession().detach(managedCrossReportEntity);
+        crossReportDao.grabSession().detach(managedCrossReportEntity);
         crossReportDao.update(crossReportEntity);
         crossReportIdsOld.remove(crossReportEntity.getId());
       }
@@ -386,16 +393,17 @@ public class ScreeningService implements CrudsService {
 
   private void createOrUpdateAgencies(CrossReportIntake crossReport) {
     for (GovernmentAgencyIntake agency : crossReport.getAgencies()) {
-      GovernmentAgencyEntity agencyEntity = agencyMapper.map(agency);
+      final GovernmentAgencyEntity agencyEntity = agencyMapper.map(agency);
       agencyEntity.setCrossReportId(crossReport.getId());
-      Date now = new Date();
+
+      final Date now = new Date();
       agencyEntity.setUpdatedAt(now);
       if (agencyEntity.getId() == null) {
         agencyEntity.setCreatedAt(now);
-        GovernmentAgencyEntity createdAgencyEntity = agencyDao.create(agencyEntity);
+        final GovernmentAgencyEntity createdAgencyEntity = agencyDao.create(agencyEntity);
         agency.setId(createdAgencyEntity.getId());
       } else {
-        GovernmentAgencyEntity managedAgencyEntity = agencyDao.find(agencyEntity.getId());
+        final GovernmentAgencyEntity managedAgencyEntity = agencyDao.find(agencyEntity.getId());
         if (managedAgencyEntity == null) {
           throw new ServiceException(
               "Cannot update agency that doesn't exist. id = " + agency.getId());
@@ -403,21 +411,22 @@ public class ScreeningService implements CrudsService {
         agencyEntity.setCreatedAt(managedAgencyEntity.getCreatedAt());
 
         // DRS: HOT-2176: isolate "possible non-threadsafe access to session".
-        agencyDao.getSessionFactory().getCurrentSession().detach(managedAgencyEntity);
+        agencyDao.grabSession().detach(managedAgencyEntity);
         agencyDao.update(agencyEntity);
       }
     }
   }
 
   private void createOrUpdateAddresses(Screening screening) {
-    AddressIntakeApi address = screening.getIncidentAddress();
+    final AddressIntakeApi address = screening.getIncidentAddress();
     if (address == null) {
       return;
     }
     Addresses addressEntity = addressMapper.map(address);
     if (addressEntity.getId() == null) {
-      Addresses createdAddress = addressesDao.create(addressEntity);
-      ScreeningAddressEntity screeningAddressesEntity = new ScreeningAddressEntity();
+      final Addresses createdAddress = addressesDao.create(addressEntity);
+      final ScreeningAddressEntity screeningAddressesEntity = new ScreeningAddressEntity();
+
       screeningAddressesEntity.setScreeningId(screening.getId());
       screeningAddressesEntity.setAddressId(createdAddress.getId());
       address.setId(String.valueOf(addressEntity.getId()));
@@ -428,25 +437,27 @@ public class ScreeningService implements CrudsService {
   }
 
   private void createUpdateDeleteParticipants(Screening screening) {
-    Set<ParticipantIntakeApi> participantIntakeApis = new HashSet<>();
-    Set<String> participantIdsOld = participantIntakeApiService.getByScreeningId(screening.getId())
-        .stream().map(ParticipantEntity::getId).collect(Collectors.toSet());
+    final Set<ParticipantIntakeApi> participantIntakeApis = new HashSet<>();
+    final Set<String> participantIdsOld =
+        participantIntakeApiService.getByScreeningId(screening.getId()).stream()
+            .map(ParticipantEntity::getId).collect(Collectors.toSet());
 
     for (ParticipantIntakeApi participantIntakeApi : screening.getParticipantIntakeApis()) {
-      String participantIntakeApiId = participantIntakeApi.getId();
+      final String participantIntakeApiId = participantIntakeApi.getId();
       if (participantIntakeApiId == null) {
         participantIntakeApi.setScreeningId(screening.getId());
-        ParticipantIntakeApi createdParticipantIntakeApi =
+        final ParticipantIntakeApi createdParticipantIntakeApi =
             participantIntakeApiService.create(participantIntakeApi);
         participantIntakeApis.add(createdParticipantIntakeApi);
       } else {
-        ParticipantIntakeApi updatedParticipantIntakeApi = participantIntakeApiService.update(
+        final ParticipantIntakeApi updatedParticipantIntakeApi = participantIntakeApiService.update(
             new ParticipantResourceParameters(screening.getId(), participantIntakeApiId),
             participantIntakeApi);
         participantIntakeApis.add(updatedParticipantIntakeApi);
         participantIdsOld.remove(participantIntakeApiId);
       }
     }
+
     // Delete old ones that are not in the new.
     participantIdsOld.forEach(participantId -> participantIntakeApiService
         .delete(new ParticipantResourceParameters(screening.getId(), participantId)));
@@ -460,6 +471,103 @@ public class ScreeningService implements CrudsService {
 
   void setScreeningDao(ScreeningDao screeningDao) {
     this.screeningDao = screeningDao;
+  }
+
+  public AllegationIntakeDao getAllegationDao() {
+    return allegationDao;
+  }
+
+  public void setAllegationDao(AllegationIntakeDao allegationDao) {
+    this.allegationDao = allegationDao;
+  }
+
+  public AddressesDao getAddressesDao() {
+    return addressesDao;
+  }
+
+  public void setAddressesDao(AddressesDao addressesDao) {
+    this.addressesDao = addressesDao;
+  }
+
+  public ScreeningAddressDao getScreeningAddressDao() {
+    return screeningAddressDao;
+  }
+
+  public void setScreeningAddressDao(ScreeningAddressDao screeningAddressDao) {
+    this.screeningAddressDao = screeningAddressDao;
+  }
+
+  public AgencyDao getAgencyDao() {
+    return agencyDao;
+  }
+
+  public void setAgencyDao(AgencyDao agencyDao) {
+    this.agencyDao = agencyDao;
+  }
+
+  public CrossReportDao getCrossReportDao() {
+    return crossReportDao;
+  }
+
+  public void setCrossReportDao(CrossReportDao crossReportDao) {
+    this.crossReportDao = crossReportDao;
+  }
+
+  public ParticipantIntakeApiService getParticipantIntakeApiService() {
+    return participantIntakeApiService;
+  }
+
+  public void setParticipantIntakeApiService(
+      ParticipantIntakeApiService participantIntakeApiService) {
+    this.participantIntakeApiService = participantIntakeApiService;
+  }
+
+  public ScreeningMapper getScreeningMapper() {
+    return screeningMapper;
+  }
+
+  public void setScreeningMapper(ScreeningMapper screeningMapper) {
+    this.screeningMapper = screeningMapper;
+  }
+
+  public AddressMapper getAddressMapper() {
+    return addressMapper;
+  }
+
+  public void setAddressMapper(AddressMapper addressMapper) {
+    this.addressMapper = addressMapper;
+  }
+
+  public AgencyMapper getAgencyMapper() {
+    return agencyMapper;
+  }
+
+  public void setAgencyMapper(AgencyMapper agencyMapper) {
+    this.agencyMapper = agencyMapper;
+  }
+
+  public AllegationMapper getAllegationMapper() {
+    return allegationMapper;
+  }
+
+  public void setAllegationMapper(AllegationMapper allegationMapper) {
+    this.allegationMapper = allegationMapper;
+  }
+
+  public CrossReportMapper getCrossReportMapper() {
+    return crossReportMapper;
+  }
+
+  public void setCrossReportMapper(CrossReportMapper crossReportMapper) {
+    this.crossReportMapper = crossReportMapper;
+  }
+
+  public ElasticsearchDao getEsDao() {
+    return esDao;
+  }
+
+  public ScreeningDao getScreeningDao() {
+    return screeningDao;
   }
 
 }

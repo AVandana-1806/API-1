@@ -43,6 +43,7 @@ import org.hibernate.loader.BatchFetchStyle;
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.type.StringType;
 import org.hibernate.type.TimestampType;
 import org.junit.Before;
@@ -258,6 +259,8 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     when(q.setCacheable(any(Boolean.class))).thenReturn(q);
     when(q.setParameter(any(String.class), any(Timestamp.class), any(TimestampType.class)))
         .thenReturn(q);
+
+    when(transaction.getStatus()).thenReturn(TransactionStatus.ACTIVE);
 
     final ScrollableResults results = mock(ScrollableResults.class);
     when(q.scroll(any(ScrollMode.class))).thenReturn(results);

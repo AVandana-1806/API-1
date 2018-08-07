@@ -1,11 +1,5 @@
 package gov.ca.cwds.rest.services.hoi;
 
-import gov.ca.cwds.data.cms.StaffPersonDao;
-import gov.ca.cwds.data.ns.IntakeLOVCodeDao;
-import gov.ca.cwds.data.ns.LegacyDescriptorDao;
-import gov.ca.cwds.data.ns.ParticipantDao;
-import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
-import io.dropwizard.hibernate.UnitOfWork;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,20 +7,26 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.cms.StaffPersonDao;
+import gov.ca.cwds.data.ns.IntakeLOVCodeDao;
+import gov.ca.cwds.data.ns.LegacyDescriptorDao;
+import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.api.domain.hoi.HOIRequest;
 import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 import gov.ca.cwds.rest.api.domain.hoi.HOIScreeningResponse;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
-import org.hibernate.FlushMode;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Business layer object to work on Screening History Of Involvement
@@ -81,7 +81,7 @@ public class HOIScreeningService
    */
   @Override
   public HOIScreeningResponse handleFind(HOIRequest hoiRequest) {
-    HOIScreeningData hoiScreeningData = new HOIScreeningData(hoiRequest.getClientIds());
+    final HOIScreeningData hoiScreeningData = new HOIScreeningData(hoiRequest.getClientIds());
     loadDataFromNS(hoiScreeningData);
     loadDataFromCMS(hoiScreeningData);
     return new HOIScreeningResponse(buildHoiScreenings(hoiScreeningData));
@@ -99,21 +99,24 @@ public class HOIScreeningService
      * of code back at this spot:<br/>
      * authorizationService&#46;ensureClientAccessAuthorized&#40;clientIds&#41;&#59;
      */
-    Collection<String> filteredClientIds = hsd.getClientIds().stream()
-        .filter(Objects::nonNull).collect(Collectors.toSet());
+    final Collection<String> filteredClientIds =
+        hsd.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet());
     if (filteredClientIds.isEmpty()) {
       return;
     }
-    Set<ScreeningEntity> screeningEntities = screeningDao
-        .findScreeningsByClientIds(filteredClientIds);
+
+    final Set<ScreeningEntity> screeningEntities =
+        screeningDao.findScreeningsByClientIds(filteredClientIds);
     hsd.getScreeningEntities().addAll(screeningEntities);
 
-    Map<String, Set<ParticipantEntity>> participantEntitiesMap = participantDao.findByScreeningIds(
-        screeningEntities.stream().map(ScreeningEntity::getId).collect(Collectors.toSet()));
+    final Map<String, Set<ParticipantEntity>> participantEntitiesMap =
+        participantDao.findByScreeningIds(
+            screeningEntities.stream().map(ScreeningEntity::getId).collect(Collectors.toSet()));
 
-    Set<String> counties = new HashSet<>();
-    Set<String> participantIds = new HashSet<>();
-    Collection<String> assigneeStaffIds = new HashSet<>();
+    final Set<String> counties = new HashSet<>();
+    final Set<String> participantIds = new HashSet<>();
+    final Collection<String> assigneeStaffIds = new HashSet<>();
+
     for (ScreeningEntity screeningEntity : screeningEntities) {
       if (participantEntitiesMap.containsKey(screeningEntity.getId())) {
         screeningEntity.setParticipants(participantEntitiesMap.get(screeningEntity.getId()));
@@ -147,19 +150,17 @@ public class HOIScreeningService
   }
 
   Set<HOIScreening> buildHoiScreenings(HOIScreeningData hsd) {
-    Set<HOIScreening> screenings = new TreeSet<>(screeningsComparator);
+    final Set<HOIScreening> screenings = new TreeSet<>(screeningsComparator);
     for (ScreeningEntity screeningEntity : hsd.getScreeningEntities()) {
       /*
        * NOTE: When we want to enable authorizations for screening history, we can add following
        * line of code back at this spot:<br/>
        * authorizationService&#46;ensureScreeningAccessAuthorized&#40;screeningEntity&#41;&#59;
        */
-      screenings.add(hoiScreeningFactory.buildHOIScreening(
-          screeningEntity,
+      screenings.add(hoiScreeningFactory.buildHOIScreening(screeningEntity,
           hsd.getCountyIntakeLOVCodeEntityMap().get(screeningEntity.getIncidentCounty()),
           hsd.getParticipantLegacyDescriptors(),
-          hsd.getStaffPersonMap().get(screeningEntity.getAssigneeStaffId()))
-      );
+          hsd.getStaffPersonMap().get(screeningEntity.getAssigneeStaffId())));
     }
     return screenings;
   }
@@ -169,4 +170,5 @@ public class HOIScreeningService
     LOGGER.info("HOIScreeningService handle request not implemented");
     throw new NotImplementedException("handle request not implemented");
   }
+
 }

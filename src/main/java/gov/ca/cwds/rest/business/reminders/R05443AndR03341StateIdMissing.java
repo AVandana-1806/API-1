@@ -30,7 +30,7 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
 
 /**
  * <p>
- * BUSINESS RULE: "R - 05443" and "R - 03341" - TICKLE for State ID Missing
+ * <strong>BUSINESS RULE: "R - 05443" and "R - 03341" - TICKLE for State ID Missing</strong>
  * <p>
  * Access Logic
  * <p>
@@ -145,11 +145,11 @@ public class R05443AndR03341StateIdMissing {
           return;
         }
 
-        Integer estimatedAgeInYears = getEstimatedAgeInYears(referral, client);
-        Integer years = getYearsFromDob(participant);
+        final Integer estimatedAgeInYears = getEstimatedAgeInYears(referral, client);
+        final Integer years = getYearsFromDob(participant);
 
         if (isLimitExceeded(years) || isLimitExceeded(estimatedAgeInYears)) {
-          List<StateId> stateIds = stateIdDao.findAllByClientId(client.getId());
+          final List<StateId> stateIds = stateIdDao.findAllByClientId(client.getId());
           boolean hasStateIdWithNoEndDate = isHasStateIdWithNoEndDate(stateIds);
 
           processTickle(referral, client, hasStateIdWithNoEndDate);
@@ -219,9 +219,10 @@ public class R05443AndR03341StateIdMissing {
   }
 
   private void createTickle(Referral referral, Client client, Calendar dueDate) {
-    gov.ca.cwds.rest.api.domain.cms.Tickle tickle = new gov.ca.cwds.rest.api.domain.cms.Tickle(
-        referral.getId(), REFERRAL_REFERRALCLIENT, client.getId(), null,
-        dateFormat.format(dueDate.getTime()), referral.getScreenerNoteText(), STATE_ID_MISSING);
+    final gov.ca.cwds.rest.api.domain.cms.Tickle tickle =
+        new gov.ca.cwds.rest.api.domain.cms.Tickle(referral.getId(), REFERRAL_REFERRALCLIENT,
+            client.getId(), null, dateFormat.format(dueDate.getTime()),
+            referral.getScreenerNoteText(), STATE_ID_MISSING);
     tickleService.create(tickle);
     LOGGER.info("stateIdMissing reminder is created");
   }

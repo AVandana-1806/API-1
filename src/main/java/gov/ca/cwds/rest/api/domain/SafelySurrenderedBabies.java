@@ -58,6 +58,7 @@ public class SafelySurrenderedBabies extends ReportingDomain implements Request,
   @OneOf(value = {"D", "M", "N", "R", "U"})
   private String medicalQuestionaireCode;
 
+  @SuppressWarnings("squid:S3437")
   @JsonProperty("med_questionaire_return_date")
   @ApiModelProperty(required = false, readOnly = false, value = "Questionaire Return Date",
       example = "1992-05-18")

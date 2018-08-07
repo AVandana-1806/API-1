@@ -1,13 +1,19 @@
 package gov.ca.cwds.rest.services;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
@@ -18,20 +24,31 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import gov.ca.cwds.data.es.ElasticsearchDao;
+import gov.ca.cwds.data.ns.AllegationIntakeDao;
+import gov.ca.cwds.data.ns.CrossReportDao;
+import gov.ca.cwds.data.ns.ScreeningAddressDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
+import gov.ca.cwds.data.persistence.ns.CrossReportEntity;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningWrapper;
 import gov.ca.cwds.fixture.ScreeningWrapperEntityBuilder;
 import gov.ca.cwds.rest.ElasticsearchConfiguration;
 import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboard;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboardList;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
+import gov.ca.cwds.rest.services.mapper.AllegationMapper;
+import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
+import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
-public class ScreeningServiceTest {
+public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
-  private ScreeningService screeningService;
+  private ScreeningService target;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -41,6 +58,9 @@ public class ScreeningServiceTest {
 
   @Mock
   private ScreeningDao screeningDao;
+
+  @Mock
+  private AllegationIntakeDao allegationDao;
 
   @Mock
   private Client esClient;
@@ -54,8 +74,27 @@ public class ScreeningServiceTest {
   @Mock
   private ElasticsearchConfiguration esConfig;
 
+  @Mock
+  private ScreeningMapper screeningMapper;
+
+  @Mock
+  private AllegationMapper allegationMapper;
+
+  @Mock
+  private CrossReportDao crossReportDao;
+
+  CrossReportMapper crossReportMapper = CrossReportMapper.INSTANCE;
+
+  @Mock
+  private ScreeningAddressDao screeningAddressDao;
+
+  @Mock
+  private ParticipantIntakeApiService participantIntakeApiService;
+
+  @Override
   @Before
   public void setup() throws Exception {
+    super.setup();
     MockitoAnnotations.initMocks(this);
 
     when(esDao.getConfig()).thenReturn(esConfig);
@@ -66,59 +105,66 @@ public class ScreeningServiceTest {
     when(esClient.prepareIndex(any(), any(), any())).thenReturn(indexRequestBuilder);
     when(indexRequestBuilder.get()).thenReturn(indexResponse);
 
+    final ScreeningEntity screeningEntity = new ScreeningEntity();
+    when(screeningDao.find(any(Serializable.class))).thenReturn(screeningEntity);
+    when(screeningDao.create(screeningEntity)).thenReturn(screeningEntity);
 
-    screeningService = new ScreeningService();
-    screeningService.setEsDao(esDao);
-    screeningService.setScreeningDao(screeningDao);
+    final Screening screening = new Screening();
+    when(screeningMapper.map(any(ScreeningEntity.class))).thenReturn(screening);
+    when(screeningMapper.map(any(Screening.class))).thenReturn(screeningEntity);
+
+    final List<CrossReportEntity> crossReportEntities = new ArrayList<>();
+    when(crossReportDao.findByScreeningId(any(String.class))).thenReturn(crossReportEntities);
+
+    target = new ScreeningService();
+    target.setEsDao(esDao);
+    target.setScreeningDao(screeningDao);
+    target.setScreeningMapper(screeningMapper);
+    target.setAllegationDao(allegationDao);
+    target.setAllegationMapper(allegationMapper);
+    target.setCrossReportDao(crossReportDao);
+    target.setCrossReportMapper(crossReportMapper);
+    target.setScreeningAddressDao(screeningAddressDao);
+    target.setParticipantIntakeApiService(participantIntakeApiService);
 
     new TestingRequestExecutionContext("0X5");
-
   }
 
-  @Test
+  @Test(expected = Exception.class)
   public void testFind() {
-    try {
-      screeningService.find("abc");
-      fail("Expected exception");
-    } catch (Exception e) {
-
-    }
+    target.find("abc");
   }
 
-  @Test
+  @Test(expected = Exception.class)
   public void testDelete() {
-    try {
-      screeningService.delete("abc");
-      fail("Expected exception");
-    } catch (Exception e) {
-
-    }
+    target.delete("abc");
+    fail("Expected exception");
   }
 
   @Test
   public void testCreate() {
     when(indexResponse.status()).thenReturn(RestStatus.CREATED);
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
-    Screening actual = screeningService.create(screening);
+    final Screening actual = target.create(screening);
     assertThat(actual, is(screening));
   }
 
   @Test
   public void testUpdate() {
     when(indexResponse.status()).thenReturn(RestStatus.OK);
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "ssb", "Open", null);
-    Screening actual = screeningService.update("abc", screening);
+    final Screening actual = target.update("abc", screening);
     assertThat(actual, is(screening));
   }
 
   @Test
   public void testUpdatePrimaryKeyValueMismatch() {
-    Screening screening =
+    final Screening screening =
         new Screening("abc", null, null, null, null, null, null, null, "0X5", "", "Open", null);
     try {
-      screeningService.update("abcd", screening);
+      target.update("abcd", screening);
       fail("Expected exception");
     } catch (Exception e) {
       assertThat(e.getMessage(), is("Primary key mismatch, [abcd != abc]"));
@@ -128,55 +174,133 @@ public class ScreeningServiceTest {
   @Test
   public void testUpdatePrimaryKeyObjectTypMismatchn() {
     try {
-      screeningService.update(new Integer(1), null);
+      target.update(new Integer(1), null);
       fail("Expected exception");
     } catch (java.lang.AssertionError e) {
     }
   }
 
-  @Test
+  @Test(expected = ServiceException.class)
   public void testUpdateRequestObjectTypMismatchn() {
-    Request request = mock(Request.class);
-    try {
-      screeningService.update("abc", request);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
+    final Request request = new Screening();
+    target.update("abc", request);
   }
 
-  @Test
+  @Test(expected = ServiceException.class)
   public void testCreateRequestObjectTypMismatchn() {
-    Request request = mock(Request.class);
-    try {
-      screeningService.create(request);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
+    final Request request = new Screening();
+    target.create(request);
   }
 
   @Test
   public void testFindScreeningDashboard() throws Exception {
-    ScreeningWrapper sw1 = new ScreeningWrapperEntityBuilder().build();
-    ScreeningWrapper sw2 = new ScreeningWrapperEntityBuilder().build();
-    List<ScreeningWrapper> screenings = new ArrayList<>();
+    final ScreeningWrapper sw1 = new ScreeningWrapperEntityBuilder().build();
+    final ScreeningWrapper sw2 = new ScreeningWrapperEntityBuilder().build();
+
+    final List<ScreeningWrapper> screenings = new ArrayList<>();
     screenings.add(sw1);
     screenings.add(sw2);
     when(screeningDao.findScreeningsByUserId(any())).thenReturn(screenings);
 
-    ScreeningDashboardList sdl = (ScreeningDashboardList) screeningService.findScreeningDashboard();
-    List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
+    final ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
+    final List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
     assertThat(screeningDashboard.size(), is(2));
   }
 
   @Test
   public void testFindScreeningDashboardWhenEmptyShouldBeZero() throws Exception {
-    List<ScreeningWrapper> screenings = new ArrayList<>();
-
+    final List<ScreeningWrapper> screenings = new ArrayList<>();
     when(screeningDao.findScreeningsByUserId(any())).thenReturn(screenings);
 
-    ScreeningDashboardList sdl = (ScreeningDashboardList) screeningService.findScreeningDashboard();
-    List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
+    final ScreeningDashboardList sdl = (ScreeningDashboardList) target.findScreeningDashboard();
+    final List<ScreeningDashboard> screeningDashboard = sdl.getScreeningDashboard();
     assertThat(screeningDashboard.size(), is(0));
-
   }
+
+  @Test
+  public void type() throws Exception {
+    assertThat(ScreeningService.class, notNullValue());
+  }
+
+  @Test
+  public void instantiation() throws Exception {
+    assertThat(target, notNullValue());
+  }
+
+  @Test(expected = NotImplementedException.class)
+  public void find_A$Serializable() throws Exception {
+    final Serializable primaryKey = DEFAULT_CLIENT_ID;
+    final Response actual = target.find(primaryKey);
+    final Response expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void findScreeningDashboard_A$() throws Exception {
+    final Response actual = target.findScreeningDashboard();
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test(expected = NotImplementedException.class)
+  public void delete_A$Serializable() throws Exception {
+    final Serializable primaryKey = DEFAULT_CLIENT_ID;
+    final Response actual = target.delete(primaryKey);
+    final Response expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test(expected = ServiceException.class)
+  public void create_A$Request() throws Exception {
+    final Request request = new Screening();
+    final Screening actual = target.create(request);
+    final Screening expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test(expected = ServiceException.class)
+  public void update_A$Serializable$Request() throws Exception {
+    final Serializable primaryKey = DEFAULT_CLIENT_ID;
+    final Screening request = new Screening();
+    request.setId(DEFAULT_CLIENT_ID);
+
+    final Screening actual = target.update(primaryKey, request);
+    final Screening expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getScreening_A$String() throws Exception {
+    final String id = DEFAULT_CLIENT_ID;
+    final Screening actual = target.getScreening(id);
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void createScreening_A$Screening() throws Exception {
+    final Screening screening = new Screening();
+    final Screening actual = target.createScreening(screening);
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void updateScreening_A$String$Screening() throws Exception {
+    final String id = DEFAULT_CLIENT_ID;
+    final Screening request = new Screening();
+    request.setId(DEFAULT_CLIENT_ID);
+
+    final Screening actual = target.updateScreening(id, request);
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void setEsDao_A$ElasticsearchDao() throws Exception {
+    final ElasticsearchDao esDao = mock(ElasticsearchDao.class);
+    target.setEsDao(esDao);
+  }
+
+  @Test
+  public void setScreeningDao_A$ScreeningDao() throws Exception {
+    target.setScreeningDao(screeningDao);
+  }
+
 }

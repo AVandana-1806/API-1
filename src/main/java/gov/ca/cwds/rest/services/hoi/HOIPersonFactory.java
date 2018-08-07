@@ -1,5 +1,9 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
@@ -10,9 +14,6 @@ import gov.ca.cwds.rest.api.domain.hoi.HOIReporter;
 import gov.ca.cwds.rest.api.domain.hoi.HOISocialWorker;
 import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
 import gov.ca.cwds.rest.util.CmsRecordUtils;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author CWDS API Team
@@ -26,7 +27,7 @@ public final class HOIPersonFactory {
    */
   HOIPerson buildHOIPerson(ParticipantEntity participantEntity,
       LegacyDescriptorEntity participantLegacyDescriptor) {
-    HOIPerson result = new HOIPerson(participantEntity);
+    final HOIPerson result = new HOIPerson(participantEntity);
     if (participantLegacyDescriptor != null) {
       result.setLegacyDescriptor(new LegacyDescriptor(participantLegacyDescriptor));
     }
@@ -38,20 +39,16 @@ public final class HOIPersonFactory {
    * @param legacyDescriptor domain LegacyDescriptor
    * @return HOIReporter instance; can be null if the given participant has no reporter role
    */
-  HOIReporter buidHOIReporter(
-      ParticipantEntity participantEntity, LegacyDescriptor legacyDescriptor) {
-    Set<String> roles = parseRoles(participantEntity.getRoles());
-    HOIReporter.Role reporterRole = findReporterRole(roles);
+  HOIReporter buidHOIReporter(ParticipantEntity participantEntity,
+      LegacyDescriptor legacyDescriptor) {
+    final Set<String> roles = parseRoles(participantEntity.getRoles());
+    final HOIReporter.Role reporterRole = findReporterRole(roles);
     if (reporterRole == null) {
       return null;
     }
-    return new HOIReporter(
-        reporterRole,
-        participantEntity.getId(),
-        participantEntity.getFirstName(),
-        participantEntity.getLastName(),
-        participantEntity.getNameSuffix(),
-        legacyDescriptor);
+    return new HOIReporter(reporterRole, participantEntity.getId(),
+        participantEntity.getFirstName(), participantEntity.getLastName(),
+        participantEntity.getNameSuffix(), legacyDescriptor);
   }
 
   /**
@@ -59,23 +56,15 @@ public final class HOIPersonFactory {
    * @return corresponding instance of HOISocialWorker or null
    */
   HOISocialWorker buildHOISocialWorker(StaffPerson staffPerson) {
-    CmsRecordDescriptor cmsRecordDescriptor = CmsRecordUtils
-        .createLegacyDescriptor(staffPerson.getId(), LegacyTable.STAFF_PERSON);
+    final CmsRecordDescriptor cmsRecordDescriptor =
+        CmsRecordUtils.createLegacyDescriptor(staffPerson.getId(), LegacyTable.STAFF_PERSON);
 
-    LegacyDescriptor legacyDescriptor =
-        new LegacyDescriptor(
-            cmsRecordDescriptor.getId(),
-            cmsRecordDescriptor.getUiId(),
-            null,
-            cmsRecordDescriptor.getTableName(),
-            cmsRecordDescriptor.getTableDescription());
+    final LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor(cmsRecordDescriptor.getId(), cmsRecordDescriptor.getUiId(), null,
+            cmsRecordDescriptor.getTableName(), cmsRecordDescriptor.getTableDescription());
 
-    return new HOISocialWorker(
-        staffPerson.getId(),
-        staffPerson.getFirstName(),
-        staffPerson.getLastName(),
-        staffPerson.getNameSuffix(),
-        legacyDescriptor);
+    return new HOISocialWorker(staffPerson.getId(), staffPerson.getFirstName(),
+        staffPerson.getLastName(), staffPerson.getNameSuffix(), legacyDescriptor);
   }
 
   /**
@@ -92,7 +81,7 @@ public final class HOIPersonFactory {
    */
   private HOIReporter.Role findReporterRole(Set<String> roles) {
     for (String role : roles) {
-      HOIReporter.Role reporterRole = HOIReporter.Role.fromString(role);
+      final HOIReporter.Role reporterRole = HOIReporter.Role.fromString(role);
       if (reporterRole != null) {
         return reporterRole;
       }
