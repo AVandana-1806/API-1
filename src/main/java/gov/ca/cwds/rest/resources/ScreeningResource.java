@@ -121,7 +121,7 @@ public class ScreeningResource {
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @XAUnitOfWork
+  @UnitOfWork(DATASOURCE_NS)
   @GET
   @Path("/{screeningId}/relationships")
   @ApiResponses(
@@ -156,8 +156,9 @@ public class ScreeningResource {
   public Response getRelationshipsWithCandidatesByScreeningId(
       @PathParam("screeningId") @ApiParam(required = true,
           value = "The id of the Screening to find") String screeningId) {
-    return new ResponseConverter().withDataResponse(
-        relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
+    return new ResponseConverter()
+        .withDataResponse(
+            relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
   }
 
 }
