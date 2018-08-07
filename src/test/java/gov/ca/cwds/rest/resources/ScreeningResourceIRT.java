@@ -203,7 +203,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -231,6 +230,7 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
