@@ -1,26 +1,17 @@
 package gov.ca.cwds.rest.api.domain;
 
-import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
-import gov.ca.cwds.rest.api.domain.investigation.Relationship;
-import gov.ca.cwds.rest.api.domain.investigation.RelationshipTo;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * @author CWDS TPT-3 Team
@@ -28,6 +19,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class ScreeningRelationshipsWithCandidates extends ReportingDomain implements Request,
     Response {
 
+  private static final String DATE_PATTERN = "yyyy-MM-dd";
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
@@ -164,7 +156,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       if (dateOfBirth == null) {
         return this;
       }
-      screeningRelationshipsWithCandidates.dateOfBirth = new SimpleDateFormat("yyyy-MM-dd")
+      screeningRelationshipsWithCandidates.dateOfBirth = new SimpleDateFormat(DATE_PATTERN)
           .format(dateOfBirth);
       return this;
     }
@@ -211,7 +203,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       if (dateOfDeath == null) {
         return this;
       }
-      screeningRelationshipsWithCandidates.dateOfDeath = new SimpleDateFormat("yyyy-MM-dd")
+      screeningRelationshipsWithCandidates.dateOfDeath = new SimpleDateFormat(DATE_PATTERN)
           .format(dateOfDeath);
       return this;
     }
@@ -419,7 +411,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relatedDateOfBirth == null) {
           return this;
         }
-        relatedTo.relatedDateOfBirth = new SimpleDateFormat("yyyy-MM-dd")
+        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
             .format(relatedDateOfBirth);
         return this;
       }
@@ -461,7 +453,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relationshipStartDate == null) {
           return this;
         }
-        relatedTo.relationshipStartDate = new SimpleDateFormat("yyyy-MM-dd")
+        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
             .format(relationshipStartDate);
         return this;
       }
@@ -470,7 +462,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relationshipEndDate == null) {
           return this;
         }
-        relatedTo.relationshipStartDate = new SimpleDateFormat("yyyy-MM-dd")
+        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
             .format(relationshipEndDate);
         return this;
       }
@@ -660,7 +652,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (candidateDateOfBirth == null) {
           return this;
         }
-        candidateTo.candidateDateOfBirth = new SimpleDateFormat("yyyy-MM-dd")
+        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
             .format(candidateDateOfBirth);
         return this;
       }

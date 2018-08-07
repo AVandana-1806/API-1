@@ -253,21 +253,23 @@ public class RelationshipFacade {
     RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
 
     relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
-    relatedToBuilder.withRelatedAge(relatedParticipant.get().getApproximateAge())
-        .withRelatedAgeUnit(relatedParticipant.get().getApproximateAge())
-        .withRelatedPersonId(relatedParticipant.get().getId())
-        .withRelatedDateOfBirth(relatedParticipant.get().getDateOfBirth())
-        .withRelatedFirstName(relatedParticipant.get().getFirstName())
-        .withRelatedGender(relatedParticipant.get().getGender())
-        .withRelatedLastName(relatedParticipant.get().getLastName())
-        .withRelatedMiddleName(relatedParticipant.get().getMiddleName())
-        .withRelatedNameSuffix(relatedParticipant.get().getNameSuffix())
-        .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
-        .withRelationshipEndDate(relationship.getEndDate())
-        .withRelationshipId(relationship.getId())
-        .withRelationshipStartDate(relationship.getStartDate()).withRelationshipToPerson(
-        String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())))
-        .withSameHomeCode(relationship.getSameHomeStatus());
+    relatedToBuilder.withRelatedAge(relatedParticipant.get().getApproximateAge());
+    relatedToBuilder.withRelatedAgeUnit(relatedParticipant.get().getApproximateAgeUnits());
+    relatedToBuilder.withRelatedPersonId(relatedParticipant.get().getId());
+    relatedToBuilder.withRelatedDateOfBirth(relatedParticipant.get().getDateOfBirth());
+    relatedToBuilder.withRelatedFirstName(relatedParticipant.get().getFirstName());
+    relatedToBuilder.withRelatedGender(relatedParticipant.get().getGender());
+    relatedToBuilder.withRelatedLastName(relatedParticipant.get().getLastName());
+    relatedToBuilder.withRelatedMiddleName(relatedParticipant.get().getMiddleName());
+    relatedToBuilder.withRelatedNameSuffix(relatedParticipant.get().getNameSuffix());
+    relatedToBuilder
+        .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()));
+    relatedToBuilder.withRelationshipEndDate(relationship.getEndDate());
+    relatedToBuilder.withRelationshipId(relationship.getId());
+    relatedToBuilder.withRelationshipStartDate(relationship.getStartDate())
+        .withRelationshipToPerson(
+            String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+    relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
 
     return relatedToBuilder.build();
   }

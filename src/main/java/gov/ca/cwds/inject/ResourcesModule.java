@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
-import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import gov.ca.cwds.rest.api.contact.DeliveredServiceDomain;
@@ -94,7 +93,6 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
 import gov.ca.cwds.rest.services.cms.AllegationService;
 import gov.ca.cwds.rest.services.cms.AssignmentService;
-import gov.ca.cwds.rest.services.cms.CachingSystemCodeService;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
 import gov.ca.cwds.rest.services.cms.ClientCollateralService;
 import gov.ca.cwds.rest.services.cms.ClientRelationshipService;
