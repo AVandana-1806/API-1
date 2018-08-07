@@ -1,9 +1,14 @@
 package gov.ca.cwds.rest;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.knowm.dropwizard.sundial.SundialConfiguration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import de.spinscale.dropwizard.jobs.JobConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 
 /**
@@ -11,11 +16,15 @@ import io.dropwizard.db.DataSourceFactory;
  * 
  * @author CWDS API Team
  */
-public class ApiConfiguration extends BaseApiConfiguration {
+public class ApiConfiguration extends BaseApiConfiguration implements JobConfiguration {
 
   private DataSourceFactory rsDataSourceFactory;
   private TestingConfiguration testConfig;
   private boolean upgradeDbOnStart = false;
+
+  @Valid
+  @NotNull
+  public SundialConfiguration sundial = new SundialConfiguration();
 
   @Nullable
   @JsonProperty(value = "systemCodeCache")
@@ -68,5 +77,14 @@ public class ApiConfiguration extends BaseApiConfiguration {
   public void setIntakeCodeCacheConfiguration(
       SystemCodeCacheConfiguration intakeCodeCacheConfiguration) {
     this.intakeCodeCacheConfiguration = intakeCodeCacheConfiguration;
+  }
+
+  @JsonProperty("sundial")
+  public SundialConfiguration getSundial() {
+    return sundial;
+  }
+
+  public void setSundial(SundialConfiguration sundial) {
+    this.sundial = sundial;
   }
 }
