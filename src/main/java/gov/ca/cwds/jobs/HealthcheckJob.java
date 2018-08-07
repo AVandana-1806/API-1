@@ -17,12 +17,10 @@ import com.newrelic.api.agent.NewRelic;
 import io.dropwizard.setup.Environment;
 
 /**
- * Health check job.
+ * Health check job reporting events to NewRelic.
  * 
  * @author CWDS API Team
  */
-;
-
 @SimpleTrigger(repeatInterval = 10, timeUnit = TimeUnit.MINUTES)
 public class HealthcheckJob extends Job {
 
@@ -46,7 +44,7 @@ public class HealthcheckJob extends Job {
 
     // A map of event data.
     // Key: String
-    // Value: should be a String, Number, or Boolean.
+    // Value: Should be a String, Number, or Boolean.
     Map<String, Object> eventAttributes = new TreeMap<>();
 
     List<String> healthy = new ArrayList<>();
