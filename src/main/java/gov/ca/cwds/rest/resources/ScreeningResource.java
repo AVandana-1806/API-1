@@ -3,8 +3,6 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
-import java.io.IOException;
-
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,11 +16,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
