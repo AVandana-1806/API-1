@@ -16,7 +16,7 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.LimitedAccessType;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
 import gov.ca.cwds.rest.api.domain.cms.Address;
@@ -467,7 +467,7 @@ public class ParticipantService implements CrudsService {
 
   private ChildClient processChildClient(String clientId, String referralId, String dateStarted,
       String timeStarted, MessageBuilder messageBuilder, List<Csec> csecs,
-      SafelySurrenderedBabies ssb, ScreeningToReferral screeningToReferral) {
+      SafelySurrenderedBabiesDTO ssb, ScreeningToReferral screeningToReferral) {
     ChildClient exsistingChild = this.childClientService.find(clientId);
 
     boolean ssbReportType =
@@ -524,7 +524,7 @@ public class ParticipantService implements CrudsService {
     return true;
   }
 
-  private boolean isValidSafelySurrenderedBabies(SafelySurrenderedBabies ssb,
+  private boolean isValidSafelySurrenderedBabies(SafelySurrenderedBabiesDTO ssb,
       MessageBuilder messageBuilder) {
     if (ssb == null) {
       messageBuilder.addError("SafelySurrenderedBabies info must be provided.",

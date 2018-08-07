@@ -173,7 +173,7 @@ public class Participant extends ReportingDomain implements Request, Response {
   @Valid
   @ApiModelProperty(dataType = "gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies")
   @JsonProperty("safely_surrendered_babies")
-  private SafelySurrenderedBabies safelySurrenderedBabies;
+  private SafelySurrenderedBabiesDTO safelySurrenderedBabies;
 
   @JsonIgnore
   private List<Csec> csecs = new ArrayList<>();
@@ -516,11 +516,11 @@ public class Participant extends ReportingDomain implements Request, Response {
     this.csecs = csecs;
   }
 
-  public SafelySurrenderedBabies getSafelySurrenderedBabies() {
+  public SafelySurrenderedBabiesDTO getSafelySurrenderedBabies() {
     return safelySurrenderedBabies;
   }
 
-  public void setSafelySurrenderedBabies(SafelySurrenderedBabies safelySurrenderedBabies) {
+  public void setSafelySurrenderedBabies(SafelySurrenderedBabiesDTO safelySurrenderedBabies) {
     this.safelySurrenderedBabies = safelySurrenderedBabies;
   }
 

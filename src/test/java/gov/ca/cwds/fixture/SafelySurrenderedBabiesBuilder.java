@@ -1,6 +1,6 @@
 package gov.ca.cwds.fixture;
 
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
 
 /**
  * Fixtures for SafelySurrenderedBabies.
@@ -28,8 +28,8 @@ public class SafelySurrenderedBabiesBuilder {
    * 
    * @return SafelySurrenderedBabies object for testing
    */
-  public SafelySurrenderedBabies build() {
-    SafelySurrenderedBabies safelySurrenderedBabies = new SafelySurrenderedBabies();
+  public SafelySurrenderedBabiesDTO build() {
+    SafelySurrenderedBabiesDTO safelySurrenderedBabies = new SafelySurrenderedBabiesDTO();
     safelySurrenderedBabies.setBraceletId(braceletId);
     safelySurrenderedBabies.setBraceletInfoCode(braceletInfoCode);
     safelySurrenderedBabies.setComments(comments);
