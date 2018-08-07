@@ -1,7 +1,7 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
-import org.hibernate.annotations.NamedQuery;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,18 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
-@NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.ContactEntity.findAll", query = "FROM ContactEntity")
+import org.hibernate.annotations.NamedQuery;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
+
+@NamedQuery(name = "gov.ca.cwds.rest.api.persistence.ns.ContactEntity.findAll",
+    query = "FROM ContactEntity")
 
 @Entity
 @Table(name = "contacts")
-@SuppressWarnings({"squid:S3437"})
+@SuppressWarnings({"squid:S3437", "common-java:DuplicatedBlocks"})
 public class ContactEntity implements PersistentObject {
 
   @Id
-  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 
@@ -52,7 +55,7 @@ public class ContactEntity implements PersistentObject {
   private String note;
 
   public ContactEntity() {
-    //Empty constructor
+    // Empty constructor
   }
 
   @Override

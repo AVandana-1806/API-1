@@ -75,20 +75,20 @@ public class ClientCollateral extends CmsPersistentObject {
    * Doesn't actually load the data. Just checks the existence of the parent client record.
    * </p>
    */
-  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCLIENT_T", nullable = false, updatable = false, insertable = false)
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   private Client client;
 
-  @SuppressWarnings("common-java:DuplicatedBlocks")
   @HashCodeExclude
   @EqualsExclude
   @ToStringExclude
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "FKCOLTRL_T", nullable = false, updatable = false, insertable = false)
+  @SuppressWarnings("common-java:DuplicatedBlocks")
   private CollateralIndividual collateralIndividual;
 
   /**
