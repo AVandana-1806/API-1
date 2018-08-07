@@ -61,8 +61,13 @@ public class HealthcheckJob extends Job {
       }
     }
 
-    eventAttributes.put(HEALTHY_ATTRIBUTE, healthy.toString());
-    eventAttributes.put(UNHEALTHY_ATTRIBUTE, unhealthy.toString());
+    if (!healthy.isEmpty()) {
+      eventAttributes.put(HEALTHY_ATTRIBUTE, healthy.toString());
+    }
+
+    if (!unhealthy.isEmpty()) {
+      eventAttributes.put(UNHEALTHY_ATTRIBUTE, unhealthy.toString());
+    }
 
     NewRelic.getAgent().getInsights().recordCustomEvent(HEALTH_CHECK_EVENT, eventAttributes);
   }
