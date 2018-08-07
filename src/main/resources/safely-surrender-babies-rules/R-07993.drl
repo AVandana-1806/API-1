@@ -1,22 +1,15 @@
 import gov.ca.cwds.rest.exception.IssueDetails
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies
 import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies
-import org.apache.commons.lang3.StringUtils
-
 global java.util.Set validationDetailsList
-
 rule "R-07993"
   dialect "mvel"
   agenda-group "safely-surrender-babies-agenda"
   when  
-  	  $safelyBaby: SafelySurrenderedBabiesDTO()
-      SafelySurrenderedBabies(
-         eval(
-              StringUtils.isNotBlank(surrenderedByName)
-         )
-       ) from  $safelyBaby.entity
+      $safelyBaby: SafelySurrenderedBabies()
+      $safelySurrenderedBabies: SafelySurrenderedBabies(surrenderedByName != null) from  $safelyBaby.entity
   then
-  	  IssueDetails details = new IssueDetails(); 
+      IssueDetails details = new IssueDetails(); 
       details.setCode("R-07993");
       details.setUserMessage("failed");
       details.setTechnicalMessage("failed");

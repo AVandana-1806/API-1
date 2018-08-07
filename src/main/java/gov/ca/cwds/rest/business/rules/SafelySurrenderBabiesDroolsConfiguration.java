@@ -1,14 +1,14 @@
 package gov.ca.cwds.rest.business.rules;
 
 import gov.ca.cwds.drools.DroolsConfiguration;
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 
 /**
  * @author CWDS API Team
  *
  */
 public class SafelySurrenderBabiesDroolsConfiguration
-    extends DroolsConfiguration<SafelySurrenderedBabiesDTO> {
+    extends DroolsConfiguration<SafelySurrenderedBabies> {
 
   public static final SafelySurrenderBabiesDroolsConfiguration INSTANCE =
       new SafelySurrenderBabiesDroolsConfiguration("safely-surrender-babies-session",
