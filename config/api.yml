@@ -282,19 +282,20 @@ logging:
     "AUDIT":
       level: ${LOGLEVEL:-TRACE}
   appenders:
-#    - type: console
-#    threshold: DEBUG
-#    timeZone: UTC
-#    target: stdout
-#    logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
-    - type: file
-      currentLogFilename: /Users/dsmith/ferb.log
-      threshold: ALL
-      queueSize: 512
-      discardingThreshold: 0
-      maxFileSize: 20MB
-      archive: true
-      archivedLogFilenamePattern: /Users/dsmith/ferb-%i.log
-      archivedFileCount: 5
+    - type: console
+      threshold: DEBUG
       timeZone: UTC
+      target: stdout
       logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
+    
+#    - type: file
+#      currentLogFilename: logs/ferb.log
+#      threshold: ALL
+#      queueSize: 512
+#      discardingThreshold: 0
+#      maxFileSize: 20MB
+#      archive: true
+#      archivedLogFilenamePattern: logs/ferb-%i.log
+#      archivedFileCount: 5
+#      timeZone: UTC
+#      logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
