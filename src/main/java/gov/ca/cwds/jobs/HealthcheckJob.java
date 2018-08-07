@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 
 import org.knowm.sundial.Job;
 import org.knowm.sundial.SundialJobScheduler;
-import org.knowm.sundial.annotations.SimpleTrigger;
+import org.knowm.sundial.annotations.CronTrigger;
 import org.knowm.sundial.exceptions.JobInterruptException;
 
 import com.codahale.metrics.health.HealthCheck.Result;
@@ -21,7 +20,7 @@ import io.dropwizard.setup.Environment;
  * 
  * @author CWDS API Team
  */
-@SimpleTrigger(repeatInterval = 10, timeUnit = TimeUnit.MINUTES)
+@CronTrigger(cron = "0 */10 * * * ?") // every 10th minute
 public class HealthcheckJob extends Job {
 
   private static final String HEALTH_CHECK_EVENT = "FerbApiHealthCheck";
