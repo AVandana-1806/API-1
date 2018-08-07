@@ -21,8 +21,14 @@ import io.dropwizard.setup.Environment;
  * 
  * @author CWDS API Team
  */
+;
+
 @SimpleTrigger(repeatInterval = 10, timeUnit = TimeUnit.MINUTES)
 public class HealthcheckJob extends Job {
+
+  private static final String HEALTH_CHECK_EVENT = "FerbApiHealthCheck";
+  private static final String HEALTHY_ATTRIBUTE = "healthy";
+  private static final String UNHEALTHY_ATTRIBUTE = "unhealthy";
 
   /**
    * Default no-argument constructor.
@@ -55,9 +61,9 @@ public class HealthcheckJob extends Job {
       }
     }
 
-    eventAttributes.put("healthy", healthy.toString());
-    eventAttributes.put("unhealthy", unhealthy.toString());
+    eventAttributes.put(HEALTHY_ATTRIBUTE, healthy.toString());
+    eventAttributes.put(UNHEALTHY_ATTRIBUTE, unhealthy.toString());
 
-    NewRelic.getAgent().getInsights().recordCustomEvent("FerbApiHealthCheck", eventAttributes);
+    NewRelic.getAgent().getInsights().recordCustomEvent(HEALTH_CHECK_EVENT, eventAttributes);
   }
 }
