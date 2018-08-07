@@ -26,17 +26,7 @@
         "relationship_start_date": "2018-07-19"
       }
     ],
-    "candidate_to": [
-      {
-        "candidate_id": "2024",
-        "candidate_first_name": "Dima",
-        "candidate_middle_name": "T",
-        "candidate_last_name": "Pfeiffer",
-        "candidate_name_suffix": "Jr.",
-        "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
-      }
-    ]
+    "candidate_to": []
   },
   {
     "id": "2024",

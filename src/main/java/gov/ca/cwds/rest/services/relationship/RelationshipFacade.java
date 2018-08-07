@@ -100,14 +100,15 @@ public class RelationshipFacade {
         screeningRelationships, allParticipants);
 
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = buildRelationshipsWitCandidates(
-        relationshipsByPrimaryParticipant, allParticipants, screeningId);
+        relationshipsByPrimaryParticipant, allParticipants, screeningId, screeningRelationships);
 
     return relationshipsWithCandidates;
   }
 
   private List<gov.ca.cwds.rest.api.Response> buildRelationshipsWitCandidates(
       Map<ParticipantEntity, List<ScreeningRelationship>> relationshipsByPrimaryParticipant,
-      List<ParticipantEntity> allParticipants, String screeningId) {
+      List<ParticipantEntity> allParticipants, String screeningId,
+      List<ScreeningRelationship> allScreeningRelationships) {
     if (CollectionUtils.isEmpty(allParticipants)) {
       return Collections.emptyList();
     }
@@ -117,13 +118,13 @@ public class RelationshipFacade {
     if (MapUtils.isEmpty(relationshipsByPrimaryParticipant)) {
       allParticipants.forEach(e -> {
         getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
-            e, relationshipsByPrimaryParticipant.get(e));
+            e, relationshipsByPrimaryParticipant.get(e), allScreeningRelationships);
       });
     } else {
       relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
         if (CollectionUtils.isNotEmpty(relationships)) {
           getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
-              participant, relationships);
+              participant, relationships, allScreeningRelationships);
         }
       });
     }
@@ -132,9 +133,10 @@ public class RelationshipFacade {
 
   private void getRelationshipWithCandidates(List<ParticipantEntity> allParticipants,
       String screeningId, List<Response> relationshipsWithCandidates, ParticipantEntity participant,
-      List<ScreeningRelationship> relationships) {
+      List<ScreeningRelationship> relationships,
+      List<ScreeningRelationship> allScreeningRelationships) {
     Optional<ScreeningRelationshipsWithCandidates> screeningRelationshipsWithCandidates = buildRelationshipWithCandidates(
-        participant, relationships, allParticipants,
+        participant, relationships, allScreeningRelationships, allParticipants,
         screeningId);
     if (screeningRelationshipsWithCandidates.isPresent()) {
       relationshipsWithCandidates
@@ -144,9 +146,11 @@ public class RelationshipFacade {
 
   private Optional<ScreeningRelationshipsWithCandidates> buildRelationshipWithCandidates(
       ParticipantEntity participant, List<ScreeningRelationship> relationships,
+      List<ScreeningRelationship> allScreeningRelationships,
       List<ParticipantEntity> allParticipants, String screeningId) {
     Set<RelatedTo> relationshipTos = getRelationshipsTo(relationships, allParticipants);
-    Set<CandidateTo> candidatesTo = getCandidatesTo(participant, relationships, allParticipants);
+    Set<CandidateTo> candidatesTo = getCandidatesTo(participant, allScreeningRelationships,
+        allParticipants);
 
     if (!StringUtils.equals(participant.getScreeningId(), screeningId)) {
       return Optional.empty();
@@ -182,7 +186,8 @@ public class RelationshipFacade {
 
   private void enrichCandidates(final ParticipantEntity participant,
       final ParticipantEntity relatedCandidate,
-      final List<ScreeningRelationship> relationships, final Set<CandidateTo> candidates) {
+      final List<ScreeningRelationship> allScreeningRelationships,
+      final Set<CandidateTo> candidates) {
 
     if (StringUtils.isEmpty(participant.getScreeningId()) ||
         StringUtils.isEmpty(relatedCandidate.getScreeningId()) ||
@@ -191,7 +196,7 @@ public class RelationshipFacade {
       return;
     }
 
-    if (relationshipExist(participant, relatedCandidate, relationships)) {
+    if (relationshipExist(participant, relatedCandidate, allScreeningRelationships)) {
       return;
     }
 
@@ -208,16 +213,18 @@ public class RelationshipFacade {
   }
 
   private boolean relationshipExist(final ParticipantEntity participant,
-      final ParticipantEntity relatedCandidate, final List<ScreeningRelationship> relationships) {
-    if (CollectionUtils.isEmpty(relationships)) {
+      final ParticipantEntity relatedCandidate,
+      final List<ScreeningRelationship> allScreeningRelationships) {
+    if (CollectionUtils.isEmpty(allScreeningRelationships)) {
       return false;
     }
 
-    Optional<ScreeningRelationship> existingRelationshiop = relationships.stream().filter(
-        e -> e.getClientId().equals(participant.getId()) && e.getRelativeId()
-            .equals(relatedCandidate.getId())
-            || e.getClientId().equals(relatedCandidate.getId()) && e.getRelativeId()
-            .equals(participant.getId())).findFirst();
+    Optional<ScreeningRelationship> existingRelationshiop = allScreeningRelationships.stream()
+        .filter(
+            e -> e.getClientId().equals(participant.getId()) && e.getRelativeId()
+                .equals(relatedCandidate.getId())
+                || e.getClientId().equals(relatedCandidate.getId()) && e.getRelativeId()
+                .equals(participant.getId())).findFirst();
     return existingRelationshiop.isPresent();
   }
 
