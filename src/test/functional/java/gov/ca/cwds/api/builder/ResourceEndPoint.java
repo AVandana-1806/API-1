@@ -11,7 +11,9 @@ public enum ResourceEndPoint {
   //
   HOI_REFERRALS("/hoi_referrals"),
 
-  REFERRALS("/referrals");
+  REFERRALS("/referrals"),
+  
+  CLIENTS_RELATIONSHIPS("/clients/relationships");
 
   private final String resourcePath;
 
