@@ -308,6 +308,70 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         example = "2001-10-01")
     private String relationshipEndDate;
 
+    public String getRelationshipId() {
+      return relationshipId;
+    }
+
+    public String getRelatedPersonId() {
+      return relatedPersonId;
+    }
+
+    public String getRelatedFirstName() {
+      return relatedFirstName;
+    }
+
+    public String getRelatedMiddleName() {
+      return relatedMiddleName;
+    }
+
+    public String getRelatedLastName() {
+      return relatedLastName;
+    }
+
+    public String getRelatedNameSuffix() {
+      return relatedNameSuffix;
+    }
+
+    public String getRelatedGender() {
+      return relatedGender;
+    }
+
+    public String getRelatedDateOfBirth() {
+      return relatedDateOfBirth;
+    }
+
+    public Short getRelatedAge() {
+      return relatedAge;
+    }
+
+    public String getRelatedAgeUnit() {
+      return relatedAgeUnit;
+    }
+
+    public String getAbsentParentCode() {
+      return absentParentCode;
+    }
+
+    public String getSameHomeCode() {
+      return sameHomeCode;
+    }
+
+    public String getRelationshipToPerson() {
+      return relationshipToPerson;
+    }
+
+    public String getRelatedPersonRelationship() {
+      return relatedPersonRelationship;
+    }
+
+    public String getRelationshipStartDate() {
+      return relationshipStartDate;
+    }
+
+    public String getRelationshipEndDate() {
+      return relationshipEndDate;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -369,7 +433,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       public RelatedToBuilder() {
         relatedTo = new RelatedTo();
       }
-
 
       public RelatedToBuilder withRelationshipId(String relationshipId) {
         relatedTo.relationshipId = relationshipId;
@@ -462,7 +525,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relationshipEndDate == null) {
           return this;
         }
-        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
+        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
             .format(relationshipEndDate);
         return this;
       }
@@ -470,70 +533,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       public RelatedTo build() {
         return relatedTo;
       }
-    }
-
-    public String getRelationshipId() {
-      return relationshipId;
-    }
-
-    public String getRelatedPersonId() {
-      return relatedPersonId;
-    }
-
-    public String getRelatedFirstName() {
-      return relatedFirstName;
-    }
-
-    public String getRelatedMiddleName() {
-      return relatedMiddleName;
-    }
-
-    public String getRelatedLastName() {
-      return relatedLastName;
-    }
-
-    public String getRelatedNameSuffix() {
-      return relatedNameSuffix;
-    }
-
-    public String getRelatedGender() {
-      return relatedGender;
-    }
-
-    public String getRelatedDateOfBirth() {
-      return relatedDateOfBirth;
-    }
-
-    public Short getRelatedAge() {
-      return relatedAge;
-    }
-
-    public String getRelatedAgeUnit() {
-      return relatedAgeUnit;
-    }
-
-    public String getAbsentParentCode() {
-      return absentParentCode;
-    }
-
-    public String getSameHomeCode() {
-      return sameHomeCode;
-    }
-
-    public String getRelationshipToPerson() {
-      return relationshipToPerson;
-    }
-
-    public String getRelatedPersonRelationship() {
-      return relatedPersonRelationship;
-    }
-
-    public String getRelationshipStartDate() {
-      return relationshipStartDate;
-    }
-
-    public String getRelationshipEndDate() {
-      return relationshipEndDate;
     }
   }
 
@@ -569,6 +568,38 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
+
+    public String getCandidateFirstName() {
+      return candidateFirstName;
+    }
+
+    public String getCandidateMiddleName() {
+      return candidateMiddleName;
+    }
+
+    public String getCandidateLastName() {
+      return candidateLastName;
+    }
+
+    public String getCandidateSuffixtName() {
+      return candidateSuffixtName;
+    }
+
+    public String getCandidateGender() {
+      return candidateGender;
+    }
+
+    public String getCandidateDateOfBirth() {
+      return candidateDateOfBirth;
+    }
+
+    public short getCandidateAge() {
+      return candidateAge;
+    }
+
+    public String getCandidateAgeUnit() {
+      return candidateAgeUnit;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -673,38 +704,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       public CandidateTo build() {
         return candidateTo;
       }
-    }
-
-    public String getCandidateFirstName() {
-      return candidateFirstName;
-    }
-
-    public String getCandidateMiddleName() {
-      return candidateMiddleName;
-    }
-
-    public String getCandidateLastName() {
-      return candidateLastName;
-    }
-
-    public String getCandidateSuffixtName() {
-      return candidateSuffixtName;
-    }
-
-    public String getCandidateGender() {
-      return candidateGender;
-    }
-
-    public String getCandidateDateOfBirth() {
-      return candidateDateOfBirth;
-    }
-
-    public short getCandidateAge() {
-      return candidateAge;
-    }
-
-    public String getCandidateAgeUnit() {
-      return candidateAgeUnit;
     }
   }
 }
