@@ -3,12 +3,17 @@ package gov.ca.cwds.data.ns;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 
+import gov.ca.cwds.data.BaseDaoImpl;
+import gov.ca.cwds.rest.core.Api.PathParam;
+import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -81,6 +86,17 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
         this.grabSession().getNamedQuery(constructNamedQueryName("findByScreeningId"))
             .setParameter(PathParam.SCREENING_ID, screeningId);
     CaresQueryAccelerator.readOnlyQuery(query);
+    return query.list();
+  }
+
+  public List<ParticipantEntity> findByIds(Set<String> ids) {
+    if (CollectionUtils.isEmpty(ids)) {
+      return new ArrayList<>();
+    }
+
+    final Query<ParticipantEntity> query = this.getSessionFactory().getCurrentSession()
+        .getNamedQuery(constructNamedQueryName("findByParticipantsId"))
+        .setParameter(PathParam.PARTICIPANT_IDS, ids);
     return query.list();
   }
 

@@ -394,7 +394,7 @@ public class DataAccessModule extends AbstractModule {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}ScreeningRelationshipsWithCandidates
    *
    * @see com.google.inject.AbstractModule#configure()
    */

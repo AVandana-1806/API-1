@@ -3,8 +3,6 @@ package gov.ca.cwds.rest.resources;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
-import java.io.IOException;
-
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,11 +16,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
@@ -37,14 +32,14 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * A resource providing a RESTful interface for {@link Screening}. It delegates functions to
- * {@link ServiceBackedResourceDelegate}. It decorates the {@link ServiceBackedResourceDelegate} not
- * in functionality but with @see
+ * A resource providing a RESTful interface for {@link Screening}. It delegates functions to {@link
+ * ServiceBackedResourceDelegate}. It decorates the {@link ServiceBackedResourceDelegate} not in
+ * functionality but with @see
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
  * Annotations</a>
- * 
+ *
  * @author CWDS API Team
  */
 @Api(value = RESOURCE_SCREENINGS, tags = {RESOURCE_SCREENINGS})
@@ -58,7 +53,7 @@ public class ScreeningResource {
 
   /**
    * Constructor
-   * 
+   *
    * @param resourceDelegate the resourceDelegate to delegate to
    * @param relationshipFacade the relationshipFacade to delegate to
    */
@@ -92,7 +87,7 @@ public class ScreeningResource {
 
   /**
    * Update a {@link Screening}.
-   * 
+   *
    * @param id The id
    * @param screening the screening
    * @return The {@link Response}
@@ -121,7 +116,7 @@ public class ScreeningResource {
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @XAUnitOfWork
+  @UnitOfWork(DATASOURCE_NS)
   @GET
   @Path("/{screeningId}/relationships")
   @ApiResponses(
@@ -142,7 +137,6 @@ public class ScreeningResource {
    *
    * @param screeningId The id
    * @return The {@link Response}
-   * @throws IOException on disconnect
    */
   @UnitOfWork(DATASOURCE_NS)
   @GET
@@ -156,12 +150,10 @@ public class ScreeningResource {
       response = ScreeningRelationshipsWithCandidates.class)
   public Response getRelationshipsWithCandidatesByScreeningId(
       @PathParam("screeningId") @ApiParam(required = true,
-          value = "The id of the Screening to find") String screeningId)
-      throws IOException {
-    String fixture = Resources.toString(
-        Resources.getResource("gov.ca.cwds.rest.resources/relationships_with_candidates_mock.json"),
-        Charsets.UTF_8).trim();
-    return Response.ok(fixture).build();
+          value = "The id of the Screening to find") String screeningId) {
+    return new ResponseConverter()
+        .withDataResponse(
+            relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
   }
 
 }
