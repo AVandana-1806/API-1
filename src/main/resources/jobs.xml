@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data>
+    <schedule>
+        <job>
+            <name>FerbApiHealthcheckJob</name>
+            <job-class>gov.ca.cwds.jobs.FerbApiHealthcheckJob</job-class>
+        </job>
+        <trigger>
+            <cron>
+                <name>FerbApiHealthcheckJob-Trigger</name>
+                <job-name>FerbApiHealthcheckJob</job-name>
+                <cron-expression>0 */1 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+</job-scheduling-data>
