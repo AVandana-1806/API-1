@@ -64,7 +64,17 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
 
   public static final String BAD_SCREENING_ID = "3393";
 
-  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_MOCK = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-mock.json";
+  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-one-candidate.json";
+  public static final String SCREENING_ID_8 = "2107";
+
+  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-two-candidate-no-relations.json";
+  public static final String SCREENING_ID_9 = "2109";
+
+  public static final String SCREENING_ID_10 = "2110";
+
+  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-no-candidate-two-relationships.json";
+  public static final String SCREENING_ID_11 = "2111";
+
 
   @Test
   public void getRelationshipsByScreeningId_twoRelationsExist() throws IOException, JSONException {
@@ -168,7 +178,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public void getRelationshipsByScreeningId_sameDates() throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_6 + "/" + RELATIONSHIPS));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_ONE_RELATIONSHIP_RESPONSE_SAME_DATES);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -178,7 +187,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public void getRelationshipsByScreeningId_cmsDateLess() throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_7 + "/" + RELATIONSHIPS));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_UPDATED_ONE);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -191,13 +199,40 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  public void getRelationshipsByScreeningIdWithCandidates_mockTest()
+  public void getRelationshipsByScreeningIdWithCandidates_oneCandidateOneRelationship()
       throws IOException, JSONException {
     String actualJson = getStringResponse(
-        doGetCall(SCREENING_PATH + "/" + 1 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    String expectedResponse =
+        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_noRelationsTwoParticipants()
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    String expectedResponse =
+        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
+      throws IOException {
+    Response response = doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS);
+    assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_TwoRelationsNoCandidates()
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     System.out.println(actualJson);
     String expectedResponse =
-        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_MOCK);
+        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 }
