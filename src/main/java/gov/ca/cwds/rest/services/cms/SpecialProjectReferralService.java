@@ -268,6 +268,7 @@ public class SpecialProjectReferralService implements
     }
     spr.setReferralId(referralId);
     spr.setSpecialProjectId(ssbSpecialProject.getId());
+    spr.setSafelySurrenderedBabiesIndicator(true);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral createdSpr = this.create(spr);
 
@@ -293,7 +294,7 @@ public class SpecialProjectReferralService implements
     try {
       performBusinessValidation(ssbEntity);
     } catch (DroolsException e) {
-      LOGGER.error("Drools Engine failed to proces");
+      LOGGER.error("SSB Business validations failed", e);
     }
     safelySurrenderedBabiesDao.create(ssbEntity);
 
@@ -312,7 +313,6 @@ public class SpecialProjectReferralService implements
 
   private void performBusinessValidation(SafelySurrenderedBabies safelySurrenderedBabies)
       throws DroolsException {
-
     Optional.ofNullable(validator.validate(safelySurrenderedBabies)).ifPresent(violations -> {
       if (!violations.isEmpty()) {
         throw new ConstraintViolationException(violations);
@@ -322,7 +322,9 @@ public class SpecialProjectReferralService implements
     Set<IssueDetails> detailsList =
         droolsService.performBusinessRules(createConfiguration(), safelySurrenderedBabies);
     if (!detailsList.isEmpty()) {
-      throw new BusinessValidationException(detailsList);
+      throw new BusinessValidationException(
+          "Business rules validation is failed for " + safelySurrenderedBabies.getClass().getName(),
+          detailsList);
     }
   }
 

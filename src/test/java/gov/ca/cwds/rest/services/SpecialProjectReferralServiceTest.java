@@ -10,16 +10,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Validator;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import gov.ca.cwds.data.legacy.cms.dao.NonCWSNumberDao;
 import gov.ca.cwds.data.cms.ReferralDao;
+import gov.ca.cwds.data.legacy.cms.dao.NonCWSNumberDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafelySurrenderedBabiesDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
 import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
@@ -41,6 +44,8 @@ public class SpecialProjectReferralServiceTest {
   private RISpecialProjectReferral riSpecialProjectReferral;
   private NonCWSNumberDao nonCWSNumberDao;
   private ReferralDao referralDao;
+  private DroolsService droolsService;
+  private Validator validator;
 
   @Before
   public void setup() {
@@ -49,6 +54,8 @@ public class SpecialProjectReferralServiceTest {
     safelySurrenderedBabiesDao = mock(SafelySurrenderedBabiesDao.class);
     nonCWSNumberDao = mock(NonCWSNumberDao.class);
     riSpecialProjectReferral = mock(RISpecialProjectReferral.class);
+    droolsService = mock(DroolsService.class);
+    validator = mock(Validator.class);
 
     List<SpecialProject> ssbSpecialProjects = new ArrayList<>();
     SpecialProject specialProject = new SpecialProject();
@@ -63,6 +70,7 @@ public class SpecialProjectReferralServiceTest {
     when(specialProjectReferralDao.create(any())).thenReturn(ssbSpecialProjectReferral);
     when(safelySurrenderedBabiesDao.create(any())).thenReturn(null);
     when(nonCWSNumberDao.create(any())).thenReturn(null);
+    when(droolsService.performBusinessRules(any(), any())).thenReturn(null);
 
     specialProjectReferralService = new SpecialProjectReferralService();
     specialProjectReferralService.setNonCWSNumberDao(nonCWSNumberDao);
@@ -92,7 +100,7 @@ public class SpecialProjectReferralServiceTest {
     specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
         now.toLocalDate(), now.toLocalTime(), ssb);
   }
-  
+
   @Test
   public void shouldReturnRiSpecialProjectReferral() {
     referralDao = mock(ReferralDao.class);
