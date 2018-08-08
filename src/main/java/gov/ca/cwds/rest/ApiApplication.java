@@ -8,8 +8,6 @@ import java.util.Map;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.FileUtils;
-import org.knowm.dropwizard.sundial.SundialBundle;
-import org.knowm.dropwizard.sundial.SundialConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,24 +94,6 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
   }
 
   @Override
-  public void initializeInternal(Bootstrap<ApiConfiguration> bootstrap) {
-    bootstrap.addBundle(new SundialBundle<ApiConfiguration>() {
-      @Override
-      public SundialConfiguration getSundialConfiguration(ApiConfiguration configuration) {
-        SundialConfiguration config = new SundialConfiguration();
-        config.setThreadPoolSize("10");
-        config.setPerformShutdown("true");
-        config.setWaitOnShutdown("false");
-        config.setStartDelay("5");
-        config.setStartOnLoad("true");
-        config.setGlobalLockOnLoad("false");
-        config.setAnnotatedJobsPackageName("gov.ca.cwds.jobs");
-        return config;
-      }
-    });
-  }
-
-  @Override
   public void runInternal(final ApiConfiguration configuration, final Environment environment) {
     nukeXaFiles();
     if (configuration.isUpgradeDbOnStart()) {
@@ -184,8 +164,6 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     for (Map.Entry<String, String> entry : env.entrySet()) {
       LOGGER.info("{}={}", entry.getKey(), entry.getValue());
     }
-
-    environment.getApplicationContext().setAttribute("environment", environment);
   }
 
   private void upgradeNsDb(ApiConfiguration configuration) {
