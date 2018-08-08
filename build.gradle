@@ -28,7 +28,7 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    coreApiVersion = '1.7.4_837-RC'
+    coreApiVersion = '1.7.4_839-RC' 
     apiVersion = '0.8.3'
     cwdsModelVersion = '0.8.1_631-RC'
     configPath = '$rootProject.projectDir/config/'
@@ -40,7 +40,6 @@ project.ext {
     mainclass = 'gov.ca.cwds.rest.ApiApplication'
     elasticsearchVersion = '5.5.0'
     log4jVersion = '2.8.2'
-    newrelicVersion = '3.41.0'
 
     junitVersion = '4.12'
     mockitoVersion = "2.8.9"
@@ -167,11 +166,9 @@ dependencies {
 	    exclude group: 'org.apache.poi'
 	    exclude group: 'org.hibernate'
 	}
+	compile group: 'gov.ca.cwds.api', name: 'drools-engine', version: coreApiVersion
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
     
-    compile group: 'com.newrelic.agent.java', name: 'newrelic-api', version: newrelicVersion
-    compile group: 'org.knowm', name: 'dropwizard-sundial', version: '1.3.1'    
-
 	// LOGGING:
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jVersion
   	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
