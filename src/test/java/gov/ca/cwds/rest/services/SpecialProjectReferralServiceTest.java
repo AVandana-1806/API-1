@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.validation.Validator;
@@ -54,8 +55,8 @@ public class SpecialProjectReferralServiceTest {
     safelySurrenderedBabiesDao = mock(SafelySurrenderedBabiesDao.class);
     nonCWSNumberDao = mock(NonCWSNumberDao.class);
     riSpecialProjectReferral = mock(RISpecialProjectReferral.class);
-    droolsService = mock(DroolsService.class);
     validator = mock(Validator.class);
+    droolsService = mock(DroolsService.class);
 
     List<SpecialProject> ssbSpecialProjects = new ArrayList<>();
     SpecialProject specialProject = new SpecialProject();
@@ -70,7 +71,7 @@ public class SpecialProjectReferralServiceTest {
     when(specialProjectReferralDao.create(any())).thenReturn(ssbSpecialProjectReferral);
     when(safelySurrenderedBabiesDao.create(any())).thenReturn(null);
     when(nonCWSNumberDao.create(any())).thenReturn(null);
-    when(droolsService.performBusinessRules(any(), any())).thenReturn(null);
+    when(droolsService.performBusinessRules(any(), any())).thenReturn(new HashSet<>());
 
     specialProjectReferralService = new SpecialProjectReferralService();
     specialProjectReferralService.setNonCWSNumberDao(nonCWSNumberDao);
@@ -78,6 +79,8 @@ public class SpecialProjectReferralServiceTest {
     specialProjectReferralService.setSpecialProjectDao(specialProjectDao);
     specialProjectReferralService.setSpecialProjectReferralDao(specialProjectReferralDao);
     specialProjectReferralService.setRiSpecialProjectReferral(riSpecialProjectReferral);
+    specialProjectReferralService.setDroolsService(droolsService);
+    specialProjectReferralService.setValidator(validator);
 
     new TestingRequestExecutionContext("0X5");
   }

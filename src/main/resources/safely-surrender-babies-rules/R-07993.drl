@@ -1,8 +1,18 @@
 import gov.ca.cwds.rest.exception.IssueDetails
 import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies
-import org.apache.commons.lang3.StringUtils;
 
 global java.util.Set validationDetailsList
+
+/*
+   Code: R - 07993
+
+   Rule Text
+   If 'Completed and Returned Immediately' option is selected, default the Date Questionnaire Returned to the Surrender Date. 
+   
+   Logic
+   If (in focus) SPECIAL_PROJECT_REFERRAL > SAFELY_SURRENDERED_BABIES.Med_Question_Code = 'R', default 
+   SAFELY_SURRENDERED_BABIES.Quest_Received_Date = SAFELY_SURRENDERED_BABIES.Surrender_Date.
+*/
 rule "R-07993"
   dialect "mvel"
   agenda-group "safely-surrender-babies-agenda"

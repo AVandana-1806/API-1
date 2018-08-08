@@ -78,6 +78,7 @@ public class SpecialProjectReferralService implements
   @Inject
   private DroolsService droolsService;
 
+  @Inject
   private Validator validator;
 
   /**
@@ -93,17 +94,14 @@ public class SpecialProjectReferralService implements
    * @param specialProjectReferralDao - special project referral DAO
    * @param specialProjectDao - special Project DAO
    * @param riSpecialProjectReferral - referential integrity special project referral
-   * @param validator - object validator
    * 
    */
   @Inject
   public SpecialProjectReferralService(SpecialProjectReferralDao specialProjectReferralDao,
-      SpecialProjectDao specialProjectDao, RISpecialProjectReferral riSpecialProjectReferral,
-      Validator validator) {
+      SpecialProjectDao specialProjectDao, RISpecialProjectReferral riSpecialProjectReferral) {
     this.specialProjectReferralDao = specialProjectReferralDao;
     this.specialProjectDao = specialProjectDao;
     this.riSpecialProjectReferral = riSpecialProjectReferral;
-    this.validator = validator;
   }
 
 
@@ -225,7 +223,6 @@ public class SpecialProjectReferralService implements
    * @param referralReceivedDate - referral received date
    * @param referralRecievedTime - referral received time
    * @param ssb Safely Surrendered Babies
-   * @throws DroolsException
    */
   public void processSafelySurrenderedBabies(String childClientId, String referralId,
       LocalDate referralReceivedDate, LocalTime referralRecievedTime,
@@ -414,6 +411,22 @@ public class SpecialProjectReferralService implements
 
   public void setNonCWSNumberDao(NonCWSNumberDao nonCWSNumberDao) {
     this.nonCWSNumberDao = nonCWSNumberDao;
+  }
+
+  public DroolsService getDroolsService() {
+    return droolsService;
+  }
+
+  public void setDroolsService(DroolsService droolsService) {
+    this.droolsService = droolsService;
+  }
+
+  public Validator getValidator() {
+    return validator;
+  }
+
+  public void setValidator(Validator validator) {
+    this.validator = validator;
   }
 
   /**
