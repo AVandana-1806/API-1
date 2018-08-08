@@ -70,7 +70,8 @@ public class RelationshipFacade {
       return;
     }
 
-    Set<gov.ca.cwds.rest.api.domain.cms.SystemCode> systemCodes = this.systemCodeDao.getSystemCodesForMeta("CLNTRELC");
+    Set<gov.ca.cwds.rest.api.domain.cms.SystemCode> systemCodes = this.systemCodeDao
+        .getSystemCodesForMeta("CLNTRELC");
 
     if (MapUtils.isEmpty(codesMappedByDescription)) {
       systemCodes.forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
