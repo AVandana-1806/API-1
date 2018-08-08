@@ -21,7 +21,7 @@ import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectReferralDao;
 import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
 import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
 import gov.ca.cwds.rest.services.referentialintegrity.RISpecialProjectReferral;
@@ -77,7 +77,7 @@ public class SpecialProjectReferralServiceTest {
   @Test
   public void testProcessSafelySurrenderedBabies() {
     LocalDateTime now = LocalDateTime.now();
-    SafelySurrenderedBabiesDTO ssb = new SafelySurrenderedBabiesBuilder().build();
+    SafelySurrenderedBabies ssb = new SafelySurrenderedBabiesBuilder().build();
     specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
         now.toLocalDate(), now.toLocalTime(), ssb);
   }
@@ -88,7 +88,7 @@ public class SpecialProjectReferralServiceTest {
         .thenReturn(new ArrayList<>());
 
     LocalDateTime now = LocalDateTime.now();
-    SafelySurrenderedBabiesDTO ssb = new SafelySurrenderedBabiesBuilder().build();
+    SafelySurrenderedBabies ssb = new SafelySurrenderedBabiesBuilder().build();
     specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
         now.toLocalDate(), now.toLocalTime(), ssb);
   }

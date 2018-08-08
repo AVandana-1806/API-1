@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author CWDS API Team
  */
 @ApiModel
-public class SafelySurrenderedBabiesDTO extends BaseDTO implements Request, Response {
+public class SafelySurrenderedBabies extends BaseDTO implements Request, Response {
 
   private static final long serialVersionUID = 1L;
 
@@ -74,7 +74,7 @@ public class SafelySurrenderedBabiesDTO extends BaseDTO implements Request, Resp
   /**
    * No-argument constructor
    */
-  public SafelySurrenderedBabiesDTO() {
+  public SafelySurrenderedBabies() {
     super();
   }
 

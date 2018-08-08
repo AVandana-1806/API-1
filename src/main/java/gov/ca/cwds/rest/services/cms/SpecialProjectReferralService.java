@@ -229,7 +229,7 @@ public class SpecialProjectReferralService implements
    */
   public void processSafelySurrenderedBabies(String childClientId, String referralId,
       LocalDate referralReceivedDate, LocalTime referralRecievedTime,
-      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO ssb) {
+      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies ssb) {
 
     LocalDateTime now = LocalDateTime.now();
 
@@ -291,7 +291,7 @@ public class SpecialProjectReferralService implements
     ssbEntity.setSurrenderedDate(referralReceivedDate);
     ssbEntity.setSurrenderedTime(referralRecievedTime);
     try {
-      performSubmissionValidation(ssb);
+      performBusinessValidation(ssbEntity);
     } catch (DroolsException e) {
       LOGGER.error("Drools Engine failed to proces");
     }
@@ -310,8 +310,7 @@ public class SpecialProjectReferralService implements
     nonCWSNumberDao.create(braceltInfo);
   }
 
-  private void performSubmissionValidation(
-      gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO safelySurrenderedBabies)
+  private void performBusinessValidation(SafelySurrenderedBabies safelySurrenderedBabies)
       throws DroolsException {
 
     Optional.ofNullable(validator.validate(safelySurrenderedBabies)).ifPresent(violations -> {
@@ -327,7 +326,7 @@ public class SpecialProjectReferralService implements
     }
   }
 
-  private DroolsConfiguration<gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO> createConfiguration() {
+  private DroolsConfiguration<SafelySurrenderedBabies> createConfiguration() {
     return SafelySurrenderBabiesDroolsConfiguration.INSTANCE;
   }
 

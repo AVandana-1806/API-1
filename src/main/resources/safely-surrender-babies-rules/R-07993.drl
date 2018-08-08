@@ -1,19 +1,14 @@
 import gov.ca.cwds.rest.exception.IssueDetails
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesDTO
 import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils;
+
 global java.util.Set validationDetailsList
 rule "R-07993"
   dialect "mvel"
   agenda-group "safely-surrender-babies-agenda"
   when  
-      $safelyBaby: SafelySurrenderedBabiesDTO()
-      eval(StringUtils.isNotBlank($safelyBaby.getSurrenderedByName()))
+      $safelyBaby: SafelySurrenderedBabies(medicalQuestionnaireCode == "R", surrenderedDate != null, questionnaireReceivedDate == null)
   then
-      IssueDetails details = new IssueDetails(); 
-      details.setCode("R-07993");
-      details.setUserMessage("failed");
-      details.setTechnicalMessage("failed");
-      System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$**R-07993 is activated*********************************************************************************** ");
-      validationDetailsList.add(details);
+	  $safelyBaby.setQuestionnaireReceivedDate($safelyBaby.getSurrenderedDate());
+	  modify ($safelyBaby);
 end   
