@@ -166,6 +166,7 @@ dependencies {
 	    exclude group: 'org.apache.poi'
 	    exclude group: 'org.hibernate'
 	}
+	compile group: 'gov.ca.cwds.api', name: 'drools-engine', version: coreApiVersion
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
     
 	// LOGGING:
