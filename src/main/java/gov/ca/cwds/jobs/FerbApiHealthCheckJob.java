@@ -5,7 +5,7 @@ package gov.ca.cwds.jobs;
  * 
  * @author CWDS API Team
  */
-public final class FerbApiHealthCheckJob extends NewRelicReportingHealthcheckJob {
+public final class FerbApiHealthCheckJob extends NewRelicReportingHealthCheckJob {
 
   private static final String HEALTH_CHECK_EVENT = "FerbApiHealthCheck";
 
