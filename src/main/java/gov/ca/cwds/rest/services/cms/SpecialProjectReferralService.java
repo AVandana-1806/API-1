@@ -29,7 +29,6 @@ import gov.ca.cwds.data.legacy.cms.entity.SpecialProject;
 import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.drools.DroolsConfiguration;
-import gov.ca.cwds.drools.DroolsException;
 import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.DomainChef;
@@ -265,7 +264,7 @@ public class SpecialProjectReferralService implements
     }
     spr.setReferralId(referralId);
     spr.setSpecialProjectId(ssbSpecialProject.getId());
-    spr.setSafelySurrenderedBabiesIndicator(true);
+    spr.setSafelySurrenderedBabiesIndicator(Boolean.TRUE);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral createdSpr = this.create(spr);
 
@@ -288,11 +287,7 @@ public class SpecialProjectReferralService implements
     ssbEntity.setSurrenderedByName(ssb.getSurrenderedByName());
     ssbEntity.setSurrenderedDate(referralReceivedDate);
     ssbEntity.setSurrenderedTime(referralRecievedTime);
-    try {
-      performBusinessValidation(ssbEntity);
-    } catch (DroolsException e) {
-      LOGGER.error("SSB Business validations failed", e);
-    }
+    performBusinessValidation(ssbEntity);
     safelySurrenderedBabiesDao.create(ssbEntity);
 
     /**
@@ -308,8 +303,7 @@ public class SpecialProjectReferralService implements
     nonCWSNumberDao.create(braceltInfo);
   }
 
-  private void performBusinessValidation(SafelySurrenderedBabies safelySurrenderedBabies)
-      throws DroolsException {
+  private void performBusinessValidation(SafelySurrenderedBabies safelySurrenderedBabies) {
     Optional.ofNullable(validator.validate(safelySurrenderedBabies)).ifPresent(violations -> {
       if (!violations.isEmpty()) {
         throw new ConstraintViolationException(violations);
