@@ -71,6 +71,11 @@ public final class Api {
     public static final String LOV_DB_STATUS = "lov_db";
     public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache";
     public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
+    public static final String MQT_STATUS = "mqt_stat";
+    public static final String VIEW_STATUS = "view_stat";
+    public static final String TRIGGER_STATUS = "trigger_stat";
+    public static final String SP_GENCLNCNTY_STATUS = "genclncnty_stat";
+    public static final String SP_SPSSANAME3_STATUS = "spssaname3_stat";
 
     private HealthCheck() {}
   }
