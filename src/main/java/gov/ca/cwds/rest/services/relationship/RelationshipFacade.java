@@ -3,12 +3,10 @@ package gov.ca.cwds.rest.services.relationship;
 import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
-import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
-import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.Response;
@@ -19,6 +17,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.Candidat
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo.RelatedToBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
+import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,24 +44,23 @@ public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
-  private final Map<String, SystemCode> codesMappedByDescription = new HashMap<>();
-  private final Map<Short, SystemCode> codesMappedById = new HashMap<>();
+  private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription = new HashMap<>();
+  private final Map<Short, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedById = new HashMap<>();
 
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
-  private final SystemCodeDao systemCodeDao;
+  private final SystemCodeCache systemCodeDao;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
-      SystemCodeDao systemCodeDao) {
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
-    this.systemCodeDao = systemCodeDao;
+    this.systemCodeDao = SystemCodeCache.global();
     initSystemCodes();
   }
 
@@ -72,15 +69,12 @@ public class RelationshipFacade {
       return;
     }
 
-    SystemCode[] systemCodes = this.systemCodeDao.findByForeignKeyMetaTable("CLNTRELC");
-    if (Arrays.isNullOrEmpty(systemCodes)) {
-      return;
-    }
+    Set<gov.ca.cwds.rest.api.domain.cms.SystemCode> systemCodes = this.systemCodeDao
+        .getSystemCodesForMeta("CLNTRELC");
 
     if (MapUtils.isEmpty(codesMappedByDescription)) {
-      java.util.Arrays.stream(systemCodes)
-          .forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
-      java.util.Arrays.stream(systemCodes).forEach(e -> codesMappedById.put(e.getSystemId(), e));
+      systemCodes.forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
+      systemCodes.forEach(e -> codesMappedById.put(e.getSystemId(), e));
     }
   }
 
@@ -561,7 +555,7 @@ public class RelationshipFacade {
   private short getOppositeSystemCode(short systemCodeId) {
     short oppositeCode = -1;
 
-    SystemCode systemCode = codesMappedById.get(systemCodeId);
+    gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode = codesMappedById.get(systemCodeId);
     if (systemCode != null) {
       String str = systemCode.getShortDescription();
       if (StringUtils.isNoneEmpty(str)) {

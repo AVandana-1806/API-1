@@ -24,9 +24,9 @@ nsDataSourceFactory:
   url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens       
   validationQuery: "/* MyService Health Check */ SELECT 1"
   logValidationErrors: true
-  initialSize: ${DB_NS_CP_INITIAL_SIZE:-5}
-  minSize: ${DB_NS_CP_MIN_SIZE:-5}
-  maxSize: ${DB_NS_CP_MAX_SIZE:-12}
+  initialSize: ${DB_NS_CP_INITIAL_SIZE:-2}
+  minSize: ${DB_NS_CP_MIN_SIZE:-2}
+  maxSize: ${DB_NS_CP_MAX_SIZE:-8}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
@@ -44,9 +44,9 @@ cmsDataSourceFactory:
   url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
   validationQuery: "/* MyService Health Check */ SELECT 1"
   logValidationErrors: true
-  initialSize: ${DB_CMS_CP_INITIAL_SIZE:-5}
-  minSize: ${DB_CMS_CP_MIN_SIZE:-5}
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-12}
+  initialSize: ${DB_CMS_CP_INITIAL_SIZE:-2}
+  minSize: ${DB_CMS_CP_MIN_SIZE:-2}
+  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
