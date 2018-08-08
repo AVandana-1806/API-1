@@ -2,13 +2,13 @@
 <job-scheduling-data>
     <schedule>
         <job>
-            <name>FerbApiHealthcheckJob</name>
-            <job-class>gov.ca.cwds.jobs.FerbApiHealthcheckJob</job-class>
+            <name>FerbApiHealthCheckJob</name>
+            <job-class>gov.ca.cwds.jobs.FerbApiHealthCheckJob</job-class>
         </job>
         <trigger>
             <cron>
-                <name>FerbApiHealthcheckJob-Trigger</name>
-                <job-name>FerbApiHealthcheckJob</job-name>
+                <name>FerbApiHealthCheckJob-Trigger</name>
+                <job-name>FerbApiHealthCheckJob</job-name>
                 <cron-expression>0 */10 * * * ?</cron-expression>
             </cron>
         </trigger>

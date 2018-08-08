@@ -27,7 +27,7 @@ public class LovDbCheck implements Pingable {
   }
 
   private SessionFactory sessionFactory;
-  private List<String> messages = new ArrayList<>();
+  private List<String> messages;
 
   @Inject
   LovDbCheck(@NsSessionFactory SessionFactory sessionFactory) {
@@ -38,6 +38,7 @@ public class LovDbCheck implements Pingable {
   public boolean ping() {
     boolean ok = true;
     Session session = null;
+    messages = new ArrayList<>();
 
     try {
       session = sessionFactory.openSession();
@@ -69,8 +70,7 @@ public class LovDbCheck implements Pingable {
       ok = false;
     }
 
-    addMessage(
-        "[Expected at least " + expectedCount + " in " + tableName + ", found " + count + "]");
+    addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
 
     return ok;
   }
