@@ -56,13 +56,12 @@ public class RelationshipFacade {
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
-      SystemCodeCache systemCodeDao) {
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
-    this.systemCodeDao = systemCodeDao;
+    this.systemCodeDao = SystemCodeCache.global();
     initSystemCodes();
   }
 
