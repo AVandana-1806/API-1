@@ -100,8 +100,8 @@ public class LovDbCheck implements Pingable {
         con.rollback();
       } catch (SQLException e1) {
         LOGGER.trace("BOOM!", e1);
-        throw CaresLogUtils.runtime(LOGGER, e,
-            "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e.getMessage(), e);
+        throw CaresLogUtils.runtime(LOGGER, e1,
+            "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e1.getMessage(), e1);
       }
       LOGGER.trace("BOOM!", e);
       throw CaresLogUtils.runtime(LOGGER, e, "LOV HEALTH CHECK QUERY FAILED! SQL: {} {}", sql,
