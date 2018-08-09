@@ -57,6 +57,9 @@ public class LovDbCheck implements Pingable {
   public boolean ping() {
     boolean ok = true;
 
+    // must clear messages list otherwise it keeps on adding into it...
+    messages.clear();
+
     try (final Session session = sessionFactory.openSession()) {
       final String schema =
           (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
