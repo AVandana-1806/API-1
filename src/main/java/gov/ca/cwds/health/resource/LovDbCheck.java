@@ -22,7 +22,7 @@ import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
 
 /**
- * Health check for Postgres list of value (LOV) tables and views.
+ * Health check for Postgres list of value (LOV) tables and views. Feel the LOVe.
  * 
  * @author CWDS API Team
  */
@@ -58,10 +58,13 @@ public class LovDbCheck implements Pingable {
     messages = new ArrayList<>();
 
     try (final Session session = sessionFactory.openSession()) {
+      final String schema =
+          (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       for (Map.Entry<String, Integer> entry : lovTableCounts.entrySet()) {
-        final boolean tableCountOk = checkTableCount(con, entry.getKey(), entry.getValue());
-        LOGGER.debug("");
+        final String table = entry.getKey();
+        final boolean tableCountOk = checkTableCount(con, table, schema, entry.getValue());
+        LOGGER.debug("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk, table);
         ok = ok && tableCountOk;
       }
     } // Session and connection go out of scope.
@@ -74,9 +77,11 @@ public class LovDbCheck implements Pingable {
     return messages.toString();
   }
 
-  protected boolean checkTableCount(Connection con, String tableName, int expectedCount) {
+  protected boolean checkTableCount(Connection con, String tableName, String schema,
+      int expectedCount) {
     final String sql = "SELECT COUNT(*) AS TOTAL FROM {h-schema}" + tableName;
     int count = 0;
+    LOGGER.debug("Postgres LOV health check: SQL: {}", sql);
 
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setMaxRows(10);
