@@ -148,13 +148,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
-    LOGGER.debug("CandaceSessionFactoryImpl.startRequest");
+    LOGGER.debug("startRequest");
     local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    LOGGER.debug("CandaceSessionFactoryImpl.endRequest");
+    LOGGER.debug("endRequest");
     local.set(null); // clear the current thread
   }
 
@@ -164,50 +164,49 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public SessionFactoryImplementor getSessionFactory() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getSessionFactory");
+    LOGGER.trace("getSessionFactory");
     return pick().getSessionFactory();
   }
 
   @Override
   public Reference getReference() throws NamingException {
-    LOGGER.trace("CandaceSessionFactoryImpl.getReference");
+    LOGGER.trace("getReference");
     return pick().getReference();
   }
 
   @Override
   public EntityManager createEntityManager() {
-    LOGGER.trace("CandaceSessionFactoryImpl.createEntityManager");
+    LOGGER.trace("createEntityManager()");
     return pick().createEntityManager();
   }
 
   @Override
   public <T> List<EntityGraph<? super T>> findEntityGraphsByType(Class<T> entityClass) {
-    LOGGER.trace("CandaceSessionFactoryImpl.findEntityGraphsByType: entityClass: {}",
-        entityClass.getName());
+    LOGGER.trace("findEntityGraphsByType: entityClass: {}", entityClass.getName());
     return pick().findEntityGraphsByType(entityClass);
   }
 
   @Override
   public SessionFactoryOptions getSessionFactoryOptions() {
-    LOGGER.info("CandaceSessionFactoryImpl.getSessionFactoryOptions");
+    LOGGER.info("getSessionFactoryOptions");
     return pick().getSessionFactoryOptions();
   }
 
   @Override
   public EntityManager createEntityManager(Map map) {
-    LOGGER.info("CandaceSessionFactoryImpl.createEntityManager");
+    LOGGER.info("createEntityManager(Map)");
     return pick().createEntityManager(map);
   }
 
   @Override
   public SessionBuilder withOptions() {
-    LOGGER.info("CandaceSessionFactoryImpl.withOptions");
+    LOGGER.info("withOptions");
     return pick().withOptions();
   }
 
   @Override
   public Session openSession() throws HibernateException {
-    LOGGER.debug("CandaceSessionFactoryImpl.openSession");
+    LOGGER.debug("openSession");
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
@@ -223,19 +222,19 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public EntityType getEntityTypeByName(String entityName) {
-    LOGGER.info("CandaceSessionFactoryImpl.getEntityTypeByName");
+    LOGGER.info("getEntityTypeByName");
     return pick().getEntityTypeByName(entityName);
   }
 
   @Override
   public EntityManager createEntityManager(SynchronizationType synchronizationType) {
-    LOGGER.trace("CandaceSessionFactoryImpl.createEntityManager");
+    LOGGER.trace("createEntityManager(SynchronizationType)");
     return pick().createEntityManager(synchronizationType);
   }
 
   @Override
   public Session getCurrentSession() throws HibernateException {
-    LOGGER.debug("CandaceSessionFactoryImpl.getCurrentSession");
+    LOGGER.debug("getCurrentSession");
 
     Session session = local.get();
     if (session == null) {
@@ -250,32 +249,32 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
-    LOGGER.trace("CandaceSessionFactoryImpl.createEntityManager(SynchronizationType, Map)");
+    LOGGER.trace("createEntityManager(SynchronizationType, Map)");
     return pick().createEntityManager(synchronizationType, map);
   }
 
   @Override
   public StatelessSessionBuilder withStatelessOptions() {
-    LOGGER.info("CandaceSessionFactoryImpl.withStatelessOptions");
+    LOGGER.info("withStatelessOptions");
     return pick().withStatelessOptions();
   }
 
   @Override
   public StatelessSession openStatelessSession() {
-    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession");
+    LOGGER.info("openStatelessSession");
     return pick().openStatelessSession();
   }
 
   @Override
   public StatelessSession openStatelessSession(Connection connection) {
-    LOGGER.info("CandaceSessionFactoryImpl.openStatelessSession(con)");
+    LOGGER.info("openStatelessSession(con)");
     return pick().openStatelessSession(connection);
   }
 
   @Override
   public Statistics getStatistics() {
     // IDEA: store statistics by request.
-    LOGGER.debug("CandaceSessionFactoryImpl.getStatistics");
+    LOGGER.debug("getStatistics");
     return pick().getStatistics();
   }
 
@@ -286,33 +285,33 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public org.hibernate.Metamodel getMetamodel() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getMetamodel");
+    LOGGER.trace("getMetamodel");
     return pick().getMetamodel();
   }
 
   @Override
   public boolean isClosed() {
     final boolean ret = pick().isClosed();
-    LOGGER.trace("CandaceSessionFactoryImpl.isClosed: {}", ret);
+    LOGGER.trace("isClosed: {}", ret);
     return ret;
   }
 
   @Override
   public boolean isOpen() {
     final boolean ret = pick().isOpen();
-    LOGGER.trace("CandaceSessionFactoryImpl.isOpen: {}", ret);
+    LOGGER.trace("isOpen: {}", ret);
     return ret;
   }
 
   @Override
   public Cache getCache() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getCache");
+    LOGGER.trace("getCache");
     return pick().getCache();
   }
 
   @Override
   public Set getDefinedFilterNames() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getDefinedFilterNames");
+    LOGGER.trace("getDefinedFilterNames");
     return pick().getDefinedFilterNames();
   }
 
@@ -326,86 +325,84 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public FilterDefinition getFilterDefinition(String filterName) throws HibernateException {
-    LOGGER.trace("CandaceSessionFactoryImpl.getFilterDefinition: filterName: {}", filterName);
+    LOGGER.trace("getFilterDefinition: filterName: {}", filterName);
     return pick().getFilterDefinition(filterName);
   }
 
   @Override
   public boolean containsFetchProfileDefinition(String name) {
-    LOGGER.trace("CandaceSessionFactoryImpl.containsFetchProfileDefinition: name: {}", name);
+    LOGGER.trace("containsFetchProfileDefinition: name: {}", name);
     return pick().containsFetchProfileDefinition(name);
   }
 
   @Override
   public Map<String, Object> getProperties() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getProperties");
+    LOGGER.trace("getProperties");
     return pick().getProperties();
   }
 
   @Override
   public TypeHelper getTypeHelper() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getTypeHelper");
+    LOGGER.trace("getTypeHelper");
     return pick().getTypeHelper();
   }
 
   @Override
   public ClassMetadata getClassMetadata(Class entityClass) {
-    LOGGER.trace("CandaceSessionFactoryImpl.getClassMetadata: entityClass: {}",
-        entityClass.getName());
+    LOGGER.trace("getClassMetadata: entityClass: {}", entityClass.getName());
     return pick().getClassMetadata(entityClass);
   }
 
   @Override
   public PersistenceUnitUtil getPersistenceUnitUtil() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getPersistenceUnitUtil");
+    LOGGER.trace("getPersistenceUnitUtil");
     return pick().getPersistenceUnitUtil();
   }
 
   @Override
   public ClassMetadata getClassMetadata(String entityName) {
-    LOGGER.trace("CandaceSessionFactoryImpl.getClassMetadata: entityName: {}", entityName);
+    LOGGER.trace("getClassMetadata: entityName: {}", entityName);
     return pick().getClassMetadata(entityName);
   }
 
   @Override
   public void addNamedQuery(String name, Query query) {
-    LOGGER.trace("CandaceSessionFactoryImpl.addNamedQuery: name: {}", name);
+    LOGGER.trace("addNamedQuery: name: {}", name);
     pick().addNamedQuery(name, query);
   }
 
   @Override
   public CollectionMetadata getCollectionMetadata(String roleName) {
-    LOGGER.trace("CandaceSessionFactoryImpl.getCollectionMetadata: roleName: {}", roleName);
+    LOGGER.trace("getCollectionMetadata: roleName: {}", roleName);
     return pick().getCollectionMetadata(roleName);
   }
 
   @Override
   public Map<String, ClassMetadata> getAllClassMetadata() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getAllClassMetadata");
+    LOGGER.trace("getAllClassMetadata");
     return pick().getAllClassMetadata();
   }
 
   @Override
   public <T> T unwrap(Class<T> cls) {
-    LOGGER.trace("CandaceSessionFactoryImpl.unwrap: cls: {}", cls.getName());
+    LOGGER.trace("unwrap: cls: {}", cls.getName());
     return pick().unwrap(cls);
   }
 
   @Override
   public Map getAllCollectionMetadata() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getAllCollectionMetadata");
+    LOGGER.trace("getAllCollectionMetadata");
     return pick().getAllCollectionMetadata();
   }
 
   @Override
   public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
-    LOGGER.trace("CandaceSessionFactoryImpl.addNamedEntityGraph: graphName: {}", graphName);
+    LOGGER.trace("addNamedEntityGraph: graphName: {}", graphName);
     pick().addNamedEntityGraph(graphName, entityGraph);
   }
 
   public String getSessionFactoryName() {
-    LOGGER.trace("CandaceSessionFactoryImpl.getSessionFactoryName: sessionFactoryName: {}",
-        sessionFactoryName);
+    LOGGER.trace("getSessionFactoryName: sessionFactoryName: {}", sessionFactoryName);
     return sessionFactoryName;
   }
 

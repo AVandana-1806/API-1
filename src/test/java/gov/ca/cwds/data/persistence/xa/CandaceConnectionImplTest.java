@@ -53,36 +53,36 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   @Test
   public void unwrap_A$Class() throws Exception {
     Class<?> iface = Client.class;
-    Object actual = target.unwrap(iface);
-    Object expected = null;
+    final Object actual = target.unwrap(iface);
+    final Object expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test(expected = SQLException.class)
   public void unwrap_A$Class_T$SQLException() throws Exception {
     doThrow(new SQLClientInfoException()).when(con).unwrap(any());
-    Class<Client> iface = Client.class;
+    final Class<Client> iface = Client.class;
     target.unwrap(iface);
   }
 
   @Test
   public void isWrapperFor_A$Class() throws Exception {
-    Class<?> iface = Client.class;
-    boolean actual = target.isWrapperFor(iface);
-    boolean expected = false;
+    final Class<?> iface = Client.class;
+    final boolean actual = target.isWrapperFor(iface);
+    final boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test(expected = SQLException.class)
   public void isWrapperFor_A$Class_T$SQLException() throws Exception {
     doThrow(new SQLClientInfoException()).when(con).isWrapperFor(any());
-    Class<?> iface = Client.class;
+    final Class<?> iface = Client.class;
     target.isWrapperFor(iface);
   }
 
   @Test
   public void createStatement_A$() throws Exception {
-    Statement actual = target.createStatement();
+    final Statement actual = target.createStatement();
     assertThat(actual, is(notNullValue()));
   }
 
@@ -94,59 +94,58 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void prepareStatement_A$String() throws Exception {
-    String sql = null;
-    PreparedStatement actual = target.prepareStatement(sql);
-    PreparedStatement expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final String sql = "SELECT VOLUME, WEIGHT, COLOR FROM CRAPPY.CRAP FOR READ ONLY";
+    final PreparedStatement actual = target.prepareStatement(sql);
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test(expected = SQLException.class)
   public void prepareStatement_A$String_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).prepareStatement(any());
-    String sql = null;
+    final String sql = null;
     target.prepareStatement(sql);
   }
 
   @Test
   public void prepareCall_A$String() throws Exception {
-    String sql = null;
-    CallableStatement actual = target.prepareCall(sql);
-    CallableStatement expected = null;
+    final String sql = null;
+    final CallableStatement actual = target.prepareCall(sql);
+    final CallableStatement expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test(expected = SQLException.class)
   public void prepareCall_A$String_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).prepareCall(any());
-    String sql = null;
+    final String sql = null;
     target.prepareCall(sql);
   }
 
   @Test
   public void nativeSQL_A$String() throws Exception {
-    String sql = null;
-    String actual = target.nativeSQL(sql);
-    String expected = null;
+    final String sql = null;
+    final String actual = target.nativeSQL(sql);
+    final String expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test(expected = SQLException.class)
   public void nativeSQL_A$String_T$SQLException() throws Exception {
     doThrow(new SQLClientInfoException()).when(con).nativeSQL(any());
-    String sql = null;
+    final String sql = null;
     target.nativeSQL(sql);
   }
 
   @Test
   public void setAutoCommit_A$boolean() throws Exception {
-    boolean autoCommit = false;
+    final boolean autoCommit = false;
     target.setAutoCommit(autoCommit);
   }
 
   @Test(expected = SQLException.class)
   public void setAutoCommit_A$boolean_T$SQLException() throws Exception {
     doThrow(new SQLClientInfoException()).when(con).setAutoCommit(any(Boolean.class));
-    boolean autoCommit = false;
+    final boolean autoCommit = false;
     target.setAutoCommit(autoCommit);
   }
 
@@ -198,8 +197,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void isClosed_A$() throws Exception {
-    boolean actual = target.isClosed();
-    boolean expected = false;
+    final boolean actual = target.isClosed();
+    final boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -211,9 +210,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void getMetaData_A$() throws Exception {
-    DatabaseMetaData actual = target.getMetaData();
-    DatabaseMetaData expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    final DatabaseMetaData actual = target.getMetaData();
+    assertThat(actual, is(notNullValue()));
   }
 
   @Test(expected = SQLException.class)
@@ -224,21 +222,21 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void setReadOnly_A$boolean() throws Exception {
-    boolean readOnly = false;
+    final boolean readOnly = false;
     target.setReadOnly(readOnly);
   }
 
   @Test(expected = SQLException.class)
   public void setReadOnly_A$boolean_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).setReadOnly(any(Boolean.class));
-    boolean readOnly = false;
+    final boolean readOnly = false;
     target.setReadOnly(readOnly);
   }
 
   @Test
   public void isReadOnly_A$() throws Exception {
-    boolean actual = target.isReadOnly();
-    boolean expected = false;
+    final boolean actual = target.isReadOnly();
+    final boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -257,15 +255,15 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
   @Test(expected = SQLException.class)
   public void setCatalog_A$String_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).setCatalog(any());
-    String catalog = null;
+    final String catalog = null;
     target.setCatalog(catalog);
   }
 
   @Test
   public void getCatalog_A$() throws Exception {
     when(con.getCatalog()).thenReturn("CWSNS4");
-    String actual = target.getCatalog();
-    String expected = "CWSNS4";
+    final String actual = target.getCatalog();
+    final String expected = "CWSNS4";
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -277,21 +275,21 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void setTransactionIsolation_A$int() throws Exception {
-    int level = 0;
+    final int level = 0;
     target.setTransactionIsolation(level);
   }
 
   @Test(expected = SQLException.class)
   public void setTransactionIsolation_A$int_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).setTransactionIsolation(any(Integer.class));
-    int level = 0;
+    final int level = 0;
     target.setTransactionIsolation(level);
   }
 
   @Test
   public void getTransactionIsolation_A$() throws Exception {
-    int actual = target.getTransactionIsolation();
-    int expected = 0;
+    final int actual = target.getTransactionIsolation();
+    final int expected = 0;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -303,8 +301,8 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void getWarnings_A$() throws Exception {
-    SQLWarning actual = target.getWarnings();
-    SQLWarning expected = null;
+    final SQLWarning actual = target.getWarnings();
+    final SQLWarning expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -327,56 +325,57 @@ public class CandaceConnectionImplTest extends Doofenshmirtz<Client> {
 
   @Test
   public void createStatement_A$int$int() throws Exception {
-    int resultSetType = 0;
-    int resultSetConcurrency = 0;
-    Statement actual = target.createStatement(resultSetType, resultSetConcurrency);
-    Statement expected = null;
+    final int resultSetType = 0;
+    final int resultSetConcurrency = 0;
+    final Statement actual = target.createStatement(resultSetType, resultSetConcurrency);
+    final Statement expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void prepareStatement_A$String$int$int() throws Exception {
-    String sql = null;
-    int resultSetType = 0;
-    int resultSetConcurrency = 0;
-    PreparedStatement actual = target.prepareStatement(sql, resultSetType, resultSetConcurrency);
-    PreparedStatement expected = null;
+    final String sql = null;
+    final int resultSetType = 0;
+    final int resultSetConcurrency = 0;
+    final PreparedStatement actual =
+        target.prepareStatement(sql, resultSetType, resultSetConcurrency);
+    final PreparedStatement expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void prepareCall_A$String$int$int() throws Exception {
-    String sql = null;
-    int resultSetType = 0;
-    int resultSetConcurrency = 0;
-    CallableStatement actual = target.prepareCall(sql, resultSetType, resultSetConcurrency);
-    CallableStatement expected = null;
+    final String sql = null;
+    final int resultSetType = 0;
+    final int resultSetConcurrency = 0;
+    final CallableStatement actual = target.prepareCall(sql, resultSetType, resultSetConcurrency);
+    final CallableStatement expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void setTypeMap_A$Map() throws Exception {
-    Map map = new HashMap();
+    final Map map = new HashMap();
     target.setTypeMap(map);
   }
 
   @Test(expected = SQLException.class)
   public void setTypeMap_A$Map_T$SQLException() throws Exception {
     doThrow(new SQLClientInfoException()).when(con).setTypeMap(any());
-    Map map = new HashMap();
+    final Map map = new HashMap();
     target.setTypeMap(map);
   }
 
   @Test
   public void setHoldability_A$int() throws Exception {
-    int holdability = 0;
+    final int holdability = 0;
     target.setHoldability(holdability);
   }
 
   @Test(expected = SQLException.class)
   public void setHoldability_A$int_T$SQLException() throws Exception {
     doThrow(new SQLException()).when(con).setHoldability(any(Integer.class));
-    int holdability = 0;
+    final int holdability = 0;
     target.setHoldability(holdability);
   }
 
