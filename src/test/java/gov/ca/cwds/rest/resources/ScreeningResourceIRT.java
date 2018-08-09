@@ -75,6 +75,8 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-no-candidate-two-relationships.json";
   public static final String SCREENING_ID_11 = "2111";
 
+  public static final String SCREENING_ID_12 = "2112";
+  public static final String FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-four-participants.json";
 
   @Test
   public void getRelationshipsByScreeningId_twoRelationsExist() throws IOException, JSONException {
@@ -203,6 +205,7 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -230,9 +233,19 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_ThreeParticipants2Relationships()
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+    String expectedResponse =
+        fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 }
