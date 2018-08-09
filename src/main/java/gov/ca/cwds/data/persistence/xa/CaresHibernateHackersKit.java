@@ -2,14 +2,16 @@ package gov.ca.cwds.data.persistence.xa;
 
 import java.sql.Connection;
 
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.BaseDaoImpl;
-import gov.ca.cwds.health.resource.LovDbCheck;
 
 /**
  * Because CARES cares and wants to alleviate your suffering. We feel your pain.
@@ -18,7 +20,7 @@ import gov.ca.cwds.health.resource.LovDbCheck;
  */
 public class CaresHibernateHackersKit {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(LovDbCheck.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(CaresHibernateHackersKit.class);
 
   /**
    * Steal a JDBC connection from a Hibernate session. Closing the session automatically returns the
@@ -96,10 +98,29 @@ public class CaresHibernateHackersKit {
     clearSession(session);
   }
 
-  public static Connection prepConnection(final Session session) {
-    final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
-    doWork(session, work);
-    return work.getConnection();
+  /**
+   * Make a Hibernate query read-only.
+   * 
+   * @param q query to make read-only
+   * @see #optimizeQuery(Query)
+   */
+  public static void readOnlyQuery(Query<?> q) {
+    optimizeQuery(q);
+    q.setReadOnly(true);
+  }
+
+  /**
+   * Optimize a Hibernate query for batch performance. Disable Hibernate caching, set flush mode to
+   * manual, and set fetch size to {@code NeutronIntegerDefaults.FETCH_SIZE}.
+   * 
+   * @param q query to optimize
+   */
+  public static void optimizeQuery(Query<?> q) {
+    q.setCacheable(false);
+    q.setCacheMode(CacheMode.IGNORE);
+    q.setFetchSize(1000);
+    q.setHibernateFlushMode(FlushMode.MANUAL);
+    q.setTimeout(120); // 2 minutes tops
   }
 
 }

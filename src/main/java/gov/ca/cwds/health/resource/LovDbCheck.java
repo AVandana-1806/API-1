@@ -1,7 +1,9 @@
 package gov.ca.cwds.health.resource;
 
-import java.math.BigInteger;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,12 +12,13 @@ import java.util.TreeMap;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
+import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
 
 /**
@@ -32,8 +35,8 @@ public class LovDbCheck implements Pingable {
   static {
     final Map<String, Integer> tables = new TreeMap<>();
     tables.put("INTAKE_LOV_CATEGORIES", 23);
-    tables.put("INTAKE_ONLY_LOV_CATEGORIES", 4);
     tables.put("INTAKE_LOV_CODES", 527);
+    tables.put("INTAKE_ONLY_LOV_CATEGORIES", 4);
     tables.put("INTAKE_ONLY_LOV_CODES", 13);
     tables.put("SYSTEM_CODES", 4274);
     tables.put("VW_INTAKE_LOV", 542);
@@ -55,13 +58,13 @@ public class LovDbCheck implements Pingable {
     messages = new ArrayList<>();
 
     try (final Session session = sessionFactory.openSession()) {
+      final Connection con = CaresHibernateHackersKit.stealConnection(session);
       for (Map.Entry<String, Integer> entry : lovTableCounts.entrySet()) {
-        boolean tableCountOk = checkTableCount(session, entry.getKey(), entry.getValue());
+        final boolean tableCountOk = checkTableCount(con, entry.getKey(), entry.getValue());
+        LOGGER.debug("");
         ok = ok && tableCountOk;
       }
-    } finally {
-      // Session goes out of scope
-    }
+    } // Session and connection go out of scope.
 
     return ok;
   }
@@ -72,16 +75,31 @@ public class LovDbCheck implements Pingable {
   }
 
   protected boolean checkTableCount(Connection con, String tableName, int expectedCount) {
-    final Query<?> query = session.createNativeQuery("SELECT count(*) FROM " + tableName);
-    final int count = ((BigInteger) query.list().get(0)).intValue();
+    final String sql = "SELECT COUNT(*) AS TOTAL FROM {h-schema}" + tableName;
+    int count = 0;
 
-    addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
-    return !(count < expectedCount);
-  }
+    try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setMaxRows(10);
+      stmt.setQueryTimeout(60);
 
-  private boolean checkTableCount(Session session, String tableName, int expectedCount) {
-    final Query<?> query = session.createNativeQuery("SELECT count(*) FROM " + tableName);
-    final int count = ((BigInteger) query.list().get(0)).intValue();
+      try (final ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          count = rs.getInt(1);
+        }
+      }
+
+      LOGGER.debug("Postgres LOV health check: count: {}, SQL: {}", count, sql);
+      con.commit();
+    } catch (Exception e) {
+      try {
+        con.rollback();
+      } catch (SQLException e1) {
+        throw CaresLogUtils.runtime(LOGGER, e,
+            "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e.getMessage(), e);
+      }
+      throw CaresLogUtils.runtime(LOGGER, e, "LOV HEALTH CHECK QUERY FAILED! SQL: {} {}", sql,
+          e.getMessage(), e);
+    }
 
     addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
     return !(count < expectedCount);
