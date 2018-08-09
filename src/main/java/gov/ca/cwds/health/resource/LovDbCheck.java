@@ -79,7 +79,7 @@ public class LovDbCheck implements Pingable {
 
   protected boolean checkTableCount(Connection con, String tableName, String schema,
       int expectedCount) {
-    final String sql = "SELECT COUNT(*) AS TOTAL FROM {h-schema}" + tableName;
+    final String sql = "SELECT COUNT(*) AS TOTAL FROM " + schema + "." + tableName;
     int count = 0;
     LOGGER.debug("Postgres LOV health check: SQL: {}", sql);
 
