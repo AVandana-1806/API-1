@@ -46,7 +46,7 @@ public class LovDbCheck implements Pingable {
   }
 
   private SessionFactory sessionFactory;
-  private List<String> messages;
+  private List<String> messages = new ArrayList<>();
 
   @Inject
   LovDbCheck(@NsSessionFactory SessionFactory sessionFactory) {
@@ -56,7 +56,6 @@ public class LovDbCheck implements Pingable {
   @Override
   public boolean ping() {
     boolean ok = true;
-    messages = new ArrayList<>();
 
     try (final Session session = sessionFactory.openSession()) {
       final String schema =
