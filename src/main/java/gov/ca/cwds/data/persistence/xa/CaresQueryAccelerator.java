@@ -12,6 +12,10 @@ import org.hibernate.query.Query;
  */
 public class CaresQueryAccelerator {
 
+  private CaresQueryAccelerator() {
+    // Static methods only.
+  }
+
   /**
    * Make a Hibernate query read-only.
    * 

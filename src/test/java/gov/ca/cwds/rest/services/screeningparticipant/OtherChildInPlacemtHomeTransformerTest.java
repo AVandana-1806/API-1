@@ -32,14 +32,14 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
  * @author CWDS API Team
- *
  */
 public class OtherChildInPlacemtHomeTransformerTest {
+
+  private static DateTime lastUpdated = new DateTime("2018-06-11T11:47:07.524-07:00");
 
   private OtherChildInPlacemtHomeTransformer otherChildInPlacemtHomeTransformer =
       new OtherChildInPlacemtHomeTransformer();
   private LocalDateTime updatedTime = LocalDateTime.now();
-  private static DateTime lastUpdated = new DateTime("2018-06-11T11:47:07.524-07:00");
   private PlacementHome placementHome;
 
   /**
@@ -108,7 +108,6 @@ public class OtherChildInPlacemtHomeTransformerTest {
 
   /**
    * Test service provider transform response is returned as expected.
-   * 
    */
   @Test
   public void testConvertExpectdVsActual() {
