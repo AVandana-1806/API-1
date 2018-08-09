@@ -22,6 +22,10 @@ public class CaresHibernateHackersKit {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(CaresHibernateHackersKit.class);
 
+  private CaresHibernateHackersKit() {
+    // Static methods only.
+  }
+
   /**
    * Steal a JDBC connection from a Hibernate session. Closing the session automatically returns the
    * connection to the pool.

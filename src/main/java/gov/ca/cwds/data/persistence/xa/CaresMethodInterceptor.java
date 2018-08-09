@@ -103,9 +103,9 @@ public class CaresMethodInterceptor
       LOGGER.trace("before method: {}", m);
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
-      final long requestCalls = incrementRequestCount(m);
+      final long totalRequestCalls = incrementRequestCount(m);
       LOGGER.info("after  method: {}, total: {}, request: {}, millis: {}", m, totalCalls,
-          requestCalls, (System.currentTimeMillis() - start));
+          totalRequestCalls, (System.currentTimeMillis() - start));
       return result;
     } catch (Exception e) {
       LOGGER.error("ERROR! {}", e.getMessage(), e);

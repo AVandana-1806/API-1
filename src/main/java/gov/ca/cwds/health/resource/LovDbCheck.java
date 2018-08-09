@@ -26,6 +26,7 @@ import gov.ca.cwds.inject.NsSessionFactory;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2077"})
 public class LovDbCheck implements Pingable {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(LovDbCheck.class);
@@ -99,9 +100,11 @@ public class LovDbCheck implements Pingable {
       try {
         con.rollback();
       } catch (SQLException e1) {
+        LOGGER.trace("BOOM!", e1);
         throw CaresLogUtils.runtime(LOGGER, e,
             "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e.getMessage(), e);
       }
+      LOGGER.trace("BOOM!", e);
       throw CaresLogUtils.runtime(LOGGER, e, "LOV HEALTH CHECK QUERY FAILED! SQL: {} {}", sql,
           e.getMessage(), e);
     }
