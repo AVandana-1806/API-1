@@ -235,8 +235,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
   public static final class RelatedTo implements Serializable {
 
-    private RelatedTo() {}
-
     @JsonProperty("relationship_id")
     @ApiModelProperty(value = "relationship id", example = "1234")
     private String relationshipId;
@@ -300,6 +298,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @JsonProperty("relationship_end_date")
     @ApiModelProperty(value = "relationship end date", example = "2001-10-01")
     private String relationshipEndDate;
+
+    private RelatedTo() {}
 
     public String getRelationshipId() {
       return relationshipId;
@@ -516,35 +516,45 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
   public static final class CandidateTo implements Serializable {
 
-    private CandidateTo() {}
+    private static final long serialVersionUID = 1L;
 
     @JsonProperty("candidate_id")
     @ApiModelProperty(value = "Id")
     private String candidateId;
+
     @JsonProperty("candidate_first_name")
     @ApiModelProperty(value = "Candidate first name")
     private String candidateFirstName;
+
     @JsonProperty("candidate_middle_name")
     @ApiModelProperty(value = "Candidate middle name")
     private String candidateMiddleName;
+
     @JsonProperty("candidate_last_name")
     @ApiModelProperty(value = "Candidate last name")
     private String candidateLastName;
+
     @JsonProperty("candidate_name_suffix")
     @ApiModelProperty(value = "Candidate suffix name")
     private String candidateSuffixtName;
+
     @JsonProperty("candidate_gender")
     @ApiModelProperty(value = "Candidate gender")
     private String candidateGender;
+
     @JsonProperty("candidate_date_of_birth")
     @ApiModelProperty(value = "Candidate date of birth")
     private String candidateDateOfBirth;
+
     @JsonProperty("candidate_age")
     @ApiModelProperty(value = "Candidate age")
     private short candidateAge;
+
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
+
+    private CandidateTo() {}
 
     public String getCandidateFirstName() {
       return candidateFirstName;
