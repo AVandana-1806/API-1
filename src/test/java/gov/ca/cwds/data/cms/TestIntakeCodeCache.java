@@ -10,13 +10,9 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * @author CWDS API Team
- *
  */
 public class TestIntakeCodeCache implements IntakeCodeCache {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1L;
 
   /**
