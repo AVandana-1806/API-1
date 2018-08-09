@@ -268,17 +268,15 @@ public class RelationshipFacade {
 
     Map<ParticipantEntity, List<ScreeningRelationship>> mappedRelationships = new HashMap<>();
     allParticipants.forEach(participantEntity -> {
-      Optional<ScreeningRelationship> foundRelationship = screeningRelationships.stream()
-          .filter(relationship -> relationship.getClientId().equals(participantEntity.getId()))
-          .findFirst();
-
-      if (mappedRelationships.get(participantEntity) == null) {
-        mappedRelationships.put(participantEntity, new ArrayList<>());
+      List<ScreeningRelationship> relationships = new ArrayList<>();
+      if (screeningRelationships != null) {
+        screeningRelationships.forEach(a -> {
+          if (a.getClientId().equals(participantEntity.getId())) {
+            relationships.add(a);
+          }
+        });
       }
-
-      if (foundRelationship.isPresent()) {
-        mappedRelationships.get(participantEntity).add(foundRelationship.get());
-      }
+      mappedRelationships.put(participantEntity, relationships);
     });
     return mappedRelationships;
   }
