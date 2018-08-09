@@ -108,19 +108,12 @@ public class RelationshipFacade {
 
     List<gov.ca.cwds.rest.api.Response> relationshipsWithCandidates = new ArrayList<>();
 
-    if (MapUtils.isEmpty(relationshipsByPrimaryParticipant)) {
-      allParticipants.forEach(e -> {
+    relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
+      if (relationships != null) {
         getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
-            e, relationshipsByPrimaryParticipant.get(e), allScreeningRelationships);
-      });
-    } else {
-      relationshipsByPrimaryParticipant.forEach((participant, relationships) -> {
-        if (CollectionUtils.isNotEmpty(relationships)) {
-          getRelationshipWithCandidates(allParticipants, screeningId, relationshipsWithCandidates,
-              participant, relationships, allScreeningRelationships);
-        }
-      });
-    }
+            participant, relationships, allScreeningRelationships);
+      }
+    });
     return relationshipsWithCandidates;
   }
 
@@ -269,21 +262,22 @@ public class RelationshipFacade {
   private Map<ParticipantEntity, List<ScreeningRelationship>> getRelationshipsMappedByPrimaryParticipant(
       List<ScreeningRelationship> screeningRelationships,
       List<ParticipantEntity> allParticipants) {
-    if (CollectionUtils.isEmpty(screeningRelationships) || CollectionUtils
-        .isEmpty(allParticipants)) {
+    if (CollectionUtils.isEmpty(allParticipants)) {
       return Collections.emptyMap();
     }
 
     Map<ParticipantEntity, List<ScreeningRelationship>> mappedRelationships = new HashMap<>();
-    screeningRelationships.forEach(relationship -> {
-      Optional<ParticipantEntity> primaryParticipant = allParticipants.stream()
-          .filter(participant -> relationship.getClientId().equals(participant.getId()))
+    allParticipants.forEach(participantEntity -> {
+      Optional<ScreeningRelationship> foundRelationship = screeningRelationships.stream()
+          .filter(relationship -> relationship.getClientId().equals(participantEntity.getId()))
           .findFirst();
-      if (primaryParticipant.isPresent()) {
-        if (mappedRelationships.get(primaryParticipant.get()) == null) {
-          mappedRelationships.put(primaryParticipant.get(), new ArrayList<>());
-        }
-        mappedRelationships.get(primaryParticipant.get()).add(relationship);
+
+      if (mappedRelationships.get(participantEntity) == null) {
+        mappedRelationships.put(participantEntity, new ArrayList<>());
+      }
+
+      if (foundRelationship.isPresent()) {
+        mappedRelationships.get(participantEntity).add(foundRelationship.get());
       }
     });
     return mappedRelationships;
