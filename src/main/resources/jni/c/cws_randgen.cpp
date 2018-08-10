@@ -1739,7 +1739,7 @@ JNIEXPORT jstring JNICALL Java_gov_ca_cwds_rest_util_jni_KeyJNI_generateKey(JNIE
 	}
 
 	// Step 2: Perform intended operations.
-	TRACE("C++: received staff id = %s", inCStr);
+	TRACE("C++: received staff id = %s\n", inCStr);
 	string outCppStr { generateKey(inCStr) };
 	env->ReleaseStringUTFChars(inJNIStr, inCStr);  // release resources
 
