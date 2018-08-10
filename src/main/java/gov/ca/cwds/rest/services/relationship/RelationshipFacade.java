@@ -219,7 +219,6 @@ public class RelationshipFacade {
     }
 
     Set<RelatedTo> relationshipTos = new HashSet<>();
-    LOGGER.info("relationships", relationships);
     relationships.forEach(e -> {
           if(e != null) {
             relationshipTos.add(buildRelationshipTo(e, allParticipants));
@@ -362,7 +361,6 @@ public class RelationshipFacade {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
       return new ArrayList<>();
     }
-    LOGGER.info("shouldBeCreated {}", shouldBeCreated);
 
     Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
     List<ScreeningRelationship> result = new ArrayList<>();
