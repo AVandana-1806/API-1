@@ -219,8 +219,12 @@ public class RelationshipFacade {
     }
 
     Set<RelatedTo> relationshipTos = new HashSet<>();
-    relationships.forEach(e ->
-        relationshipTos.add(buildRelationshipTo(e, allParticipants))
+    LOGGER.info("relationships", relationships);
+    relationships.forEach(e -> {
+          if(e != null) {
+            relationshipTos.add(buildRelationshipTo(e, allParticipants));
+          }
+        }
     );
     return relationshipTos;
   }
