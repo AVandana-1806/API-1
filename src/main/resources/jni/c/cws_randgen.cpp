@@ -30,10 +30,11 @@
 // SHOW DEPENDENCIES ON OS X:
 //===============================
 
-// otool -L libKeyJNI.dylib
-//     libKeyJNI.dylib (compatibility version 0.0.0, current version 0.0.0)
-//     /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 120.1.0)
-//     /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1226.10.1)
+// otool -L ~/workspace/api/lib/libKeyJNI.dylib 
+// /Users/dsmith/workspace/api/lib/libKeyJNI.dylib:
+// 	libKeyJNI.dylib (compatibility version 0.0.0, current version 0.0.0)
+// 	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 307.5.0)
+// 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1238.60.2)
 
 //===============================
 // BUILD STANDALONE EXECUTABLE:

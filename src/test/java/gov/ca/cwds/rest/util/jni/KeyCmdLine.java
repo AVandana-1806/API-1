@@ -40,7 +40,7 @@ public final class KeyCmdLine {
    * @param args command line
    */
   public static void main(String[] args) {
-    KeyJNI inst = new KeyJNI();
+    final KeyJNI inst = new KeyJNI();
 
     if (args[0].startsWith("-d")) { // Decompose key.
       KeyDetail kd = new KeyDetail();
