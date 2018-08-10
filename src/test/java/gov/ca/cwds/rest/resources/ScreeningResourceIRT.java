@@ -78,6 +78,8 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public static final String SCREENING_ID_12 = "2112";
   public static final String FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-four-participants.json";
 
+  public static final String SCREENING_ID_13 = "2113";
+
   @Test
   public void getRelationshipsByScreeningId_twoRelationsExist() throws IOException, JSONException {
     String actualJson = getStringResponse(
@@ -243,6 +245,17 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+    String expectedResponse =
+        fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void getRelationshipsByScreeningIdWithCandidates_ThreeParticipants2Relationships2()
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
