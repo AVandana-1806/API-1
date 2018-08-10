@@ -1,5 +1,12 @@
 package gov.ca.cwds.rest.util.jni;
 
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
+import org.apache.commons.lang3.StringUtils;
+
 import gov.ca.cwds.rest.util.jni.KeyJNI.KeyDetail;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -43,12 +50,17 @@ public class KeyCmdLine {
         + kd.UITimestamp + "\nPTimestamp=" + kd.PTimestamp);
   }
 
-  protected void compose(String staffId, String numKeysToMake, String fileNm) {
+  protected void compose(String staffId, String numKeysToMake, String fileNm)
+      throws FileNotFoundException {
     final KeyJNI jni = new KeyJNI();
     final int iterations = Integer.parseInt(numKeysToMake);
-    for (int i = 0; i < iterations; i++) {
-      final String key = jni.generateKey(staffId);
-      System.out.println("Key generated from native library: " + key);
+
+    try (final PrintStream out = StringUtils.isBlank(fileNm) ? System.out
+        : new PrintStream(new BufferedOutputStream(new FileOutputStream(fileNm.trim())))) {
+      for (int i = 0; i < iterations; i++) {
+        final String key = jni.generateKey(staffId);
+        out.println(key);
+      }
     }
   }
 
@@ -57,7 +69,7 @@ public class KeyCmdLine {
    * 
    * @param args command line
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     final OptionParser parser = new OptionParser("dcf::s:i:k:");
     final OptionSet options = parser.parse(args);
 
