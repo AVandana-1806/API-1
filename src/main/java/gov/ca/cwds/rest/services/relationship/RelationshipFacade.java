@@ -91,8 +91,14 @@ public class RelationshipFacade {
         allRelationships, screeningId);
 
     participantsMappedByPrimaryOrSecondary.forEach((s, participantEntities) -> {
+      switch (s) {
+        case PRIMARY_PARICIPANT:
 
+      }
     });
+
+
+
     return null;
   }
 
