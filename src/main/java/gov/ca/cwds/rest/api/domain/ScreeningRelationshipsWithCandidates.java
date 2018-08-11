@@ -123,6 +123,115 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
 
   public static final class RelatedTo implements Serializable {
 
+    public static final class RelatedToBuilder {
+
+      private RelatedTo relatedTo;
+
+      public RelatedToBuilder() {
+        relatedTo = new RelatedTo();
+      }
+
+      public RelatedToBuilder withRelationshipId(String relationshipId) {
+        relatedTo.relationshipId = relationshipId;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedPersonId(String personId) {
+        relatedTo.relatedPersonId = personId;
+        return this;
+      }
+
+
+      public RelatedToBuilder withRelatedFirstName(String relatedFirstName) {
+        relatedTo.relatedFirstName = relatedFirstName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedMiddleName(String relatedMiddleName) {
+        relatedTo.relatedMiddleName = relatedMiddleName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedLastName(String relatedLastName) {
+        relatedTo.relatedLastName = relatedLastName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedNameSuffix(String relatedNameSuffix) {
+        relatedTo.relatedNameSuffix = relatedNameSuffix;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedGender(String relatedGender) {
+        relatedTo.relatedGender = relatedGender;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedDateOfBirth(Date relatedDateOfBirth) {
+        if (relatedDateOfBirth == null) {
+          return this;
+        }
+        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
+            .format(relatedDateOfBirth);
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedAge(String relatedAge) {
+        if (StringUtils.isEmpty(relatedAge)) {
+          return this;
+        }
+        relatedTo.relatedAge = Short.valueOf(relatedAge);
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedAgeUnit(String relatedAgeUnit) {
+        relatedTo.relatedAgeUnit = relatedAgeUnit;
+        return this;
+      }
+
+      public RelatedToBuilder withAbsentParentCode(String absentParentCode) {
+        relatedTo.absentParentCode = absentParentCode;
+        return this;
+      }
+
+      public RelatedToBuilder withSameHomeCode(String sameHomeCode) {
+        relatedTo.sameHomeCode = sameHomeCode;
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipToPerson(String relationshipToPerson) {
+        relatedTo.relationshipToPerson = relationshipToPerson;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedPersonRelationship(String relatedPersonRelationship) {
+        relatedTo.relatedPersonRelationship = relatedPersonRelationship;
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
+        if (relationshipStartDate == null) {
+          return this;
+        }
+        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
+            .format(relationshipStartDate);
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipEndDate(Date relationshipEndDate) {
+        if (relationshipEndDate == null) {
+          return this;
+        }
+        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
+            .format(relationshipEndDate);
+        return this;
+      }
+
+      public RelatedTo build() {
+        return relatedTo;
+      }
+    }
+
     private RelatedTo() {
     }
 
@@ -312,118 +421,74 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(relationshipEndDate)
           .toHashCode();
     }
-
-    public static final class RelatedToBuilder {
-
-      private RelatedTo relatedTo;
-
-      public RelatedToBuilder() {
-        relatedTo = new RelatedTo();
-      }
-
-      public RelatedToBuilder withRelationshipId(String relationshipId) {
-        relatedTo.relationshipId = relationshipId;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedPersonId(String personId) {
-        relatedTo.relatedPersonId = personId;
-        return this;
-      }
-
-
-      public RelatedToBuilder withRelatedFirstName(String relatedFirstName) {
-        relatedTo.relatedFirstName = relatedFirstName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedMiddleName(String relatedMiddleName) {
-        relatedTo.relatedMiddleName = relatedMiddleName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedLastName(String relatedLastName) {
-        relatedTo.relatedLastName = relatedLastName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedNameSuffix(String relatedNameSuffix) {
-        relatedTo.relatedNameSuffix = relatedNameSuffix;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedGender(String relatedGender) {
-        relatedTo.relatedGender = relatedGender;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedDateOfBirth(Date relatedDateOfBirth) {
-        if (relatedDateOfBirth == null) {
-          return this;
-        }
-        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(relatedDateOfBirth);
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedAge(String relatedAge) {
-        if (StringUtils.isEmpty(relatedAge)) {
-          return this;
-        }
-        relatedTo.relatedAge = Short.valueOf(relatedAge);
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedAgeUnit(String relatedAgeUnit) {
-        relatedTo.relatedAgeUnit = relatedAgeUnit;
-        return this;
-      }
-
-      public RelatedToBuilder withAbsentParentCode(String absentParentCode) {
-        relatedTo.absentParentCode = absentParentCode;
-        return this;
-      }
-
-      public RelatedToBuilder withSameHomeCode(String sameHomeCode) {
-        relatedTo.sameHomeCode = sameHomeCode;
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipToPerson(String relationshipToPerson) {
-        relatedTo.relationshipToPerson = relationshipToPerson;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedPersonRelationship(String relatedPersonRelationship) {
-        relatedTo.relatedPersonRelationship = relatedPersonRelationship;
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
-        if (relationshipStartDate == null) {
-          return this;
-        }
-        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipStartDate);
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipEndDate(Date relationshipEndDate) {
-        if (relationshipEndDate == null) {
-          return this;
-        }
-        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipEndDate);
-        return this;
-      }
-
-      public RelatedTo build() {
-        return relatedTo;
-      }
-    }
   }
 
   public static final class CandidateTo implements Serializable {
+
+    public static final class CandidateToBuilder {
+
+      private CandidateTo candidateTo;
+
+      public CandidateToBuilder() {
+        candidateTo = new CandidateTo();
+      }
+
+      public CandidateToBuilder withId(String id) {
+        candidateTo.candidateId = id;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateFirstName(String candidateFirstName) {
+        candidateTo.candidateFirstName = candidateFirstName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateMiddleName(String candidateMiddleName) {
+        candidateTo.candidateMiddleName = candidateMiddleName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateLastName(String candidateLastName) {
+        candidateTo.candidateLastName = candidateLastName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateSuffixtName(String candidateSuffixtName) {
+        candidateTo.candidateSuffixtName = candidateSuffixtName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateGender(String candidateGender) {
+        candidateTo.candidateGender = candidateGender;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateDateOfBirth(Date candidateDateOfBirth) {
+        if (candidateDateOfBirth == null) {
+          return this;
+        }
+        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
+            .format(candidateDateOfBirth);
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateAge(String candidateAge) {
+        if (StringUtils.isEmpty(candidateAge)) {
+          return this;
+        }
+        candidateTo.candidateAge = Short.parseShort(candidateAge);
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
+        candidateTo.candidateAgeUnit = candidateAgeUnit;
+        return this;
+      }
+
+      public CandidateTo build() {
+        return candidateTo;
+      }
+    }
 
     private CandidateTo() {
     }
@@ -526,71 +591,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(candidateAge)
           .append(candidateAgeUnit)
           .toHashCode();
-    }
-
-    public static final class CandidateToBuilder {
-
-      private CandidateTo candidateTo;
-
-      public CandidateToBuilder() {
-        candidateTo = new CandidateTo();
-      }
-
-      public CandidateToBuilder withId(String id) {
-        candidateTo.candidateId = id;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateFirstName(String candidateFirstName) {
-        candidateTo.candidateFirstName = candidateFirstName;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateMiddleName(String candidateMiddleName) {
-        candidateTo.candidateMiddleName = candidateMiddleName;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateLastName(String candidateLastName) {
-        candidateTo.candidateLastName = candidateLastName;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateSuffixtName(String candidateSuffixtName) {
-        candidateTo.candidateSuffixtName = candidateSuffixtName;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateGender(String candidateGender) {
-        candidateTo.candidateGender = candidateGender;
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateDateOfBirth(Date candidateDateOfBirth) {
-        if (candidateDateOfBirth == null) {
-          return this;
-        }
-        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(candidateDateOfBirth);
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateAge(String candidateAge) {
-        if (StringUtils.isEmpty(candidateAge)) {
-          return this;
-        }
-        candidateTo.candidateAge = Short.parseShort(candidateAge);
-        return this;
-      }
-
-      public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
-        candidateTo.candidateAgeUnit = candidateAgeUnit;
-        return this;
-      }
-
-      public CandidateTo build() {
-        return candidateTo;
-      }
     }
   }
 
