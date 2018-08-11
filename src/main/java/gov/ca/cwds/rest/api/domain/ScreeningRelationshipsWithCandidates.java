@@ -20,126 +20,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class ScreeningRelationshipsWithCandidates extends ReportingDomain implements Request,
     Response {
 
-  private static final String DATE_PATTERN = "yyyy-MM-dd";
-  private static final long serialVersionUID = 1L;
-
-  @JsonProperty("id")
-  @ApiModelProperty(required = true, value = "identifier",
-      example = "ABC1234567")
-  private String id;
-
-  @JsonProperty("date_of_birth")
-  @ApiModelProperty(required = true, value = "date of birth",
-      example = "1999-10-01")
-  private String dateOfBirth;
-
-  @JsonProperty("age")
-  @ApiModelProperty(example = "12")
-  private Short age;
-
-  @JsonProperty("age_unit")
-  @ApiModelProperty(required = true, value = "Age Unit", example = "M")
-  @OneOf(value = {"Y", "M", "D"}, ignoreWhitespace = true)
-  private String ageUnit;
-
-  @JsonProperty("first_name")
-  @ApiModelProperty(value = "first name", example = "joe")
-  private String firstName;
-
-  @JsonProperty("middle_name")
-  @ApiModelProperty(required = true, value = "middle name", example = "w")
-  private String middleName;
-
-  @JsonProperty("last_name")
-  @ApiModelProperty(required = true, value = "last name", example = "sufer")
-  private String lastName;
-
-  @JsonProperty("name_suffix")
-  @ApiModelProperty(value = "Suffix Title Description")
-  private String suffixName;
-
-  @JsonProperty("gender")
-  @ApiModelProperty(required = true, value = "Gender Code", example = "M")
-  @OneOf(value = {"M", "F", "I", "U"}, ignoreWhitespace = true)
-  private String gender;
-
-  @JsonProperty("date_of_death")
-  @ApiModelProperty(value = "date of death",
-      example = "2010-10-01")
-  private String dateOfDeath;
-
-  @JsonProperty("sensitive")
-  @ApiModelProperty(value = "sensitive", example = "false")
-  private Boolean sensitive;
-
-  @JsonProperty("sealed")
-  @ApiModelProperty(value = "sealed", example = "false")
-  private Boolean sealed;
-
-  @JsonProperty("relationship_to")
-  private Set<RelatedTo> relatedTo;
-  @JsonProperty("candidate_to")
-  private Set<CandidateTo> relatedCandidatesTo;
-
-  private ScreeningRelationshipsWithCandidates() {
-  }
-
-  public Set<CandidateTo> getRelatedCandidatesTo() {
-    return relatedCandidatesTo;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getDateOfBirth() {
-    return dateOfBirth;
-  }
-
-  public Short getAge() {
-    return age;
-  }
-
-  public String getAgeUnit() {
-    return ageUnit;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getSuffixName() {
-    return suffixName;
-  }
-
-  public String getGender() {
-    return gender;
-  }
-
-  public String getDateOfDeath() {
-    return dateOfDeath;
-  }
-
-  public Boolean getSensitive() {
-    return sensitive;
-  }
-
-  public Boolean getSealed() {
-    return sealed;
-  }
-
-  public Set<RelatedTo> getRelatedTo() {
-    return relatedTo;
-  }
-
   public static final class ScreeningRelationshipsWithCandidatesBuilder {
 
     private ScreeningRelationshipsWithCandidates screeningRelationshipsWithCandidates;
@@ -712,5 +592,125 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         return candidateTo;
       }
     }
+  }
+
+  private static final String DATE_PATTERN = "yyyy-MM-dd";
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty("id")
+  @ApiModelProperty(required = true, value = "identifier",
+      example = "ABC1234567")
+  private String id;
+
+  @JsonProperty("date_of_birth")
+  @ApiModelProperty(required = true, value = "date of birth",
+      example = "1999-10-01")
+  private String dateOfBirth;
+
+  @JsonProperty("age")
+  @ApiModelProperty(example = "12")
+  private Short age;
+
+  @JsonProperty("age_unit")
+  @ApiModelProperty(required = true, value = "Age Unit", example = "M")
+  @OneOf(value = {"Y", "M", "D"}, ignoreWhitespace = true)
+  private String ageUnit;
+
+  @JsonProperty("first_name")
+  @ApiModelProperty(value = "first name", example = "joe")
+  private String firstName;
+
+  @JsonProperty("middle_name")
+  @ApiModelProperty(required = true, value = "middle name", example = "w")
+  private String middleName;
+
+  @JsonProperty("last_name")
+  @ApiModelProperty(required = true, value = "last name", example = "sufer")
+  private String lastName;
+
+  @JsonProperty("name_suffix")
+  @ApiModelProperty(value = "Suffix Title Description")
+  private String suffixName;
+
+  @JsonProperty("gender")
+  @ApiModelProperty(required = true, value = "Gender Code", example = "M")
+  @OneOf(value = {"M", "F", "I", "U"}, ignoreWhitespace = true)
+  private String gender;
+
+  @JsonProperty("date_of_death")
+  @ApiModelProperty(value = "date of death",
+      example = "2010-10-01")
+  private String dateOfDeath;
+
+  @JsonProperty("sensitive")
+  @ApiModelProperty(value = "sensitive", example = "false")
+  private Boolean sensitive;
+
+  @JsonProperty("sealed")
+  @ApiModelProperty(value = "sealed", example = "false")
+  private Boolean sealed;
+
+  @JsonProperty("relationship_to")
+  private Set<RelatedTo> relatedTo;
+  @JsonProperty("candidate_to")
+  private Set<CandidateTo> relatedCandidatesTo;
+
+  private ScreeningRelationshipsWithCandidates() {
+  }
+
+  public Set<CandidateTo> getRelatedCandidatesTo() {
+    return relatedCandidatesTo;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getDateOfBirth() {
+    return dateOfBirth;
+  }
+
+  public Short getAge() {
+    return age;
+  }
+
+  public String getAgeUnit() {
+    return ageUnit;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getMiddleName() {
+    return middleName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public String getSuffixName() {
+    return suffixName;
+  }
+
+  public String getGender() {
+    return gender;
+  }
+
+  public String getDateOfDeath() {
+    return dateOfDeath;
+  }
+
+  public Boolean getSensitive() {
+    return sensitive;
+  }
+
+  public Boolean getSealed() {
+    return sealed;
+  }
+
+  public Set<RelatedTo> getRelatedTo() {
+    return relatedTo;
   }
 }
