@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -230,6 +231,12 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     }
 
     public ScreeningRelationshipsWithCandidates build() {
+      if (screeningRelationshipsWithCandidates.relatedTo == null) {
+        screeningRelationshipsWithCandidates.relatedTo = new HashSet<>();
+      }
+      if (screeningRelationshipsWithCandidates.relatedCandidatesTo == null) {
+        screeningRelationshipsWithCandidates.relatedCandidatesTo = new HashSet<>();
+      }
       return screeningRelationshipsWithCandidates;
     }
   }
