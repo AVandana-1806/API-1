@@ -490,9 +490,6 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       }
     }
 
-    private CandidateTo() {
-    }
-
     @JsonProperty("candidate_id")
     @ApiModelProperty(value = "Id")
     private String candidateId;
@@ -520,6 +517,9 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
+
+    private CandidateTo() {
+    }
 
     public String getCandidateFirstName() {
       return candidateFirstName;
