@@ -43,14 +43,19 @@ import joptsimple.OptionSet;
  */
 public class KeyCmdLine {
 
-  protected void decompose(String key) {
+  /**
+   * Decode a key into its constituent parts, timestamp and staff id.
+   * 
+   * @param key key to decode.
+   */
+  protected void decode(String key) {
     final KeyDetail kd = new KeyDetail();
     new KeyJNI().decomposeKey(key, kd);
     System.out.println("Java:\nkey=" + kd.key + "\nstaffId=" + kd.staffId + "\nUITimestamp="
         + kd.UITimestamp + "\nPTimestamp=" + kd.PTimestamp);
   }
 
-  protected void compose(String staffId, String numKeysToMake, String fileNm)
+  protected void encode(String staffId, String numKeysToMake, String fileNm)
       throws FileNotFoundException {
     final KeyJNI jni = new KeyJNI();
     final int iterations = Integer.parseInt(numKeysToMake);
@@ -81,9 +86,9 @@ public class KeyCmdLine {
     final boolean decompose = options.has("d");
 
     if (decompose) { // Decompose key.
-      new KeyCmdLine().decompose(key);
+      new KeyCmdLine().decode(key);
     } else { // Compose key.
-      new KeyCmdLine().compose(staffId, numKeysToMake, fileNm);
+      new KeyCmdLine().encode(staffId, numKeysToMake, fileNm);
     }
   }
 

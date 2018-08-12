@@ -112,7 +112,7 @@
 ####    /    \ /    \ /    \      ###########     /    \ /    \ /    \      ####
 ################################################################################
 ################################################################################
-# WAVE 11 ######## SCORE 231037 ################################ HIGH FFFFFFFF #
+# WAVE 16 ######## SCORE 431182 ################################ HIGH FFFFFFFF #
 ################################################################################
 */
 
@@ -129,7 +129,7 @@
 #include <math.h>
 #include <sys/timeb.h>
 
-#include "cws_common.hpp"
+#include "cws_common.hpp"  // Our stuff!
 
 #include <cstring>
 #include <cstdio>
@@ -488,8 +488,8 @@ void GetLocalTime (SYSTEMTIME * out_win_tm, SYSTEMTIME * in_win_tm = nullptr) {
         const tm *ltm  = localtime(&tt);
 
         out_win_tm->wYear         = 1900 + ltm->tm_year;
-        out_win_tm->wMonth        = 1 + ltm->tm_mon;
-        out_win_tm->wDayOfWeek    = ltm->tm_wday;            // DRS: not used in this unit.
+        out_win_tm->wMonth        = 1 + ltm->tm_mon; // Month is 1-based in C, 0-based in Java.
+        out_win_tm->wDayOfWeek    = ltm->tm_wday;
         out_win_tm->wDay          = ltm->tm_mday;
         out_win_tm->wHour         = ltm->tm_hour;
         out_win_tm->wMinute       = ltm->tm_min;
@@ -498,7 +498,7 @@ void GetLocalTime (SYSTEMTIME * out_win_tm, SYSTEMTIME * in_win_tm = nullptr) {
     } else if (in_win_tm != nullptr) {
         out_win_tm->wYear         = in_win_tm->wYear;
         out_win_tm->wMonth        = in_win_tm->wMonth;
-        out_win_tm->wDayOfWeek    = in_win_tm->wDayOfWeek;   // DRS: not used in this unit.
+        out_win_tm->wDayOfWeek    = in_win_tm->wDayOfWeek;
         out_win_tm->wDay          = in_win_tm->wDay;
         out_win_tm->wHour         = in_win_tm->wHour;
         out_win_tm->wMinute       = in_win_tm->wMinute;
@@ -507,7 +507,7 @@ void GetLocalTime (SYSTEMTIME * out_win_tm, SYSTEMTIME * in_win_tm = nullptr) {
     } else {
         out_win_tm->wYear         = g_win_tm->wYear;
         out_win_tm->wMonth        = g_win_tm->wMonth;
-        out_win_tm->wDayOfWeek    = g_win_tm->wDayOfWeek;    // DRS: not used in this unit.
+        out_win_tm->wDayOfWeek    = g_win_tm->wDayOfWeek;
         out_win_tm->wDay          = g_win_tm->wDay;
         out_win_tm->wHour         = g_win_tm->wHour;
         out_win_tm->wMinute       = g_win_tm->wMinute;
@@ -568,8 +568,7 @@ std::string timePointToString(T&& tp) {
 template<typename Clock, typename Duration>
 std::ostream & operator << ( std::ostream &stream, const std::chrono::time_point<Clock, Duration> &time_point ) {
   const time_t time = Clock::to_time_t(time_point);
-#if __CRAPPY_COMPILER__ || __DAVE_IS_LOSING_IT__ || __GNUC__ > 4 || \
-    ((__GNUC__ == 4) && __GNUC_MINOR__ > 8 && __GNUC_REVISION__ > 1)
+#if __MISSING_TIME_FUNCS__ || __GNUC__ > 4 || ((__GNUC__ == 4) && __GNUC_MINOR__ > 8 && __GNUC_REVISION__ > 1)
   // Func put_time implemented in ***LATER VERSIONS*** of GNU g++. 
   // Prez Trump: "SAD!"
   struct tm tm;
@@ -610,10 +609,10 @@ std::tm parseIso8601Date(const char * iso_8601, WORD * millis) {
 }
 
 //==============================
-// RANDGEN CONSTANTS:
+// CWS/CMS KEY CONSTANTS:
 //==============================
 
-// Aka, I don't speak Hungarian, and neither do you. Get a decent IDE. And a life. Nerds.
+// Aka, I don't speak Hungarian, and neither do you. Get a decent IDE and a life, you nerds. :-)
 
 constexpr const int nSZ_KEY           = 10;
 constexpr const int nSZ_KEYSTAFFID    =  3;
@@ -623,12 +622,11 @@ constexpr const int nSZ_UITIMESTAMP   = 26;
 constexpr const int nSZ_UIIDENTIFIER  = 22;
 constexpr const int nSZ_PTIMESTAMP    = 11;
 
-constexpr const int nSZ_USERID        =  8;
-
 constexpr const int nSZ_POWVEC        = 19;
 constexpr const int nMAX_BASE         = BASE_62_SIZE;
 constexpr const int nDEFAULT_BASE     = BASE_62_SIZE;
 
+constexpr const int nSZ_USERID        =  8;
 constexpr const int nSZ_UIIDSTAFFID   =  6; // for converting a key to a UI identifier
 constexpr const int nSZ_UIIDTIMESTAMP = 13;
 
@@ -703,8 +701,8 @@ std::string generateKeys(const std::string & staff_id, int make_n_keys, const st
 // DLL PUBLIC FUNCTIONS:
 //==============================
 
-// Don't be intimidated by directives like WINAPI. 
-// That defines who is responsible for cleaning up the stack, the caller or callee.
+// Don't be intimidated by directives like WINAPI.
+// That just defines who is responsible for cleaning up the stack, the caller or callee.
 
 void        WINAPI _export ckMakeNewKey           (const char *szUIStaffId, char *szKey);
 void        WINAPI _export MakeTimestampStr       (char       *szUITimestamp);
@@ -754,7 +752,7 @@ void AssertTrace (BOOL bExp, LPCSTR pszFormat, ...) {
         va_list arglist;
         va_start( arglist, pszFormat );
         vprintf ( pszFormat, arglist );
-        va_end  ( arglist ); // MUST release the vargs.
+        va_end  ( arglist ); // MUST release the vargs
     }
 }
 
@@ -772,7 +770,7 @@ void logVerbose(LPCSTR pszFormat, ...) {
 }
 
 //==============================
-// CODE STARTS HERE:
+// CWS/CMS KEY FUNCTIONS:
 //==============================
 
 //-----------------------------------------------------------------------------
@@ -1099,7 +1097,7 @@ std::string WINAPI _export GetUITimestampFromKey(const char *szKey, char *szUITi
         // Convert the key's timestamp segment to a number and then to date/time.
         StrCpyN(szTimestampStr, szKey, nSZ_KEYTIMESTAMP);
 
-        // DRS: C++ arrays decay to pointers of the same type. Love the syntax. :-)
+        // DRS: C++ arrays decay to pointers of the same type. Love the syntax!
         nTsVal = StrToDouble(szTimestampStr, BASE_62_SIZE, decay_t<double *>(&anPowVec62[0]));
         ret = DoubleToTimestamp(nTsVal, &hNow, &nHSec);
 
@@ -1365,30 +1363,35 @@ static char * DoubleToStrN(char *szDstStr, int nDstStrWidth, double nSrcVal, dou
 static std::string DoubleToTimestamp(double nTimestamp, struct tm *phNow, int *pnHSeconds) {
     memset(phNow, 0, sizeof(struct tm));  // initialize
 
-    *pnHSeconds = (int)(nTimestamp / nSHIFT_HSECOND);        // 1/100 seconds
-    nTimestamp -= ((double)*pnHSeconds * nSHIFT_HSECOND);    // strip it off
+    *pnHSeconds    = (int)(nTimestamp / nSHIFT_HSECOND);      // 1/100 seconds
+    nTimestamp    -= ((double)*pnHSeconds * nSHIFT_HSECOND);  // strip it off
 
-    phNow->tm_sec = (int)(nTimestamp / nSHIFT_SECOND);       // SECONDS
-    nTimestamp   -= ((double)phNow->tm_sec * nSHIFT_SECOND); // strip it off
+    phNow->tm_sec  = (int)(nTimestamp / nSHIFT_SECOND);       // SECONDS
+    nTimestamp    -= ((double)phNow->tm_sec * nSHIFT_SECOND); // strip it off
 
-    phNow->tm_min = (int)(nTimestamp / nSHIFT_MINUTE);       // MINUTES
-    nTimestamp   -= ((double)phNow->tm_min * nSHIFT_MINUTE); // strip it off
+    phNow->tm_min  = (int)(nTimestamp / nSHIFT_MINUTE);       // MINUTES
+    nTimestamp    -= ((double)phNow->tm_min * nSHIFT_MINUTE); // strip it off
 
-    phNow->tm_hour = (int)(nTimestamp / nSHIFT_HOUR);        // HOURS
-    nTimestamp    -= ((double)phNow->tm_hour * nSHIFT_HOUR); // strip it off
+    phNow->tm_hour = (int)(nTimestamp / nSHIFT_HOUR);         // HOURS
+    nTimestamp    -= ((double)phNow->tm_hour * nSHIFT_HOUR);  // strip it off
 
-    phNow->tm_mday = (int)(nTimestamp / nSHIFT_DAY);         // DAYS
-    nTimestamp    -= ((double)phNow->tm_mday * nSHIFT_DAY);  // strip it off
+    phNow->tm_mday = (int)(nTimestamp / nSHIFT_DAY);          // DAYS
+    nTimestamp    -= ((double)phNow->tm_mday * nSHIFT_DAY);   // strip it off
 
-    phNow->tm_mon = (int)(nTimestamp / nSHIFT_MONTH);        // MONTHS
-    nTimestamp   -= ((double)phNow->tm_mon * nSHIFT_MONTH);  // strip it off. I love saying that!
+    phNow->tm_mon  = (int)(nTimestamp / nSHIFT_MONTH);        // MONTHS
+    nTimestamp    -= ((double)phNow->tm_mon * nSHIFT_MONTH);  // strip it off. I love saying that!! :-)
 
-    phNow->tm_year = (int)(nTimestamp / nSHIFT_YEAR);        // YEARS
+    phNow->tm_year = (int)(nTimestamp / nSHIFT_YEAR);         // YEARS
 
     char buf[25] = {0};
 	sprintf_s(buf, 24, "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-		phNow->tm_year + 1900, phNow->tm_mon + 1, phNow->tm_mday,
-		phNow->tm_hour, phNow->tm_min, phNow->tm_sec, (long)((long)*pnHSeconds * 10L));
+		phNow->tm_year + 1900, 
+		phNow->tm_mon + 1, 
+		phNow->tm_mday,
+		phNow->tm_hour, 
+		phNow->tm_min, 
+		phNow->tm_sec, 
+		(long)((long)*pnHSeconds * 10L));
 	return buf;
 }
 
@@ -1468,7 +1471,7 @@ static double TimestampToDouble(LPSYSTEMTIME lpTime) {
 	}
 
     // PTS18039
-    // "Shift" tp make a "double" out of the sum of the pieces.
+    // "Shift" tp make a "double" from the sum of the pieces.
     nTimestamp += (double)((double)(lpTime->wMilliseconds / 10) * nSHIFT_HSECOND);
 	logVerbose("\nwMilliseconds: %f", nTimestamp);
 
