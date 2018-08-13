@@ -143,9 +143,18 @@ public class RelationshipFacade {
       Set<ScreeningRelationship> allRelationships,
       Map<String, ParticipantEntity> allMappedParticipants, String screeningId) {
     Set<RelatedTo> relatedTos = new HashSet<>();
+
+    if (CollectionUtils.isEmpty(allRelationships)) {
+      return relatedTos;
+    }
+
     allRelationships.forEach(relationship -> {
       ParticipantEntity participantPrimary = allMappedParticipants.get(relationship.getClientId());
       ParticipantEntity participantSecondary = allMappedParticipants.get(relationship.getRelativeId());
+
+      if (participantPrimary == null || participantSecondary == null) {
+        return;
+      }
 
       if (screeningParticipant.getScreeningId().equals(screeningId)) {
         if (relationship.getClientId().equals(screeningParticipant.getId())) {
