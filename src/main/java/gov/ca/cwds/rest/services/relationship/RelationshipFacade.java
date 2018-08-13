@@ -180,7 +180,7 @@ public class RelationshipFacade {
     relatedToBuilder.withRelationshipStartDate(relationship.getStartDate());
     relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
 
-    if (isPrimary) {
+    if (!isPrimary) {
       relatedToBuilder
           .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
        .withRelationshipToPerson(
