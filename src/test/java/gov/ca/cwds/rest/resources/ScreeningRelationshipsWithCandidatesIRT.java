@@ -41,8 +41,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
-
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -53,7 +51,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -71,8 +68,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
-
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -83,7 +78,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
@@ -94,7 +88,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
