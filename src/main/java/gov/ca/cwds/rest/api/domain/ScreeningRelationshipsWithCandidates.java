@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,126 +19,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class ScreeningRelationshipsWithCandidates extends ReportingDomain implements Request,
     Response {
-
-  private static final String DATE_PATTERN = "yyyy-MM-dd";
-  private static final long serialVersionUID = 1L;
-
-  @JsonProperty("id")
-  @ApiModelProperty(required = true, value = "identifier",
-      example = "ABC1234567")
-  private String id;
-
-  @JsonProperty("date_of_birth")
-  @ApiModelProperty(required = true, value = "date of birth",
-      example = "1999-10-01")
-  private String dateOfBirth;
-
-  @JsonProperty("age")
-  @ApiModelProperty(example = "12")
-  private Short age;
-
-  @JsonProperty("age_unit")
-  @ApiModelProperty(required = true, value = "Age Unit", example = "M")
-  @OneOf(value = {"Y", "M", "D"}, ignoreWhitespace = true)
-  private String ageUnit;
-
-  @JsonProperty("first_name")
-  @ApiModelProperty(value = "first name", example = "joe")
-  private String firstName;
-
-  @JsonProperty("middle_name")
-  @ApiModelProperty(required = true, value = "middle name", example = "w")
-  private String middleName;
-
-  @JsonProperty("last_name")
-  @ApiModelProperty(required = true, value = "last name", example = "sufer")
-  private String lastName;
-
-  @JsonProperty("name_suffix")
-  @ApiModelProperty(value = "Suffix Title Description")
-  private String suffixName;
-
-  @JsonProperty("gender")
-  @ApiModelProperty(required = true, value = "Gender Code", example = "M")
-  @OneOf(value = {"M", "F", "I", "U"}, ignoreWhitespace = true)
-  private String gender;
-
-  @JsonProperty("date_of_death")
-  @ApiModelProperty(value = "date of death",
-      example = "2010-10-01")
-  private String dateOfDeath;
-
-  @JsonProperty("sensitive")
-  @ApiModelProperty(value = "sensitive", example = "false")
-  private Boolean sensitive;
-
-  @JsonProperty("sealed")
-  @ApiModelProperty(value = "sealed", example = "false")
-  private Boolean sealed;
-
-  @JsonProperty("relationship_to")
-  private Set<RelatedTo> relatedTo;
-  @JsonProperty("candidate_to")
-  private Set<CandidateTo> relatedCandidatesTo;
-
-  private ScreeningRelationshipsWithCandidates() {
-  }
-
-  public Set<CandidateTo> getRelatedCandidatesTo() {
-    return relatedCandidatesTo;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public String getDateOfBirth() {
-    return dateOfBirth;
-  }
-
-  public Short getAge() {
-    return age;
-  }
-
-  public String getAgeUnit() {
-    return ageUnit;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public String getSuffixName() {
-    return suffixName;
-  }
-
-  public String getGender() {
-    return gender;
-  }
-
-  public String getDateOfDeath() {
-    return dateOfDeath;
-  }
-
-  public Boolean getSensitive() {
-    return sensitive;
-  }
-
-  public Boolean getSealed() {
-    return sealed;
-  }
-
-  public Set<RelatedTo> getRelatedTo() {
-    return relatedTo;
-  }
 
   public static final class ScreeningRelationshipsWithCandidatesBuilder {
 
@@ -230,11 +111,126 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     }
 
     public ScreeningRelationshipsWithCandidates build() {
+      if (screeningRelationshipsWithCandidates.relatedTo == null) {
+        screeningRelationshipsWithCandidates.relatedTo = new HashSet<>();
+      }
+      if (screeningRelationshipsWithCandidates.relatedCandidatesTo == null) {
+        screeningRelationshipsWithCandidates.relatedCandidatesTo = new HashSet<>();
+      }
       return screeningRelationshipsWithCandidates;
     }
   }
 
   public static final class RelatedTo implements Serializable {
+
+    public static final class RelatedToBuilder {
+
+      private RelatedTo relatedTo;
+
+      public RelatedToBuilder() {
+        relatedTo = new RelatedTo();
+      }
+
+      public RelatedToBuilder withRelationshipId(String relationshipId) {
+        relatedTo.relationshipId = relationshipId;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedPersonId(String personId) {
+        relatedTo.relatedPersonId = personId;
+        return this;
+      }
+
+
+      public RelatedToBuilder withRelatedFirstName(String relatedFirstName) {
+        relatedTo.relatedFirstName = relatedFirstName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedMiddleName(String relatedMiddleName) {
+        relatedTo.relatedMiddleName = relatedMiddleName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedLastName(String relatedLastName) {
+        relatedTo.relatedLastName = relatedLastName;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedNameSuffix(String relatedNameSuffix) {
+        relatedTo.relatedNameSuffix = relatedNameSuffix;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedGender(String relatedGender) {
+        relatedTo.relatedGender = relatedGender;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedDateOfBirth(Date relatedDateOfBirth) {
+        if (relatedDateOfBirth == null) {
+          return this;
+        }
+        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
+            .format(relatedDateOfBirth);
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedAge(String relatedAge) {
+        if (StringUtils.isEmpty(relatedAge)) {
+          return this;
+        }
+        relatedTo.relatedAge = Short.valueOf(relatedAge);
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedAgeUnit(String relatedAgeUnit) {
+        relatedTo.relatedAgeUnit = relatedAgeUnit;
+        return this;
+      }
+
+      public RelatedToBuilder withAbsentParentCode(String absentParentCode) {
+        relatedTo.absentParentCode = absentParentCode;
+        return this;
+      }
+
+      public RelatedToBuilder withSameHomeCode(String sameHomeCode) {
+        relatedTo.sameHomeCode = sameHomeCode;
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipToPerson(String relationshipToPerson) {
+        relatedTo.relationshipToPerson = relationshipToPerson;
+        return this;
+      }
+
+      public RelatedToBuilder withRelatedPersonRelationship(String relatedPersonRelationship) {
+        relatedTo.relatedPersonRelationship = relatedPersonRelationship;
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
+        if (relationshipStartDate == null) {
+          return this;
+        }
+        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
+            .format(relationshipStartDate);
+        return this;
+      }
+
+      public RelatedToBuilder withRelationshipEndDate(Date relationshipEndDate) {
+        if (relationshipEndDate == null) {
+          return this;
+        }
+        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
+            .format(relationshipEndDate);
+        return this;
+      }
+
+      public RelatedTo build() {
+        return relatedTo;
+      }
+    }
 
     private RelatedTo() {
     }
@@ -425,120 +421,73 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(relationshipEndDate)
           .toHashCode();
     }
-
-    public static final class RelatedToBuilder {
-
-      private RelatedTo relatedTo;
-
-      public RelatedToBuilder() {
-        relatedTo = new RelatedTo();
-      }
-
-      public RelatedToBuilder withRelationshipId(String relationshipId) {
-        relatedTo.relationshipId = relationshipId;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedPersonId(String personId) {
-        relatedTo.relatedPersonId = personId;
-        return this;
-      }
-
-
-      public RelatedToBuilder withRelatedFirstName(String relatedFirstName) {
-        relatedTo.relatedFirstName = relatedFirstName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedMiddleName(String relatedMiddleName) {
-        relatedTo.relatedMiddleName = relatedMiddleName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedLastName(String relatedLastName) {
-        relatedTo.relatedLastName = relatedLastName;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedNameSuffix(String relatedNameSuffix) {
-        relatedTo.relatedNameSuffix = relatedNameSuffix;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedGender(String relatedGender) {
-        relatedTo.relatedGender = relatedGender;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedDateOfBirth(Date relatedDateOfBirth) {
-        if (relatedDateOfBirth == null) {
-          return this;
-        }
-        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(relatedDateOfBirth);
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedAge(String relatedAge) {
-        if (StringUtils.isEmpty(relatedAge)) {
-          return this;
-        }
-        relatedTo.relatedAge = Short.valueOf(relatedAge);
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedAgeUnit(String relatedAgeUnit) {
-        relatedTo.relatedAgeUnit = relatedAgeUnit;
-        return this;
-      }
-
-      public RelatedToBuilder withAbsentParentCode(String absentParentCode) {
-        relatedTo.absentParentCode = absentParentCode;
-        return this;
-      }
-
-      public RelatedToBuilder withSameHomeCode(String sameHomeCode) {
-        relatedTo.sameHomeCode = sameHomeCode;
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipToPerson(String relationshipToPerson) {
-        relatedTo.relationshipToPerson = relationshipToPerson;
-        return this;
-      }
-
-      public RelatedToBuilder withRelatedPersonRelationship(String relatedPersonRelationship) {
-        relatedTo.relatedPersonRelationship = relatedPersonRelationship;
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
-        if (relationshipStartDate == null) {
-          return this;
-        }
-        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipStartDate);
-        return this;
-      }
-
-      public RelatedToBuilder withRelationshipEndDate(Date relationshipEndDate) {
-        if (relationshipEndDate == null) {
-          return this;
-        }
-        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipEndDate);
-        return this;
-      }
-
-      public RelatedTo build() {
-        return relatedTo;
-      }
-    }
   }
 
   public static final class CandidateTo implements Serializable {
 
-    private CandidateTo() {
+    public static final class CandidateToBuilder {
+
+      private CandidateTo candidateTo;
+
+      public CandidateToBuilder() {
+        candidateTo = new CandidateTo();
+      }
+
+      public CandidateToBuilder withId(String id) {
+        candidateTo.candidateId = id;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateFirstName(String candidateFirstName) {
+        candidateTo.candidateFirstName = candidateFirstName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateMiddleName(String candidateMiddleName) {
+        candidateTo.candidateMiddleName = candidateMiddleName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateLastName(String candidateLastName) {
+        candidateTo.candidateLastName = candidateLastName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateSuffixtName(String candidateSuffixtName) {
+        candidateTo.candidateSuffixtName = candidateSuffixtName;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateGender(String candidateGender) {
+        candidateTo.candidateGender = candidateGender;
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateDateOfBirth(Date candidateDateOfBirth) {
+        if (candidateDateOfBirth == null) {
+          return this;
+        }
+        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
+            .format(candidateDateOfBirth);
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateAge(String candidateAge) {
+        if (StringUtils.isEmpty(candidateAge)) {
+          return this;
+        }
+        candidateTo.candidateAge = Short.parseShort(candidateAge);
+        return this;
+      }
+
+      public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
+        candidateTo.candidateAgeUnit = candidateAgeUnit;
+        return this;
+      }
+
+      public CandidateTo build() {
+        return candidateTo;
+      }
     }
 
     @JsonProperty("candidate_id")
@@ -568,6 +517,9 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
+
+    private CandidateTo() {
+    }
 
     public String getCandidateFirstName() {
       return candidateFirstName;
@@ -640,70 +592,125 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(candidateAgeUnit)
           .toHashCode();
     }
+  }
 
-    public static final class CandidateToBuilder {
+  private static final String DATE_PATTERN = "yyyy-MM-dd";
+  private static final long serialVersionUID = 1L;
 
-      private CandidateTo candidateTo;
+  @JsonProperty("id")
+  @ApiModelProperty(required = true, value = "identifier",
+      example = "ABC1234567")
+  private String id;
 
-      public CandidateToBuilder() {
-        candidateTo = new CandidateTo();
-      }
+  @JsonProperty("date_of_birth")
+  @ApiModelProperty(required = true, value = "date of birth",
+      example = "1999-10-01")
+  private String dateOfBirth;
 
-      public CandidateToBuilder withId(String id) {
-        candidateTo.candidateId = id;
-        return this;
-      }
+  @JsonProperty("age")
+  @ApiModelProperty(example = "12")
+  private Short age;
 
-      public CandidateToBuilder withCandidateFirstName(String candidateFirstName) {
-        candidateTo.candidateFirstName = candidateFirstName;
-        return this;
-      }
+  @JsonProperty("age_unit")
+  @ApiModelProperty(required = true, value = "Age Unit", example = "M")
+  @OneOf(value = {"Y", "M", "D"}, ignoreWhitespace = true)
+  private String ageUnit;
 
-      public CandidateToBuilder withCandidateMiddleName(String candidateMiddleName) {
-        candidateTo.candidateMiddleName = candidateMiddleName;
-        return this;
-      }
+  @JsonProperty("first_name")
+  @ApiModelProperty(value = "first name", example = "joe")
+  private String firstName;
 
-      public CandidateToBuilder withCandidateLastName(String candidateLastName) {
-        candidateTo.candidateLastName = candidateLastName;
-        return this;
-      }
+  @JsonProperty("middle_name")
+  @ApiModelProperty(required = true, value = "middle name", example = "w")
+  private String middleName;
 
-      public CandidateToBuilder withCandidateSuffixtName(String candidateSuffixtName) {
-        candidateTo.candidateSuffixtName = candidateSuffixtName;
-        return this;
-      }
+  @JsonProperty("last_name")
+  @ApiModelProperty(required = true, value = "last name", example = "sufer")
+  private String lastName;
 
-      public CandidateToBuilder withCandidateGender(String candidateGender) {
-        candidateTo.candidateGender = candidateGender;
-        return this;
-      }
+  @JsonProperty("name_suffix")
+  @ApiModelProperty(value = "Suffix Title Description")
+  private String suffixName;
 
-      public CandidateToBuilder withCandidateDateOfBirth(Date candidateDateOfBirth) {
-        if (candidateDateOfBirth == null) {
-          return this;
-        }
-        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(candidateDateOfBirth);
-        return this;
-      }
+  @JsonProperty("gender")
+  @ApiModelProperty(required = true, value = "Gender Code", example = "M")
+  @OneOf(value = {"M", "F", "I", "U"}, ignoreWhitespace = true)
+  private String gender;
 
-      public CandidateToBuilder withCandidateAge(String candidateAge) {
-        if (StringUtils.isEmpty(candidateAge)) {
-          return this;
-        }
-        candidateTo.candidateAge = Short.parseShort(candidateAge);
-        return this;
-      }
+  @JsonProperty("date_of_death")
+  @ApiModelProperty(value = "date of death",
+      example = "2010-10-01")
+  private String dateOfDeath;
 
-      public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
-        candidateTo.candidateAgeUnit = candidateAgeUnit;
-        return this;
-      }
+  @JsonProperty("sensitive")
+  @ApiModelProperty(value = "sensitive", example = "false")
+  private Boolean sensitive;
 
-      public CandidateTo build() {
-        return candidateTo;
-      }
-    }
+  @JsonProperty("sealed")
+  @ApiModelProperty(value = "sealed", example = "false")
+  private Boolean sealed;
+
+  @JsonProperty("relationship_to")
+  private Set<RelatedTo> relatedTo;
+  @JsonProperty("candidate_to")
+  private Set<CandidateTo> relatedCandidatesTo;
+
+  private ScreeningRelationshipsWithCandidates() {
+  }
+
+  public Set<CandidateTo> getRelatedCandidatesTo() {
+    return relatedCandidatesTo;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getDateOfBirth() {
+    return dateOfBirth;
+  }
+
+  public Short getAge() {
+    return age;
+  }
+
+  public String getAgeUnit() {
+    return ageUnit;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getMiddleName() {
+    return middleName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public String getSuffixName() {
+    return suffixName;
+  }
+
+  public String getGender() {
+    return gender;
+  }
+
+  public String getDateOfDeath() {
+    return dateOfDeath;
+  }
+
+  public Boolean getSensitive() {
+    return sensitive;
+  }
+
+  public Boolean getSealed() {
+    return sealed;
+  }
+
+  public Set<RelatedTo> getRelatedTo() {
+    return relatedTo;
   }
 }

@@ -38,6 +38,7 @@ import gov.ca.cwds.health.resource.TriggerExistCheck;
 import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
+import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.core.Api;
@@ -209,7 +210,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
           nsDataSourceFactory.getProperties().get(HIBERNATE_DEFAULT_SCHEMA_PROPERTY_NAME));
     } catch (Exception e) {
       LOGGER.error("INTAKE_NS DB upgrade failed. ", e);
-      throw new RuntimeException("INTAKE_NS DB upgrade failed", e);
+      throw new ApiException("INTAKE_NS DB upgrade failed", e);
     }
 
     LOGGER.info("Finished Upgrading INTAKE_NS DB");

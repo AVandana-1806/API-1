@@ -23,7 +23,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
 
   public static final String SCREENING_PATH = "screenings";
   public static final String RELATIONSHIPS = "relationships";
-  public static final String RELATIONSHIPS_WITH_CANDIDATES = "relationships_with_candidates";
   public static final String RELATIONSHIP_PATH = "screening_relationships";
 
   public static final String FIXTURE_GET_LIST_RELATIONSHIPS_RESPONSE_ONLY_POSTGRES_PATH = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-only-postgres.json";
@@ -63,18 +62,6 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   public static final String SCREENING_ID_7 = "1107";
 
   public static final String BAD_SCREENING_ID = "3393";
-
-  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-one-candidate.json";
-  public static final String SCREENING_ID_8 = "2107";
-
-  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-two-candidate-no-relations.json";
-  public static final String SCREENING_ID_9 = "2109";
-
-  public static final String SCREENING_ID_10 = "2110";
-
-  public static final String FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-no-candidate-two-relationships.json";
-  public static final String SCREENING_ID_11 = "2111";
-
 
   @Test
   public void getRelationshipsByScreeningId_twoRelationsExist() throws IOException, JSONException {
@@ -193,46 +180,9 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  public void getRelationshipsByScreeningId_badRequest() throws IOException {
-    Response response = doGetCall(SCREENING_PATH + "/" + BAD_SCREENING_ID + "/" + RELATIONSHIPS);
-    assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
-  }
-
-  @Test
-  public void getRelationshipsByScreeningIdWithCandidates_oneCandidateOneRelationship()
-      throws IOException, JSONException {
+  public void getRelationshipsByScreeningId_badRequest() throws IOException, JSONException {
     String actualJson = getStringResponse(
-        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    String expectedResponse =
-        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_ONE_CANDIDATE);
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
-  }
-
-  @Test
-  public void getRelationshipsByScreeningIdWithCandidates_noRelationsTwoParticipants()
-      throws IOException, JSONException {
-    String actualJson = getStringResponse(
-        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    String expectedResponse =
-        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
-  }
-
-  @Test
-  public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
-      throws IOException {
-    Response response = doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS);
-    assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
-  }
-
-  @Test
-  public void getRelationshipsByScreeningIdWithCandidates_TwoRelationsNoCandidates()
-      throws IOException, JSONException {
-    String actualJson = getStringResponse(
-        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-    System.out.println(actualJson);
-    String expectedResponse =
-        fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+        doGetCall(SCREENING_PATH + "/" + BAD_SCREENING_ID + "/" + RELATIONSHIPS));
+    JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 }

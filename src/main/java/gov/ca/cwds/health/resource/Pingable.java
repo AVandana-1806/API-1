@@ -6,4 +6,3 @@ public interface Pingable {
 
   public String getMessage();
 }
-

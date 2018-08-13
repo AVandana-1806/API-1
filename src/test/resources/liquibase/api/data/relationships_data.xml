@@ -138,5 +138,29 @@
             <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
             <column name="legacy_id" value="0btlf7s006"/>
         </insert>
+
+        <insert tableName="relationships">
+            <column name="id" value="14"/>
+            <column name="relation" value="188"/>
+            <column name="client" value="2027"/>
+            <column name="relative" value="2030"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s006"/>
+        </insert>
+
+        <insert tableName="relationships">
+            <column name="id" value="15"/>
+            <column name="relation" value="189"/>
+            <column name="client" value="2032"/>
+            <column name="relative" value="2031"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s006"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
