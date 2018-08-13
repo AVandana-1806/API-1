@@ -34,6 +34,7 @@ import javax.management.AttributeList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,9 +144,19 @@ public class RelationshipFacade {
       Set<ScreeningRelationship> allRelationships,
       Map<String, ParticipantEntity> allMappedParticipants, String screeningId) {
     Set<RelatedTo> relatedTos = new HashSet<>();
+
+    if (CollectionUtils.isEmpty(allRelationships)) {
+      return relatedTos;
+    }
+
     allRelationships.forEach(relationship -> {
       ParticipantEntity participantPrimary = allMappedParticipants.get(relationship.getClientId());
-      ParticipantEntity participantSecondary = allMappedParticipants.get(relationship.getRelativeId());
+      ParticipantEntity participantSecondary = allMappedParticipants
+          .get(relationship.getRelativeId());
+
+      if (participantPrimary == null || participantSecondary == null) {
+        return;
+      }
 
       if (screeningParticipant.getScreeningId().equals(screeningId)) {
         if (relationship.getClientId().equals(screeningParticipant.getId())) {
@@ -183,8 +194,8 @@ public class RelationshipFacade {
     if (!isPrimary) {
       relatedToBuilder
           .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
-       .withRelationshipToPerson(
-          String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+          .withRelationshipToPerson(
+              String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
     } else {
       relatedToBuilder
           .withRelationshipToPerson(String.valueOf(relationship.getRelationshipType()))
@@ -284,6 +295,10 @@ public class RelationshipFacade {
     result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
     // select and return
+    if (participantDao.getSessionFactory().getCurrentSession().getTransaction().getStatus()
+        == TransactionStatus.ACTIVE) {
+      participantDao.getSessionFactory().getCurrentSession().flush();
+    }
     return result;
   }
 
