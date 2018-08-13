@@ -62,9 +62,9 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
-      throws IOException {
-    Response response = doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS);
-    assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+      throws IOException, JSONException {
+    String actualJson = getStringResponse(doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+    JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
   @Test
