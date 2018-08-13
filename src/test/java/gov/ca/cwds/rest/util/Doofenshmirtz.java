@@ -54,6 +54,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.db2.jcc.am.DatabaseMetaData;
 
 import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.data.cms.SystemCodeDao;
@@ -98,6 +99,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
   public Transaction transaction;
   public StandardServiceRegistry reg;
   public ConnectionProvider cp;
+  public DatabaseMetaData meta;
   public Connection con;
   public Statement stmt;
   public ResultSet rs;
@@ -155,6 +157,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     stmt = mock(Statement.class);
     em = mock(EntityManager.class);
     proc = mock(ProcedureCall.class);
+    meta = mock(DatabaseMetaData.class);
 
     when(sfo.getBatchFetchStyle()).thenReturn(BatchFetchStyle.DYNAMIC);
     settings = new Settings(sfo, "CWSNS1", "CWSNS1");
@@ -233,6 +236,27 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     prepStmt = mock(PreparedStatement.class);
     when(con.prepareStatement(any(String.class))).thenReturn(prepStmt);
     when(prepStmt.executeUpdate()).thenReturn(10);
+
+    when(transaction.getStatus()).thenReturn(TransactionStatus.MARKED_ROLLBACK);
+
+    when(sfo.getServiceRegistry()).thenReturn(reg);
+    when(reg.getService(ConnectionProvider.class)).thenReturn(cp);
+    when(cp.getConnection()).thenReturn(con);
+
+    when(con.getMetaData()).thenReturn(meta);
+    when(con.createStatement()).thenReturn(stmt);
+
+    when(meta.getDatabaseProductName()).thenReturn("DB2");
+    when(stmt.executeQuery(any())).thenReturn(rs);
+    when(stmt.executeUpdate(any(String.class))).thenReturn(1);
+
+    when(con.prepareStatement(any(String.class))).thenReturn(prepStmt);
+    when(con.prepareStatement(any())).thenReturn(prepStmt);
+    when(con.prepareStatement(any(String.class), any(int[].class))).thenReturn(prepStmt);
+
+    when(prepStmt.executeQuery()).thenReturn(rs);
+    when(prepStmt.executeQuery(any())).thenReturn(rs);
+    when(prepStmt.executeUpdate()).thenReturn(1);
 
     systemCodeDao = mock(SystemCodeDao.class);
     systemMetaDao = mock(SystemMetaDao.class);

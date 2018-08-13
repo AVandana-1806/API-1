@@ -108,10 +108,4 @@ public class CandaceTransactionImpl implements Transaction {
     txn.markRollbackOnly();
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    LOGGER.info("CandaceTransactionImpl.finalize");
-    super.finalize();
-  }
-
 }
