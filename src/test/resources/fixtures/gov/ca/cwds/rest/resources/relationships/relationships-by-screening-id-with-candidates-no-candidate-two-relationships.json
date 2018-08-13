@@ -1,5 +1,35 @@
 [
   {
+    "id": "2024",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Dima",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr.",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [
+      {
+        "relationship_id": "12",
+        "related_person_id": "2025",
+        "related_person_first_name": "Dima",
+        "related_person_middle_name": "T",
+        "related_person_last_name": "Pfeiffer",
+        "related_person_name_suffix": "Jr.",
+        "related_person_gender": "male",
+        "related_person_date_of_birth": "1999-11-15",
+        "absent_parent_code": "Y",
+        "same_home_code": "U",
+        "indexed_person_relationship": "188",
+        "related_person_relationship": "203",
+        "relationship_start_date": "2018-07-19",
+        "relationship_end_date": "2019-07-19"
+      }
+    ],
+    "candidate_to": []
+  },
+  {
     "id": "2025",
     "date_of_birth": "1999-11-15",
     "first_name": "Dima",
@@ -21,28 +51,14 @@
         "related_person_date_of_birth": "1999-11-15",
         "absent_parent_code": "Y",
         "same_home_code": "U",
-        "indexed_person_relationship": "203",
-        "related_person_relationship": "188",
+        "indexed_person_relationship": "188",
+        "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
         "relationship_end_date": "2019-07-19"
-      }
-    ],
-    "candidate_to": []
-  },
-  {
-    "id": "2024",
-    "date_of_birth": "1999-11-15",
-    "first_name": "Dima",
-    "middle_name": "T",
-    "last_name": "Pfeiffer",
-    "name_suffix": "Jr.",
-    "gender": "male",
-    "sensitive": false,
-    "sealed": false,
-    "relationship_to": [
+      },
       {
         "relationship_id": "12",
-        "related_person_id": "2025",
+        "related_person_id": "2024",
         "related_person_first_name": "Dima",
         "related_person_middle_name": "T",
         "related_person_last_name": "Pfeiffer",
