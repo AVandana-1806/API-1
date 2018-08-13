@@ -180,8 +180,9 @@ public class ScreeningResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  public void getRelationshipsByScreeningId_badRequest() throws IOException {
-    Response response = doGetCall(SCREENING_PATH + "/" + BAD_SCREENING_ID + "/" + RELATIONSHIPS);
-    assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+  public void getRelationshipsByScreeningId_badRequest() throws IOException, JSONException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + BAD_SCREENING_ID + "/" + RELATIONSHIPS));
+    JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 }
