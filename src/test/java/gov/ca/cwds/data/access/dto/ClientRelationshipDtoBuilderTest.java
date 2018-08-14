@@ -1,14 +1,17 @@
 package gov.ca.cwds.data.access.dto;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import gov.ca.cwds.cms.data.access.dto.ClientRelationshipDTO;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.services.ClientParticipants;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ClientRelationshipDtoBuilderTest {
   private ClientRelationshipDtoBuilder builder;
@@ -21,20 +24,24 @@ public class ClientRelationshipDtoBuilderTest {
   private String relativeLegacyId = "RELATIVEID";
 
   @Before
-  public void setup(){
+  public void setup() {
     relationship = new ScreeningRelationship();
     relationship.setId("ABC");
     relationship.setClientId(clientId.toString());
     relationship.setRelativeId(relativeId.toString());
     relationship.setRelationshipType(120);
+    relationship.setStartDate(DomainChef.uncookDateString("2010-01-19"));
+    relationship.setEndDate(DomainChef.uncookDateString("2015-05-11"));
 
 
     ParticipantResourceBuilder victimBuilder = new ParticipantResourceBuilder();
-    Participant victim = victimBuilder.setId(clientId).setLegacyId(clientLegacyId).createParticipant();
+    Participant victim =
+        victimBuilder.setId(clientId).setLegacyId(clientLegacyId).createParticipant();
     victim.getLegacyDescriptor().setId(clientLegacyId);
 
     ParticipantResourceBuilder perpBuilder = new ParticipantResourceBuilder();
-    Participant perp = perpBuilder.setId(relativeId).setLegacyId(relativeLegacyId).createParticipant();
+    Participant perp =
+        perpBuilder.setId(relativeId).setLegacyId(relativeLegacyId).createParticipant();
     perp.getLegacyDescriptor().setId(relativeLegacyId);
 
     ParticipantResourceBuilder friendBuilder = new ParticipantResourceBuilder();
@@ -47,17 +54,20 @@ public class ClientRelationshipDtoBuilderTest {
   }
 
   @Test
-  public void shouldBuildClientRelationShipDtoFromParticipantsAndRelationship(){
+  public void shouldBuildClientRelationShipDtoFromParticipantsAndRelationship() {
     builder = new ClientRelationshipDtoBuilder(relationship, participants);
     ClientRelationshipDTO relationsDto = builder.build();
     assertEquals(relationship.getId(), relationsDto.getIdentifier());
     assertEquals(relationship.getRelationshipType(), relationsDto.getType());
     assertEquals(clientLegacyId, relationsDto.getPrimaryClient().getId());
     assertEquals(relativeLegacyId, relationsDto.getSecondaryClient().getId());
+    assertEquals(relationship.getStartDate(), java.sql.Date.valueOf(relationsDto.getStartDate()));
+    assertEquals(relationship.getEndDate(), java.sql.Date.valueOf(relationsDto.getEndDate()));
+
   }
 
   @Test
-  public void doesNotBuildCompleteBaseClient(){
+  public void doesNotBuildCompleteBaseClient() {
     builder = new ClientRelationshipDtoBuilder(relationship, participants);
     ClientRelationshipDTO relationsDto = builder.build();
     assertEquals("", relationsDto.getPrimaryClient().getAdjudicatedDelinquentIndicator());
@@ -76,18 +86,18 @@ public class ClientRelationshipDtoBuilderTest {
     assertEquals("", relationsDto.getPrimaryClient().getCommonMiddleName());
     assertNull(relationsDto.getPrimaryClient().getConfidentialityActionDate());
     assertEquals("", relationsDto.getPrimaryClient().getConfidentialityInEffectIndicator());
-    //etc
+    // etc
   }
 
   @Test(expected = NullPointerException.class)
-  public void shouldHandleNullRelationship(){
+  public void shouldHandleNullRelationship() {
     builder = new ClientRelationshipDtoBuilder(null, participants);
-    ClientRelationshipDTO relationsDto = builder.build();
+    builder.build();
   }
 
   @Test(expected = NullPointerException.class)
-  public void shouldHandleNullClientParticipant(){
+  public void shouldHandleNullClientParticipant() {
     builder = new ClientRelationshipDtoBuilder(null, participants);
-    ClientRelationshipDTO relationsDto = builder.build();
+    builder.build();
   }
 }
