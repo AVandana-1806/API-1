@@ -1,6 +1,8 @@
 def notifyBuild(String buildStatus, Exception e){
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
+  DOCKER_REGISTRY_CREDENTIALS_ID = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
+
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
