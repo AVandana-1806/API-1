@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.resources;
+package gov.ca.cwds.rest.resources.relationship;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 
@@ -59,7 +59,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
       throws IOException, JSONException {
-    String actualJson = getStringResponse(doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 

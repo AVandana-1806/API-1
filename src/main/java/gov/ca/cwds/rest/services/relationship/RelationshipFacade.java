@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
@@ -11,7 +12,7 @@ import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo.CandidateToBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
@@ -19,7 +20,10 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.management.AttributeList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +44,6 @@ import org.slf4j.LoggerFactory;
 /**
  * @author CWDS TPT-3 Team
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
@@ -54,14 +56,17 @@ public class RelationshipFacade {
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
   private final SystemCodeCache systemCodeDao;
+  private final ScreeningRelationshipService screeningRelationshipService;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
+      ScreeningRelationshipService screeningRelationshipService) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
+    this.screeningRelationshipService = screeningRelationshipService;
     this.systemCodeDao = SystemCodeCache.global();
     initSystemCodes();
   }
@@ -78,6 +83,37 @@ public class RelationshipFacade {
       systemCodes.forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
       systemCodes.forEach(e -> codesMappedById.put(e.getSystemId(), e));
     }
+  }
+
+  public List<gov.ca.cwds.rest.api.Response> createRelationships(
+      List<ScreeningRelationshipBase> relationships) {
+    List<gov.ca.cwds.rest.api.Response> responses = new ArrayList<>();
+    if (CollectionUtils.isEmpty(relationships)) {
+      return responses;
+    }
+
+    for (int i = 0; i < relationships.size(); ++i) {
+      if (i % 2 != 0) {
+        ScreeningRelationship relationshipWithError = new ScreeningRelationship(
+            relationships.get(0)) {
+          @JsonProperty("error")
+          @ApiModelProperty(value = "create Screening Relationship error", example = "Error text")
+          public String error = "Test Error";
+        };
+        responses.add(relationshipWithError);
+      } else {
+        ScreeningRelationship relationshipWithError = new ScreeningRelationship(
+            relationships.get(0));
+        relationshipWithError.setId(i + "");
+        responses.add(relationshipWithError);
+      }
+    }
+    return responses;
+  }
+
+  @UnitOfWork(value = "ns")
+  private ScreeningRelationship createRelationship(ScreeningRelationshipBase relationshipBase) {
+    return (ScreeningRelationship) screeningRelationshipService.create(relationshipBase);
   }
 
   public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(

@@ -1,67 +1,34 @@
 package gov.ca.cwds.rest.api.domain;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Objects;
-import java.util.Optional;
-
-import javax.ws.rs.DefaultValue;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import gov.ca.cwds.rest.api.Request;
-import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class ScreeningRelationship extends ReportingDomain
-    implements Request, gov.ca.cwds.rest.api.Response {
+@JsonPropertyOrder({"id", "client_id", "relative_id", "relationship_type",
+    "absent_parent_indicator", "same_home_status", "start_date", "end_date", "legacy_id"})
+public class ScreeningRelationship extends ScreeningRelationshipBase {
 
   @JsonProperty("id")
   @ApiModelProperty(required = true, value = "Screening Relationship Id", example = "12345")
   private String id;
 
-  @JsonProperty("client_id")
-  @ApiModelProperty(required = true,
-      value = "The Id for the the Primary client this relationship refers to. Generated on create",
-      example = "ZXY123")
-  private String clientId;
-
-  @JsonProperty("relative_id")
-  @ApiModelProperty(required = true, value = "The Id for the the primary client's relative",
-      example = "ABC987")
-  private String relativeId;
-
-  @JsonProperty("relationship_type")
-  @ApiModelProperty(required = true, value = "The relationship type code", example = "190")
-  private int relationshipType;
-
-  @JsonProperty("absent_parent_indicator")
-  @ApiModelProperty(required = true,
-      value = "This indicates if the parent CLIENT is absent for the child with whom the relationship is being defined",
-      example = "true")
-  private boolean absentParentIndicator;
-
-  @JsonProperty("same_home_status")
-  @OneOf({"Y", "N", "U"})
-  @DefaultValue(value = "U")
-  @ApiModelProperty(required = true,
-      value = "Indicates whether the two CLIENTs live in the same home.", example = "Y")
-  private String sameHomeStatus;
-
-  @JsonProperty("start_date")
-  @ApiModelProperty(value = "This indicates the start date of relationship", example = "1999-10-01")
-  private Date startDate;
-
-  @JsonProperty("end_date")
-  @ApiModelProperty(value = "This indicates the end date of relationship", example = "2010-10-01")
-  private Date endDate;
-
-  @JsonProperty("legacy_id")
-  @ApiModelProperty(value = "This indicates the legacy ID of relationship", example = "A1b2x")
-  private String legacyId;
-
   public ScreeningRelationship() {
     // comment is required by sonar
+  }
+
+  public ScreeningRelationship(ScreeningRelationshipBase screeningRelationshipBase) {
+    setLegacyId(screeningRelationshipBase.getLegacyId());
+    setClientId(screeningRelationshipBase.getClientId());
+    setRelativeId(screeningRelationshipBase.getRelativeId());
+    setRelationshipType(screeningRelationshipBase.getRelationshipType());
+    setAbsentParentIndicator(screeningRelationshipBase.isAbsentParentIndicator());
+    setSameHomeStatus(screeningRelationshipBase.getSameHomeStatus());
+    setEndDate(screeningRelationshipBase.getEndDate());
+    setStartDate(screeningRelationshipBase.getStartDate());
+    setMessages(screeningRelationshipBase.getMessages());
   }
 
   public String getId() {
@@ -72,70 +39,6 @@ public class ScreeningRelationship extends ReportingDomain
     this.id = id;
   }
 
-  public String getClientId() {
-    return clientId;
-  }
-
-  public void setClientId(String person) {
-    this.clientId = person;
-  }
-
-  public String getRelativeId() {
-    return relativeId;
-  }
-
-  public void setRelativeId(String relativeId) {
-    this.relativeId = relativeId;
-  }
-
-  public int getRelationshipType() {
-    return relationshipType;
-  }
-
-  public void setRelationshipType(int relationshipType) {
-    this.relationshipType = relationshipType;
-  }
-
-  public boolean isAbsentParentIndicator() {
-    return absentParentIndicator;
-  }
-
-  public void setAbsentParentIndicator(boolean absentParentIndicator) {
-    this.absentParentIndicator = absentParentIndicator;
-  }
-
-  public String getSameHomeStatus() {
-    return sameHomeStatus;
-  }
-
-  public void setSameHomeStatus(String sameHomeStatus) {
-    this.sameHomeStatus = sameHomeStatus;
-  }
-
-  public Date getEndDate() {
-    return Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
-  public void setEndDate(Date endDate) {
-    this.endDate = Optional.ofNullable(endDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
-  public Date getStartDate() {
-    return Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
-  public void setStartDate(Date startDate) {
-    this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
-  }
-
-  public String getLegacyId() {
-    return legacyId;
-  }
-
-  public void setLegacyId(String legacyId) {
-    this.legacyId = legacyId;
-  }
-
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
@@ -144,13 +47,13 @@ public class ScreeningRelationship extends ReportingDomain
     builder.append(id);
     builder.append(",\n");
     builder.append("\tclientId:");
-    builder.append(clientId);
+    builder.append(getClientId());
     builder.append(",\n");
     builder.append("\trelativeId:");
-    builder.append(relativeId);
+    builder.append(getRelativeId());
     builder.append(",\n");
     builder.append("\trelationshipType:");
-    builder.append(relationshipType);
+    builder.append(getRelationshipType());
     builder.append(",\n");
     builder.append('}');
     return builder.toString();
@@ -165,12 +68,13 @@ public class ScreeningRelationship extends ReportingDomain
       return false;
     }
     ScreeningRelationship that = (ScreeningRelationship) o;
-    return relationshipType == that.relationshipType && Objects.equals(id, that.id)
-        && Objects.equals(clientId, that.clientId) && Objects.equals(relativeId, that.relativeId);
+    return getRelationshipType() == that.getRelationshipType() && Objects.equals(id, that.id)
+        && Objects.equals(getClientId(), that.getClientId()) && Objects
+        .equals(getRelativeId(), that.getRelativeId());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, clientId, relativeId, relationshipType);
+    return Objects.hash(id, getClientId(), getRelativeId(), getRelationshipType());
   }
 }
