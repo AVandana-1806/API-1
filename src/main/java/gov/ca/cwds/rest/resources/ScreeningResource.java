@@ -138,9 +138,9 @@ public class ScreeningResource {
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @UnitOfWork(DATASOURCE_NS)
   @GET
   @Path("/{screeningId}/relationships_with_candidates")
+  @UnitOfWork(DATASOURCE_NS)
   @ApiResponses(
       value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
@@ -155,5 +155,4 @@ public class ScreeningResource {
         .withDataResponse(
             relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
   }
-
 }

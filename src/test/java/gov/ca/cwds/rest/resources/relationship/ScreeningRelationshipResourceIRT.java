@@ -2,12 +2,19 @@ package gov.ca.cwds.rest.resources.relationship;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
+import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS_BATCH;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import gov.ca.cwds.rest.api.domain.AllegationIntake;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.json.JSONException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -19,6 +26,8 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
 
   public static final String JSON_REQUEST_FOR_SUCCESS_RELATIONSHIPS_BY_SCREENING_ID =
       "fixtures/gov/ca/cwds/rest/resources/relationships-by-screening-id.json";
+  public static final String JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS =
+      "fixtures/gov/ca/cwds/rest/resources/relationships/relationship-post-batch-mock.json";
   public static final String JSON_REQUEST_FOR_SUCCESS_UPDATE =
       "fixtures/gov/ca/cwds/rest/resources/relationship-update-request.json";
   public static final String JSON_REQUEST_FOR_FAILURE_UPDATE =
@@ -35,7 +44,6 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String actualJson = getStringResponse(doGetCall(SCREENING_RELATIONSHIPS + "/1"));
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/relationship_get_response.json");
-    System.out.println(actualJson);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -70,5 +78,13 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String expectedResponse = fixture(JSON_REQUEST_FOR_SUCCESS_RELATIONSHIPS_BY_SCREENING_ID);
     String actualJson = getStringResponse(doGetCall(RESOURCE_SCREENINGS + "/22/relationships"));
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void testCreateRelationships() throws IOException, JSONException {
+    String request = fixture(JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS);
+    Response response =
+        doPostCall(SCREENING_RELATIONSHIPS_BATCH, request);
+    assertEquals(HttpStatus.SC_OK, response.getStatus());
   }
 }
