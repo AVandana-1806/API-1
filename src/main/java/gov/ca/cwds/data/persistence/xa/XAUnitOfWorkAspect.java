@@ -148,7 +148,6 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    */
   public void onFinish() {
     LOGGER.info("XaUnitOfWorkAspect.onFinish()");
-    clearXaFlags();
 
     try {
       closeSessions();
@@ -157,10 +156,12 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     } catch (Exception e) {
       LOGGER.warn("XaUnitOfWorkAspect.onFinish(): FAILED TO UNBIND SESSION FACTORY! {} ",
           e.getMessage(), e);
+    } finally {
+      clearXaFlags();
+      sessionFactories.clear();
+      units.clear();
     }
 
-    sessionFactories.clear();
-    units.clear();
   }
 
   protected void clearXaFlags() {

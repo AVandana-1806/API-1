@@ -2,6 +2,8 @@ package gov.ca.cwds.data.persistence.xa;
 
 import java.net.InetAddress;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hibernate.jdbc.Work;
@@ -77,10 +79,42 @@ public class WorkFerbUserInfo implements Work {
         db2con.setDB2ClientUser(staffId);
         db2con.setDB2ClientWorkstation(WORKSTATION);
 
+        //@formatter:off
+        final String sql = 
+              "SELECT \n"
+            + "   CURRENT TIMESTAMP                 AS CUR_TS \n"
+            + " , SESSION_USER                      AS CUR_SESSION_USER \n"
+            + " , USER                              AS CUR_USER \n"
+            + " , CURRENT CLIENT_WRKSTNNAME         AS CUR_WORKSTATION \n"
+            + " , CURRENT CLIENT_APPLNAME           AS CUR_APP_NM \n"
+            + " , CURRENT CLIENT_ACCTNG             AS CUR_ACCOUNTING \n"
+            + " , CURRENT CLIENT_USERID             AS CUR_CLIENT_USERID \n"
+            + " , CURRENT APPLICATION COMPATIBILITY AS CUR_COMPATIBILITY \n"
+            + " , CURRENT MEMBER                    AS CUR_MEMBER \n"
+            + " , CURRENT SCHEMA                    AS CUR_SCHEMA \n"
+            + " , CURRENT SQLID                     AS CUR_SQLID \n"
+            + " , SESSION TIME ZONE                 AS SESS_TIME_ZONE \n"
+            + " , CURRENT TIME ZONE                 AS CUR_TIME_ZONE \n"
+            + "FROM SYSIBM.SYSDUMMY1 \n"
+            + "FOR READ ONLY WITH UR ";
+        //@formatter:on
+
+        try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+          final ResultSet rs = stmt.executeQuery();
+          while (rs.next()) {
+            LOGGER.info("client user: {}, application: {}, accounting: {}, workstation: {}",
+                rs.getString("CUR_CLIENT_USERID"), rs.getString("CUR_APP_NM"),
+                rs.getString("CUR_ACCOUNTING"), rs.getString("CUR_WORKSTATION"));
+          }
+        } finally {
+          // Prepared statement goes out of scope.
+        }
+
         // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
       } catch (Exception e) {
-        LOGGER.warn("Unsupported client info", e);
+        LOGGER.warn("Unsupported client info: {}", e.getMessage(), e);
       }
     }
   }
+
 }
