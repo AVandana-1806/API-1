@@ -5,6 +5,15 @@ sourceSets {
     }
 }
 
+
+apply plugin: 'idea'
+idea {
+    module {
+        testSourceDirs += project.sourceSets.functionalTest.java.srcDirs
+        testSourceDirs += project.sourceSets.functionalTest.resources.srcDirs
+    }
+}
+
 dependencies {
     functionalTestCompile sourceSets.main.output
     functionalTestCompile sourceSets.test.output

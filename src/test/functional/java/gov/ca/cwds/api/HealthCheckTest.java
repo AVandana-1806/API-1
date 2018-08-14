@@ -24,14 +24,6 @@ public class HealthCheckTest extends FunctionalTest {
     healthCheckPath = getResourceUrlFor("/admin/healthcheck");
   }
 
-  /**
-   * 
-   */
-  @Test
-  public void testPerryIsAvailible() {
-    given().queryParam("token", token).when().get(healthCheckPath).then()
-        .body("auth_status.healthy", equalTo(true));
-  }
 
   /**
    * 
@@ -39,7 +31,13 @@ public class HealthCheckTest extends FunctionalTest {
   @Test
   public void testSwaggerIsAvailable() {
     given().queryParam("token", token).when().get(healthCheckPath).then()
-        .body("swagger_status.healthy", equalTo(true));
+        .body("swagger.healthy", equalTo(true));
+  }
+
+  @Test
+  public void tesAuthIsAvailable() {
+    given().queryParam("token", token).when().get(healthCheckPath).then()
+        .body("auth.healthy", equalTo(true));
   }
 
   /**
@@ -60,13 +58,50 @@ public class HealthCheckTest extends FunctionalTest {
         equalTo(true));
   }
 
-  /**
-   * 
-   */
   @Test
   public void testRsConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("rs.healthy",
         equalTo(true));
   }
 
+  @Test
+  public void testXsForNSConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_ns.healthy",
+        equalTo(true));
+  }
+
+  @Test
+  public void testXaForCmsRsConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms_rs.healthy",
+        equalTo(true));
+  }
+
+  @Test
+  public void testXaForCmsConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms.healthy",
+        equalTo(true));
+  }
+
+  @Test
+  public void testLOVIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("lov_db.healthy",
+        equalTo(true));
+  }
+  @Test
+  public void testLOVCacheIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("intake_lov_code_cache.healthy",
+        equalTo(true));
+  }
+
+  @Test
+  public void testDeadLocksIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("deadlocks.healthy",
+        equalTo(true));
+  }
+
+  @Test
+  public void testSystemCodeCacheIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("system_code_cache.healthy",
+        equalTo(true));
+  }
 }

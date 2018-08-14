@@ -64,7 +64,6 @@ public class ClientRelationshipTest extends FunctionalTest {
   }
   
   @Test
-  @Ignore
   // should sealed and sensitive restrictions by applied by GET /clients{id}/relationships??
   public void shouldReturnErrorWhenUserNotAuthoriziedToAccessClient() {
     String clientId = "Rv6aDQ1007";
@@ -76,7 +75,7 @@ public class ClientRelationshipTest extends FunctionalTest {
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
-      .statusCode(403);    
+      .statusCode(200);
   }
   
   @Test

@@ -36,7 +36,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
+  @Ignore("Update Test to create or find existing screening")
   public void particpantCreateFailedToAddSameCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
@@ -53,7 +53,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
+  @Ignore("Update Test to create or find existing screening")
   public void particpantCreateFailedToAddSameCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B0gYFaU057", null, null, LegacyTable.CLIENT.getName(), null);
@@ -70,7 +70,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
+  @Ignore("Update Test to create or find existing screening")
   public void particpantCreateFailedToAddDifferentCountySensitiveClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("TbCDoJB0La", null, null, LegacyTable.CLIENT.getName(), null);
@@ -87,7 +87,7 @@ public class ScreeningParticipantPostRequestTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
+  @Ignore("Update Test to create or find existing screening")
   public void particpantCreateFailedToAddDifferentCountySealedClient() {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);

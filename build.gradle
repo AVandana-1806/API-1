@@ -439,3 +439,7 @@ task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
         println 'Published'
     }
 }
+
+task showMeCache << {
+    configurations.compile.each { println it }
+}
