@@ -3,6 +3,7 @@ FROM gradle
 ENV DEBIAN_FRONTEND noninteractive
 ENV APP_PATH /ferb
 ENV GRADLE_CACHE ${APP_PATH}/build/gradle_cache
+ENV COMPOSE_HTTP_TIMEOUT 600
 
 USER root
 RUN mkdir $APP_PATH
