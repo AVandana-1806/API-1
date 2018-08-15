@@ -3,9 +3,7 @@ package gov.ca.cwds.rest.services.cms;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,7 +14,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -99,7 +96,7 @@ public class SpecialProjectReferralServiceTest {
     SpecialProject specialProject = new SpecialProjectEntityBuilder()
         .setName("test")
         .build();
-    List<SpecialProject> specialProjects = new ArrayList();
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);
     
     when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
@@ -139,7 +136,7 @@ public class SpecialProjectReferralServiceTest {
         .setName("test")
         .setEndDate(endDate)
         .build();        
-    List<SpecialProject> specialProjects = new ArrayList();
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);    
     when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
     .thenReturn(specialProjects);
@@ -203,7 +200,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
-    List<SpecialProjectReferral> specialProjectReferrals = new ArrayList();
+    List<SpecialProjectReferral> specialProjectReferrals = new ArrayList<SpecialProjectReferral>();
     specialProjectReferrals.add(sprEntity);    
     when(specialProjectReferralDao
         .findSpecialProjectReferralsByReferralIdAndSpecialProjectId(referralId, specialProjectId))
@@ -257,7 +254,7 @@ public class SpecialProjectReferralServiceTest {
   
   @Test
   public void shouldRetrunNullWhenCSECDataNotProvided() throws Exception {
-    List<Csec> csecs = new ArrayList();
+    List<Csec> csecs = new ArrayList<Csec>();
 
     String referralId = "0987654ABC";
     String incidentCounty = "34";
@@ -266,7 +263,7 @@ public class SpecialProjectReferralServiceTest {
     SpecialProject specialProject = new SpecialProjectEntityBuilder()
         .setName("test")
         .build();
-    List<SpecialProject> specialProjects = new ArrayList();
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);
     
     when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))

@@ -137,28 +137,15 @@ public class SpecialProjectReferralService implements
   public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(List<Csec> csecs,
       String referralId, String incidentCounty, MessageBuilder messageBuilder) {
     
-    if (csecs.isEmpty()) {
-      String message = "CSEC data not sent or empty";
-      messageBuilder.addMessageAndLog(message, LOGGER);
+    if (!validSpecialProjectReferral(csecs, incidentCounty, messageBuilder)) {
       return null;
     }
     
     short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
         LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
-    if (governmentEntityType == 0) {
-      String message = "Invalid Government Entity Type for county code : " + incidentCounty;
-      messageBuilder.addMessageAndLog(message, LOGGER);
-      return null;
-    }
     
     String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);   
-    if (StringUtils.isBlank(specialProjectId)) {
-      String message = "Special Project does not exist for: " 
-        + S_CESC_REFERRAL + " " + governmentEntityType;
-      messageBuilder.addMessageAndLog(message, LOGGER);
-      return null;
-    }
-    
+     
     try {
       Csec csecDomain = csecs.get(0);
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
@@ -177,6 +164,31 @@ public class SpecialProjectReferralService implements
       messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
       return null;
     }
+  }
+  
+  private Boolean validSpecialProjectReferral(List<Csec> csecs, String incidentCounty, MessageBuilder messageBuilder) {
+    if (csecs.isEmpty()) {
+      String message = "CSEC data not sent or empty";
+      messageBuilder.addMessageAndLog(message, LOGGER);
+      return Boolean.FALSE;
+    }
+    short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
+        LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
+    if (governmentEntityType == 0) {
+      String message = "Invalid Government Entity Type for county code : " + incidentCounty;
+      messageBuilder.addMessageAndLog(message, LOGGER);
+      return Boolean.FALSE;
+    }
+ 
+    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);   
+    if (StringUtils.isBlank(specialProjectId)) {
+      String message = "Special Project does not exist for: " 
+        + S_CESC_REFERRAL + " " + governmentEntityType;
+      messageBuilder.addMessageAndLog(message, LOGGER);
+      return Boolean.FALSE;
+    }
+
+    return Boolean.TRUE;
   }
   
   private Boolean specialProjectReferralExists(String referralId, String specialProjectId) {
