@@ -209,6 +209,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         return this;
       }
 
+      public RelatedToBuilder withReversedRelationship(boolean reversed) {
+        relatedTo.reversed = reversed;
+        return this;
+      }
+
       public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
         if (relationshipStartDate == null) {
           return this;
@@ -304,6 +309,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         example = "2001-10-01")
     private String relationshipEndDate;
 
+    @JsonProperty("reversed")
+    @ApiModelProperty(value = "If is reversed - related participant ID is Primary client ",
+        example = "true")
+    private boolean reversed;
+
     public String getRelationshipId() {
       return relationshipId;
     }
@@ -368,6 +378,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       return relationshipEndDate;
     }
 
+    public boolean isReversed() {
+      return reversed;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -397,6 +411,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(relatedPersonRelationship, relatedTo.relatedPersonRelationship)
           .append(relationshipStartDate, relatedTo.relationshipStartDate)
           .append(relationshipEndDate, relatedTo.relationshipEndDate)
+          .append(reversed, relatedTo.reversed)
           .isEquals();
     }
 
@@ -419,6 +434,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(relatedPersonRelationship)
           .append(relationshipStartDate)
           .append(relationshipEndDate)
+          .append(reversed)
           .toHashCode();
     }
   }

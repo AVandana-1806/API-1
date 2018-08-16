@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import java.util.Optional;
 import javax.ws.rs.DefaultValue;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author CWDS TPT-3 Team
@@ -117,5 +119,43 @@ public class ScreeningRelationshipBase extends ReportingDomain
 
   public void setStartDate(Date startDate) {
     this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof ScreeningRelationshipBase)) {
+      return false;
+    }
+
+    ScreeningRelationshipBase that = (ScreeningRelationshipBase) o;
+
+    return new EqualsBuilder()
+        .append(relationshipType, that.relationshipType)
+        .append(absentParentIndicator, that.absentParentIndicator)
+        .append(clientId, that.clientId)
+        .append(relativeId, that.relativeId)
+        .append(sameHomeStatus, that.sameHomeStatus)
+        .append(startDate, that.startDate)
+        .append(endDate, that.endDate)
+        .append(legacyId, that.legacyId)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(clientId)
+        .append(relativeId)
+        .append(relationshipType)
+        .append(absentParentIndicator)
+        .append(sameHomeStatus)
+        .append(startDate)
+        .append(endDate)
+        .append(legacyId)
+        .toHashCode();
   }
 }

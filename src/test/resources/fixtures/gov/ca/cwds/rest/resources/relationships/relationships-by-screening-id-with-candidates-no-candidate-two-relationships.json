@@ -24,7 +24,8 @@
         "indexed_person_relationship": "188",
         "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
-        "relationship_end_date": "2019-07-19"
+        "relationship_end_date": "2019-07-19",
+        "reversed": false
       }
     ],
     "candidate_to": []
@@ -41,22 +42,6 @@
     "sealed": false,
     "relationship_to": [
       {
-        "relationship_id": "13",
-        "related_person_id": "2026",
-        "related_person_first_name": "Dima",
-        "related_person_middle_name": "T",
-        "related_person_last_name": "Pfeiffer",
-        "related_person_name_suffix": "Jr.",
-        "related_person_gender": "male",
-        "related_person_date_of_birth": "1999-11-15",
-        "absent_parent_code": "Y",
-        "same_home_code": "U",
-        "indexed_person_relationship": "188",
-        "related_person_relationship": "203",
-        "relationship_start_date": "2018-07-19",
-        "relationship_end_date": "2019-07-19"
-      },
-      {
         "relationship_id": "12",
         "related_person_id": "2024",
         "related_person_first_name": "Dima",
@@ -70,7 +55,25 @@
         "indexed_person_relationship": "203",
         "related_person_relationship": "188",
         "relationship_start_date": "2018-07-19",
-        "relationship_end_date": "2019-07-19"
+        "relationship_end_date": "2019-07-19",
+        "reversed": true
+      },
+      {
+        "relationship_id": "13",
+        "related_person_id": "2026",
+        "related_person_first_name": "Dima",
+        "related_person_middle_name": "T",
+        "related_person_last_name": "Pfeiffer",
+        "related_person_name_suffix": "Jr.",
+        "related_person_gender": "male",
+        "related_person_date_of_birth": "1999-11-15",
+        "absent_parent_code": "Y",
+        "same_home_code": "U",
+        "indexed_person_relationship": "188",
+        "related_person_relationship": "203",
+        "relationship_start_date": "2018-07-19",
+        "relationship_end_date": "2019-07-19",
+        "reversed": false
       }
     ],
     "candidate_to": []
