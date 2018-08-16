@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,9 +102,15 @@ public class WorkFerbUserInfo implements Work {
         try (final PreparedStatement stmt = con.prepareStatement(sql)) {
           final ResultSet rs = stmt.executeQuery();
           while (rs.next()) {
+            final String resultClientUserId =
+                StringUtils.trimToEmpty(rs.getString("CUR_CLIENT_USERID"));
+            final String resultAppName = StringUtils.trimToEmpty(rs.getString("CUR_APP_NM"));
+            final String resultAccounting = StringUtils.trimToEmpty(rs.getString("CUR_ACCOUNTING"));
+            final String resultWorkstation =
+                StringUtils.trimToEmpty(rs.getString("CUR_WORKSTATION"));
+
             LOGGER.info("client user: {}, application: {}, accounting: {}, workstation: {}",
-                rs.getString("CUR_CLIENT_USERID"), rs.getString("CUR_APP_NM"),
-                rs.getString("CUR_ACCOUNTING"), rs.getString("CUR_WORKSTATION"));
+                resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
           }
         } finally {
           // Prepared statement goes out of scope.
