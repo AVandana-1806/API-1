@@ -1,11 +1,8 @@
 package gov.ca.cwds.rest.authenticate;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,16 +45,14 @@ public class CwdsLoginType {
    */
   public String login(UserGroup userType) {
     if ("TEST".equals(ymlLoader.readConfig().getAuthenticationMode())) {
-      String jsonFile = "/LoginUser/" + userType.getName() + ".json";
-      String userJson = "";
-      try {
-        userJson = new String(IOUtils.toByteArray(getClass().getResourceAsStream(jsonFile)),
-            StandardCharsets.UTF_8);
-        cwdsClientCommon = new CwdsDevAuthenticationClient(ymlLoader, userJson);
-
-      } catch (IOException e) {
-        LOGGER.error("Unable to parse the json into String {}", e);
+      List<User> users = ymlLoader.readConfig().getDefaultUsers();
+      Optional<User> user = users.stream()
+          .filter(value -> userType.getName().equals(value.getUserType())).findFirst();
+      String userJson = null;
+      if (user.isPresent()) {
+        userJson = user.get().getUsername();
       }
+      cwdsClientCommon = new CwdsDevAuthenticationClient(ymlLoader, userJson);
     } else {
       List<User> users = ymlLoader.readConfig().getDefaultUsers();
       Optional<User> user = users.stream()

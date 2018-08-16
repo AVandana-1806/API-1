@@ -18,7 +18,6 @@ import gov.ca.cwds.rest.business.RuleValidator;
 public class R00818SetReferredResourceType implements RuleValidator {
 
   private static final short EVALUATE_OUT = 1519;
-
   private ScreeningToReferral screeningToReferral;
 
   /**
