@@ -42,11 +42,11 @@ public class HOIByClientsForSocialWorker extends FunctionalTest {
 
   String resourcePath;
   String referralsPath;
-  Short GENERAL_NEGLECT = 2178;
-  Short PHYSICAL_ABUSE = 2179;
-  Short CARETAKER_ABSENCE = 2169;
-  Short SEXUAL_ABUSE = 2181;
-  Short SEVERER_NEGLECT = 2180;
+  private static Short GENERAL_NEGLECT = 2178;
+  private static Short PHYSICAL_ABUSE = 2179;
+  private static Short CARETAKER_ABSENCE = 2169;
+  private static Short SEXUAL_ABUSE = 2181;
+  private static Short SEVERE_NEGLECT = 2180;
   private HttpRequestHandler httpRequestHandler;
 
   /**
@@ -194,7 +194,7 @@ public class HOIByClientsForSocialWorker extends FunctionalTest {
   @Test
   public void testAllegationTypeIsSevereNeglect() throws Exception {
     String clientId =
-        findVictimClientId("N", userInfo.getIncidentCounty(), IMMEDIATE.getCode(), SEVERER_NEGLECT);
+        findVictimClientId("N", userInfo.getIncidentCounty(), IMMEDIATE.getCode(), SEVERE_NEGLECT);
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", clientId);
     queryParams.put(httpRequestHandler.TOKEN, token);
@@ -204,7 +204,7 @@ public class HOIByClientsForSocialWorker extends FunctionalTest {
     assertThat(actualHOI.getReferrals().get(0).getAllegations().get(0).getType().getId(),
         is(notNullValue()));
     assertThat(actualHOI.getReferrals().get(0).getAllegations().get(0).getType().getId(),
-        is(equalTo(SEVERER_NEGLECT)));
+        is(equalTo(SEVERE_NEGLECT)));
   }
 
   protected String findVictimClientId(String sensitivityIndicator, String incidentCounty,
