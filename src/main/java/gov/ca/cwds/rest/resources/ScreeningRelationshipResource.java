@@ -1,12 +1,9 @@
 package gov.ca.cwds.rest.resources;
 
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
-import java.util.Arrays;
-import java.util.Date;
-
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
 
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
+import java.util.Arrays;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,13 +15,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.ScreeningRelationshipServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,8 +32,8 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * A resource providing a RESTful interface for {@link ScreeningRelationshipResource}. It delegates
- * functions to {@link ServiceBackedResourceDelegate}. It decorates the {@link
- * ServiceBackedResourceDelegate} not in functionality but with @see
+ * functions to {@link ServiceBackedResourceDelegate}. It decorates the
+ * {@link ServiceBackedResourceDelegate} not in functionality but with @see
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -56,6 +54,7 @@ public class ScreeningRelationshipResource {
    * Constructor
    *
    * @param resourceDelegate The resourceDelegate to delegate to.
+   * @param relationshipFacade relationship facade service
    */
   @Inject
   public ScreeningRelationshipResource(
@@ -83,8 +82,8 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
-  public Response create(@Valid @ApiParam(
-      required = true) ScreeningRelationshipBase screeningRelationship) {
+  public Response create(
+      @Valid @ApiParam(required = true) ScreeningRelationshipBase screeningRelationship) {
     return resourceDelegate.create(screeningRelationship);
   }
 
@@ -129,8 +128,7 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
-  @ApiOperation(value = "Find Relationship by id",
-      response = ScreeningRelationship.class)
+  @ApiOperation(value = "Find Relationship by id", response = ScreeningRelationship.class)
   public Response get(@PathParam("id") @ApiParam(required = true,
       value = "The id of the Relationship to find") String id) {
     return resourceDelegate.get(id);
@@ -154,10 +152,11 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationships", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationshipBase[].class)
-  public Response batchCreate(@Valid @ApiParam(
-      required = true) ScreeningRelationshipBase[] screeningRelationships) {
+  public Response batchCreate(
+      @Valid @ApiParam(required = true) ScreeningRelationshipBase[] screeningRelationships) {
     return Response.ok()
         .entity(relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)))
         .build();
   }
+
 }

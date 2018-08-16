@@ -47,6 +47,7 @@ public class StaffPersonDao extends BaseDaoImpl<StaffPerson> {
     if (ids == null || ids.isEmpty()) {
       return new HashMap<>();
     }
+
     LOGGER.info("StaffPersonDao.findByIds: ids: {}", ids);
     final Query<StaffPerson> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByIds")).setParameter("ids", ids);
