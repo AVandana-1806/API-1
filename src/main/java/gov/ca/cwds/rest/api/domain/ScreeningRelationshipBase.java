@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.rest.api.Request;
-import gov.ca.cwds.rest.validation.ValidLogicalId;
 import gov.ca.cwds.rest.validation.ValidSystemCodeId;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
