@@ -132,7 +132,7 @@ public class LovDbCheck implements Pingable {
     }
 
     addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
-    return !(count < expectedCount);
+    return count >= expectedCount;
   }
 
   private void addMessage(String message) {
