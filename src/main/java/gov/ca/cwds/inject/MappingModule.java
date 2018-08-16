@@ -24,7 +24,7 @@ import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
  */
 public class MappingModule extends AbstractModule {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessModule.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MappingModule.class);
 
   @Override
   protected void configure() {
