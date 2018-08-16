@@ -22,10 +22,8 @@ public class ScreeningRelationshipBaseTest {
 
   @Before
   public void setup(){
-//    private final Validator validator = BaseValidator.newValidator();
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
-
 
     relationship = new ScreeningRelationship();
     Date now = new Date();
