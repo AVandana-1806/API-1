@@ -63,7 +63,8 @@ public class R00824SetDispositionCode implements RuleValidator {
   public boolean isValid() {
     if (screeningToReferral != null && screeningToReferral.getResponseTime() != null
         && StringUtils.isNotBlank(incomingParticipant.getDateOfBirth())) {
-      return clientAge() < ADULT && screeningToReferral.getResponseTime() == EVALUATE_OUT.getCode()
+      return clientAge() < ADULT
+          && screeningToReferral.getResponseTime().equals(EVALUATE_OUT.getCode())
           && screeningToReferral.getApprovalStatus() == APPROVED;
     }
     return false;
