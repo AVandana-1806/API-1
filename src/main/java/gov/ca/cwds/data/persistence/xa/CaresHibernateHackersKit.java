@@ -168,7 +168,7 @@ public class CaresHibernateHackersKit {
    * </tr>
    * </table>
    * 
-   * @param dao DAO
+   * @param con DB2 JDBC connection
    * @return true if DB2 is running on a mainframe
    */
   public static boolean isDB2OnZOS(final Connection con) {
