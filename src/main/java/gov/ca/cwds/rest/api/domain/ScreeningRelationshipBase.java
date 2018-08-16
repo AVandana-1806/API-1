@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.validation.ValidLogicalId;
+import gov.ca.cwds.rest.validation.ValidSystemCodeId;
 import io.dropwizard.validation.OneOf;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.Optional;
 import javax.ws.rs.DefaultValue;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * @author CWDS TPT-3 Team
@@ -18,17 +22,20 @@ public class ScreeningRelationshipBase extends ReportingDomain
     implements Request, gov.ca.cwds.rest.api.Response {
 
   @JsonProperty("client_id")
+  @NotEmpty
   @ApiModelProperty(required = true,
       value = "The Id for the the Primary client this relationship refers to. Generated on create",
       example = "ZXY123")
   private String clientId;
 
   @JsonProperty("relative_id")
+  @NotEmpty
   @ApiModelProperty(required = true, value = "The Id for the the primary client's relative",
       example = "ABC987")
   private String relativeId;
 
   @JsonProperty("relationship_type")
+  @ValidSystemCodeId(required = true, category = SystemCodeCategoryId.CLIENT_RELATIONSHIP)
   @ApiModelProperty(required = true, value = "The relationship type code", example = "190")
   private int relationshipType;
 
@@ -39,6 +46,7 @@ public class ScreeningRelationshipBase extends ReportingDomain
   private boolean absentParentIndicator;
 
   @JsonProperty("same_home_status")
+  @NotEmpty
   @OneOf({"Y", "N", "U"})
   @DefaultValue(value = "U")
   @ApiModelProperty(required = true,

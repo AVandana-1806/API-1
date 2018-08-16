@@ -28,7 +28,6 @@ public class ScreeningRelationshipTest {
     assertEquals(relationship.getClientId(), "PersonLegacyId");
     assertEquals(relationship.getRelativeId(), "RelationLegacydId");
     assertEquals(relationship.getRelationshipType(), RELATIONSHIP_TYPE);
-    // will do later  TODO
   }
 
   @Test
@@ -49,8 +48,6 @@ public class ScreeningRelationshipTest {
     assertEquals(relationship.getClientId(), "PersonLegacyId");
     assertEquals(relationship.getRelativeId(), "RelationLegacydId");
     assertEquals(relationship.getRelationshipType(), RELATIONSHIP_TYPE);
-    // will do later  TODO
-
   }
 
   @Test
@@ -108,8 +105,6 @@ public class ScreeningRelationshipTest {
 
     assertEquals(this.relationship, relationshipEqual);
     assertEquals(this.relationship, this.relationship);
-    // will do later  TODO
-
   }
 
   @Test
@@ -140,8 +135,6 @@ public class ScreeningRelationshipTest {
 
     assertNotEquals(this.relationship, relationshipNotEqual);
     assertNotEquals(this.relationship, "Not Equal");
-    // will do later  TODO
-
   }
 
   private boolean isCurrentDateTime(Date date){
