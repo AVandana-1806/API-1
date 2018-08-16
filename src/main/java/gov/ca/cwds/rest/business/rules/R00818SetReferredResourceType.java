@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.business.rules;
 
+import static gov.ca.cwds.data.legacy.cms.entity.enums.ReferralResponseType.EVALUATE_OUT;
+
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.business.RuleValidator;
 
@@ -17,8 +19,6 @@ import gov.ca.cwds.rest.business.RuleValidator;
  */
 public class R00818SetReferredResourceType implements RuleValidator {
 
-  private static final short EVALUATE_OUT = 1519;
-
   private ScreeningToReferral screeningToReferral;
 
   /**
@@ -32,7 +32,7 @@ public class R00818SetReferredResourceType implements RuleValidator {
   @Override
   public boolean isValid() {
     Boolean referredToResourceType = Boolean.FALSE;
-    if (screeningToReferral.getResponseTime() == EVALUATE_OUT) {
+    if (screeningToReferral.getResponseTime() == EVALUATE_OUT.getCode()) {
       referredToResourceType = Boolean.TRUE;
     }
     return referredToResourceType;
