@@ -2,7 +2,7 @@ package gov.ca.cwds.rest.core;
 
 /**
  * Constants defining resources locations in the API.
- * 
+ *
  * @author CWDS API Team
  */
 public final class Api {
@@ -205,6 +205,11 @@ public final class Api {
    * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS} API.
    */
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
+
+  /**
+   * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS_BATCH} API.
+   */
+  public static final String SCREENING_RELATIONSHIPS_BATCH = "screening_relationships/batch";
 
   /**
    * A {@code String} constant representing {@value #HISTORY_OF_INVOLVEMENTS} API.

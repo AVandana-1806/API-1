@@ -73,7 +73,6 @@ public class WorkFerbUserInfo implements Work {
         final DB2Connection db2con = (DB2Connection) con;
         db2con.setDB2ClientAccountingInformation(userId);
         db2con.setDB2ClientApplicationInformation(userId);
-        db2con.setDB2ClientProgramId(userId);
         db2con.setDB2ClientUser(staffId);
         db2con.setDB2ClientWorkstation(WORKSTATION);
 
