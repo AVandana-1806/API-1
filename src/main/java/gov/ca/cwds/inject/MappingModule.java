@@ -1,5 +1,8 @@
 package gov.ca.cwds.inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.AbstractModule;
 
 import gov.ca.cwds.cms.data.access.mapper.ClientMapper;
@@ -21,8 +24,11 @@ import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
  */
 public class MappingModule extends AbstractModule {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessModule.class);
+
   @Override
   protected void configure() {
+    LOGGER.warn("MappingModule: configure");
     bind(AddressMapper.class).to(AddressMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(AgencyMapper.class).to(AgencyMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(AllegationMapper.class).to(AllegationMapper.INSTANCE.getClass()).asEagerSingleton();
