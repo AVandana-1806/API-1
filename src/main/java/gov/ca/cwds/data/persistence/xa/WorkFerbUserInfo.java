@@ -99,8 +99,8 @@ public class WorkFerbUserInfo implements Work {
             + "FOR READ ONLY WITH UR ";
         //@formatter:on
 
-        try (final PreparedStatement stmt = con.prepareStatement(sql)) {
-          final ResultSet rs = stmt.executeQuery();
+        try (final PreparedStatement stmt = con.prepareStatement(sql);
+            final ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             final String resultClientUserId =
                 StringUtils.trimToEmpty(rs.getString("CUR_CLIENT_USERID"));
