@@ -38,7 +38,7 @@ import io.restassured.response.Response;
  * @author CWDS API Team
  *
  */
-public class HOIByClientsForSocialWorker extends FunctionalTest {
+public class HOIByClientsForSocialWorkerTest extends FunctionalTest {
 
   String resourcePath;
   String referralsPath;
