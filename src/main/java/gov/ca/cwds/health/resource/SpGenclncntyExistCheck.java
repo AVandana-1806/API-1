@@ -45,13 +45,15 @@ public class SpGenclncntyExistCheck implements Pingable {
     int count = 0;
     final String sql =
         "SELECT COUNT(*) FROM SYSIBM.SYSROUTINES WHERE ROUTINENAME = 'GENCLNCNTY' AND ROUTINESCHEMA = '"
-            + schema + "'";
+            + schema + "' WITH UR";
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setMaxRows(1);
       stmt.setQueryTimeout(60);
 
       try (final ResultSet rs = stmt.executeQuery()) {
-        count = rs.getInt(1);
+        while (rs.next()) {
+          count = rs.getInt(1);
+        }
         if (count < 1) {
           ok = false;
           message = "Procedure GENCLNCNTY does not exists in the schema";

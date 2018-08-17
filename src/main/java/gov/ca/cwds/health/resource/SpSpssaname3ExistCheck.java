@@ -48,7 +48,7 @@ public class SpSpssaname3ExistCheck implements Pingable {
 
     final String sql =
         "SELECT COUNT(*) AS SPSSANAME3_COUNT FROM SYSIBM.SYSROUTINES WHERE ROUTINENAME = 'SPSSANAME3' AND ROUTINESCHEMA = '"
-            + schema + "'";
+            + schema + "' WITH UR";
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setMaxRows(1);
       stmt.setQueryTimeout(60);
