@@ -66,18 +66,6 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
    * @param clientIds - clientIds
    * @return the relationships
    */
-//  @SuppressWarnings("unchecked")
-//  public Response findForIds(List<String> clientIds) {
-//    final Set relationships = new HashSet<>();
-//    if (clientIds != null){
-//      for (String id : clientIds) {
-//        if (authorized(id)) {
-//          relationships.add(find(id));
-//        }
-//      }
-//    }
-//    return new RelationshipList(relationships);
-//  }
   public Response findForIds(List<String> clientIds) {
     final Set<Relationship> relationships = new HashSet<Relationship>();
     if (clientIds != null) {
