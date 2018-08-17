@@ -311,7 +311,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         example = "true")
     private boolean reversed;
 
-private RelatedTo() {}
+    private RelatedTo() {
+    }
 
     public String getRelationshipId() {
       return relationshipId;
@@ -414,32 +415,12 @@ private RelatedTo() {}
 
     @Override
     public int hashCode() {
-      return new HashCodeBuilder(17, 37)
-          .append(relationshipId)
-          .append(relatedPersonId)
-          .append(relatedFirstName)
-          .append(relatedMiddleName)
-          .append(relatedLastName)
-          .append(relatedNameSuffix)
-          .append(relatedGender)
-          .append(relatedDateOfBirth)
-          .append(relatedAge)
-          .append(relatedAgeUnit)
-          .append(absentParentCode)
-          .append(sameHomeCode)
-          .append(relationshipToPerson)
-          .append(relatedPersonRelationship)
-          .append(relationshipStartDate)
-          .append(relationshipEndDate)
-          .append(reversed)
-          .toHashCode();
-          
       return new HashCodeBuilder(17, 37).append(relationshipId).append(relatedPersonId)
           .append(relatedFirstName).append(relatedMiddleName).append(relatedLastName)
           .append(relatedNameSuffix).append(relatedGender).append(relatedDateOfBirth)
           .append(relatedAge).append(relatedAgeUnit).append(absentParentCode).append(sameHomeCode)
           .append(relationshipToPerson).append(relatedPersonRelationship)
-          .append(relationshipStartDate).append(relationshipEndDate).toHashCode();
+          .append(relationshipStartDate).append(relationshipEndDate).append(reversed).toHashCode();
     }
   }
 
@@ -546,7 +527,8 @@ private RelatedTo() {}
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
 
-    private CandidateTo() {}
+    private CandidateTo() {
+    }
 
     public String getCandidateFirstName() {
       return candidateFirstName;
@@ -669,7 +651,8 @@ private RelatedTo() {}
   @JsonProperty("candidate_to")
   private Set<CandidateTo> relatedCandidatesTo;
 
-  private ScreeningRelationshipsWithCandidates() {}
+  private ScreeningRelationshipsWithCandidates() {
+  }
 
   public Set<CandidateTo> getRelatedCandidatesTo() {
     return relatedCandidatesTo;
