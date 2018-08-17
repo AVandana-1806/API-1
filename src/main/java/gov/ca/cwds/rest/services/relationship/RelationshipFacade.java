@@ -232,11 +232,13 @@ public class RelationshipFacade {
           .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
           .withRelationshipToPerson(
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+      relatedToBuilder.withReversedRelationship(true);
     } else {
       relatedToBuilder
           .withRelationshipToPerson(String.valueOf(relationship.getRelationshipType()))
           .withRelatedPersonRelationship(
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+      relatedToBuilder.withReversedRelationship(false);
     }
     return relatedToBuilder.build();
   }

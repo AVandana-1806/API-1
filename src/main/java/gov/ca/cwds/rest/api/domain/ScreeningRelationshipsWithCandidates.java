@@ -214,6 +214,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         return this;
       }
 
+      public RelatedToBuilder withReversedRelationship(boolean reversed) {
+        relatedTo.reversed = reversed;
+        return this;
+      }
+
       public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
         if (relationshipStartDate == null) {
           return this;
@@ -301,7 +306,13 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(value = "relationship end date", example = "2001-10-01")
     private String relationshipEndDate;
 
-    private RelatedTo() {}
+    @JsonProperty("reversed")
+    @ApiModelProperty(value = "If is reversed - related participant ID is Primary client ",
+        example = "true")
+    private boolean reversed;
+
+    private RelatedTo() {
+    }
 
     public String getRelationshipId() {
       return relationshipId;
@@ -367,6 +378,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       return relationshipEndDate;
     }
 
+    public boolean isReversed() {
+      return reversed;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -393,7 +408,9 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
           .append(relationshipToPerson, relatedTo.relationshipToPerson)
           .append(relatedPersonRelationship, relatedTo.relatedPersonRelationship)
           .append(relationshipStartDate, relatedTo.relationshipStartDate)
-          .append(relationshipEndDate, relatedTo.relationshipEndDate).isEquals();
+          .append(relationshipEndDate, relatedTo.relationshipEndDate)
+          .append(reversed, relatedTo.reversed)
+          .isEquals();
     }
 
     @Override
@@ -403,7 +420,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
           .append(relatedNameSuffix).append(relatedGender).append(relatedDateOfBirth)
           .append(relatedAge).append(relatedAgeUnit).append(absentParentCode).append(sameHomeCode)
           .append(relationshipToPerson).append(relatedPersonRelationship)
-          .append(relationshipStartDate).append(relationshipEndDate).toHashCode();
+          .append(relationshipStartDate).append(relationshipEndDate).append(reversed).toHashCode();
     }
   }
 
@@ -510,7 +527,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
 
-    private CandidateTo() {}
+    private CandidateTo() {
+    }
 
     public String getCandidateFirstName() {
       return candidateFirstName;
@@ -633,7 +651,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
   @JsonProperty("candidate_to")
   private Set<CandidateTo> relatedCandidatesTo;
 
-  private ScreeningRelationshipsWithCandidates() {}
+  private ScreeningRelationshipsWithCandidates() {
+  }
 
   public Set<CandidateTo> getRelatedCandidatesTo() {
     return relatedCandidatesTo;

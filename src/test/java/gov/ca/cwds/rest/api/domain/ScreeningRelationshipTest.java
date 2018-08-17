@@ -51,6 +51,33 @@ public class ScreeningRelationshipTest {
   }
 
   @Test
+  public void shouldHaveAllFieldsWhenCreatingWithBaseConstructor() {
+    Date now = new Date();
+    ScreeningRelationshipBase relationshipBase = new ScreeningRelationshipBase();
+    relationshipBase.setClientId("PersonLegacyId");
+    relationshipBase.setRelativeId("RelationLegacydId");
+    relationshipBase.setRelationshipType(RELATIONSHIP_TYPE);
+    relationshipBase.setAbsentParentIndicator(true);
+    relationshipBase.setSameHomeStatus("U");
+    relationshipBase.setStartDate(now);
+    relationshipBase.setEndDate(now);
+    relationshipBase.setLegacyId("1233456789");
+
+    relationship = new ScreeningRelationship(relationshipBase);
+    relationship.setId("1121");
+
+    assertEquals(relationship.getId(), "1121");
+    assertEquals(relationship.getClientId(), "PersonLegacyId");
+    assertEquals(relationship.getRelativeId(), "RelationLegacydId");
+    assertEquals(relationship.getRelationshipType(), RELATIONSHIP_TYPE);
+    assertEquals(relationship.isAbsentParentIndicator(), true);
+    assertEquals(relationship.getSameHomeStatus(), "U");
+    assertEquals(relationship.getStartDate(), now);
+    assertEquals(relationship.getEndDate(), now);
+    assertEquals(relationship.getLegacyId(), "1233456789");
+  }
+
+  @Test
   public void shouldBeEqual() {
     Date now = new Date();
 
