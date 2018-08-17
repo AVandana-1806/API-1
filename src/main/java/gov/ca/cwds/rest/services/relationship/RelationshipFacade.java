@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services.relationship;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
@@ -23,7 +22,6 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +48,7 @@ public class RelationshipFacade {
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
   private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription = new HashMap<>();
   private final Map<Short, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedById = new HashMap<>();
+  private final static String DB_ERROR_MESSAGE = "Relationship couldn't be created"; // For now I don't know how it would be shown on the UI I am waiting for this information
 
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
@@ -92,22 +91,15 @@ public class RelationshipFacade {
       return responses;
     }
 
-    for (int i = 0; i < relationships.size(); ++i) {
-      if (i % 2 != 0) {
-        ScreeningRelationship relationshipWithError = new ScreeningRelationship(
-            relationships.get(0)) {
-          @JsonProperty("error")
-          @ApiModelProperty(value = "create Screening Relationship error", example = "Error text")
-          public String error = "Test Error";
-        };
-        responses.add(relationshipWithError);
-      } else {
-        ScreeningRelationship relationshipWithError = new ScreeningRelationship(
-            relationships.get(0));
-        relationshipWithError.setId(i + "");
-        responses.add(relationshipWithError);
+    relationships.forEach(relationship -> {
+      try {
+        responses.add(createRelationship(relationship));
+      } catch (Exception e) {
+        ScreeningRelationship faildRelationship = new ScreeningRelationship(relationship);
+        faildRelationship.setError(
+            DB_ERROR_MESSAGE);  // it the future it would be manege by drools and business rules
       }
-    }
+    });
     return responses;
   }
 

@@ -8,12 +8,16 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("common-java:DuplicatedBlocks")
 @JsonPropertyOrder({"id", "client_id", "relative_id", "relationship_type",
-    "absent_parent_indicator", "same_home_status", "start_date", "end_date", "legacy_id"})
+    "absent_parent_indicator", "same_home_status", "start_date", "end_date", "legacy_id", "error"})
 public class ScreeningRelationship extends ScreeningRelationshipBase {
 
   @JsonProperty("id")
   @ApiModelProperty(required = true, value = "Screening Relationship Id", example = "12345")
   private String id;
+
+  @JsonProperty("error")
+  @ApiModelProperty(required = true, value = "Some text if relationship has an error", example = "Create relationship error")
+  private String error;
 
   public ScreeningRelationship() {
     // comment is required by sonar
@@ -39,6 +43,14 @@ public class ScreeningRelationship extends ScreeningRelationshipBase {
     this.id = id;
   }
 
+  public String getError() {
+    return error;
+  }
+
+  public void setError(String error) {
+    this.error = error;
+  }
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
@@ -54,6 +66,8 @@ public class ScreeningRelationship extends ScreeningRelationshipBase {
     builder.append(",\n");
     builder.append("\trelationshipType:");
     builder.append(getRelationshipType());
+    builder.append("\terror:");
+    builder.append(getError());
     builder.append(",\n");
     builder.append('}');
     return builder.toString();
