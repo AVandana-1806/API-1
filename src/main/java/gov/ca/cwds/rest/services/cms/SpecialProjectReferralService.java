@@ -149,6 +149,10 @@ public class SpecialProjectReferralService implements
       return null;
     }
 
+    short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
+        LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
+    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);
+    
     try {
       Csec csecDomain = csecs.get(0);
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
@@ -164,8 +168,8 @@ public class SpecialProjectReferralService implements
       }
 
     } catch (Exception e) {
-      messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
-      return null;
+        messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
+        return null;
     }
   }
   
