@@ -1,19 +1,25 @@
 package gov.ca.cwds.health.resource;
 
-import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
+import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.CwsRsSessionFactory;
 
 public class SpGenclncntyExistCheck implements Pingable {
 
   private SessionFactory sessionFactory;
   private String message;
+  protected static final Logger LOGGER = LoggerFactory.getLogger(SpGenclncntyExistCheck.class);
 
   @Inject
   SpGenclncntyExistCheck(@CwsRsSessionFactory SessionFactory sessionFactory) {
@@ -23,31 +29,38 @@ public class SpGenclncntyExistCheck implements Pingable {
   @Override
   public boolean ping() {
     boolean ok = true;
-    Session session = null;
 
-    try {
-      session = sessionFactory.openSession();
-      boolean tableExists = checkIfTableExists(session);
-      ok = ok && tableExists;
-    } finally {
-      if (session != null) {
-        session.close();
-      }
+    try (final Session session = sessionFactory.openSession()) {
+      final String schema = (String) session.getProperties().get("hibernate.default_schema");
+      final Connection con = CaresHibernateHackersKit.stealConnection(session);
+      ok = checkIfProcedureExists(con, schema);
     }
-
     return ok;
+
   }
 
 
-  private boolean checkIfTableExists(Session session) {
+  private boolean checkIfProcedureExists(Connection con, String schema) {
     boolean ok = true;
-    final Query<?> query = session.createNativeQuery(
-        "SELECT COUNT(*) FROM SYSIBM.SYSROUTINES WHERE NAME = 'GENCLNCNTY' AND SCHEMA = {h-schema}");
-    int count = ((BigInteger) query.list().get(0)).intValue();
+    int count = 0;
+    final String sql =
+        "SELECT COUNT(*) FROM SYSIBM.SYSROUTINES WHERE ROUTINENAME = 'GENCLNCNTY' AND ROUTINESCHEMA = '"
+            + schema + "'";
+    try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setMaxRows(1);
+      stmt.setQueryTimeout(60);
 
-    if (count < 1) {
-      ok = false;
-      message = "GENCLNCNTY does not exists in replicated schema";
+      try (final ResultSet rs = stmt.executeQuery()) {
+        count = rs.getInt(1);
+        if (count < 1) {
+          ok = false;
+          message = "Procedure GENCLNCNTY does not exists in the schema";
+        }
+      }
+    } catch (Exception e) {
+      LOGGER.trace("BOOM!", e);
+      throw CaresLogUtils.runtime(LOGGER, e, "GENCLNCNTY HEALTH CHECK QUERY FAILED! SQL: {} {}",
+          sql, e.getMessage(), e);
     }
 
     return ok;
