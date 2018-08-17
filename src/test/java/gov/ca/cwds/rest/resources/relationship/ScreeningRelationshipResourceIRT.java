@@ -1,11 +1,7 @@
 package gov.ca.cwds.rest.resources.relationship;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.ArrayList;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
@@ -17,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import gov.ca.cwds.rest.api.domain.AllegationIntake;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
 import java.io.IOException;
@@ -25,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.junit.Ignore;
@@ -106,7 +100,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
   public void createRelationships_createOneRelationship() throws IOException {
     ScreeningRelationshipBase[] relationshipBases = {
         getOneRelationshipForCreate("2033", "2034", 185, "Y")};
-    valedateCreateRelationships(relationshipBases);
+    validateCreateRelationships(relationshipBases);
   }
 
   @Test
@@ -114,7 +108,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     ScreeningRelationshipBase[] relationshipBases = {
         getOneRelationshipForCreate("2033", "2034", 185, "Y"),
         getOneRelationshipForCreate("2034", "2033", 211, "U")};
-    valedateCreateRelationships(relationshipBases);
+    validateCreateRelationships(relationshipBases);
   }
 
   @Test
@@ -122,7 +116,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     ScreeningRelationshipBase[] relationshipBases = {
         getOneRelationshipForCreate("44", "43", 185, "Y"),
         getOneRelationshipForCreate("43", "44", 211, "U")};
-    valedateCreateRelationships(relationshipBases);
+    validateCreateRelationships(relationshipBases);
   }
 
   @Test
@@ -137,10 +131,10 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
         getOneRelationshipForCreate("855", "856", 185, "Y"),
         getOneRelationshipForCreate("856", "855", 185, "Y"),
         getOneRelationshipForCreate("856", "755", 211, "U")};
-    valedateCreateRelationships(relationshipBases);
+    validateCreateRelationships(relationshipBases);
   }
 
-  private void valedateCreateRelationships(ScreeningRelationshipBase[] relationshipBases)
+  private void validateCreateRelationships(ScreeningRelationshipBase[] relationshipBases)
       throws IOException {
     String requestJson = objectMapper.writeValueAsString(relationshipBases);
 

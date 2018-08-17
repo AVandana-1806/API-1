@@ -95,7 +95,7 @@ public class RelationshipFacade {
       try {
         responses.add(createRelationship(relationship));
       } catch (Exception e) {
-        ScreeningRelationship faildRelationship = createRelationship(relationship);
+        ScreeningRelationship faildRelationship = new ScreeningRelationship(relationship);
         faildRelationship.setError(
             DB_ERROR_MESSAGE);  // it the future it would be manege by drools and business rules
       }
