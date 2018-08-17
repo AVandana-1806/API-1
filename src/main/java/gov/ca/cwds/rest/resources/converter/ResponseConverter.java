@@ -1,8 +1,8 @@
 package gov.ca.cwds.rest.resources.converter;
 
 import java.util.List;
+
 import javax.ws.rs.core.Response;
-import org.apache.commons.collections4.CollectionUtils;
 
 public class ResponseConverter {
 
