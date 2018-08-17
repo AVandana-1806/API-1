@@ -24,7 +24,8 @@
         "indexed_person_relationship": "188",
         "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
-        "relationship_end_date": "2019-07-19"
+        "relationship_end_date": "2019-07-19",
+        "reversed": false
       }
     ],
     "candidate_to": [
@@ -155,7 +156,8 @@
         "indexed_person_relationship": "203",
         "related_person_relationship": "188",
         "relationship_start_date": "2018-07-19",
-        "relationship_end_date": "2019-07-19"
+        "relationship_end_date": "2019-07-19",
+        "reversed": true
       }
     ],
     "candidate_to": [
