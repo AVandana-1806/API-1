@@ -10,12 +10,14 @@ The development team is actively using the [Github Wiki](https://github.com/ca-c
 For news that affect Developers and the app: [News](https://github.com/ca-cwds/API/wiki/News)
 
 ## Developer Topics
+
+An [API Developer's Guide](https://github.com/ca-cwds/API/wiki/API-Developer's-Guide) guide is available.
 For ongoing Developer discussion of topics about practices, standards, etc: [Developer Topics](https://github.com/ca-cwds/API/wiki/Developer-Topics)
 
 ## Commiting to Code Base
 Code commits are submitted via pull request for authorized developers. Code is expected to Coding standards that include Coding practices, API Standards, best practices found at [Commiting Code](https://github.com/ca-cwds/API/wiki/Committing-Code).
 
-Pull requests must include a filled out Pull Request Template and should contain information to help provide context around code. It must also include any special details or why something abnormal was done. If tests are not part of check in, then an explination is expected.
+Pull requests must include a filled out Pull Request Template and should contain information to help provide context around code. It must also include any special details or why something abnormal was done. If tests are not part of check in, then an explanation is expected.
 
 ## Documentation
 
@@ -101,39 +103,17 @@ Run the application with Docker using a command like this:
 ### Database 
 
 #### Docker - DB2
-A [Docker Image](https://hub.docker.com/r/cwds/db2/) with DB2 is available to develop against.  The database server running in the container does not contain a database, to create one attach the container and create the database:
-    
-    % docker attach container_name
-    % su - db2inst1
-    % db2 create database DB0TDEV using CODESET ISO-8859-1 TERRITORY US
+A [Docker Image](https://hub.docker.com/r/cwds/db2data/) with DB2 is available to develop against.
 
 #### Docker - Postgres
-A [Docker Image](https://hub.docker.com/r/cwds/postgresql/) with Postgress is available to develop against.  
-
-#### Initialization
-The CWDS API postgres database must be initialized prior to starting the first time. To initialize, execute the
-following commands:
-
-    % ./gradlew shadowJar
-    % java -jar build/libs/api-dist.jar db clean config/api.yml
-
-The first time the application starts it will initialize the database schema during the boot process.
-
-### Database Migrations
-
-The CWDS API uses [Flyway](https://flywaydb.org/) for handling postgres database migrations.  To update your database to the latest version run the following:
-
-   % java -jar build/libs/api-dist.jar db migrate config/api.yml
-   
-### Database Seeding  
-
-Use your favorite database tool to execute the SQL files in src/main/resources/db/seeds.
+A [Docker Image](https://hub.docker.com/r/cwds/postgresql_data/) with Postgress is available to develop against.  
 
 ### Development Server
 
-Use the gradlew command to execute the run task:
+Use the gradlew command to execute the tasks:
 
-    % ./gradlew run
+    % ./gradlew shadowJar
+    % java -jar build/libs/api-dist.jar server config/api.yml
 
 This will run the server on your local machine, port 8080.
 
@@ -172,7 +152,7 @@ Use the gradlew command to execute the functional task:
 
 Before commiting changes to the reporsitory please run the following to ensure the build is successful.
 
-    % ./gradlew clean test integrationTest javadoc
+    % ./gradlew clean test integrationTest jacocoTestReport javadoc
 
 ### Building Docker Container
 
