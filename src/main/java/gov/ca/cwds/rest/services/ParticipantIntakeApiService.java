@@ -358,8 +358,8 @@ public class ParticipantIntakeApiService implements
     List<Csec> csecs = new ArrayList<>(participantIntakeApi.getCsecs());
 
     for (CsecEntity managedCsecEntity : managedCsecEntities) {
-      if (!csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
-          .findFirst().isPresent()) {
+      if (csecs.stream()
+          .noneMatch(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))) {
         toDeleteList.add(managedCsecEntity);
       }
       csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
@@ -388,7 +388,6 @@ public class ParticipantIntakeApiService implements
 
   private void createOrUpdateSafelySurrenderedBabies(ParticipantIntakeApi participantIntakeApi,
       ParticipantEntity participantEntityManaged) {
-
 
     SafelySurenderedBabiesIntakeApi safelySurenderedBabies =
         participantIntakeApi.getSafelySurenderedBabies();

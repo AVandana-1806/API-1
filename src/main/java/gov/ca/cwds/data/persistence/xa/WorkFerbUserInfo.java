@@ -2,8 +2,11 @@ package gov.ca.cwds.data.persistence.xa;
 
 import java.net.InetAddress;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,22 +68,59 @@ public class WorkFerbUserInfo implements Work {
         // Properties start on page 232.
         LOGGER.info("DB2 connection, set user info");
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
-        con.setClientInfo("clientProgramName", PROGRAM_NAME);
-        con.setClientInfo("clientWorkstation", IP_ADDRESS);
-        con.setClientInfo("clientAccountingInformation", userId);
-        con.setClientInfo("ClientUser", userId);
 
         final DB2Connection db2con = (DB2Connection) con;
         db2con.setDB2ClientAccountingInformation(userId);
         db2con.setDB2ClientApplicationInformation(userId);
-        db2con.setDB2ClientProgramId(userId);
         db2con.setDB2ClientUser(staffId);
         db2con.setDB2ClientWorkstation(WORKSTATION);
 
+        if (CaresHibernateHackersKit.isDB2OnZOS(con)) {
+          db2con.setDB2ClientProgramId(PROGRAM_NAME);
+        }
+
+        //@formatter:off
+        final String sql = 
+              "SELECT \n"
+            + "   CURRENT TIMESTAMP                 AS CUR_TS \n"
+            + " , SESSION_USER                      AS CUR_SESSION_USER \n"
+            + " , USER                              AS CUR_USER \n"
+            + " , CURRENT CLIENT_WRKSTNNAME         AS CUR_WORKSTATION \n"
+            + " , CURRENT CLIENT_APPLNAME           AS CUR_APP_NM \n"
+            + " , CURRENT CLIENT_ACCTNG             AS CUR_ACCOUNTING \n"
+            + " , CURRENT CLIENT_USERID             AS CUR_CLIENT_USERID \n"
+            + " , CURRENT APPLICATION COMPATIBILITY AS CUR_COMPATIBILITY \n"
+            + " , CURRENT MEMBER                    AS CUR_MEMBER \n"
+            + " , CURRENT SCHEMA                    AS CUR_SCHEMA \n"
+            + " , CURRENT SQLID                     AS CUR_SQLID \n"
+            + " , SESSION TIME ZONE                 AS SESS_TIME_ZONE \n"
+            + " , CURRENT TIME ZONE                 AS CUR_TIME_ZONE \n"
+            + "FROM SYSIBM.SYSDUMMY1 \n"
+            + "FOR READ ONLY WITH UR ";
+        //@formatter:on
+
+        try (final PreparedStatement stmt = con.prepareStatement(sql);
+            final ResultSet rs = stmt.executeQuery()) {
+          while (rs.next()) {
+            final String resultClientUserId =
+                StringUtils.trimToEmpty(rs.getString("CUR_CLIENT_USERID"));
+            final String resultAppName = StringUtils.trimToEmpty(rs.getString("CUR_APP_NM"));
+            final String resultAccounting = StringUtils.trimToEmpty(rs.getString("CUR_ACCOUNTING"));
+            final String resultWorkstation =
+                StringUtils.trimToEmpty(rs.getString("CUR_WORKSTATION"));
+
+            LOGGER.info("client user: {}, application: {}, accounting: {}, workstation: {}",
+                resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
+          }
+        } finally {
+          // Prepared statement goes out of scope.
+        }
+
         // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
       } catch (Exception e) {
-        LOGGER.warn("Unsupported client info", e);
+        LOGGER.warn("Unsupported client info: {}", e.getMessage(), e);
       }
     }
   }
+
 }

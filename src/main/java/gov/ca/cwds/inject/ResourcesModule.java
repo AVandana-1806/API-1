@@ -1,5 +1,8 @@
 package gov.ca.cwds.inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -134,6 +137,8 @@ import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
  */
 public class ResourcesModule extends AbstractModule {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesModule.class);
+
   /**
    * Default, no-op constructor.
    */
@@ -143,6 +148,7 @@ public class ResourcesModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    LOGGER.info("configure: start");
     bind(ApplicationResource.class);
     bind(SwaggerResource.class);
     bind(AddressResource.class);
@@ -182,6 +188,7 @@ public class ResourcesModule extends AbstractModule {
     bind(ContactIntakeResource.class);
     bind(RelationshipFacade.class);
     bind(IntakeLovResource.class);
+    LOGGER.info("configure: done");
   }
 
   @Provides

@@ -2,7 +2,7 @@ package gov.ca.cwds.rest.core;
 
 /**
  * Constants defining resources locations in the API.
- * 
+ *
  * @author CWDS API Team
  */
 public final class Api {
@@ -45,6 +45,7 @@ public final class Api {
   public static class PathParam {
 
     public static final String SCREENING_ID = "screeningId";
+    public static final String PARTICIPANT_IDS = "participantIds";
     public static final String PARTICIPANT_ID = "participantId";
     public static final String LEGACY_ID = "legacyId";
 
@@ -66,11 +67,11 @@ public final class Api {
 
   public static class HealthCheck {
 
-    public static final String AUTH_STATUS = "auth_status";
-    public static final String SWAGGER_STATUS = "swagger_status";
-    public static final String LOV_DB_STATUS = "lov_db_status";
-    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache_status";
-    public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache_status";
+    public static final String AUTH_STATUS = "auth";
+    public static final String SWAGGER_STATUS = "swagger";
+    public static final String LOV_DB_STATUS = "lov_db";
+    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache";
+    public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
 
     private HealthCheck() {}
   }
@@ -204,6 +205,11 @@ public final class Api {
    * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS} API.
    */
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
+
+  /**
+   * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS_BATCH} API.
+   */
+  public static final String SCREENING_RELATIONSHIPS_BATCH = "screening_relationships/batch";
 
   /**
    * A {@code String} constant representing {@value #HISTORY_OF_INVOLVEMENTS} API.

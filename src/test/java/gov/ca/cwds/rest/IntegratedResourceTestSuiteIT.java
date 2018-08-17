@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest;
 
 import gov.ca.cwds.rest.resources.ScreeningParticipantResourceIRT;
+import gov.ca.cwds.rest.resources.relationship.ScreeningRelationshipsWithCandidatesIRT;
 import gov.ca.cwds.rest.resources.ScreeningResourceIRT;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -27,7 +28,7 @@ import gov.ca.cwds.test.support.BaseDropwizardApplication;
     ScreeningIntakeResourceIRT.class, ParticipantIntakeApiResourceIRT.class,
     ScreeningRelationshipResourceIRT.class, ContactResourceIRT.class,
     ScreeningParticipantResourceIRT.class,
-    ScreeningResourceIRT.class})
+    ScreeningResourceIRT.class, ScreeningRelationshipsWithCandidatesIRT.class})
 public class IntegratedResourceTestSuiteIT {
 
   @ClassRule

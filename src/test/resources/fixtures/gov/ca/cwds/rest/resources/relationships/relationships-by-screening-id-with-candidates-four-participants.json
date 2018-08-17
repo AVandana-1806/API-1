@@ -1,0 +1,184 @@
+[
+  {
+    "id": "2027",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Dima",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr.",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [
+      {
+        "relationship_id": "14",
+        "related_person_id": "2030",
+        "related_person_first_name": "Dima",
+        "related_person_middle_name": "T",
+        "related_person_last_name": "Pfeiffer",
+        "related_person_name_suffix": "Jr.",
+        "related_person_gender": "male",
+        "related_person_date_of_birth": "1999-11-15",
+        "absent_parent_code": "Y",
+        "same_home_code": "U",
+        "indexed_person_relationship": "188",
+        "related_person_relationship": "203",
+        "relationship_start_date": "2018-07-19",
+        "relationship_end_date": "2019-07-19",
+        "reversed": false
+      }
+    ],
+    "candidate_to": [
+      {
+        "candidate_id": "2028",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2029",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      }
+    ]
+  },
+  {
+    "id": "2028",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Dima",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr.",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [],
+    "candidate_to": [
+      {
+        "candidate_id": "2029",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2030",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2027",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      }
+    ]
+  },
+  {
+    "id": "2029",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Dima",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr.",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [],
+    "candidate_to": [
+      {
+        "candidate_id": "2028",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2030",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2027",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      }
+    ]
+  },
+  {
+    "id": "2030",
+    "date_of_birth": "1999-11-15",
+    "first_name": "Dima",
+    "middle_name": "T",
+    "last_name": "Pfeiffer",
+    "name_suffix": "Jr.",
+    "gender": "male",
+    "sensitive": false,
+    "sealed": false,
+    "relationship_to": [
+      {
+        "relationship_id": "14",
+        "related_person_id": "2027",
+        "related_person_first_name": "Dima",
+        "related_person_middle_name": "T",
+        "related_person_last_name": "Pfeiffer",
+        "related_person_name_suffix": "Jr.",
+        "related_person_gender": "male",
+        "related_person_date_of_birth": "1999-11-15",
+        "absent_parent_code": "Y",
+        "same_home_code": "U",
+        "indexed_person_relationship": "203",
+        "related_person_relationship": "188",
+        "relationship_start_date": "2018-07-19",
+        "relationship_end_date": "2019-07-19",
+        "reversed": true
+      }
+    ],
+    "candidate_to": [
+      {
+        "candidate_id": "2028",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      },
+      {
+        "candidate_id": "2029",
+        "candidate_first_name": "Dima",
+        "candidate_middle_name": "T",
+        "candidate_last_name": "Pfeiffer",
+        "candidate_name_suffix": "Jr.",
+        "candidate_date_of_birth": "1999-11-15",
+        "candidate_age": 0
+      }
+    ]
+  }
+]

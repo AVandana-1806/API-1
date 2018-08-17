@@ -7,11 +7,14 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gov.ca.cwds.authenticate.config.ConfigImpl;
 import gov.ca.cwds.config.CwdsAuthenticationClientConfig;
 import gov.ca.cwds.rest.authenticate.AuthenticationUtils;
 import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.authenticate.UserInfo;
+import io.dropwizard.jackson.Jackson;
 
 /**
  * @author CWDS API Team
@@ -19,6 +22,8 @@ import gov.ca.cwds.rest.authenticate.UserInfo;
 public class FunctionalTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FunctionalTest.class);
+
+  protected ObjectMapper objectMapper = Jackson.newObjectMapper();
 
   String url;
 

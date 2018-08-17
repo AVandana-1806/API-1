@@ -394,12 +394,13 @@ public class DataAccessModule extends AbstractModule {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}ScreeningRelationshipsWithCandidates
    *
    * @see com.google.inject.AbstractModule#configure()
    */
   @Override
   protected void configure() {
+    LOGGER.info("configure: start");
     // CMS:
     bind(AddressUcDao.class);
     bind(AllegationDao.class);
@@ -501,17 +502,23 @@ public class DataAccessModule extends AbstractModule {
     bind(RIReferral.class);
     bind(RIReferralClient.class);
     bind(RIGovernmentOrganizationCrossReport.class);
+    LOGGER.info("configure: done");
   }
 
   // ==========================
   // HIBERNATE BUNDLES
   // ==========================
 
+  static {
+    LOGGER.warn("DataAccessModule: static point 4");
+  }
+
   // XA transaction manager:
   @Provides
   @Singleton
   @Named("AtomikosMgr")
   public UserTransactionManager xaUserTransactionManager() throws SystemException {
+    LOGGER.info("xaUserTransactionManager()");
     final UserTransactionManager mgr = new UserTransactionManager();
     mgr.init();
     return mgr;
@@ -546,12 +553,16 @@ public class DataAccessModule extends AbstractModule {
   // XA Hibernate bundles
   // ==========================
 
+  static {
+    LOGGER.warn("DataAccessModule: static point 5");
+  }
+
   @Provides
   @XaCmsHibernateBundle
   @Singleton
   public FerbHibernateBundle getXaCmsHibernateBundle(
       @Named("AtomikosMgr") UserTransactionManager mgr) {
-    LOGGER.info("DataAccessModule.getXaCmsHibernateBundle()");
+    LOGGER.info("getXaCmsHibernateBundle()");
     return xaCmsHibernateBundle;
   }
 
@@ -560,7 +571,7 @@ public class DataAccessModule extends AbstractModule {
   @Singleton
   public FerbHibernateBundle getXaCmsRsHibernateBundle(
       @Named("AtomikosMgr") UserTransactionManager mgr) {
-    LOGGER.info("DataAccessModule.getXaCmsRsHibernateBundle()");
+    LOGGER.info("getXaCmsRsHibernateBundle()");
     return xaCmsRsHibernateBundle;
   }
 
@@ -569,7 +580,7 @@ public class DataAccessModule extends AbstractModule {
   @Singleton
   public FerbHibernateBundle getXaNsHibernateBundle(
       @Named("AtomikosMgr") UserTransactionManager mgr) {
-    LOGGER.info("DataAccessModule.getXaNsHibernateBundle()");
+    LOGGER.info("getXaNsHibernateBundle()");
     return xaNsHibernateBundle;
   }
 
@@ -577,13 +588,17 @@ public class DataAccessModule extends AbstractModule {
   // Smart session factories
   // ==========================
 
+  static {
+    LOGGER.warn("DataAccessModule: static point 6");
+  }
+
   @Provides
   @CmsSessionFactory
   @Singleton
   public SessionFactory cmsSessionFactory(
       @CmsHibernateBundle HibernateBundle<ApiConfiguration> cmsHibernateBundle,
       @XaCmsHibernateBundle FerbHibernateBundle xaCmsHibernateBundle) {
-    LOGGER.info("DataAccessModule.cmsSessionFactory()");
+    LOGGER.info("cmsSessionFactory()");
     return new CandaceSessionFactoryImpl(cmsHibernateBundle, xaCmsHibernateBundle);
   }
 
@@ -593,7 +608,7 @@ public class DataAccessModule extends AbstractModule {
   public SessionFactory nsSessionFactory(
       @NsHibernateBundle HibernateBundle<ApiConfiguration> nsHibernateBundle,
       @XaNsHibernateBundle FerbHibernateBundle xaNsHibernateBundle) {
-    LOGGER.info("DataAccessModule.nsSessionFactory()");
+    LOGGER.info("nsSessionFactory()");
     return new CandaceSessionFactoryImpl(nsHibernateBundle, xaNsHibernateBundle);
   }
 
@@ -603,13 +618,17 @@ public class DataAccessModule extends AbstractModule {
   public SessionFactory rsSessionFactory(
       @CwsRsHibernateBundle HibernateBundle<ApiConfiguration> cmsRsHibernateBundle,
       @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
-    LOGGER.info("DataAccessModule.rsSessionFactory()");
+    LOGGER.info("rsSessionFactory()");
     return new CandaceSessionFactoryImpl(cmsRsHibernateBundle, xaCmsRsHibernateBundle);
   }
 
   // ==========================
   // Elasticsearch
   // ==========================
+
+  static {
+    LOGGER.warn("DataAccessModule: static point 7");
+  }
 
   @Provides
   public Map<String, ElasticsearchConfiguration> elasticSearchConfigs(

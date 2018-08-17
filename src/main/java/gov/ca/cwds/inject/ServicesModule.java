@@ -31,6 +31,7 @@ import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
@@ -161,6 +162,7 @@ public class ServicesModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    LOGGER.info("configure: point 1");
     bind(AddressService.class);
     bind(AllegationService.class);
     bind(AssignmentService.class);
@@ -203,6 +205,9 @@ public class ServicesModule extends AbstractModule {
     bind(StaffPersonIdRetriever.class);
     bind(StaffPersonService.class);
     bind(TickleService.class);
+    bind(DroolsService.class);
+
+    LOGGER.info("configure: point 2");
 
     // Enable AOP for DropWizard @UnitOfWork.
     final CaresUnitOfWorkInterceptor interceptor = new CaresUnitOfWorkInterceptor();
@@ -226,6 +231,7 @@ public class ServicesModule extends AbstractModule {
 
     // @Singleton does not work with DropWizard Guice.
     bind(GovernmentOrganizationService.class).toProvider(GovtOrgSvcProvider.class);
+    LOGGER.info("configure: point 3");
   }
 
   /**
@@ -259,7 +265,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
-    LOGGER.debug("provide syscode cache");
+    LOGGER.info("provide syscode cache");
     if (systemCodeCache == null) {
       SystemCodeService systemCodeService =
           createSystemCodeService(systemCodeDao, systemMetaDao, config);
@@ -279,7 +285,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
-    LOGGER.debug("provide intakeCode cache");
+    LOGGER.info("provide intakeCode cache");
     if (intakeCodeCache == null) {
       IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
       intakeCodeCache = (IntakeCodeCache) intakeLovService;
@@ -294,7 +300,7 @@ public class ServicesModule extends AbstractModule {
    */
   @Provides
   public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
-    LOGGER.debug("provide syscode serializer");
+    LOGGER.info("provide syscode serializer");
     return new CmsSystemCodeSerializer(systemCodeCache);
   }
 
@@ -304,6 +310,7 @@ public class ServicesModule extends AbstractModule {
 
   private SystemCodeService createSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
+    LOGGER.info("createSystemCodeService");
     SystemCodeService ret;
 
     boolean preLoad = true; // default is true
@@ -333,7 +340,7 @@ public class ServicesModule extends AbstractModule {
 
   private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
       ApiConfiguration config) {
-    LOGGER.debug("provide intakeCode service");
+    LOGGER.info("provide intakeCode service");
 
     boolean preLoad = true; // default is true
     long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days

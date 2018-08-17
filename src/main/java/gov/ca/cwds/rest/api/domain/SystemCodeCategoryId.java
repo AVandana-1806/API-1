@@ -65,6 +65,11 @@ public final class SystemCodeCategoryId {
   public static final String COUNTY_CODE = GOVERNMENT_ENTITY;
 
   /**
+   * Client relationship, e.g) Daughter/Father (Birth)
+   */
+  public static final String CLIENT_RELATIONSHIP = "CLNTRELC";
+
+  /**
    * Client collateral relationship, e.g) Attorney, Clergy, Friend
    */
   public static final String CLIENT_COLLATERAL_RELATIONSHIP = "COL_RELC";

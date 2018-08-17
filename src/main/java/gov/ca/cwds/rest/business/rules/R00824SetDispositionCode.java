@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.business.rules;
 
+import static gov.ca.cwds.data.legacy.cms.entity.enums.ReferralResponseType.EVALUATE_OUT;
+
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
@@ -26,7 +28,6 @@ public class R00824SetDispositionCode implements RuleValidator {
 
   private static final int APPROVED = 122;
   private static final int ADULT = 19;
-  private static final short EVALUATE_OUT = 1519;
 
   private ScreeningToReferral screeningToReferral;
   private Participant incomingParticipant;
@@ -62,7 +63,8 @@ public class R00824SetDispositionCode implements RuleValidator {
   public boolean isValid() {
     if (screeningToReferral != null && screeningToReferral.getResponseTime() != null
         && StringUtils.isNotBlank(incomingParticipant.getDateOfBirth())) {
-      return clientAge() < ADULT && screeningToReferral.getResponseTime() == EVALUATE_OUT
+      return clientAge() < ADULT
+          && screeningToReferral.getResponseTime().equals(EVALUATE_OUT.getCode())
           && screeningToReferral.getApprovalStatus() == APPROVED;
     }
     return false;

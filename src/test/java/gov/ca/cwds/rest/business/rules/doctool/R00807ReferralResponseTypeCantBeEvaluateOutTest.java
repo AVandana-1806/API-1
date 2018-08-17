@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.business.rules.doctool;
 
+import static gov.ca.cwds.data.legacy.cms.entity.enums.ReferralResponseType.EVALUATE_OUT;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
@@ -22,7 +23,6 @@ import gov.ca.cwds.rest.validation.IfThenNot;
  */
 public class R00807ReferralResponseTypeCantBeEvaluateOutTest {
 
-  private static final short EVALUATE_OUT = (short) 1519;
   private Validator validator;
 
   /**
@@ -45,7 +45,7 @@ public class R00807ReferralResponseTypeCantBeEvaluateOutTest {
   @Test
   public void failsWhenPetitionIndicatorTrueAndResponeTypeEvaluateOut() throws Exception {
     Referral toValidate = new ReferralResourceBuilder().setApplicationForPetitionIndicator(true)
-        .setReferralResponseType(EVALUATE_OUT).build();
+        .setReferralResponseType(EVALUATE_OUT.getCode()).build();
     Set<ConstraintViolation<Referral>> constraintViolations = validator.validate(toValidate);
     assertEquals(1, constraintViolations.size());
     assertEquals("is not valid since applicationForPetitionIndicator is set to true",
@@ -58,7 +58,7 @@ public class R00807ReferralResponseTypeCantBeEvaluateOutTest {
   @Test
   public void successWhenPetitionIndicatorFalseAndResponeTypeEvaluateOut() throws Exception {
     Referral toValidate = new ReferralResourceBuilder().setApplicationForPetitionIndicator(false)
-        .setReferralResponseType(EVALUATE_OUT).build();
+        .setReferralResponseType(EVALUATE_OUT.getCode()).build();
     Set<ConstraintViolation<Referral>> constraintViolations = validator.validate(toValidate);
     assertEquals(0, constraintViolations.size());
   }

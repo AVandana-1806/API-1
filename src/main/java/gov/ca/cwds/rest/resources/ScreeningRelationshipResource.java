@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.resources;
 
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
 
+import java.util.Arrays;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +21,8 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.ScreeningRelationshipServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,22 +48,26 @@ import io.swagger.annotations.ApiResponses;
 public class ScreeningRelationshipResource {
 
   private ResourceDelegate resourceDelegate;
+  private RelationshipFacade relationshipFacade;
 
   /**
    * Constructor
    *
    * @param resourceDelegate The resourceDelegate to delegate to.
+   * @param relationshipFacade relationship facade service
    */
   @Inject
   public ScreeningRelationshipResource(
-      @ScreeningRelationshipServiceBackedResource ResourceDelegate resourceDelegate) {
+      @ScreeningRelationshipServiceBackedResource ResourceDelegate resourceDelegate,
+      RelationshipFacade relationshipFacade) {
     this.resourceDelegate = resourceDelegate;
+    this.relationshipFacade = relationshipFacade;
   }
 
   /**
-   * Create an {@link ScreeningRelationship}.
+   * Create an {@link ScreeningRelationshipBase}.
    *
-   * @param screeningRelationship The {@link ScreeningRelationship}
+   * @param screeningRelationship The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
   @UnitOfWork(value = "ns")
@@ -74,8 +82,8 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
-  public Response create(@Valid @ApiParam(
-      required = true) ScreeningRelationship screeningRelationship) {
+  public Response create(
+      @Valid @ApiParam(required = true) ScreeningRelationshipBase screeningRelationship) {
     return resourceDelegate.create(screeningRelationship);
   }
 
@@ -120,10 +128,35 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
-  @ApiOperation(value = "Find Relationship by id",
-      response = ScreeningRelationship.class)
+  @ApiOperation(value = "Find Relationship by id", response = ScreeningRelationship.class)
   public Response get(@PathParam("id") @ApiParam(required = true,
       value = "The id of the Relationship to find") String id) {
     return resourceDelegate.get(id);
   }
+
+  /**
+   * Create an {@link ScreeningRelationship}.
+   *
+   * @param screeningRelationships The {@link ScreeningRelationshipBase}
+   * @return The {@link Response}
+   */
+  @POST
+  @Path("/batch")
+  @Consumes(value = MediaType.APPLICATION_JSON)
+  @ApiResponses(
+      value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
+          @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Accept Header not supported"),
+          @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY,
+              message = "Unable to validate ScreeningRelationship"),
+          @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
+  @ApiOperation(value = "Create Screening Relationships", code = HttpStatus.SC_CREATED,
+      response = ScreeningRelationshipBase[].class)
+  public Response batchCreate(
+      @Valid @ApiParam(required = true) ScreeningRelationshipBase[] screeningRelationships) {
+    return Response.ok()
+        .entity(relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)))
+        .build();
+  }
+
 }
