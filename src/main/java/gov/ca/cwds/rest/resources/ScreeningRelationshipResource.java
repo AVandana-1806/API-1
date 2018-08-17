@@ -2,8 +2,9 @@ package gov.ca.cwds.rest.resources;
 
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
 
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.util.Arrays;
-
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,7 +23,6 @@ import com.google.inject.Inject;
 import gov.ca.cwds.inject.ScreeningRelationshipServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,8 +32,8 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * A resource providing a RESTful interface for {@link ScreeningRelationshipResource}. It delegates
- * functions to {@link ServiceBackedResourceDelegate}. It decorates the
- * {@link ServiceBackedResourceDelegate} not in functionality but with @see
+ * functions to {@link ServiceBackedResourceDelegate}. It decorates the {@link
+ * ServiceBackedResourceDelegate} not in functionality but with @see
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -152,11 +152,11 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationships", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationshipBase[].class)
-  public Response batchCreate(
-      @Valid @ApiParam(required = true) ScreeningRelationshipBase[] screeningRelationships) {
-    return Response.ok()
-        .entity(relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)))
-        .build();
+  public Response batchCreate(@Valid @ApiParam(
+      required = true) ScreeningRelationshipBase[] screeningRelationships) {
+    return new ResponseConverter()
+        .withDataResponse(
+            relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
   }
 
 }
