@@ -4,7 +4,7 @@ The CWDS API provides RESTful services for the CWDS Modules.
 
 ## Wiki 
 
-The development team is actively using the [Github Wiki](https://github.com/ca-cwds/API/wiki).  
+The development team is actively using the [Github Wiki](https://github.com/ca-cwds/API/wiki).
 
 ## News
 For news that affect Developers and the app: [News](https://github.com/ca-cwds/API/wiki/News)
