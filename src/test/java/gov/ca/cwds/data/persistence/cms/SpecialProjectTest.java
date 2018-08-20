@@ -31,6 +31,19 @@ public class SpecialProjectTest {
   }
   
   @Test
+  public void testConstructor() {
+    SpecialProject sp = new SpecialProject(archiveAssociationIndicator, projectDescription, endDate,
+        governmentEntityType, id, name, startDate);
+    assertThat(sp.getArrchiveAssociationIndicator(), is(equalTo(archiveAssociationIndicator)));
+    assertThat(sp.getEndDate(), is(equalTo(endDate)));
+    assertThat(sp.getGovernmentEntityType(), is(equalTo(governmentEntityType)));
+    assertThat(sp.getId(), is(equalTo(id)));
+    assertThat(sp.getName(), is(equalTo(name)));
+    assertThat(sp.getProjectDescription(), is(equalTo(projectDescription)));
+    assertThat(sp.getStartDate(), is(equalTo(startDate)));   
+  }
+  
+  @Test
   public void testSettersGetters() throws Exception {
     SpecialProject sp = new SpecialProject();
     sp.setArcassIndicator(archiveAssociationIndicator);
