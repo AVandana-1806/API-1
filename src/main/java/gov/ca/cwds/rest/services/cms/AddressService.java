@@ -26,6 +26,8 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
+import gov.ca.cwds.security.realm.PerryAccount;
+import gov.ca.cwds.security.utils.PrincipalUtils;
 
 
 /**
@@ -39,7 +41,6 @@ public class AddressService implements
   private AddressDao addressDao;
   private SsaName3Dao ssaname3Dao;
   private UpperCaseTables upperCaseTables;
-
   private Validator validator;
 
   @Inject
@@ -102,9 +103,9 @@ public class AddressService implements
           gov.ca.cwds.rest.api.domain.cms.Address.createWithDefaults(address);
 
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-      droolsService.performBusinessRules(createConfiguration(), domainAddress);
+      final PerryAccount perryAccount = PrincipalUtils.getPrincipal();
+      droolsService.performBusinessRules(createConfiguration(), domainAddress, perryAccount);
       PostedAddress postedAddress = this.create(domainAddress);
-
       address.setLegacyId(postedAddress.getExistingAddressId());
       address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
     } catch (Exception e) {

@@ -1,5 +1,5 @@
 import gov.ca.cwds.rest.api.domain.cms.Address
-import gov.ca.cwds.data.access.dto.ReferralEntityAwareDTO
+import gov.ca.cwds.security.realm.PerryAccount
 
 global java.util.Set validationDetailsList
 
@@ -8,7 +8,8 @@ rule "R-07993"
   agenda-group "referrals-address-data-processing-agenda"
   when
       $address: Address(state == (short)1838, city != null)
+      $perryAccount: PerryAccount()
   then
-      $address.setGovernmentEntityCd((short)1073);
+      $address.setGovernmentEntityCd(Short.parseShort($perryAccount.getCountyCwsCode()));
       modify($address);   
 end
