@@ -11,12 +11,11 @@ For news that affect Developers and the app: [News](https://github.com/ca-cwds/A
 
 ## Developer Topics
 
-An [API Developer's Guide](https://github.com/ca-cwds/API/wiki/API-Developer's-Guide) guide is available.
+An [API Developer's Guide](https://github.com/ca-cwds/API/wiki/API-Developer's-Guide) is available.
 For ongoing Developer discussion of topics about practices, standards, etc: [Developer Topics](https://github.com/ca-cwds/API/wiki/Developer-Topics)
 
 ## Commiting to Code Base
-Code commits are submitted via pull request for authorized developers. Code is expected to Coding standards that include Coding practices, API Standards, best practices found at [Commiting Code](https://github.com/ca-cwds/API/wiki/Committing-Code).
-
+Code commits are submitted via pull request for authorized developers. Code is expected to confirm to Coding standards that include Coding practices, API Standards, best practices found at [Commiting Code](https://github.com/ca-cwds/API/wiki/Committing-Code).
 Pull requests must include a filled out Pull Request Template and should contain information to help provide context around code. It must also include any special details or why something abnormal was done. If tests are not part of check in, then an explanation is expected.
 
 ## Documentation
