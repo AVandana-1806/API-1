@@ -9,7 +9,7 @@ import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.http.ContentType;
 
-public class ClientAccessForStaffInStateWithSealedAccess extends FunctionalTest {
+public class ClientAccessForStaffInStateWithSealedAccessTest extends FunctionalTest {
   String resourcePath;
   private HttpRequestHandler httpRequestHandler;
 

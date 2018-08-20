@@ -21,7 +21,7 @@ import io.restassured.http.ContentType;
  * @author CWDS API Team
  *
  */
-public class ClientAccessForStaffInLakeCountyWithSensitiveAccess extends FunctionalTest {
+public class ClientAccessForStaffInLakeCountyWithSensitiveAccessTest extends FunctionalTest {
   String resourcePath;
   private HttpRequestHandler httpRequestHandler;
   
