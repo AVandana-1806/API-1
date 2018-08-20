@@ -27,6 +27,8 @@ import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.data.persistence.cms.Referral;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
+import gov.ca.cwds.drools.DroolsConfiguration;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.DomainObject;
 import gov.ca.cwds.rest.api.domain.Participant;
@@ -47,6 +49,7 @@ import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
 import gov.ca.cwds.rest.business.rules.R00818SetReferredResourceType;
 import gov.ca.cwds.rest.business.rules.R04611ReferralStartDateTimeAction;
 import gov.ca.cwds.rest.business.rules.R04611ReferralStartDateTimeValidator;
+import gov.ca.cwds.rest.business.rules.ReferralDroolsConfiguration;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
@@ -93,6 +96,8 @@ public class ReferralService implements
   private Validator validator;
   @Inject
   private RIReferral riReferral;
+  @Inject
+  private DroolsService droolsService;
 
   /**
    * Constructor
@@ -100,7 +105,7 @@ public class ReferralService implements
    */
   @Inject
   public ReferralService() {
-    //comment is required by sonar
+    // comment is required by sonar
   }
 
   /**
@@ -156,7 +161,7 @@ public class ReferralService implements
       Referral managed =
           new Referral(referralId, request, RequestExecutionContext.instance().getStaffId(),
               RequestExecutionContext.instance().getRequestStartTime());
-
+      droolsService.performBusinessRules(createConfiguration(), managed);
       managed = referralDao.create(managed);
       if (managed == null || managed.getId() == null) {
         LOGGER.warn("Unable to save referral: {}", request);
@@ -169,6 +174,11 @@ public class ReferralService implements
       throw new ServiceException(e);
     }
   }
+
+  private DroolsConfiguration<Referral> createConfiguration() {
+    return ReferralDroolsConfiguration.DATA_PROCESSING_INSTANCE;
+  }
+
 
   private void validateCountyOfAssignedStaffWorker(
       gov.ca.cwds.rest.api.domain.cms.Referral referral) {
@@ -582,7 +592,8 @@ public class ReferralService implements
     this.drmsDocumentService = drmsDocumentService;
   }
 
-  public void setDrmsDocumentTemplateService(DrmsDocumentTemplateService drmsDocumentTemplateService) {
+  public void setDrmsDocumentTemplateService(
+      DrmsDocumentTemplateService drmsDocumentTemplateService) {
     this.drmsDocumentTemplateService = drmsDocumentTemplateService;
   }
 

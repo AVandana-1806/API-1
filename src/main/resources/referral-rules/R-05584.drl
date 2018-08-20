@@ -1,0 +1,16 @@
+import gov.ca.cwds.data.persistence.cms.Referral
+import gov.ca.cwds.data.persistence.cms.Address
+import gov.ca.cwds.data.access.dto.ReferralEntityAwareDTO
+
+global java.util.Set validationDetailsList
+
+rule "R-07993"
+  dialect "mvel"
+  agenda-group "referrals-data-processing-agenda"
+  when
+      //$referralAwareDTO: ReferralEntityAwareDTO()
+      $referral: Referral(communicationMethodType == (short)5375)
+      //$address: Address(state == (short) 1938) from $referral.addresses
+  then
+      System.out.println("************************************R-07993****************************rule is about to fire");    
+end
