@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,10 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
 
   @Override
   public Response find(String id) {
-    List<RelationshipWrapper> relations = getClientRelationships(id);
+    List<RelationshipWrapper> relations = new ArrayList<RelationshipWrapper>();
+    if (authorized(id)) {
+      relations = getClientRelationships(id);
+    }
     return genealogist.buildRelationships(relations, id);
   }
 
@@ -62,13 +66,14 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
    * @param clientIds - clientIds
    * @return the relationships
    */
-  @SuppressWarnings("unchecked")
   public Response findForIds(List<String> clientIds) {
-    final Set relationships = new HashSet<>();
-    if (clientIds != null){
+    final Set<Relationship> relationships = new HashSet<Relationship>();
+    if (clientIds != null) {
+      
       for (String id : clientIds) {
         if (authorized(id)) {
-          relationships.add(find(id));
+          List<RelationshipWrapper> relations = getClientRelationships(id);
+          relationships.add(genealogist.buildRelationships(relations, id));
         }
       }
     }

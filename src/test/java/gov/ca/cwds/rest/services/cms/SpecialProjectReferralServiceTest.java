@@ -4,6 +4,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import static org.mockito.Matchers.any;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -106,9 +111,11 @@ public class SpecialProjectReferralServiceTest {
     String referralId = "0987654ABC";
     String incidentCounty = "34";
     MessageBuilder messageBuilder = new MessageBuilder();
-
-    SpecialProject specialProject = new SpecialProjectEntityBuilder().setName("test").build();
-    List<SpecialProject> specialProjects = new ArrayList();
+    
+    SpecialProject specialProject = new SpecialProjectEntityBuilder()
+        .setName("test")
+        .build();
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);
 
     when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class),
@@ -146,16 +153,17 @@ public class SpecialProjectReferralServiceTest {
     String incidentCounty = "34";
     LocalDate endDate = LocalDate.now();
     MessageBuilder messageBuilder = new MessageBuilder();
-
-    SpecialProject specialProject =
-        new SpecialProjectEntityBuilder().setName("test").setEndDate(endDate).build();
-    List<SpecialProject> specialProjects = new ArrayList();
-    specialProjects.add(specialProject);
-    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class),
-        any(Short.class))).thenReturn(specialProjects);
-
-    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
-        new SpecialProjectReferralResourceBuilder().build();
+    
+    SpecialProject specialProject = new SpecialProjectEntityBuilder()
+        .setName("test")
+        .setEndDate(endDate)
+        .build();        
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
+    specialProjects.add(specialProject);    
+    when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class), any(Short.class)))
+    .thenReturn(specialProjects);
+    
+    gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain = new SpecialProjectReferralResourceBuilder().build();
     SpecialProjectReferral sprEntity = new SpecialProjectReferral();
     sprEntity.setCountySpecificCode(sprDomain.getCountySpecificCode());
     sprEntity.setId("9876543ABC");
@@ -212,8 +220,8 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
     when(specialProjectReferralDao.create(any(SpecialProjectReferral.class))).thenReturn(sprEntity);
 
-    List<SpecialProjectReferral> specialProjectReferrals = new ArrayList();
-    specialProjectReferrals.add(sprEntity);
+    List<SpecialProjectReferral> specialProjectReferrals = new ArrayList<SpecialProjectReferral>();
+    specialProjectReferrals.add(sprEntity);    
     when(specialProjectReferralDao
         .findSpecialProjectReferralsByReferralIdAndSpecialProjectId(referralId, specialProjectId))
             .thenReturn(specialProjectReferrals);
@@ -266,14 +274,16 @@ public class SpecialProjectReferralServiceTest {
 
   @Test
   public void shouldRetrunNullWhenCSECDataNotProvided() throws Exception {
-    List<Csec> csecs = new ArrayList();
+    List<Csec> csecs = new ArrayList<Csec>();
 
     String referralId = "0987654ABC";
     String incidentCounty = "34";
     MessageBuilder messageBuilder = new MessageBuilder();
-
-    SpecialProject specialProject = new SpecialProjectEntityBuilder().setName("test").build();
-    List<SpecialProject> specialProjects = new ArrayList();
+    
+    SpecialProject specialProject = new SpecialProjectEntityBuilder()
+        .setName("test")
+        .build();
+    List<SpecialProject> specialProjects = new ArrayList<SpecialProject>();
     specialProjects.add(specialProject);
 
     when(specialProjectDao.findSpecialProjectByGovernmentEntityAndName(any(String.class),
