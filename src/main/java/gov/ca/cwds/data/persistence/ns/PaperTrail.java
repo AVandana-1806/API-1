@@ -1,8 +1,7 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Type;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
  * {@link PersistentObject} representing paper trail.
@@ -20,6 +23,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "versions")
 public class PaperTrail implements PersistentObject {
+
   private static final long serialVersionUID = 1L;
 
   @Id

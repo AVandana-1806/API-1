@@ -61,8 +61,8 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
   @Override
   public Serializable generate(SharedSessionContractImplementor session, Object obj) {
     if (obj instanceof Identifiable) {
-      Identifiable identifiable = (Identifiable) obj;
-      Serializable id = (Serializable) identifiable.getId();
+      final Identifiable identifiable = (Identifiable) obj;
+      final Serializable id = (Serializable) identifiable.getId();
       if (id != null) {
         return id;
       }

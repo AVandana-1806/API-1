@@ -46,6 +46,7 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 @Entity
 @Table(name = "screenings")
 public class ScreeningEntity implements PersistentObject {
+
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -510,4 +511,5 @@ public class ScreeningEntity implements PersistentObject {
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
+
 }
