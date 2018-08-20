@@ -10,7 +10,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
@@ -92,7 +91,6 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String request = fixture(JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS);
     Response response =
         doPostCall(SCREENING_RELATIONSHIPS_BATCH, request);
-    System.out.println(getStringResponse(response));
     assertEquals(HttpStatus.SC_OK, response.getStatus());
   }
 

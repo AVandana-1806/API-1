@@ -1,7 +1,7 @@
 [
   {
     "id": "2019",
-    "date_of_birth": "1999-11-15",
+    "date_of_birth": "2018-01-15",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -18,7 +18,7 @@
         "related_person_last_name": "Pfeiffer",
         "related_person_name_suffix": "Jr",
         "related_person_gender": "male",
-        "related_person_date_of_birth": "1999-11-15",
+        "related_person_date_of_birth": "2018-08-08",
         "absent_parent_code": "Y",
         "same_home_code": "U",
         "indexed_person_relationship": "188",
@@ -42,7 +42,7 @@
   },
   {
     "id": "2020",
-    "date_of_birth": "1999-11-15",
+    "date_of_birth": "2018-08-08",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -59,7 +59,7 @@
         "related_person_last_name": "Pfeiffer",
         "related_person_name_suffix": "Jr",
         "related_person_gender": "male",
-        "related_person_date_of_birth": "1999-11-15",
+        "related_person_date_of_birth": "2018-01-15",
         "absent_parent_code": "Y",
         "same_home_code": "U",
         "indexed_person_relationship": "203",

@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.api.domain;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -120,7 +122,29 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       if (screeningRelationshipsWithCandidates.relatedCandidatesTo == null) {
         screeningRelationshipsWithCandidates.relatedCandidatesTo = new HashSet<>();
       }
+
+      calculateAgeAndAgeUnit();
       return screeningRelationshipsWithCandidates;
+    }
+
+    private void calculateAgeAndAgeUnit() {
+      if (StringUtils.isEmpty(screeningRelationshipsWithCandidates.dateOfBirth)) {
+        return;
+      }
+
+      Period period = Period
+          .between(LocalDate.parse(screeningRelationshipsWithCandidates.dateOfBirth),
+              LocalDate.now());
+      if (period.getYears() > 0) {
+        screeningRelationshipsWithCandidates.age = (short) period.getYears();
+        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.Y.name();
+      } else if (period.getMonths() > 0) {
+        screeningRelationshipsWithCandidates.age = (short) period.getMonths();
+        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.M.name();
+      } else {
+        screeningRelationshipsWithCandidates.age = (short) period.getDays();
+        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.D.name();
+      }
     }
   }
 
@@ -710,4 +734,61 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     return relatedTo;
   }
 
+  public void setAge(Short age) {
+    this.age = age;
+  }
+
+  public void setAgeUnit(String ageUnit) {
+    this.ageUnit = ageUnit;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof ScreeningRelationshipsWithCandidates)) {
+      return false;
+    }
+
+    ScreeningRelationshipsWithCandidates that = (ScreeningRelationshipsWithCandidates) o;
+
+    return new EqualsBuilder()
+        .append(id, that.id)
+        .append(dateOfBirth, that.dateOfBirth)
+        .append(age, that.age)
+        .append(ageUnit, that.ageUnit)
+        .append(firstName, that.firstName)
+        .append(middleName, that.middleName)
+        .append(lastName, that.lastName)
+        .append(suffixName, that.suffixName)
+        .append(gender, that.gender)
+        .append(dateOfDeath, that.dateOfDeath)
+        .append(sensitive, that.sensitive)
+        .append(sealed, that.sealed)
+        .append(relatedTo, that.relatedTo)
+        .append(relatedCandidatesTo, that.relatedCandidatesTo)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(id)
+        .append(dateOfBirth)
+        .append(age)
+        .append(ageUnit)
+        .append(firstName)
+        .append(middleName)
+        .append(lastName)
+        .append(suffixName)
+        .append(gender)
+        .append(dateOfDeath)
+        .append(sensitive)
+        .append(sealed)
+        .append(relatedTo)
+        .append(relatedCandidatesTo)
+        .toHashCode();
+  }
 }
