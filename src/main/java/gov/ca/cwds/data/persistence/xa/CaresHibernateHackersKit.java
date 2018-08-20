@@ -1,6 +1,7 @@
 package gov.ca.cwds.data.persistence.xa;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -125,6 +126,76 @@ public class CaresHibernateHackersKit {
     q.setFetchSize(1000);
     q.setHibernateFlushMode(FlushMode.MANUAL);
     q.setTimeout(120); // 2 minutes tops
+  }
+
+  /**
+   * DB2's ORDER BY clause does <strong>NOT</strong> enforce result set order across platforms!
+   * Since character sets differ by operating system, CHAR sort order differs and makes ORDER BY and
+   * WHERE clauses problematic.
+   * 
+   * <p>
+   * SELECT statements using range partitions depend on sort order.
+   * </p>
+   * 
+   * <p>
+   * Database platforms and versions:
+   * </p>
+   * 
+   * <table summary="">
+   * <tr>
+   * <th align="justify">Platform</th>
+   * <th align="justify">Name</th>
+   * <th align="justify">Version</th>
+   * <th align="justify">Major</th>
+   * <th align="justify">Minor</th>
+   * <th align="justify">Catalog</th>
+   * </tr>
+   * <tr>
+   * <td align="justify">z/OS</td>
+   * <td align="justify">DB2</td>
+   * <td align="justify">DSN11010</td>
+   * <td align="justify">11</td>
+   * <td align="justify">1</td>
+   * <td align="justify">location</td>
+   * </tr>
+   * <tr>
+   * <td align="justify">Linux</td>
+   * <td align="justify">DB2/LINUXX8664</td>
+   * <td align="justify">SQL10057</td>
+   * <td align="justify">10</td>
+   * <td align="justify">5</td>
+   * <td align="justify">database</td>
+   * </tr>
+   * </table>
+   * 
+   * @param con DB2 JDBC connection
+   * @return true if DB2 is running on a mainframe
+   */
+  public static boolean isDB2OnZOS(final Connection con) {
+    boolean ret = false;
+
+    try {
+      final DatabaseMetaData meta = con.getMetaData();
+      LOGGER.debug("meta: product name: {}, production version: {}, major: {}, minor: {}",
+          meta.getDatabaseProductName(), meta.getDatabaseProductVersion(),
+          meta.getDatabaseMajorVersion(), meta.getDatabaseMinorVersion());
+
+      ret = meta.getDatabaseProductVersion().startsWith("DSN");
+    } catch (Exception e) {
+      throw CaresLogUtils.runtime(LOGGER, e, "UNABLE TO DETERMINE DB2 VERSION! {}", e.getMessage());
+    }
+
+    return ret;
+  }
+
+  /**
+   * @see #isDB2OnZOS(Connection)
+   * @param dao DAO
+   * @return true if DB2 is running on a mainframe
+   */
+  public static boolean isDB2OnZOS(final BaseDaoImpl<?> dao) {
+    final Connection con = stealConnection(dao.grabSession()); // DO NOT CLOSE!!!
+    return isDB2OnZOS(con);
   }
 
 }

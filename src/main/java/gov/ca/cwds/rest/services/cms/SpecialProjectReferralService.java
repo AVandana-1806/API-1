@@ -5,10 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -36,8 +34,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.business.rules.SafelySurrenderBabiesDroolsConfiguration;
-import gov.ca.cwds.rest.exception.BusinessValidationException;
-import gov.ca.cwds.rest.exception.IssueDetails;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
@@ -287,7 +283,7 @@ public class SpecialProjectReferralService implements
     ssbEntity.setSurrenderedByName(ssb.getSurrenderedByName());
     ssbEntity.setSurrenderedDate(referralReceivedDate);
     ssbEntity.setSurrenderedTime(referralRecievedTime);
-    performBusinessValidation(ssbEntity);
+    droolsService.performBusinessRules(createConfiguration(), ssbEntity);
     safelySurrenderedBabiesDao.create(ssbEntity);
 
     /**
@@ -301,22 +297,6 @@ public class SpecialProjectReferralService implements
     braceltInfo.setOtherId(ssb.getBraceletId());
     braceltInfo.setOtherIdCode(MEDICAL_RECORD_SYSTEM_CODE_ID);
     nonCWSNumberDao.create(braceltInfo);
-  }
-
-  private void performBusinessValidation(SafelySurrenderedBabies safelySurrenderedBabies) {
-    Optional.ofNullable(validator.validate(safelySurrenderedBabies)).ifPresent(violations -> {
-      if (!violations.isEmpty()) {
-        throw new ConstraintViolationException(violations);
-      }
-    });
-
-    Set<IssueDetails> detailsList =
-        droolsService.performBusinessRules(createConfiguration(), safelySurrenderedBabies);
-    if (!detailsList.isEmpty()) {
-      throw new BusinessValidationException(
-          "Business rules validation is failed for " + safelySurrenderedBabies.getClass().getName(),
-          detailsList);
-    }
   }
 
   private DroolsConfiguration<SafelySurrenderedBabies> createConfiguration() {

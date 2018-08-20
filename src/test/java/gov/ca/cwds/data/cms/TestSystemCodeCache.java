@@ -188,6 +188,12 @@ public class TestSystemCodeCache implements SystemCodeCache {
       }
     }
 
+    if (SystemCodeCategoryId.CLIENT_RELATIONSHIP.equals(metaId)) {
+      if (190 == systemCodeId.intValue()) {
+        return true;
+      }
+    }
+
     return false;
   }
 

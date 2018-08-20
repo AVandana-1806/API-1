@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.business.rules.doctool;
 
+import static gov.ca.cwds.data.legacy.cms.entity.enums.ReferralResponseType.EVALUATE_OUT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -30,7 +31,6 @@ public class R00824SetDispositionCodeTest {
 
   private static final int APPROVED = 122;
   private static final int PENDING = 119;
-  private static final short EVALUATE_OUT = 1519;
   private static final short IMMEDIATE = 1520;
   private static final String ASSESMENT = "A";
 
@@ -66,7 +66,7 @@ public class R00824SetDispositionCodeTest {
         new ParticipantResourceBuilder().setDateOfBirth("2017-12-01").createParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(victim));
     ScreeningToReferral validScreeningToreferral =
-        new ScreeningToReferralResourceBuilder().setResponseTime(EVALUATE_OUT)
+        new ScreeningToReferralResourceBuilder().setResponseTime(EVALUATE_OUT.getCode())
             .setApprovalStatus(APPROVED).setParticipants(participants).createScreeningToReferral();
     Boolean dispositionCode =
         new R00824SetDispositionCode(validScreeningToreferral, victim).isValid();
@@ -85,7 +85,7 @@ public class R00824SetDispositionCodeTest {
         new ParticipantResourceBuilder().setDateOfBirth("2017-12-01").createParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(victim));
     ScreeningToReferral validScreeningToreferral =
-        new ScreeningToReferralResourceBuilder().setResponseTime(EVALUATE_OUT)
+        new ScreeningToReferralResourceBuilder().setResponseTime(EVALUATE_OUT.getCode())
             .setApprovalStatus(PENDING).setParticipants(participants).createScreeningToReferral();
     Boolean dispositionCode =
         new R00824SetDispositionCode(validScreeningToreferral, victim).isValid();
@@ -119,9 +119,9 @@ public class R00824SetDispositionCodeTest {
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("2017-12-01").createParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(victim));
-    ScreeningToReferral validScreeningToreferral =
-        new ScreeningToReferralResourceBuilder().setParticipants(participants)
-            .setResponseTime(EVALUATE_OUT).setApprovalStatus(APPROVED).createScreeningToReferral();
+    ScreeningToReferral validScreeningToreferral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).setResponseTime(EVALUATE_OUT.getCode())
+        .setApprovalStatus(APPROVED).createScreeningToReferral();
     R00824SetDispositionCode r00824SetDispositionCode =
         new R00824SetDispositionCode(validScreeningToreferral, victim);
     assertEquals(Boolean.TRUE, r00824SetDispositionCode.isValid());
@@ -134,9 +134,9 @@ public class R00824SetDispositionCodeTest {
     Participant victim =
         new ParticipantResourceBuilder().setDateOfBirth("2017-12-01").createParticipant();
     Set<Participant> participants = new HashSet<>(Arrays.asList(victim));
-    ScreeningToReferral validScreeningToreferral =
-        new ScreeningToReferralResourceBuilder().setParticipants(participants)
-            .setResponseTime(EVALUATE_OUT).setApprovalStatus(PENDING).createScreeningToReferral();
+    ScreeningToReferral validScreeningToreferral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(participants).setResponseTime(EVALUATE_OUT.getCode())
+        .setApprovalStatus(PENDING).createScreeningToReferral();
     R00824SetDispositionCode r00824SetDispositionCode =
         new R00824SetDispositionCode(validScreeningToreferral, victim);
     assertEquals(Boolean.FALSE, r00824SetDispositionCode.isValid());

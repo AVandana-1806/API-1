@@ -27,9 +27,32 @@ import gov.ca.cwds.data.persistence.cms.StaffPerson;
  * </p>
  * 
  * <p>
- * <strong>"You break it, you buy it." :-)</strong>
+ * <strong>"You break it, you buy it."</strong>
  * </p>
  * 
+ * <h2>Shared libraries by platform</h2>
+ * <table summary="">
+ * <tr>
+ * <th align="justify">Platform</th>
+ * <th align="justify">Compiler</th>
+ * <th align="justify">Shared library</th>
+ * </tr>
+ * <tr>
+ * <td align="justify">Windows</td>
+ * <td align="justify">MinGW 64</td>
+ * <td align="justify">KeyJNI.dll</td>
+ * </tr>
+ * <tr>
+ * <td>Linux</td>
+ * <td>GNU g++ 5</td>
+ * <td>libKeyJNI.so</td>
+ * </tr>
+ * <tr>
+ * <td>OS X</td>
+ * <td>Clang</td>
+ * <td>libKeyJNI.dylib</td>
+ * </tr>
+ * </table>
  * <h2>Steps to build and run</h2>
  * 
  * @author CWDS API Team
@@ -49,7 +72,7 @@ public final class KeyJNI {
    * <ul>
    * <li>Windows: KeyJNI.dll</li>
    * <li>OS X: libKeyJNI.dylib</li>
-   * <li>LinuxlibKeyJNI.so</li>
+   * <li>Linux: libKeyJNI.so</li>
    * </ul>
    * </p>
    * 

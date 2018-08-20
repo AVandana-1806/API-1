@@ -29,7 +29,6 @@ public class DB2PassUserTest {
           final String userId = "0X5";
           final DB2Connection db2conn = (DB2Connection) conn;
 
-          db2conn.setDB2ClientProgramId("CARES/FERB");
           db2conn.setClientInfo("ClientUser", userId);
           db2conn.setDB2ClientUser(userId); // staff id
           db2conn.setDB2ClientWorkstation("127.0.0.1");

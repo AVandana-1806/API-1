@@ -55,6 +55,7 @@ public class LovDbCheck implements Pingable {
 
   @Override
   public boolean ping() {
+    LOGGER.info("Postgres LOV health check: ping start");
     boolean ok = true;
 
     // must clear messages list otherwise it keeps on adding into it...
@@ -67,11 +68,12 @@ public class LovDbCheck implements Pingable {
       for (Map.Entry<String, Integer> entry : lovTableCounts.entrySet()) {
         final String table = entry.getKey();
         final boolean tableCountOk = checkTableCount(con, table, schema, entry.getValue());
-        LOGGER.debug("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk, table);
+        LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk, table);
         ok = ok && tableCountOk;
       }
     } // Session and connection go out of scope.
 
+    LOGGER.info("Postgres LOV health check: ping done");
     return ok;
   }
 
@@ -80,11 +82,29 @@ public class LovDbCheck implements Pingable {
     return messages.toString();
   }
 
+  /**
+   * Check record count of target table.
+   * 
+   * <p>
+   * No SonarQube, no SQL injection vulnerability here, because the prepared SQL only allows the
+   * table name to vary and prevents injection of arbitrary SQL. That said, we could place the SQL
+   * in String constants and build prepared statements with lambda functions in order to avoid any
+   * possible risk of SQL injection, even if the JVM were hacked. But frankly, if an intruder gets
+   * that far, then the game is up anyway, and SonarQube's suggested defenses wouldn't help.
+   * </p>
+   * 
+   * @param con database connection
+   * @param tableName table to check
+   * @param schema target schema
+   * @param expectedCount expected table count
+   * @return true = counts match
+   */
   protected boolean checkTableCount(Connection con, String tableName, String schema,
       int expectedCount) {
-    final String sql = "SELECT COUNT(*) AS TOTAL FROM " + schema + "." + tableName;
+    final String sql =
+        "SELECT COUNT(*) AS TOTAL FROM " + schema + "." + tableName + " FOR READ ONLY ";
     int count = 0;
-    LOGGER.debug("Postgres LOV health check: SQL: {}", sql);
+    LOGGER.info("Postgres LOV health check: SQL: {}", sql);
 
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setMaxRows(10);
@@ -96,13 +116,13 @@ public class LovDbCheck implements Pingable {
         }
       }
 
-      LOGGER.debug("Postgres LOV health check: count: {}, SQL: {}", count, sql);
+      LOGGER.info("Postgres LOV health check: count: {}, SQL: {}", count, sql);
       con.commit();
     } catch (Exception e) {
       try {
         con.rollback();
       } catch (SQLException e1) {
-        LOGGER.trace("BOOM!", e1);
+        LOGGER.trace("BOOM!", e1); // appease SonarQube by logging the exception
         throw CaresLogUtils.runtime(LOGGER, e1,
             "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e1.getMessage(), e1);
       }
@@ -112,10 +132,11 @@ public class LovDbCheck implements Pingable {
     }
 
     addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
-    return !(count < expectedCount);
+    return count >= expectedCount;
   }
 
   private void addMessage(String message) {
+    LOGGER.debug("add message: {}", message);
     messages.add(message);
   }
 
