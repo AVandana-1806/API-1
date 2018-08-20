@@ -27,7 +27,6 @@ import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import gov.ca.cwds.security.realm.PerryAccount;
-import gov.ca.cwds.security.utils.PrincipalUtils;
 
 
 /**
@@ -103,7 +102,7 @@ public class AddressService implements
           gov.ca.cwds.rest.api.domain.cms.Address.createWithDefaults(address);
 
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-      final PerryAccount perryAccount = PrincipalUtils.getPrincipal();
+      final PerryAccount perryAccount = RequestExecutionContext.instance().getUserIdentity();
       droolsService.performBusinessRules(createConfiguration(), domainAddress, perryAccount);
       PostedAddress postedAddress = this.create(domainAddress);
       address.setLegacyId(postedAddress.getExistingAddressId());
@@ -114,13 +113,11 @@ public class AddressService implements
     }
 
     return address;
-
   }
 
   private DroolsConfiguration<gov.ca.cwds.rest.api.domain.cms.Address> createConfiguration() {
     return ReferralAddressDroolsConfiguration.DATA_PROCESSING_INSTANCE;
   }
-
 
   @Override
   public gov.ca.cwds.rest.api.domain.cms.Address delete(String primaryKey) {
@@ -159,6 +156,13 @@ public class AddressService implements
       LOGGER.info("Address not found : {}", request);
       throw new ServiceException(e);
     }
+  }
+
+  /**
+   * @param droolsService - droolsService
+   */
+  public void setDroolsService(DroolsService droolsService) {
+    this.droolsService = droolsService;
   }
 
 }

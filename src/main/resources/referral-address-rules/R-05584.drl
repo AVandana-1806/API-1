@@ -3,11 +3,22 @@ import gov.ca.cwds.security.realm.PerryAccount
 
 global java.util.Set validationDetailsList
 
+/*
+   Code: R - 05584 Default to logged on user's county
+
+   Rule Text
+   If the State = 'California' and if City is mandatory and if cboCounty is empty, then default cboCounty to county of logged on user. If the State <> 'California' disable cboCounty.
+   
+   Logic
+   If ADDRESS.State_Code_Type = 'California', and if txtCACityName is mandatory and if cboCounty is null, 
+   then default cboCounty to (logged on) USER_ID > STAFF_PERSON > CWS_OFFICE.Government_Entity_Type. 
+   If ADDRESS.State_Code_Type <> 'California' then disable cboCounty.
+*/
 rule "R-07993"
   dialect "mvel"
   agenda-group "referrals-address-data-processing-agenda"
   when
-      $address: Address(state == (short)1838, city != null)
+      $address: Address(state == (short)1828, city != null)
       $perryAccount: PerryAccount()
   then
       $address.setGovernmentEntityCd(Short.parseShort($perryAccount.getCountyCwsCode()));
