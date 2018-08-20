@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services.cms;
 
-import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
@@ -15,9 +14,13 @@ import gov.ca.cwds.data.cms.AddressDao;
 import gov.ca.cwds.data.cms.SsaName3Dao;
 import gov.ca.cwds.data.persistence.cms.Address;
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
+import gov.ca.cwds.drools.DroolsConfiguration;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
+import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
+import gov.ca.cwds.rest.business.rules.ReferralAddressDroolsConfiguration;
 import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
@@ -38,6 +41,9 @@ public class AddressService implements
   private UpperCaseTables upperCaseTables;
 
   private Validator validator;
+
+  @Inject
+  private DroolsService droolsService;
 
   /**
    * 
@@ -96,7 +102,7 @@ public class AddressService implements
           gov.ca.cwds.rest.api.domain.cms.Address.createWithDefaults(address);
 
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-
+      droolsService.performBusinessRules(createConfiguration(), domainAddress);
       PostedAddress postedAddress = this.create(domainAddress);
 
       address.setLegacyId(postedAddress.getExistingAddressId());
@@ -109,6 +115,11 @@ public class AddressService implements
     return address;
 
   }
+
+  private DroolsConfiguration<gov.ca.cwds.rest.api.domain.cms.Address> createConfiguration() {
+    return ReferralAddressDroolsConfiguration.DATA_PROCESSING_INSTANCE;
+  }
+
 
   @Override
   public gov.ca.cwds.rest.api.domain.cms.Address delete(String primaryKey) {
