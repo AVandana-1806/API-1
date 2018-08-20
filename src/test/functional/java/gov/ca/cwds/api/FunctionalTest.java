@@ -43,19 +43,29 @@ public class FunctionalTest {
     url = config.getTestUrl().getBaseUrl();
     LOGGER.info(configImpl.toString());
     printEnv();
-    token = login(configImpl);
+    // default login as a Staff person with social worker access privilege
+    token = login(configImpl, UserGroup.SOCIAL_WORKER);
+    userInfo = getStaffpersonInfo(configImpl);
+  }
+  
+  public void loginUserGroup(UserGroup userGroup) {
+    // login as a specified user required for the specific test
+    ConfigImpl configImpl = new ConfigImpl();
+    token = login(configImpl, userGroup);
     userInfo = getStaffpersonInfo(configImpl);
   }
 
   private void printEnv() {
     Map<String, String> env = System.getenv();
+    LOGGER.info("Functional Test Environment");
     for (String envName : env.keySet()) {
       LOGGER.info("{}={}", envName, env.get(envName));
     }
+    LOGGER.info(" ");
   }
 
-  private String login(ConfigImpl configImpl) {
-    return new AuthenticationUtils(configImpl).getToken(UserGroup.SOCIAL_WORKER);
+  private String login(ConfigImpl configImpl, UserGroup userGroup) {
+    return new AuthenticationUtils(configImpl).getToken(userGroup);
   }
 
   private UserInfo getStaffpersonInfo(ConfigImpl configImpl) {

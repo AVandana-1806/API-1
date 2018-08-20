@@ -11,8 +11,10 @@ import gov.ca.cwds.rest.core.Api;
 import io.restassured.http.ContentType;
 
 /**
- * Functional Testing for client authorize end point with Social Worker Privilege Only(GVR_ENTC =
- * 1084)
+ * Functional Testing for client authorize end point with Social Worker Privilege Only (GVR_ENTC =
+ * 1084 or Lake county).
+ * 
+ * User is determined by init() method in parent class (FunctionalTest.java)
  * 
  * @author CWDS API Team
  *
