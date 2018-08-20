@@ -14,7 +14,7 @@ global java.util.Set validationDetailsList
    then default cboCounty to (logged on) USER_ID > STAFF_PERSON > CWS_OFFICE.Government_Entity_Type. 
    If ADDRESS.State_Code_Type <> 'California' then disable cboCounty.
 */
-rule "R-07993"
+rule "R-05584"
   dialect "mvel"
   agenda-group "referrals-address-data-processing-agenda"
   when
