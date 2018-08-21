@@ -156,7 +156,7 @@ public class ScreeningRelationshipResource {
   public Response batchCreate(@Valid @ApiParam(
       required = true) ScreeningRelationshipBase[] screeningRelationships) {
     return new ResponseConverter()
-        .withDataResponse(
+        .withCreatedResponse(
             relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
   }
 

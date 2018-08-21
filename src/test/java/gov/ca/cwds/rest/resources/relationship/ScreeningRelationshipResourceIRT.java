@@ -88,11 +88,11 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  public void testCreateRelationships() throws IOException, JSONException {
+  public void testCreateRelationships() throws IOException {
     String request = fixture(JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS);
     Response response =
         doPostCall(SCREENING_RELATIONSHIPS_BATCH, request);
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_CREATED, response.getStatus());
   }
 
   @Test
@@ -141,7 +141,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
         SCREENING_RELATIONSHIPS_BATCH,
         requestJson);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_CREATED, response.getStatus());
 
     List<ScreeningRelationship> actualResponse = objectMapper
         .readValue((InputStream) response.getEntity(),

@@ -26,6 +26,11 @@ public class ResponseConverter {
         .build();
   }
 
+  public Response withCreatedResponse(List<gov.ca.cwds.rest.api.Response> serviceResponse) {
+    return javax.ws.rs.core.Response.status(Response.Status.CREATED).entity(serviceResponse)
+        .build();
+  }
+
   private Response notFound() {
     return javax.ws.rs.core.Response.status(Response.Status.NOT_FOUND).entity((Object) null)
         .build();
