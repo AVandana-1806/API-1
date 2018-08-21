@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
@@ -22,7 +23,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  */
 @Entity
 @Table(name = "versions")
-public class PaperTrail implements PersistentObject {
+public class PaperTrail extends ApiObjectIdentity implements PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -103,4 +104,5 @@ public class PaperTrail implements PersistentObject {
   public Date getCreatedAt() {
     return new Date(createdAt.getTime());
   }
+
 }

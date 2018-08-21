@@ -16,13 +16,25 @@ import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.Identifiable;
 
 /**
+ * Vat is zis?
+ * 
+ * <p>
+ * Some Postgres primary key fields are {@code VARCHAR} instead of {@code INT8}, yet the underlying
+ * sequence increments a numeric counter, not a GUID. This class converts the numeric sequence value
+ * to a String.
+ * </p>
+ * 
  * @author CWDS API Team
  */
 public class StringSequenceIdGenerator implements IdentifierGenerator, Configurable {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(StringSequenceIdGenerator.class);
 
   private String sequenceCallSyntax;
 
@@ -55,6 +67,7 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
     }
 
     sequenceCallSyntax = dialect.getSequenceNextValString(sequenceName);
+    LOGGER.debug("sequence SQL: {}", sequenceCallSyntax);
   }
 
   @SuppressWarnings("rawtypes")
@@ -72,6 +85,7 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
         ((Number) Session.class.cast(session).createNativeQuery(sequenceCallSyntax).uniqueResult())
             .longValue();
 
+    LOGGER.debug("Next key: {}", seqValue);
     return String.valueOf(seqValue);
   }
 
