@@ -1,0 +1,3392 @@
+[
+  {
+    "code": "01",
+    "value": "Alameda",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "02",
+    "value": "Alpine",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "03",
+    "value": "Amador",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "04",
+    "value": "Butte",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "05",
+    "value": "Calaveras",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "06",
+    "value": "Colusa",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "07",
+    "value": "Contra Costa",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "08",
+    "value": "Del Norte",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "09",
+    "value": "El Dorado",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "10",
+    "value": "Fresno",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "11",
+    "value": "Glenn",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "12",
+    "value": "Humboldt",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "13",
+    "value": "Imperial",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "14",
+    "value": "Inyo",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "15",
+    "value": "Kern",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "16",
+    "value": "Kings",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "17",
+    "value": "Lake",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "18",
+    "value": "Lassen",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "19",
+    "value": "Los Angeles",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "20",
+    "value": "Madera",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "21",
+    "value": "Marin",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "22",
+    "value": "Mariposa",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "23",
+    "value": "Mendocino",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "24",
+    "value": "Merced",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "25",
+    "value": "Modoc",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "26",
+    "value": "Mono",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "27",
+    "value": "Monterey",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "28",
+    "value": "Napa",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "29",
+    "value": "Nevada",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "30",
+    "value": "Orange",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "31",
+    "value": "Placer",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "32",
+    "value": "Plumas",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "33",
+    "value": "Riverside",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "34",
+    "value": "Sacramento",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "35",
+    "value": "San Benito",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "36",
+    "value": "San Bernardino",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "37",
+    "value": "San Diego",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "38",
+    "value": "San Francisco",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "41",
+    "value": "San Joaquin",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "39",
+    "value": "San Luis Obispo",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "40",
+    "value": "San Mateo",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "42",
+    "value": "Santa Barbara",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "43",
+    "value": "Santa Clara",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "44",
+    "value": "Santa Cruz",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "45",
+    "value": "Shasta",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "46",
+    "value": "Sierra",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "47",
+    "value": "Siskiyou",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "48",
+    "value": "Solano",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "49",
+    "value": "Sonoma",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "50",
+    "value": "Stanislaus",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "99",
+    "value": "State of California",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "51",
+    "value": "Sutter",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "52",
+    "value": "Tehama",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "53",
+    "value": "Trinity",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "54",
+    "value": "Tulare",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "55",
+    "value": "Tuolumne",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "56",
+    "value": "Ventura",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "57",
+    "value": "Yolo",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "58",
+    "value": "Yuba",
+    "category": "address_county",
+    "sub_category": null
+  },
+  {
+    "code": "6273",
+    "value": "Common",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "28",
+    "value": "Day Care",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "32",
+    "value": "Home",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "29",
+    "value": "Homeless",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "6272",
+    "value": "Other",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "30",
+    "value": "Penal Institution",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "31",
+    "value": "Permanent Mailing Address",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "6271",
+    "value": "Residence 2",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "27",
+    "value": "Work",
+    "category": "address_type",
+    "sub_category": null
+  },
+  {
+    "code": "1131",
+    "value": "Department of Justice",
+    "category": "agency_type",
+    "sub_category": null
+  },
+  {
+    "code": "1133",
+    "value": "District Attorney",
+    "category": "agency_type",
+    "sub_category": null
+  },
+  {
+    "code": "2524",
+    "value": "County Licensing",
+    "category": "agency_type",
+    "sub_category": null
+  },
+  {
+    "code": "5001",
+    "value": "At Risk, sibling abused",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2169",
+    "value": "Caretaker Absence/Incapacity",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2176",
+    "value": "Emotional Abuse",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2177",
+    "value": "Exploitation",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2178",
+    "value": "General Neglect",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2179",
+    "value": "Physical Abuse",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2180",
+    "value": "Severe Neglect",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "2181",
+    "value": "Sexual Abuse",
+    "category": "allegation_type",
+    "sub_category": null
+  },
+  {
+    "code": "118",
+    "value": "Request Not Submitted",
+    "category": "approval_status",
+    "sub_category": null
+  },
+  {
+    "code": "1603",
+    "value": "Aunt",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1600",
+    "value": "Brother",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1594",
+    "value": "Father (Birth or Adoptive)",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1598",
+    "value": "Grandfather",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1597",
+    "value": "Grandmother",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1596",
+    "value": "Grandparents",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1606",
+    "value": "Indian Custodian",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1595",
+    "value": "Legal Guardian",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1593",
+    "value": "Mother (Birth or Adoptive)",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1607",
+    "value": "Nonrelative",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1605",
+    "value": "Other Relative",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1592",
+    "value": "Parents",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1599",
+    "value": "Sister",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1602",
+    "value": "Stepfather",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1601",
+    "value": "Stepmother",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1608",
+    "value": "Unable to Identify",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "1604",
+    "value": "Uncle",
+    "category": "caretaker_relationship",
+    "sub_category": null
+  },
+  {
+    "code": "5378",
+    "value": "Email",
+    "category": "communication_method",
+    "sub_category": null
+  },
+  {
+    "code": "5375",
+    "value": "Fax",
+    "category": "communication_method",
+    "sub_category": null
+  },
+  {
+    "code": "408",
+    "value": "In person",
+    "category": "communication_method",
+    "sub_category": null
+  },
+  {
+    "code": "410",
+    "value": "Mail",
+    "category": "communication_method",
+    "sub_category": null
+  },
+  {
+    "code": "409",
+    "value": "Phone",
+    "category": "communication_method",
+    "sub_category": null
+  },
+  {
+    "code": "414",
+    "value": "Court",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "415",
+    "value": "CWS Office",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "417",
+    "value": "Home",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "418",
+    "value": "Other",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "420",
+    "value": "School",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "5524",
+    "value": "In placement",
+    "category": "contact_location",
+    "sub_category": null
+  },
+  {
+    "code": "433",
+    "value": "Conduct Client Evaluation",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "435",
+    "value": "Investigate Referral",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "437",
+    "value": "Consult with Service Provider",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "439",
+    "value": "Consult with Collateral",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "440",
+    "value": "Deliver Service to Client",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "5621",
+    "value": "Consult with Staff Person",
+    "category": "contact_purpose",
+    "sub_category": null
+  },
+  {
+    "code": "A",
+    "value": "Attempted",
+    "category": "contact_status",
+    "sub_category": null
+  },
+  {
+    "code": "C",
+    "value": "Completed",
+    "category": "contact_status",
+    "sub_category": null
+  },
+  {
+    "code": "S",
+    "value": "Scheduled",
+    "category": "contact_status",
+    "sub_category": null
+  },
+  {
+    "code": "1068",
+    "value": "Alameda",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1069",
+    "value": "Alpine",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1070",
+    "value": "Amador",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1071",
+    "value": "Butte",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1072",
+    "value": "Calaveras",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1073",
+    "value": "Colusa",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1074",
+    "value": "Contra Costa",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1075",
+    "value": "Del Norte",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1076",
+    "value": "El Dorado",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1077",
+    "value": "Fresno",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1078",
+    "value": "Glenn",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1079",
+    "value": "Humboldt",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1080",
+    "value": "Imperial",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1081",
+    "value": "Inyo",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1082",
+    "value": "Kern",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1083",
+    "value": "Kings",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1084",
+    "value": "Lake",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1085",
+    "value": "Lassen",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1086",
+    "value": "Los Angeles",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1087",
+    "value": "Madera",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1088",
+    "value": "Marin",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1089",
+    "value": "Mariposa",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1090",
+    "value": "Mendocino",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1091",
+    "value": "Merced",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1092",
+    "value": "Modoc",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1093",
+    "value": "Mono",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1094",
+    "value": "Monterey",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1095",
+    "value": "Napa",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1096",
+    "value": "Nevada",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1097",
+    "value": "Orange",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1098",
+    "value": "Placer",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1099",
+    "value": "Plumas",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1100",
+    "value": "Riverside",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1101",
+    "value": "Sacramento",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1102",
+    "value": "San Benito",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1103",
+    "value": "San Bernardino",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1104",
+    "value": "San Diego",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1105",
+    "value": "San Francisco",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1108",
+    "value": "San Joaquin",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1106",
+    "value": "San Luis Obispo",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1107",
+    "value": "San Mateo",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1109",
+    "value": "Santa Barbara",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1110",
+    "value": "Santa Clara",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1111",
+    "value": "Santa Cruz",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1112",
+    "value": "Shasta",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1113",
+    "value": "Sierra",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1114",
+    "value": "Siskiyou",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1115",
+    "value": "Solano",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1116",
+    "value": "Sonoma",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1117",
+    "value": "Stanislaus",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1126",
+    "value": "State of California",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1118",
+    "value": "Sutter",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1119",
+    "value": "Tehama",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1120",
+    "value": "Trinity",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1121",
+    "value": "Tulare",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1122",
+    "value": "Tuolumne",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1123",
+    "value": "Ventura",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1124",
+    "value": "Yolo",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "1125",
+    "value": "Yuba",
+    "category": "county_type",
+    "sub_category": null
+  },
+  {
+    "code": "2094",
+    "value": "Child Abuse Form",
+    "category": "cross_report_comm_method",
+    "sub_category": null
+  },
+  {
+    "code": "2095",
+    "value": "Electronic Report",
+    "category": "cross_report_comm_method",
+    "sub_category": null
+  },
+  {
+    "code": "2096",
+    "value": "Suspected Child Abuse Report",
+    "category": "cross_report_comm_method",
+    "sub_category": null
+  },
+  {
+    "code": "2097",
+    "value": "Telephone Report",
+    "category": "cross_report_comm_method",
+    "sub_category": null
+  },
+  {
+    "code": "6867",
+    "value": "At Risk",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "6868",
+    "value": "Victim Before Foster Care",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "6869",
+    "value": "Victim During Foster Care",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "6870",
+    "value": "Victim in Open Case not in Foster Care",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "6871",
+    "value": "Victim while Absent from Placement",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "6872",
+    "value": "Victim with Closed Case, Rcv ILP Svcs",
+    "category": "csec",
+    "sub_category": null
+  },
+  {
+    "code": "828",
+    "value": "Guamanian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "841",
+    "value": "White - Central American",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "3162",
+    "value": "Caribbean",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "5923",
+    "value": "Other Pacific Islander",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "6351",
+    "value": "Unable to Determine",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "820",
+    "value": "Alaskan Native",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "821",
+    "value": "American Indian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "840",
+    "value": "Armenian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "5922",
+    "value": "Asian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "822",
+    "value": "Asian Indian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "824",
+    "value": "Cambodian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "3163",
+    "value": "Central American",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "825",
+    "value": "Chinese",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "6352",
+    "value": "Declined to answer",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "826",
+    "value": "Ethiopian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "842",
+    "value": "European",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "827",
+    "value": "Filipino",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "829",
+    "value": "Hawaiian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "830",
+    "value": "Hispanic",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "835",
+    "value": "Hmong",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "831",
+    "value": "Japanese",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "832",
+    "value": "Korean",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "833",
+    "value": "Laotian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "3164",
+    "value": "Mexican",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "843",
+    "value": "Middle Eastern",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "5922",
+    "value": "Other Asian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "836",
+    "value": "Other Pacific Islander",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "836",
+    "value": "Polynesian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "844",
+    "value": "Romanian",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "837",
+    "value": "Samoan",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "3165",
+    "value": "South American",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "6453",
+    "value": "Other Race Unknown",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "838",
+    "value": "Vietnamese",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "839",
+    "value": "White",
+    "category": "ethnicity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7076",
+    "value": "Androgynous/Gender Non-Conforming",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7077",
+    "value": "Both Masculine and Feminine",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7080",
+    "value": "Declines to State",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7081",
+    "value": "Did Not Ask",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7078",
+    "value": "Feminine",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7079",
+    "value": "Masculine",
+    "category": "gender_expression_type",
+    "sub_category": null
+  },
+  {
+    "code": "7074",
+    "value": "Declines to State",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7075",
+    "value": "Did Not Ask",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7067",
+    "value": "Female",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7068",
+    "value": "Gender Queer/Gender Non-Binary",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7069",
+    "value": "Male",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7072",
+    "value": "Not Listed",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7070",
+    "value": "Transgender Female",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7071",
+    "value": "Transgender Male",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "7073",
+    "value": "Unsure",
+    "category": "gender_identity_type",
+    "sub_category": null
+  },
+  {
+    "code": "D",
+    "value": "Declined to answer",
+    "category": "hispanic_origin_code",
+    "sub_category": null
+  },
+  {
+    "code": "N",
+    "value": "No",
+    "category": "hispanic_origin_code",
+    "sub_category": null
+  },
+  {
+    "code": "U",
+    "value": "Unknown",
+    "category": "hispanic_origin_code",
+    "sub_category": null
+  },
+  {
+    "code": "Y",
+    "value": "Yes",
+    "category": "hispanic_origin_code",
+    "sub_category": null
+  },
+  {
+    "code": "Z",
+    "value": "Abandoned",
+    "category": "hispanic_origin_code",
+    "sub_category": null
+  },
+  {
+    "code": "1248",
+    "value": "American Sign Language",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1249",
+    "value": "Arabic",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1250",
+    "value": "Armenian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1251",
+    "value": "Cambodian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1252",
+    "value": "Cantonese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1253",
+    "value": "English",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1254",
+    "value": "Farsi",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1255",
+    "value": "French",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1267",
+    "value": "German",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1268",
+    "value": "Hawaiian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1256",
+    "value": "Hebrew",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1257",
+    "value": "Hmong",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1258",
+    "value": "Ilacano",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "3199",
+    "value": "Indochinese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1259",
+    "value": "Italian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1260",
+    "value": "Japanese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1261",
+    "value": "Korean",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1262",
+    "value": "Lao",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1263",
+    "value": "Mandarin",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1264",
+    "value": "Mien",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1265",
+    "value": "Other Chinese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1266",
+    "value": "Other Non-English",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1269",
+    "value": "Polish",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1270",
+    "value": "Portuguese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "3200",
+    "value": "Romanian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1271",
+    "value": "Russian",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1272",
+    "value": "Samoan",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1273",
+    "value": "Sign Language (Not ASL)",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1274",
+    "value": "Spanish",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1275",
+    "value": "Tagalog",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1276",
+    "value": "Thai",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1277",
+    "value": "Turkish",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1278",
+    "value": "Vietnamese",
+    "category": "language",
+    "sub_category": null
+  },
+  {
+    "code": "1327",
+    "value": "Companion Case",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1328",
+    "value": "Criminal Investigation Index",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1329",
+    "value": "Family Preservation Case",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1330",
+    "value": "Juvenile Automated Index",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1331",
+    "value": "Medical Record",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1332",
+    "value": "Meds ID",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "6139",
+    "value": "Mental Health",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1333",
+    "value": "Previous Case",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1334",
+    "value": "Probation Case",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "6274",
+    "value": "Pupil Identification Number",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "1335",
+    "value": "Regional Center",
+    "category": "non_cws_id",
+    "sub_category": null
+  },
+  {
+    "code": "822",
+    "value": "Asian Indian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "822",
+    "value": "Asian Indian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "822",
+    "value": "Asian Indian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "824",
+    "value": "Cambodian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "824",
+    "value": "Cambodian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "824",
+    "value": "Cambodian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "825",
+    "value": "Chinese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "825",
+    "value": "Chinese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "825",
+    "value": "Chinese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "827",
+    "value": "Filipino",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "827",
+    "value": "Filipino",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "827",
+    "value": "Filipino",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "831",
+    "value": "Japanese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "831",
+    "value": "Japanese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "831",
+    "value": "Japanese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "832",
+    "value": "Korean",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "832",
+    "value": "Korean",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "832",
+    "value": "Korean",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "833",
+    "value": "Laotian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "833",
+    "value": "Laotian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "833",
+    "value": "Laotian",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "838",
+    "value": "Vietnamese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "838",
+    "value": "Vietnamese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "838",
+    "value": "Vietnamese",
+    "category": "ethnicity_type",
+    "sub_category": "race_asian"
+  },
+  {
+    "code": "3162",
+    "value": "Caribbean",
+    "category": "ethnicity_type",
+    "sub_category": "race_hispanic"
+  },
+  {
+    "code": "3164",
+    "value": "Mexican",
+    "category": "ethnicity_type",
+    "sub_category": "race_hispanic"
+  },
+  {
+    "code": "3165",
+    "value": "South American",
+    "category": "ethnicity_type",
+    "sub_category": "race_hispanic"
+  },
+  {
+    "code": "6451",
+    "value": "Abandoned",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "820",
+    "value": "American Indian or Alaska Native",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "821",
+    "value": "American Indian or Alaska Native",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "822",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "824",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "825",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "827",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "835",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "831",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "832",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "833",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "5922",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "838",
+    "value": "Asian",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "823",
+    "value": "Black or African American",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "3162",
+    "value": "Black or African American",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "826",
+    "value": "Black or African American",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "6352",
+    "value": "Declined to answer",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "828",
+    "value": "Native Hawaiian or Other Pacific Islander",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "829",
+    "value": "Native Hawaiian or Other Pacific Islander",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "5923",
+    "value": "Native Hawaiian or Other Pacific Islander",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "836",
+    "value": "Native Hawaiian or Other Pacific Islander",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "837",
+    "value": "Native Hawaiian or Other Pacific Islander",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "6453",
+    "value": "Unknown",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "840",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "841",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "842",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "843",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "844",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "839",
+    "value": "White",
+    "category": "race_type",
+    "sub_category": null
+  },
+  {
+    "code": "840",
+    "value": "White - Armenian",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "840",
+    "value": "White - Armenian",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "841",
+    "value": "White - Central American",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "841",
+    "value": "White - Central American",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "842",
+    "value": "White - European",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "842",
+    "value": "White - European",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "843",
+    "value": "White - Middle Eastern",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "843",
+    "value": "White - Middle Eastern",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "844",
+    "value": "White - Romanian",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "844",
+    "value": "White - Romanian",
+    "category": "ethnicity_type",
+    "sub_category": "race_white"
+  },
+  {
+    "code": "175",
+    "value": "Aunt (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "176",
+    "value": "Aunt (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "177",
+    "value": "Aunt (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "178",
+    "value": "Aunt (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "179",
+    "value": "Brother",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "180",
+    "value": "Brother (Half)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "181",
+    "value": "Brother (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "182",
+    "value": "Brother",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "183",
+    "value": "Brother (Half)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "184",
+    "value": "Brother (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "5993",
+    "value": "Child",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "185",
+    "value": "Cousin (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "186",
+    "value": "Cousin (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "187",
+    "value": "Daughter",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "188",
+    "value": "Daughter (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "189",
+    "value": "Daughter (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "190",
+    "value": "Daughter (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "191",
+    "value": "Daughter (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "192",
+    "value": "Daughter (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "193",
+    "value": "Daughter (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "194",
+    "value": "Daughter (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "195",
+    "value": "Daughter (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "196",
+    "value": "Daughter (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "197",
+    "value": "Daughter (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "198",
+    "value": "Daughter (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "199",
+    "value": "Daughter (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "201",
+    "value": "De Facto Parent",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "202",
+    "value": "De Facto Parent",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "203",
+    "value": "Father (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "204",
+    "value": "Father (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "205",
+    "value": "Father (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "206",
+    "value": "Father (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "207",
+    "value": "Father (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "208",
+    "value": "Father (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "209",
+    "value": "Father (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "210",
+    "value": "Father (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "211",
+    "value": "Father (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "212",
+    "value": "Father (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "213",
+    "value": "Father (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "214",
+    "value": "Father (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "215",
+    "value": "Godchild",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "216",
+    "value": "Godparent",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "217",
+    "value": "Granddaughter (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "218",
+    "value": "Granddaughter (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "219",
+    "value": "Granddaughter Grandparent (Matrnl)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "220",
+    "value": "Granddaughter Grandparent (Patrnl)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "221",
+    "value": "Grandparent (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "222",
+    "value": "Grandparent (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "223",
+    "value": "Grandparent (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "224",
+    "value": "Grandparen (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "225",
+    "value": "Grandson (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "226",
+    "value": "Grandson (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "227",
+    "value": "Grandson Grandparent (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "228",
+    "value": "Grandson Grandparent (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "229",
+    "value": "Great Aunt (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "230",
+    "value": "Great Aunt (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "231",
+    "value": "Great Grandparent (Matrnl)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "232",
+    "value": "Great Grandparent (Patrnl)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "233",
+    "value": "Great Grandparent (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "234",
+    "value": "Great Grandparent (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "235",
+    "value": "Great Uncle (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "236",
+    "value": "Great Uncle (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "237",
+    "value": "Great-Aunt (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "238",
+    "value": "Great-Aunt (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "239",
+    "value": "Great-Uncle (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "240",
+    "value": "Great-Uncle (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "241",
+    "value": "Guardian",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "242",
+    "value": "Indian Child Custodian",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "243",
+    "value": "Indian Custodian Child",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "244",
+    "value": "Live-in",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "245",
+    "value": "Mother (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "246",
+    "value": "Mother (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "247",
+    "value": "Mother (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "248",
+    "value": "Mother (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "5620",
+    "value": "Mother (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "249",
+    "value": "Mother (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "250",
+    "value": "Mother (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "251",
+    "value": "Mother (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "252",
+    "value": "Mother (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "253",
+    "value": "Mother (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "6361",
+    "value": "Mother (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "254",
+    "value": "Mother (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "255",
+    "value": "Nephew (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "256",
+    "value": "Nephew (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "257",
+    "value": "Nephew (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "258",
+    "value": "Nephew (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "259",
+    "value": "Nephew (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "260",
+    "value": "Nephew (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "261",
+    "value": "Nephew (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "262",
+    "value": "Nephew (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "263",
+    "value": "Niece (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "264",
+    "value": "Niece (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "265",
+    "value": "Niece (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "266",
+    "value": "Niece (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "267",
+    "value": "Niece (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "268",
+    "value": "Niece (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "269",
+    "value": "Niece",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "270",
+    "value": "Niece (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "271",
+    "value": "No Relation",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "274",
+    "value": "Other Relative",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "5994",
+    "value": "Residential Facility Staff",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "275",
+    "value": "Significant Other",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "276",
+    "value": "Sister",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "277",
+    "value": "Sister (Half)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "278",
+    "value": "Sister (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "279",
+    "value": "Sister",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "280",
+    "value": "Sister (Half)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "281",
+    "value": "Sister (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "282",
+    "value": "Son",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "283",
+    "value": "Son (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "284",
+    "value": "Son (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "285",
+    "value": "Son (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "286",
+    "value": "Son (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "287",
+    "value": "Son (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "288",
+    "value": "Son (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "289",
+    "value": "Son (Adoptive)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "290",
+    "value": "Son (Alleged)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "291",
+    "value": "Son (Birth)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "292",
+    "value": "Son (Foster)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "6360",
+    "value": "Son (Presumed)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "293",
+    "value": "Son (Step)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "295",
+    "value": "Spouse",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "296",
+    "value": "Uncle (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "297",
+    "value": "Uncle (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "298",
+    "value": "Uncle (Maternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "299",
+    "value": "Uncle (Paternal)",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "300",
+    "value": "Unknown",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "301",
+    "value": "Ward",
+    "category": "relationship_type",
+    "sub_category": null
+  },
+  {
+    "code": "csec",
+    "value": "Commercially Sexually Exploited Children (CSEC)",
+    "category": "report_type",
+    "sub_category": null
+  },
+  {
+    "code": "ssb",
+    "value": "Safely Surrendered Baby",
+    "category": "report_type",
+    "sub_category": null
+  },
+  {
+    "code": "6401",
+    "value": "Dangerous Animal on Premises",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6402",
+    "value": "Dangerous Environment",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6403",
+    "value": "Firearms in Home",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6404",
+    "value": "Gang Affiliation or Gang Activity",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6405",
+    "value": "Hostile, Aggressive Client",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6409",
+    "value": "Other",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6406",
+    "value": "Remote or Isolated Location",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6407",
+    "value": "Severe Mental Health Status",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "6408",
+    "value": "Threat or Assault on Staff Member",
+    "category": "safety_alert",
+    "sub_category": null
+  },
+  {
+    "code": "1521",
+    "value": "N/A Secondary Report",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "1518",
+    "value": "10 Day",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "1516",
+    "value": "3 Day",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "1517",
+    "value": "5 Day",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "1519",
+    "value": "Evaluate Out",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "1520",
+    "value": "Immediate",
+    "category": "screen_response_time",
+    "sub_category": null
+  },
+  {
+    "code": "7058",
+    "value": "Asexual",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7059",
+    "value": "Bisexual",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7064",
+    "value": "Declines to State",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7060",
+    "value": "Gay",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7061",
+    "value": "Lesbian",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7065",
+    "value": "Not Listed",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7062",
+    "value": "Pansexual",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7063",
+    "value": "Straight or Heterosexual",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "7066",
+    "value": "Unable to Determine",
+    "category": "sexual_orientation_type",
+    "sub_category": null
+  },
+  {
+    "code": "A",
+    "value": "Abandoned",
+    "category": "unable_to_determine_code",
+    "sub_category": null
+  },
+  {
+    "code": "I",
+    "value": "Unknown",
+    "category": "unable_to_determine_code",
+    "sub_category": null
+  },
+  {
+    "code": "K",
+    "value": "Unknown",
+    "category": "unable_to_determine_code",
+    "sub_category": null
+  },
+  {
+    "code": "1823",
+    "value": "Alaska",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1824",
+    "value": "Alabama",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1825",
+    "value": "American Samoa",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1826",
+    "value": "Arkansas",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1827",
+    "value": "Arizona",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1828",
+    "value": "California",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1830",
+    "value": "Colorado",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1831",
+    "value": "Connecticut",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1832",
+    "value": "Canal Zone",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1833",
+    "value": "District of Columbia",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1834",
+    "value": "Delaware",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1835",
+    "value": "Florida",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1836",
+    "value": "Georgia",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1837",
+    "value": "Guam",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1838",
+    "value": "Hawaii",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1839",
+    "value": "Iowa",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1840",
+    "value": "Idaho",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1841",
+    "value": "Illinois",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1842",
+    "value": "Indiana",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1843",
+    "value": "Kansas",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1844",
+    "value": "Kentucky",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1845",
+    "value": "Louisiana",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1846",
+    "value": "Massachusetts",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1847",
+    "value": "Maryland",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1848",
+    "value": "Maine",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1849",
+    "value": "Michigan",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1850",
+    "value": "Minnesota",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1851",
+    "value": "Missouri",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1829",
+    "value": "Northern Marianas Islands",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1852",
+    "value": "Mississippi",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1853",
+    "value": "Montana",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1854",
+    "value": "North Carolina",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1855",
+    "value": "North Dakota",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1856",
+    "value": "Nebraska",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1857",
+    "value": "New Hampshire",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1858",
+    "value": "New Jersey",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1859",
+    "value": "New Mexico",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1860",
+    "value": "Nevada",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1861",
+    "value": "New York",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1862",
+    "value": "Ohio",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1863",
+    "value": "Oklahoma",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1864",
+    "value": "Oregon",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1865",
+    "value": "Pennsylvania",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1866",
+    "value": "Puerto Rico",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1867",
+    "value": "Rhode Island",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1868",
+    "value": "South Carolina",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1869",
+    "value": "South Dakota",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1870",
+    "value": "Tennessee",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1871",
+    "value": "Trust Territories",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1872",
+    "value": "Texas",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1873",
+    "value": "Utah",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1874",
+    "value": "Virginia",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1875",
+    "value": "Virgin Islands",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1876",
+    "value": "Vermont",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1877",
+    "value": "Washington",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1878",
+    "value": "Wisconsin",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1879",
+    "value": "West Virginia",
+    "category": "us_state",
+    "sub_category": null
+  },
+  {
+    "code": "1880",
+    "value": "Wyoming",
+    "category": "us_state",
+    "sub_category": null
+  }
+]

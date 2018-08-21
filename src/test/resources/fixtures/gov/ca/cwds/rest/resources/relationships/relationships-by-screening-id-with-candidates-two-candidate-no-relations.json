@@ -2,6 +2,8 @@
   {
     "id": "2022",
     "date_of_birth": "1999-11-15",
+    "age": 18,
+    "age_unit": "Y",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -18,13 +20,16 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_age": 18,
+        "candidate_age_unit": "Y"
       }
     ]
   },
   {
     "id": "2023",
     "date_of_birth": "1999-11-15",
+    "age": 18,
+    "age_unit": "Y",
     "first_name": "Dima",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -41,7 +46,8 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_age": 18,
+        "candidate_age_unit": "Y"
       }
     ]
   }
