@@ -42,10 +42,11 @@ public class IntakeLovCheck implements Pingable {
     try (final Session session = sessionFactory.openSession()) {
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
-      final String table = "VW_INTAKE_LOV";
-      final int expectedValues = 542;
-      final boolean tableCountOk = checkTableCount(con, table, schema, expectedValues);
-      LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk, table);
+      final String tableName = "VW_INTAKE_LOV";
+      final int exepctedValues = 542;
+      final boolean tableCountOk = checkTableCount(con, tableName, schema, exepctedValues);
+      LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk,
+          tableName);
       ok = ok && tableCountOk;
 
     } // Session and connection go out of scope.

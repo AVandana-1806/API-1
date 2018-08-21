@@ -34,7 +34,7 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
         LegacyTable.SERVICE_PROVIDER.getDescription());
 
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        serviceProvider.getStateCodeType(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        serviceProvider.getStateCodeType(), IntakeLovType.US_STATE.getValue());
     String streetAddress =
         serviceProvider.getStreetNumber() + " " + serviceProvider.getStreetName();
     List<AddressIntakeApi> addresses =

@@ -23,7 +23,7 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 public class CachingIntakeCodeService implements IntakeCodeCache {
 
   private transient List<IntakeLov> intakeLovs = new ArrayList<>();
-  private transient Map<Number, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
+  private transient Map<Short, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
   private transient Map<String, List<IntakeLov>> mapByMeta = new TreeMap<>();
 
   private static final long serialVersionUID = 1L;
@@ -42,15 +42,16 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
 
     for (IntakeLov intakeLov : intakeLovs) {
-      Number sysCodeId = intakeLov.getLegacySystemCodeId();
+      Long sysCodeId = intakeLov.getLegacySystemCodeId();
       String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
 
       // populate mapBySystemCodeId map
       if (sysCodeId != null) {
-        List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeId);
+        Short sysCodeIdShort = sysCodeId.shortValue();
+        List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeIdShort);
         if (lovsForSysCode == null) {
           lovsForSysCode = new ArrayList<>();
-          mapBySystemCodeId.put(sysCodeId, lovsForSysCode);
+          mapBySystemCodeId.put(sysCodeIdShort, lovsForSysCode);
         }
         lovsForSysCode.add(intakeLov);
       }
@@ -98,8 +99,12 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   @Override
   public String getIntakeCodeForLegacySystemCode(Number systemCodeId, String intakeType) {
     String intakeCodeId = null;
+    if (systemCodeId == null) {
+      return intakeCodeId;
+    }
 
-    List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeId);
+    Short systemCodeIdShort = systemCodeId.shortValue();
+    List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
     if (intakeLovs != null) {
       for (IntakeLov lov : intakeLovs) {
         if (StringUtils.equalsIgnoreCase(intakeType, lov.getIntakeType())) {

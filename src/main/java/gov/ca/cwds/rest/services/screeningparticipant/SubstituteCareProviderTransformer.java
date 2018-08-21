@@ -37,7 +37,7 @@ public class SubstituteCareProviderTransformer
         LegacyTable.SUBSTITUTE_CARE_PROVIDER.getDescription());
 
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        substituteCareProvider.getStateCodeType(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        substituteCareProvider.getStateCodeType(), IntakeLovType.US_STATE.getValue());
     String streetAddress =
         substituteCareProvider.getStreetNumber() + " " + substituteCareProvider.getStreetName();
     List<AddressIntakeApi> addresses = Collections.singletonList(

@@ -45,7 +45,7 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
     String streetAddress =
         collateralIndividual.getStreetNumber() + " " + collateralIndividual.getStreetName();
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        collateralIndividual.getStateCode(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        collateralIndividual.getStateCode(), IntakeLovType.US_STATE.getValue());
 
     List<AddressIntakeApi> addresses = Collections.singletonList(
         new AddressIntakeApi(null, null, streetAddress, collateralIndividual.getCity(), state,

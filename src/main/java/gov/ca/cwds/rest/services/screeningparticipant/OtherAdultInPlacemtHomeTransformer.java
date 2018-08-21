@@ -47,7 +47,7 @@ public class OtherAdultInPlacemtHomeTransformer
     PlacementHome placementHome = otherAdultInPlacemtHome.getPlacementHome();
     String streetAddress = placementHome.getStreetNo() + " " + placementHome.getStreetNm();
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        placementHome.getStateCode(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        placementHome.getStateCode(), IntakeLovType.US_STATE.getValue());
 
     LegacyDescriptor placemtHomeLegacyDescriptor = new LegacyDescriptor(
         placementHome.getIdentifier(), null,

@@ -80,7 +80,7 @@ public class SystemCodeCheck implements Pingable {
     final String sql =
         "SELECT COUNT(*) AS TOTAL FROM " + schema + "." + tableName + " FOR READ ONLY ";
     int count = 0;
-    LOGGER.info("Postgres LOV health check: SQL: {}", sql);
+    LOGGER.info("Postgres SYSTEM_CODES health check: SQL: {}", sql);
 
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setMaxRows(10);
@@ -92,7 +92,7 @@ public class SystemCodeCheck implements Pingable {
         }
       }
 
-      LOGGER.info("Postgres LOV health check: count: {}, SQL: {}", count, sql);
+      LOGGER.info("Postgres SYSTEM_CODES health check: count: {}, SQL: {}", count, sql);
       con.commit();
     } catch (Exception e) {
       try {
@@ -100,11 +100,12 @@ public class SystemCodeCheck implements Pingable {
       } catch (SQLException e1) {
         LOGGER.trace("BOOM!", e1); // appease SonarQube by logging the exception
         throw CaresLogUtils.runtime(LOGGER, e1,
-            "LOV HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e1.getMessage(), e1);
+            "SYSTEM_CODES HEALTH CHECK QUERY FAILED ON ROLLBACK! SQL: {} {}", sql, e1.getMessage(),
+            e1);
       }
       LOGGER.trace("BOOM!", e);
-      throw CaresLogUtils.runtime(LOGGER, e, "LOV HEALTH CHECK QUERY FAILED! SQL: {} {}", sql,
-          e.getMessage(), e);
+      throw CaresLogUtils.runtime(LOGGER, e, "SYSTEM_CODES HEALTH CHECK QUERY FAILED! SQL: {} {}",
+          sql, e.getMessage(), e);
     }
 
     this.message = "Expected at least " + expectedCount + " " + tableName + ", found " + count;

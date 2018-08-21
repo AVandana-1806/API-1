@@ -82,7 +82,7 @@ public class IntakeAddressConverter {
             .setStreetAddress(placementHome.getStreetNo() + " " + placementHome.getStreetNm());
         addressIntakeApi.setCity(placementHome.getCityNm());
         String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-            placementHome.getStateCode(), IntakeLovType.ADDRESS_COUNTY.getValue());
+            placementHome.getStateCode(), IntakeLovType.US_STATE.getValue());
         addressIntakeApi.setState(state);
         addressIntakeApi.setZip(placementHome.getZipNo());
         addressIntakeApi.setType(PLACEMENT_HOME_INTAKE_CODE);
@@ -108,7 +108,7 @@ public class IntakeAddressConverter {
             LegacyTable.ADDRESS.getName(), LegacyTable.ADDRESS.getDescription());
     String streetAddress = address.getStreetNumber() + " " + address.getStreetName();
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(address.getStateCd(),
-        IntakeLovType.ADDRESS_COUNTY.getValue());
+        IntakeLovType.US_STATE.getValue());
     String type = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
         clientAddress.getAddressType(), IntakeLovType.ADDRESS_TYPE.getValue());
     return new AddressIntakeApi(null, null, streetAddress, address.getCity(), state,

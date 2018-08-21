@@ -10,7 +10,9 @@ public enum IntakeLovType {
 
   ADDRESS_COUNTY("address_county"),
 
-  ADDRESS_TYPE("address_type");
+  ADDRESS_TYPE("address_type"),
+
+  US_STATE("us_state");
 
   private final String value;
 

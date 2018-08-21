@@ -34,7 +34,7 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
         LegacyTable.REPORTER.getDescription());
 
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        reporter.getStateCodeType(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        reporter.getStateCodeType(), IntakeLovType.US_STATE.getValue());
     String streetAddress = reporter.getStreetNumber() + " " + reporter.getStreetName();
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor));

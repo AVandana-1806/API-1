@@ -51,7 +51,7 @@ public class EducationProviderContactTransformer
     String streetAddress =
         educationProvider.getStreetNumber() + " " + educationProvider.getStreetName();
     String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-        educationProvider.getStateCd(), IntakeLovType.ADDRESS_COUNTY.getValue());
+        educationProvider.getStateCd(), IntakeLovType.US_STATE.getValue());
 
     LegacyDescriptor educationProviderLegacyDescriptor = new LegacyDescriptor(
         educationProvider.getId(), null,
