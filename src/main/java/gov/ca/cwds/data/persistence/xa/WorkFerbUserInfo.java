@@ -66,7 +66,7 @@ public class WorkFerbUserInfo implements Work {
       try {
         // https://vsis-www.informatik.uni-hamburg.de/oldServer/teaching/ws-06.07/dbms/materialien/db2-manuals/db2aje90.pdf
         // Properties start on page 232.
-        LOGGER.info("DB2 connection, set user info");
+        LOGGER.debug("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
 
         final DB2Connection db2con = (DB2Connection) con;
