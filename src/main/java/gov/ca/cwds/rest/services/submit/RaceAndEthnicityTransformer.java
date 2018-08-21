@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeEthnicity;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
@@ -93,8 +93,7 @@ public class RaceAndEthnicityTransformer {
   private void buildRace(List<IntakeRace> intakeRaces, RaceAndEthnicity raceAndEthnicity,
       List<Short> raceCodes) {
     for (IntakeRace intakeRace : intakeRaces) {
-      raceCodes.add(IntakeCodeCache.global()
-          .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace));
+      raceCodes.add(getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace));
     }
     raceAndEthnicity.setRaceCode(raceCodes);
     if (raceCodes.contains(UNABLE_TO_DETERMINE)) {
@@ -135,6 +134,18 @@ public class RaceAndEthnicityTransformer {
     hispanicCodes.add(UNABLE_TO_DETERMINE);
     raceAndEthnicity.setHispanicCode(hispanicCodes);
     raceAndEthnicity.setHispanicOriginCode("Z");
+  }
+
+  private Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
+    Short sysId = null;
+    IntakeCodeConverter.IntakeRaceCode intakeCodeCode =
+        (intakeRace != null) ? IntakeCodeConverter.IntakeRaceCode.lookUpByIntakeRace(intakeRace)
+            : null;
+    if (intakeCodeCode != null && StringUtils.isNotBlank(intakeCodeCode.getLegacyValue())
+        && StringUtils.isNotBlank(metaId)) {
+      sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeCode.getLegacyValue(), metaId);
+    }
+    return sysId;
   }
 
 }
