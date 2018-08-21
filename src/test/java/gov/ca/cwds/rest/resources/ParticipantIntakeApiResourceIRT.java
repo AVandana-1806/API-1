@@ -6,7 +6,7 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import gov.ca.cwds.rest.api.domain.SafelySurenderedBabiesIntakeApi;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -51,7 +51,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
     ParticipantIntakeApi participantRequest = objectMapper.readValue(
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json").
             getBytes(), ParticipantIntakeApi.class);
-    SafelySurenderedBabiesIntakeApi ssb = new SafelySurenderedBabiesIntakeApi();
+    SafelySurrenderedBabiesIntakeApi ssb = new SafelySurrenderedBabiesIntakeApi();
     ssb.setSurrenderedBy("Unknown");
     participantRequest.setSafelySurenderedBabies(ssb);
 

@@ -4,11 +4,10 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.factory.Mappers;
 
 import gov.ca.cwds.data.persistence.ns.SafelySurrenderedBabiesEntity;
-import gov.ca.cwds.rest.api.domain.SafelySurenderedBabiesIntakeApi;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 
 @Mapper
 @SuppressWarnings("squid:S1214")
@@ -21,19 +20,19 @@ public interface SafelySurrenderedBabiesMapper {
       expression = "java(safelySurrenderedBabiesEntity.getParentGuardProvMedQuestion() == \"U\"? null : safelySurrenderedBabiesEntity.getParentGuardProvMedQuestion())")
   @Mapping(target = "relationToChild",
       expression = "java(safelySurrenderedBabiesEntity.getRelationToChild() == \"\"? null : safelySurrenderedBabiesEntity.getRelationToChild())")
-  SafelySurenderedBabiesIntakeApi map(SafelySurrenderedBabiesEntity safelySurrenderedBabiesEntity);
+  SafelySurrenderedBabiesIntakeApi map(SafelySurrenderedBabiesEntity safelySurrenderedBabiesEntity);
 
   @InheritInverseConfiguration
   @Mapping(target = "parentGuardGivenBraceletId", defaultValue = "U")
   @Mapping(target = "parentGuardProvMedQuestion", defaultValue = "U")
   @Mapping(target = "relationToChild", defaultValue = "")
-  SafelySurrenderedBabiesEntity map(SafelySurenderedBabiesIntakeApi safelySurrenderedBabies);
+  SafelySurrenderedBabiesEntity map(SafelySurrenderedBabiesIntakeApi safelySurrenderedBabies);
 
   @InheritInverseConfiguration
   @Mapping(target = "parentGuardGivenBraceletId", defaultValue = "U")
   @Mapping(target = "parentGuardProvMedQuestion", defaultValue = "U")
   @Mapping(target = "relationToChild", defaultValue = "")
-  SafelySurrenderedBabiesEntity map(SafelySurenderedBabiesIntakeApi safelySurrenderedBabies,
+  SafelySurrenderedBabiesEntity map(SafelySurrenderedBabiesIntakeApi safelySurrenderedBabies,
       @MappingTarget SafelySurrenderedBabiesEntity safelySurrenderedBabiesEntity);
 
 }

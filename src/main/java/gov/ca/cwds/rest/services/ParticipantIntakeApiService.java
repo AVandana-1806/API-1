@@ -41,7 +41,7 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
-import gov.ca.cwds.rest.api.domain.SafelySurenderedBabiesIntakeApi;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
@@ -225,7 +225,7 @@ public class ParticipantIntakeApiService implements
     participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
-    SafelySurenderedBabiesIntakeApi createdSsb =
+    SafelySurrenderedBabiesIntakeApi createdSsb =
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies());
     participantIntakeApiPosted.setSafelySurenderedBabies(createdSsb);
 
@@ -389,7 +389,7 @@ public class ParticipantIntakeApiService implements
   private void createOrUpdateSafelySurrenderedBabies(ParticipantIntakeApi participantIntakeApi,
       ParticipantEntity participantEntityManaged) {
 
-    SafelySurenderedBabiesIntakeApi safelySurenderedBabies =
+    SafelySurrenderedBabiesIntakeApi safelySurenderedBabies =
         participantIntakeApi.getSafelySurenderedBabies();
 
     if (safelySurenderedBabies != null) {
