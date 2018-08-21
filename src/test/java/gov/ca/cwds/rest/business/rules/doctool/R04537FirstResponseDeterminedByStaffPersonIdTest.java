@@ -55,6 +55,7 @@ import gov.ca.cwds.data.persistence.cms.DrmsDocument;
 import gov.ca.cwds.data.persistence.cms.ReferralClient;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.AddressEntityBuilder;
 import gov.ca.cwds.fixture.AllegationEntityBuilder;
 import gov.ca.cwds.fixture.AllegationPerpetratorHistoryEntityBuilder;
@@ -146,6 +147,7 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
   private ClientRelationshipDao clientRelationshipDao;
+  private DroolsService droolsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -190,6 +192,7 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
   public void setup() throws Exception {
     new TestingRequestExecutionContext("0X5");
     validator = Validation.buildDefaultValidatorFactory().getValidator();
+    droolsService = mock(DroolsService.class);
 
     referralDao = mock(ReferralDao.class);
     nonLACountyTriggers = mock(NonLACountyTriggers.class);
@@ -234,6 +237,7 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
     clientRelationshipDao = mock(ClientRelationshipDao.class);
     addressDao = mock(AddressDao.class);
     addressService = new AddressService(addressDao, ssaName3Dao, upperCaseTables, validator);
+    addressService.setDroolsService(droolsService);
 
     clientAddressDao = mock(ClientAddressDao.class);
     laCountyTrigger = mock(LACountyTrigger.class);

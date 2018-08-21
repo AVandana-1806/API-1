@@ -443,6 +443,98 @@ public class Address extends ReportingDomain implements Request, Response {
     return unitNumber;
   }
 
+  public void setLastUpdatedTime(DateTime lastUpdatedTime) {
+    this.lastUpdatedTime = lastUpdatedTime;
+  }
+
+  public void setExistingAddressId(String existingAddressId) {
+    this.existingAddressId = existingAddressId;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+  public void setEmergencyNumber(Long emergencyNumber) {
+    this.emergencyNumber = emergencyNumber;
+  }
+
+  public void setEmergencyExtension(Integer emergencyExtension) {
+    this.emergencyExtension = emergencyExtension;
+  }
+
+  public void setFrgAdrtB(Boolean frgAdrtB) {
+    this.frgAdrtB = frgAdrtB;
+  }
+
+  public void setGovernmentEntityCd(Short governmentEntityCd) {
+    this.governmentEntityCd = governmentEntityCd;
+  }
+
+  public void setMessageNumber(Long messageNumber) {
+    this.messageNumber = messageNumber;
+  }
+
+  public void setMessageExtension(Integer messageExtension) {
+    this.messageExtension = messageExtension;
+  }
+
+  public void setHeaderAddress(String headerAddress) {
+    this.headerAddress = headerAddress;
+  }
+
+  public void setPrimaryNumber(Long primaryNumber) {
+    this.primaryNumber = primaryNumber;
+  }
+
+  public void setPrimaryExtension(Integer primaryExtension) {
+    this.primaryExtension = primaryExtension;
+  }
+
+  public void setState(Short state) {
+    this.state = state;
+  }
+
+  public void setStreetName(String streetName) {
+    this.streetName = streetName;
+  }
+
+  public void setStreetNumber(String streetNumber) {
+    this.streetNumber = streetNumber;
+  }
+
+  public void setZip(Integer zip) {
+    this.zip = zip;
+  }
+
+  public void setAddressDescription(String addressDescription) {
+    this.addressDescription = addressDescription;
+  }
+
+  public void setZip4(Short zip4) {
+    this.zip4 = zip4;
+  }
+
+  public void setPostDirCd(String postDirCd) {
+    this.postDirCd = postDirCd;
+  }
+
+  public void setPreDirCd(String preDirCd) {
+    this.preDirCd = preDirCd;
+  }
+
+  public void setStreetSuffixCd(Short streetSuffixCd) {
+    this.streetSuffixCd = streetSuffixCd;
+  }
+
+  public void setUnitDesignationCd(Short unitDesignationCd) {
+    this.unitDesignationCd = unitDesignationCd;
+  }
+
+  public void setUnitNumber(String unitNumber) {
+    this.unitNumber = unitNumber;
+  }
+
   /**
    * {@inheritDoc}
    *
