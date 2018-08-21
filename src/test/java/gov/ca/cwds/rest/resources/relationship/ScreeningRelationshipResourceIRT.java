@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.resources.relationship;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
@@ -10,7 +11,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
@@ -88,12 +88,11 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  public void testCreateRelationships() throws IOException, JSONException {
+  public void testCreateRelationships() throws IOException {
     String request = fixture(JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS);
     Response response =
         doPostCall(SCREENING_RELATIONSHIPS_BATCH, request);
-    System.out.println(getStringResponse(response));
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_CREATED, response.getStatus());
   }
 
   @Test
@@ -142,7 +141,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
         SCREENING_RELATIONSHIPS_BATCH,
         requestJson);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_CREATED, response.getStatus());
 
     List<ScreeningRelationship> actualResponse = objectMapper
         .readValue((InputStream) response.getEntity(),
@@ -152,8 +151,21 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     assertNotNull(actualResponse);
     assertEquals(relationshipBases.length, actualResponse.size());
 
+    List<ScreeningRelationship> createdRelationships = new ArrayList<>();
+    actualResponse.forEach(e -> {
+      try {
+        Response relationByIdResponse = doGetCall(
+            SCREENING_RELATIONSHIPS + "/" + e.getId());
+        createdRelationships.add(objectMapper
+            .readValue((InputStream) relationByIdResponse.getEntity(),
+                ScreeningRelationship.class));
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+    });
+
     Arrays.asList(relationshipBases).forEach(relationshipBase -> {
-      Optional<ScreeningRelationship> optional = actualResponse.stream().filter(
+      Optional<ScreeningRelationship> optional = createdRelationships.stream().filter(
           relationship -> relationship.getClientId().equals(relationshipBase.getClientId())
               && relationship.getRelativeId().equals(relationshipBase.getRelativeId())).findFirst();
       if (optional.isPresent()) {

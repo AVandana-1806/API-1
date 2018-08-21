@@ -140,6 +140,7 @@ public class ScreeningRelationshipResource {
    * @param screeningRelationships The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
+  @UnitOfWork(value = "ns")
   @POST
   @Path("/batch")
   @Consumes(value = MediaType.APPLICATION_JSON)
@@ -155,7 +156,7 @@ public class ScreeningRelationshipResource {
   public Response batchCreate(@Valid @ApiParam(
       required = true) ScreeningRelationshipBase[] screeningRelationships) {
     return new ResponseConverter()
-        .withDataResponse(
+        .withCreatedResponse(
             relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
   }
 

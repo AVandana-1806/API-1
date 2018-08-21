@@ -2,8 +2,12 @@ package gov.ca.cwds.rest.api.domain;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +124,24 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       if (screeningRelationshipsWithCandidates.relatedCandidatesTo == null) {
         screeningRelationshipsWithCandidates.relatedCandidatesTo = new HashSet<>();
       }
+
+      calculateAgeAndAgeUnit();
       return screeningRelationshipsWithCandidates;
+    }
+
+    private void calculateAgeAndAgeUnit() {
+      if (StringUtils.isEmpty(screeningRelationshipsWithCandidates.dateOfBirth)) {
+        return;
+      }
+
+      Map<String, Object> ageWithUnit = calculateAge(
+          screeningRelationshipsWithCandidates.dateOfBirth);
+      if (ageWithUnit.isEmpty()) {
+        return;
+      }
+
+      screeningRelationshipsWithCandidates.ageUnit = (String) ageWithUnit.get("UNIT");
+      screeningRelationshipsWithCandidates.age = (Short) ageWithUnit.get("AGE");
     }
   }
 
@@ -178,6 +199,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         }
         relatedTo.relatedDateOfBirth =
             new SimpleDateFormat(DATE_PATTERN).format(relatedDateOfBirth);
+        calculateAgeAndAgeUnit();
         return this;
       }
 
@@ -235,6 +257,20 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         relatedTo.relationshipEndDate =
             new SimpleDateFormat(DATE_PATTERN).format(relationshipEndDate);
         return this;
+      }
+
+      private void calculateAgeAndAgeUnit() {
+        if (StringUtils.isEmpty(relatedTo.relatedDateOfBirth)) {
+          return;
+        }
+
+        Map<String, Object> ageWithUnit = calculateAge(relatedTo.relatedDateOfBirth);
+        if (ageWithUnit.isEmpty()) {
+          return;
+        }
+
+        relatedTo.relatedAgeUnit = (String) ageWithUnit.get("UNIT");
+        relatedTo.relatedAge = (Short) ageWithUnit.get("AGE");
       }
 
       public RelatedTo build() {
@@ -470,6 +506,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         }
         candidateTo.candidateDateOfBirth =
             new SimpleDateFormat(DATE_PATTERN).format(candidateDateOfBirth);
+        calculateAgeAndAgeUnit();
         return this;
       }
 
@@ -484,6 +521,20 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
         candidateTo.candidateAgeUnit = candidateAgeUnit;
         return this;
+      }
+
+      private void calculateAgeAndAgeUnit() {
+        if (StringUtils.isEmpty(candidateTo.candidateDateOfBirth)) {
+          return;
+        }
+
+        Map<String, Object> ageWithUnit = calculateAge(candidateTo.candidateDateOfBirth);
+        if (ageWithUnit.isEmpty()) {
+          return;
+        }
+
+        candidateTo.candidateAgeUnit = (String) ageWithUnit.get("UNIT");
+        candidateTo.candidateAge = (Short) ageWithUnit.get("AGE");
       }
 
       public CandidateTo build() {
@@ -710,4 +761,88 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     return relatedTo;
   }
 
+  public void setAge(Short age) {
+    this.age = age;
+  }
+
+  public void setAgeUnit(String ageUnit) {
+    this.ageUnit = ageUnit;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof ScreeningRelationshipsWithCandidates)) {
+      return false;
+    }
+
+    ScreeningRelationshipsWithCandidates that = (ScreeningRelationshipsWithCandidates) o;
+
+    return new EqualsBuilder()
+        .append(id, that.id)
+        .append(dateOfBirth, that.dateOfBirth)
+        .append(age, that.age)
+        .append(ageUnit, that.ageUnit)
+        .append(firstName, that.firstName)
+        .append(middleName, that.middleName)
+        .append(lastName, that.lastName)
+        .append(suffixName, that.suffixName)
+        .append(gender, that.gender)
+        .append(dateOfDeath, that.dateOfDeath)
+        .append(sensitive, that.sensitive)
+        .append(sealed, that.sealed)
+        .append(relatedTo, that.relatedTo)
+        .append(relatedCandidatesTo, that.relatedCandidatesTo)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(id)
+        .append(dateOfBirth)
+        .append(age)
+        .append(ageUnit)
+        .append(firstName)
+        .append(middleName)
+        .append(lastName)
+        .append(suffixName)
+        .append(gender)
+        .append(dateOfDeath)
+        .append(sensitive)
+        .append(sealed)
+        .append(relatedTo)
+        .append(relatedCandidatesTo)
+        .toHashCode();
+  }
+
+  /**
+   * @param dateOfBirth format dd-mm-yyyy
+   */
+  private static Map<String, Object> calculateAge(String dateOfBirth) {
+    Map<String, Object> map = new HashMap<>();
+
+    if (StringUtils.isEmpty(dateOfBirth)) {
+      return map;
+    }
+
+    Period period = Period
+        .between(LocalDate.parse(dateOfBirth),
+            LocalDate.now());
+    if (period.getYears() > 0) {
+      map.put("AGE", (short) period.getYears());
+      map.put("UNIT", AgeUnit.Y.name());
+    } else if (period.getMonths() > 0) {
+      map.put("AGE", (short) period.getMonths());
+      map.put("UNIT", AgeUnit.M.name());
+    } else {
+      map.put("AGE", (short) period.getDays());
+      map.put("UNIT", AgeUnit.D.name());
+    }
+
+    return map;
+  }
 }

@@ -103,7 +103,6 @@ public class RelationshipFacade {
     return responses;
   }
 
-  @UnitOfWork(value = "ns")
   private ScreeningRelationship createRelationship(ScreeningRelationshipBase relationshipBase) {
     return (ScreeningRelationship) screeningRelationshipService.create(relationshipBase);
   }
