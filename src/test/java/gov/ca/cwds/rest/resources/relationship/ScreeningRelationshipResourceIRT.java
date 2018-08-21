@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.resources.relationship;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
@@ -150,8 +151,21 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     assertNotNull(actualResponse);
     assertEquals(relationshipBases.length, actualResponse.size());
 
+    List<ScreeningRelationship> createdRelationships = new ArrayList<>();
+    actualResponse.forEach(e -> {
+      try {
+        Response relationByIdResponse = doGetCall(
+            SCREENING_RELATIONSHIPS + "/" + e.getId());
+        createdRelationships.add(objectMapper
+            .readValue((InputStream) relationByIdResponse.getEntity(),
+                ScreeningRelationship.class));
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+    });
+
     Arrays.asList(relationshipBases).forEach(relationshipBase -> {
-      Optional<ScreeningRelationship> optional = actualResponse.stream().filter(
+      Optional<ScreeningRelationship> optional = createdRelationships.stream().filter(
           relationship -> relationship.getClientId().equals(relationshipBase.getClientId())
               && relationship.getRelativeId().equals(relationshipBase.getRelativeId())).findFirst();
       if (optional.isPresent()) {

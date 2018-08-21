@@ -45,18 +45,17 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_threeParticipantOneRelationshipTwoCandidates()
-      throws IOException, JSONException {
+      throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
-
     validateResponse(actualJson, expectedResponse);
   }
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_noRelationsTwoParticipants()
-      throws IOException, JSONException {
+      throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
@@ -75,7 +74,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_TwoRelationsNoCandidates()
-      throws IOException, JSONException {
+      throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
@@ -86,18 +85,19 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_FourParticipants()
-      throws IOException, JSONException {
+      throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
+    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_OneParticipantsOneRelationship()
-      throws IOException, JSONException {
+      throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =

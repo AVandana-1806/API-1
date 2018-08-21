@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -132,19 +134,14 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         return;
       }
 
-      Period period = Period
-          .between(LocalDate.parse(screeningRelationshipsWithCandidates.dateOfBirth),
-              LocalDate.now());
-      if (period.getYears() > 0) {
-        screeningRelationshipsWithCandidates.age = (short) period.getYears();
-        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.Y.name();
-      } else if (period.getMonths() > 0) {
-        screeningRelationshipsWithCandidates.age = (short) period.getMonths();
-        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.M.name();
-      } else {
-        screeningRelationshipsWithCandidates.age = (short) period.getDays();
-        screeningRelationshipsWithCandidates.ageUnit = AgeUnit.D.name();
+      Map<String, Object> ageWithUnit = calculateAge(
+          screeningRelationshipsWithCandidates.dateOfBirth);
+      if (ageWithUnit.isEmpty()) {
+        return;
       }
+
+      screeningRelationshipsWithCandidates.ageUnit = (String) ageWithUnit.get("UNIT");
+      screeningRelationshipsWithCandidates.age = (Short) ageWithUnit.get("AGE");
     }
   }
 
@@ -202,6 +199,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         }
         relatedTo.relatedDateOfBirth =
             new SimpleDateFormat(DATE_PATTERN).format(relatedDateOfBirth);
+        calculateAgeAndAgeUnit();
         return this;
       }
 
@@ -259,6 +257,20 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         relatedTo.relationshipEndDate =
             new SimpleDateFormat(DATE_PATTERN).format(relationshipEndDate);
         return this;
+      }
+
+      private void calculateAgeAndAgeUnit() {
+        if (StringUtils.isEmpty(relatedTo.relatedDateOfBirth)) {
+          return;
+        }
+
+        Map<String, Object> ageWithUnit = calculateAge(relatedTo.relatedDateOfBirth);
+        if (ageWithUnit.isEmpty()) {
+          return;
+        }
+
+        relatedTo.relatedAgeUnit = (String) ageWithUnit.get("UNIT");
+        relatedTo.relatedAge = (Short) ageWithUnit.get("AGE");
       }
 
       public RelatedTo build() {
@@ -494,6 +506,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         }
         candidateTo.candidateDateOfBirth =
             new SimpleDateFormat(DATE_PATTERN).format(candidateDateOfBirth);
+        calculateAgeAndAgeUnit();
         return this;
       }
 
@@ -508,6 +521,20 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
         candidateTo.candidateAgeUnit = candidateAgeUnit;
         return this;
+      }
+
+      private void calculateAgeAndAgeUnit() {
+        if (StringUtils.isEmpty(candidateTo.candidateDateOfBirth)) {
+          return;
+        }
+
+        Map<String, Object> ageWithUnit = calculateAge(candidateTo.candidateDateOfBirth);
+        if (ageWithUnit.isEmpty()) {
+          return;
+        }
+
+        candidateTo.candidateAgeUnit = (String) ageWithUnit.get("UNIT");
+        candidateTo.candidateAge = (Short) ageWithUnit.get("AGE");
       }
 
       public CandidateTo build() {
@@ -790,5 +817,32 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         .append(relatedTo)
         .append(relatedCandidatesTo)
         .toHashCode();
+  }
+
+  /**
+   * @param dateOfBirth format dd-mm-yyyy
+   */
+  private static Map<String, Object> calculateAge(String dateOfBirth) {
+    Map<String, Object> map = new HashMap<>();
+
+    if (StringUtils.isEmpty(dateOfBirth)) {
+      return map;
+    }
+
+    Period period = Period
+        .between(LocalDate.parse(dateOfBirth),
+            LocalDate.now());
+    if (period.getYears() > 0) {
+      map.put("AGE", (short) period.getYears());
+      map.put("UNIT", AgeUnit.Y.name());
+    } else if (period.getMonths() > 0) {
+      map.put("AGE", (short) period.getMonths());
+      map.put("UNIT", AgeUnit.M.name());
+    } else {
+      map.put("AGE", (short) period.getDays());
+      map.put("UNIT", AgeUnit.D.name());
+    }
+
+    return map;
   }
 }

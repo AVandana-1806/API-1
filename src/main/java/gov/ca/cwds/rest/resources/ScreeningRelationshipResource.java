@@ -140,6 +140,7 @@ public class ScreeningRelationshipResource {
    * @param screeningRelationships The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
+  @UnitOfWork(value = "ns")
   @POST
   @Path("/batch")
   @Consumes(value = MediaType.APPLICATION_JSON)

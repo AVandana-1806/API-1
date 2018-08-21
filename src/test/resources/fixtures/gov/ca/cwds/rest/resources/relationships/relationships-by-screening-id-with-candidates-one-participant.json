@@ -2,6 +2,8 @@
   {
     "id": "2031",
     "date_of_birth": "1999-11-15",
+    "age": 18,
+    "age_unit": "Y",
     "first_name": "Dima",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -19,6 +21,8 @@
         "related_person_name_suffix": "Jr.",
         "related_person_gender": "male",
         "related_person_date_of_birth": "1999-11-15",
+        "related_person_age": 18,
+        "related_person_age_unit": "Y",
         "absent_parent_code": "Y",
         "same_home_code": "U",
         "indexed_person_relationship": "204",
