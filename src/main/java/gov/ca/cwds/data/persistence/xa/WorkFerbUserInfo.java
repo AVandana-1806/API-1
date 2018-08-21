@@ -56,10 +56,11 @@ public class WorkFerbUserInfo implements Work {
 
   @Override
   public void execute(Connection con) throws SQLException {
-    LOGGER.debug("execute");
+    LOGGER.warn("execute: Connection class: {}", con.getClass().getName());
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
     final String staffId = ctx.getStaffId();
     final String userId = ctx.getUserId();
+    LOGGER.warn("execute: user id: {}, staff id: {}", userId, staffId);
 
     if (con instanceof DB2Connection) {
       try {
