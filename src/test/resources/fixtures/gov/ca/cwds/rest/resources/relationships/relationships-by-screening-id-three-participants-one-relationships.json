@@ -1,7 +1,9 @@
 [
   {
     "id": "2019",
-    "date_of_birth": "1999-11-15",
+    "date_of_birth": "2018-01-15",
+    "age": 7,
+    "age_unit": "M",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -18,7 +20,9 @@
         "related_person_last_name": "Pfeiffer",
         "related_person_name_suffix": "Jr",
         "related_person_gender": "male",
-        "related_person_date_of_birth": "1999-11-15",
+        "related_person_date_of_birth": "2018-08-08",
+        "related_person_age": 13,
+        "related_person_age_unit": "D",
         "absent_parent_code": "Y",
         "same_home_code": "U",
         "indexed_person_relationship": "188",
@@ -36,13 +40,16 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_age": 18,
+        "candidate_age_unit": "Y"
       }
     ]
   },
   {
     "id": "2020",
-    "date_of_birth": "1999-11-15",
+    "date_of_birth": "2018-08-08",
+    "age": 13,
+    "age_unit": "D",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -59,7 +66,9 @@
         "related_person_last_name": "Pfeiffer",
         "related_person_name_suffix": "Jr",
         "related_person_gender": "male",
-        "related_person_date_of_birth": "1999-11-15",
+        "related_person_date_of_birth": "2018-01-15",
+        "related_person_age": 7,
+        "related_person_age_unit": "M",
         "absent_parent_code": "Y",
         "same_home_code": "U",
         "indexed_person_relationship": "203",
@@ -77,13 +86,16 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_age": 18,
+        "candidate_age_unit": "Y"
       }
     ]
   },
   {
     "id": "2021",
     "date_of_birth": "1999-11-15",
+    "age": 18,
+    "age_unit": "Y",
     "first_name": "Alex4",
     "middle_name": "T",
     "last_name": "Pfeiffer",
@@ -99,8 +111,9 @@
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
-        "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_date_of_birth": "2018-01-15",
+        "candidate_age": 7,
+        "candidate_age_unit": "M"
       },
       {
         "candidate_id": "2020",
@@ -108,8 +121,9 @@
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
-        "candidate_date_of_birth": "1999-11-15",
-        "candidate_age": 0
+        "candidate_date_of_birth": "2018-08-08",
+        "candidate_age": 13,
+        "candidate_age_unit": "D"
       }
     ]
   }
