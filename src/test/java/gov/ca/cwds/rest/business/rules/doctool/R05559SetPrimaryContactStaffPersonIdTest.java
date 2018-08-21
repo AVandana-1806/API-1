@@ -49,6 +49,7 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.persistence.cms.CaseLoad;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.AddressEntityBuilder;
 import gov.ca.cwds.fixture.AllegationPerpetratorHistoryEntityBuilder;
 import gov.ca.cwds.fixture.AssignmentEntityBuilder;
@@ -169,6 +170,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
+  private DroolsService droolsService;
 
   private gov.ca.cwds.data.persistence.cms.Referral referral;
   private Validator validator;
@@ -189,6 +191,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
   public void setup() throws Exception {
     new TestingRequestExecutionContext("02f");
     validator = Validation.buildDefaultValidatorFactory().getValidator();
+    droolsService = mock(DroolsService.class);
 
     referralDao = mock(ReferralDao.class);
     nonLACountyTriggers = mock(NonLACountyTriggers.class);
@@ -227,6 +230,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
 
     addressDao = mock(AddressDao.class);
     addressService = new AddressService(addressDao, ssaName3Dao, upperCaseTables, validator);
+    addressService.setDroolsService(droolsService);
 
     clientAddressDao = mock(ClientAddressDao.class);
     riClientAddress = mock(RIClientAddress.class);
