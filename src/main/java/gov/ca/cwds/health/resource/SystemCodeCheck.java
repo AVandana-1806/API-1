@@ -25,8 +25,6 @@ public class SystemCodeCheck implements Pingable {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(SystemCodeCheck.class);
 
-  // tables.put("SYSTEM_CODES", 4274);
-
   private SessionFactory sessionFactory;
   private String message;
 
@@ -37,12 +35,11 @@ public class SystemCodeCheck implements Pingable {
 
   @Override
   public boolean ping() {
-    LOGGER.info("Postgres LOV health check: ping start");
+    LOGGER.info("Postgres SYSTEM_CODES health check: ping start");
     boolean ok = true;
 
     try (final Session session = sessionFactory.openSession()) {
-      final String schema =
-          (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
+      final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       final String tableName = "SYSTEM_CODES";
       final int exepctedValues = 4274;

@@ -6,7 +6,7 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 
 public class IntakeCodeCacheHealthCheck extends HealthCheck {
 
-  private static final long MINIMUM_LOVS = 394;
+  private static final long MINIMUM_LOVS = 531;
 
   public IntakeCodeCacheHealthCheck() {
     super();

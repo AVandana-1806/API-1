@@ -42,26 +42,29 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
 
     for (IntakeLov intakeLov : intakeLovs) {
-      Long sysCodeId = intakeLov.getLegacySystemCodeId();
-      String meta = intakeLov.getLegacyMeta().toLowerCase();
+      Number sysCodeId = intakeLov.getLegacySystemCodeId();
+      String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
 
       // populate mapBySystemCodeId map
-      List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeId);
-      if (lovsForSysCode == null) {
-        lovsForSysCode = new ArrayList<>();
-        mapBySystemCodeId.put(sysCodeId, lovsForSysCode);
+      if (sysCodeId != null) {
+        List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeId);
+        if (lovsForSysCode == null) {
+          lovsForSysCode = new ArrayList<>();
+          mapBySystemCodeId.put(sysCodeId, lovsForSysCode);
+        }
+        lovsForSysCode.add(intakeLov);
       }
-      lovsForSysCode.add(intakeLov);
 
       // populate mapByMeta map
-      List<IntakeLov> lovsForMeta = mapByMeta.get(meta);
-      if (lovsForMeta == null) {
-        lovsForMeta = new ArrayList<>();
-        mapByMeta.put(meta, lovsForMeta);
+      if (StringUtils.isNotBlank(meta)) {
+        List<IntakeLov> lovsForMeta = mapByMeta.get(meta);
+        if (lovsForMeta == null) {
+          lovsForMeta = new ArrayList<>();
+          mapByMeta.put(meta, lovsForMeta);
+        }
+        lovsForMeta.add(intakeLov);
       }
-      lovsForMeta.add(intakeLov);
     }
-
   }
 
   @SuppressWarnings("unchecked")

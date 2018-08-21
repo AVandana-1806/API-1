@@ -40,8 +40,7 @@ public class IntakeLovCheck implements Pingable {
     boolean ok = true;
 
     try (final Session session = sessionFactory.openSession()) {
-      final String schema =
-          (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
+      final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       final String table = "VW_INTAKE_LOV";
       final int expectedValues = 542;
