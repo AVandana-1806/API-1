@@ -47,7 +47,10 @@ public class FunctionalTest {
     token = login(configImpl, UserGroup.SOCIAL_WORKER);
     userInfo = getStaffpersonInfo(configImpl);
   }
-  
+
+  /**
+   * @param userGroup - userGroup
+   */
   public void loginUserGroup(UserGroup userGroup) {
     // login as a specified user required for the specific test
     ConfigImpl configImpl = new ConfigImpl();
