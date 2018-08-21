@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services.cms;
 
-import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Validator;
@@ -15,14 +14,19 @@ import gov.ca.cwds.data.cms.AddressDao;
 import gov.ca.cwds.data.cms.SsaName3Dao;
 import gov.ca.cwds.data.persistence.cms.Address;
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
+import gov.ca.cwds.drools.DroolsConfiguration;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
+import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
+import gov.ca.cwds.rest.business.rules.ReferralAddressDroolsConfiguration;
 import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
+import gov.ca.cwds.security.realm.PerryAccount;
 
 
 /**
@@ -36,8 +40,10 @@ public class AddressService implements
   private AddressDao addressDao;
   private SsaName3Dao ssaname3Dao;
   private UpperCaseTables upperCaseTables;
-
   private Validator validator;
+
+  @Inject
+  private DroolsService droolsService;
 
   /**
    * 
@@ -96,9 +102,9 @@ public class AddressService implements
           gov.ca.cwds.rest.api.domain.cms.Address.createWithDefaults(address);
 
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-
+      final PerryAccount perryAccount = RequestExecutionContext.instance().getUserIdentity();
+      droolsService.performBusinessRules(createConfiguration(), domainAddress, perryAccount);
       PostedAddress postedAddress = this.create(domainAddress);
-
       address.setLegacyId(postedAddress.getExistingAddressId());
       address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
     } catch (Exception e) {
@@ -107,7 +113,10 @@ public class AddressService implements
     }
 
     return address;
+  }
 
+  private DroolsConfiguration<gov.ca.cwds.rest.api.domain.cms.Address> createConfiguration() {
+    return ReferralAddressDroolsConfiguration.DATA_PROCESSING_INSTANCE;
   }
 
   @Override
@@ -147,6 +156,13 @@ public class AddressService implements
       LOGGER.info("Address not found : {}", request);
       throw new ServiceException(e);
     }
+  }
+
+  /**
+   * @param droolsService - droolsService
+   */
+  public void setDroolsService(DroolsService droolsService) {
+    this.droolsService = droolsService;
   }
 
 }

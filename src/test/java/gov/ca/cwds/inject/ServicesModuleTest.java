@@ -22,7 +22,7 @@ import gov.ca.cwds.data.persistence.cms.SystemCode;
 import gov.ca.cwds.inject.DataAccessModuleTest.TestDataAccessModule;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.messages.MessageBuilder;
-import gov.ca.cwds.rest.services.IntakeLovService;
+import gov.ca.cwds.rest.services.CachingIntakeCodeService;
 import gov.ca.cwds.rest.services.cms.GovernmentOrganizationService;
 import gov.ca.cwds.rest.services.cms.SystemCodeService;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
@@ -53,7 +53,7 @@ public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
 
   IntakeLovDao intakeLovDao;
   SystemCodeService systemCodeService;
-  IntakeLovService intakeLovService;
+  CachingIntakeCodeService intakeLovService;
   ServicesModule target;
 
   @Override
@@ -63,7 +63,7 @@ public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
 
     intakeLovDao = mock(IntakeLovDao.class);
     systemCodeService = new SystemCodeService(systemCodeDao, systemMetaDao);
-    intakeLovService = new IntakeLovService(intakeLovDao);
+    intakeLovService = new CachingIntakeCodeService(intakeLovDao);
     target = new ServicesModule();
   }
 

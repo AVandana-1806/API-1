@@ -10,19 +10,19 @@ import org.junit.Test;
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
-public class LovDbCheckTest extends Doofenshmirtz<ClientAddress> {
+public class IntakeLovCheckTest extends Doofenshmirtz<ClientAddress> {
 
-  LovDbCheck target;
+  IntakeLovCheck target;
 
   @Override
   public void setup() throws Exception {
     super.setup();
-    target = new LovDbCheck(sessionFactory);
+    target = new IntakeLovCheck(sessionFactory);
   }
 
   @Test
   public void type() throws Exception {
-    assertThat(LovDbCheck.class, notNullValue());
+    assertThat(IntakeLovCheck.class, notNullValue());
   }
 
   @Test
@@ -40,7 +40,7 @@ public class LovDbCheckTest extends Doofenshmirtz<ClientAddress> {
   @Test
   public void getMessage_A$() throws Exception {
     final String actual = target.getMessage();
-    final String expected = "[]";
+    final String expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 

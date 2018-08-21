@@ -6,7 +6,6 @@ import java.util.List;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
-import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
  * @author CWDS API Team
@@ -78,20 +77,7 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
   }
 
   @Override
-  public Short getLegacySystemCodeForRace(String metaId, IntakeRace intakeRace) {
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Abandoned".contains(intakeRace.getRace())) {
-      return 6351;
-    }
-    if (SystemCodeCategoryId.ETHNICITY.contains(metaId)
-        && "Central American".contains(intakeRace.getRaceDetail())) {
-      return 841;
-    }
-    return null;
-  }
-
-  @Override
-  public String getIntakeCodeForLegacySystemCode(Number systemCodeId) {
+  public String getIntakeCodeForLegacySystemCode(Number systemCodeId, String intakeType) {
     if (1828 == systemCodeId.intValue()) {
       return "CA";
     }
@@ -103,15 +89,6 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
     }
     if (1253 == systemCodeId.intValue()) {
       return "English";
-    }
-    return null;
-  }
-
-  @Override
-  public IntakeLov getIntakeLov(Number leacySystemCodeId) {
-    if (32 == leacySystemCodeId.intValue()) {
-      return new IntakeLov(leacySystemCodeId.longValue(), null, "Residence", null, false, null,
-          null, null, "address_type", "Home", "Home");
     }
     return null;
   }
