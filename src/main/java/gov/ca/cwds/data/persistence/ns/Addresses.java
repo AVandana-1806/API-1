@@ -28,6 +28,7 @@ import gov.ca.cwds.data.persistence.ns.papertrail.HasPaperTrail;
 @Entity
 @Table(name = "addresses")
 public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<String> {
+
   private static final long serialVersionUID = 1L;
 
   public static final String FIND_BY_PARTICIPANT_ID =

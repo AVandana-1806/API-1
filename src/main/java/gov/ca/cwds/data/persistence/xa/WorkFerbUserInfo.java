@@ -75,9 +75,9 @@ public class WorkFerbUserInfo implements Work {
         db2con.setDB2ClientUser(staffId);
         db2con.setDB2ClientWorkstation(WORKSTATION);
 
-        if (CaresHibernateHackersKit.isDB2OnZOS(con)) {
-          db2con.setDB2ClientProgramId(PROGRAM_NAME);
-        }
+        // if (CaresHibernateHackersKit.isDB2OnZOS(con)) {
+        // db2con.setDB2ClientProgramId(PROGRAM_NAME);
+        // }
 
         //@formatter:off
         final String sql = 
