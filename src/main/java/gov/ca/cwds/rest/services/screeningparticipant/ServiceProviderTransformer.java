@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.data.persistence.cms.ServiceProvider;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
@@ -32,12 +33,12 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
         new DateTime(serviceProvider.getLastUpdatedTime()), LegacyTable.SERVICE_PROVIDER.getName(),
         LegacyTable.SERVICE_PROVIDER.getDescription());
 
-    String state = IntakeCodeCache.global()
-        .getIntakeCodeForLegacySystemCode(serviceProvider.getStateCodeType());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        serviceProvider.getStateCodeType(), IntakeLovType.ADDRESS_COUNTY.getValue());
     String streetAddress =
         serviceProvider.getStreetNumber() + " " + serviceProvider.getStreetName();
-    List<AddressIntakeApi> addresses = Collections.singletonList(
-        new AddressIntakeApi(null, null, streetAddress,
+    List<AddressIntakeApi> addresses =
+        Collections.singletonList(new AddressIntakeApi(null, null, streetAddress,
             serviceProvider.getCity(), state, getZip(serviceProvider), null, legacyDescriptor));
     String phoneType =
         serviceProvider.getPhoneType() != null ? serviceProvider.getPhoneType().name() : null;

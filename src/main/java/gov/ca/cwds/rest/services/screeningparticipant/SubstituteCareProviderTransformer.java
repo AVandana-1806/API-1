@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
@@ -35,8 +36,8 @@ public class SubstituteCareProviderTransformer
         LegacyTable.SUBSTITUTE_CARE_PROVIDER.getName(),
         LegacyTable.SUBSTITUTE_CARE_PROVIDER.getDescription());
 
-    String state = IntakeCodeCache.global()
-        .getIntakeCodeForLegacySystemCode(substituteCareProvider.getStateCodeType());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        substituteCareProvider.getStateCodeType(), IntakeLovType.ADDRESS_COUNTY.getValue());
     String streetAddress =
         substituteCareProvider.getStreetNumber() + " " + substituteCareProvider.getStreetName();
     List<AddressIntakeApi> addresses = Collections.singletonList(

@@ -4,11 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,34 +17,21 @@ import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
 
 /**
- * Health check for Postgres list of value (LOV) tables and views. Feel the LOVe.
+ * Health check for Postgres system codes.
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2077"})
-public class LovDbCheck implements Pingable {
+public class SystemCodeCheck implements Pingable {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(LovDbCheck.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(SystemCodeCheck.class);
 
-  private static final Map<String, Integer> lovTableCounts;
-
-  static {
-    final Map<String, Integer> tables = new TreeMap<>();
-    tables.put("INTAKE_LOV_CATEGORIES", 23);
-    tables.put("INTAKE_LOV_CODES", 527);
-    tables.put("INTAKE_ONLY_LOV_CATEGORIES", 4);
-    tables.put("INTAKE_ONLY_LOV_CODES", 13);
-    tables.put("SYSTEM_CODES", 4274);
-    tables.put("VW_INTAKE_LOV", 542);
-
-    lovTableCounts = Collections.unmodifiableMap(tables);
-  }
+  // tables.put("SYSTEM_CODES", 4274);
 
   private SessionFactory sessionFactory;
-  private List<String> messages = new ArrayList<>();
+  private String message;
 
   @Inject
-  LovDbCheck(@NsSessionFactory SessionFactory sessionFactory) {
+  SystemCodeCheck(@NsSessionFactory SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 
@@ -58,28 +40,25 @@ public class LovDbCheck implements Pingable {
     LOGGER.info("Postgres LOV health check: ping start");
     boolean ok = true;
 
-    // must clear messages list otherwise it keeps on adding into it...
-    messages.clear();
-
     try (final Session session = sessionFactory.openSession()) {
       final String schema =
           (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
-      for (Map.Entry<String, Integer> entry : lovTableCounts.entrySet()) {
-        final String table = entry.getKey();
-        final boolean tableCountOk = checkTableCount(con, table, schema, entry.getValue());
-        LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk, table);
-        ok = ok && tableCountOk;
-      }
+      final String tableName = "SYSTEM_CODES";
+      final int exepctedValues = 4274;
+      final boolean tableCountOk = checkTableCount(con, tableName, schema, exepctedValues);
+      LOGGER.info("Postgres SYSTEM_CODES health check: tableCountOk: {}, table: {}", tableCountOk,
+          tableName);
+      ok = ok && tableCountOk;
     } // Session and connection go out of scope.
 
-    LOGGER.info("Postgres LOV health check: ping done");
+    LOGGER.info("Postgres SYSTEM_CODES health check: ping done");
     return ok;
   }
 
   @Override
   public String getMessage() {
-    return messages.toString();
+    return message;
   }
 
   /**
@@ -131,13 +110,7 @@ public class LovDbCheck implements Pingable {
           e.getMessage(), e);
     }
 
-    addMessage("[Expected at least " + expectedCount + " " + tableName + ", found " + count + "]");
+    this.message = "Expected at least " + expectedCount + " " + tableName + ", found " + count;
     return count >= expectedCount;
   }
-
-  private void addMessage(String message) {
-    LOGGER.debug("add message: {}", message);
-    messages.add(message);
-  }
-
 }

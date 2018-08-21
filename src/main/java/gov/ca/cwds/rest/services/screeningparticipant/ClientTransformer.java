@@ -15,6 +15,7 @@ import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
@@ -82,13 +83,14 @@ public class ClientTransformer implements ParticipantMapper<Client> {
       return languages;
     } else if (client.getPrimaryLanguageType() != 0 && client.getSecondaryLanguageType() != 0) {
       return new LinkedList<>(Arrays.asList(
-          IntakeCodeCache.global()
-              .getIntakeCodeForLegacySystemCode(client.getPrimaryLanguageType()),
-          IntakeCodeCache.global()
-              .getIntakeCodeForLegacySystemCode(client.getSecondaryLanguageType())));
+          IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(client.getPrimaryLanguageType(),
+              IntakeLovType.LANGUAGE.getValue()),
+          IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+              client.getSecondaryLanguageType(), IntakeLovType.LANGUAGE.getValue())));
     } else if (client.getPrimaryLanguageType() != 0 && client.getSecondaryLanguageType() == 0) {
-      return new LinkedList<>(Arrays.asList(IntakeCodeCache.global()
-          .getIntakeCodeForLegacySystemCode(client.getPrimaryLanguageType())));
+      return new LinkedList<>(
+          Arrays.asList(IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+              client.getPrimaryLanguageType(), IntakeLovType.LANGUAGE.getValue())));
     }
     return languages;
   }

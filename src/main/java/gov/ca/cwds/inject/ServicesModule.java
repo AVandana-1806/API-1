@@ -41,7 +41,6 @@ import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
-import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.ScreeningService;
@@ -279,16 +278,14 @@ public class ServicesModule extends AbstractModule {
    * Provides IntakeCodeCache.
    *
    * @param intakeLovDao Intake list of values (LOV) DAO
-   * @param config Ferb API configuration
    * @return IntakeCodeCache initialized Intake LOV code cache
    */
   @Provides
-  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
-      ApiConfiguration config) {
+  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao) {
     LOGGER.info("provide intakeCode cache");
     if (intakeCodeCache == null) {
-      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
-      intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      CachingIntakeCodeService intakeLovService = new CachingIntakeCodeService(intakeLovDao);
+      intakeCodeCache = intakeLovService;
       intakeCodeCache.register();
     }
     return intakeCodeCache;
@@ -336,22 +333,5 @@ public class ServicesModule extends AbstractModule {
     }
 
     return ret;
-  }
-
-  private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
-      ApiConfiguration config) {
-    LOGGER.info("provide intakeCode service");
-
-    boolean preLoad = true; // default is true
-    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
-
-    final SystemCodeCacheConfiguration intakeCodeCacheConfig =
-        config != null ? config.getIntakeCodeCacheConfiguration() : null;
-    if (intakeCodeCacheConfig != null) {
-      preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
-      secondsToRefreshCache = intakeCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
-    }
-
-    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
 }

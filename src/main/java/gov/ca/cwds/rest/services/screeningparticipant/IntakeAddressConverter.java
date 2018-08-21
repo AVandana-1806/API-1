@@ -22,6 +22,7 @@ import gov.ca.cwds.data.persistence.cms.ClientAddress;
 import gov.ca.cwds.data.std.ApiAddressAware;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
@@ -80,8 +81,8 @@ public class IntakeAddressConverter {
         addressIntakeApi
             .setStreetAddress(placementHome.getStreetNo() + " " + placementHome.getStreetNm());
         addressIntakeApi.setCity(placementHome.getCityNm());
-        String state =
-            IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(placementHome.getStateCode());
+        String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+            placementHome.getStateCode(), IntakeLovType.ADDRESS_COUNTY.getValue());
         addressIntakeApi.setState(state);
         addressIntakeApi.setZip(placementHome.getZipNo());
         addressIntakeApi.setType(PLACEMENT_HOME_INTAKE_CODE);
@@ -106,9 +107,10 @@ public class IntakeAddressConverter {
         new LegacyDescriptor(address.getId(), null, new DateTime(address.getLastUpdatedTime()),
             LegacyTable.ADDRESS.getName(), LegacyTable.ADDRESS.getDescription());
     String streetAddress = address.getStreetNumber() + " " + address.getStreetName();
-    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(address.getStateCd());
-    String type =
-        IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(clientAddress.getAddressType());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(address.getStateCd(),
+        IntakeLovType.ADDRESS_COUNTY.getValue());
+    String type = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        clientAddress.getAddressType(), IntakeLovType.ADDRESS_TYPE.getValue());
     return new AddressIntakeApi(null, null, streetAddress, address.getCity(), state,
         getZip(address), type, legacyDescriptor);
   }
