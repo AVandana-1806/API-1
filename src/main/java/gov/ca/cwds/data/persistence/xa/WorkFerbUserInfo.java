@@ -87,10 +87,15 @@ public class WorkFerbUserInfo implements Work {
           db2con = (DB2Connection) con;
         }
 
-        db2con.setDB2ClientAccountingInformation(userId);
-        db2con.setDB2ClientApplicationInformation(userId);
+        // Yes, the DB2 methods are deprecated, but underlying properties *differ* by platform.
+        // At least these setters consistently change the target property regardless of platform.
         db2con.setDB2ClientUser(userId);
+        db2con.setDB2ClientAccountingInformation(staffId);
+        db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
         db2con.setDB2ClientWorkstation(WORKSTATION);
+
+        // Verify that DB2 "special registers" for client user info are indeed set.
+        // Ronald Reagan: "Trust -- but verify."
 
         //@formatter:off
         final String sql = 
