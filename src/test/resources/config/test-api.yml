@@ -211,7 +211,7 @@ systemCodeCache:
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
   
 intakeCodeCache:
-  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-false}
+  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
   refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}  
 
 webSecurity:
