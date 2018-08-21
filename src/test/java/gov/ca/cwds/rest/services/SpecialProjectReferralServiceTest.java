@@ -92,6 +92,14 @@ public class SpecialProjectReferralServiceTest {
     specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
         now.toLocalDate(), now.toLocalTime(), ssb);
   }
+  
+  @Test
+  public void testProcessSafelySurrenderedBabiesWithNullReceivedDate() {
+    LocalDateTime now = LocalDateTime.now();
+    SafelySurrenderedBabies ssb = new SafelySurrenderedBabiesBuilder().build();
+    specialProjectReferralService.processSafelySurrenderedBabies("clientId", "referralId",
+        null, now.toLocalTime(), ssb);    
+  }
 
   @Test(expected = ServiceException.class)
   public void testProcessSafelySurrenderedBabies_SpecialprojectMissing() {

@@ -2,7 +2,7 @@ package gov.ca.cwds.rest.core;
 
 /**
  * Constants defining resources locations in the API.
- * 
+ *
  * @author CWDS API Team
  */
 public final class Api {
@@ -69,8 +69,9 @@ public final class Api {
 
     public static final String AUTH_STATUS = "auth";
     public static final String SWAGGER_STATUS = "swagger";
-    public static final String LOV_DB_STATUS = "lov_db";
-    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache";
+    public static final String LOV_STATUS = "lov";
+    public static final String SYSTEM_CODES_STATUS = "system_code";
+    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "lov_code_cache";
     public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
     public static final String MQT_STATUS = "mqt_stat";
     public static final String VIEW_STATUS = "view_stat";
@@ -210,6 +211,11 @@ public final class Api {
    * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS} API.
    */
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";
+
+  /**
+   * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS_BATCH} API.
+   */
+  public static final String SCREENING_RELATIONSHIPS_BATCH = "screening_relationships/batch";
 
   /**
    * A {@code String} constant representing {@value #HISTORY_OF_INVOLVEMENTS} API.

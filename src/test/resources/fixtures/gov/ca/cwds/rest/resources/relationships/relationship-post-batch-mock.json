@@ -1,0 +1,16 @@
+[
+  {
+    "client_id": "1111111111",
+    "relative_id": "2222222222",
+    "relationship_type": 191,
+    "same_home_status": "Y",
+    "absent_parent_indicator": true
+  },
+  {
+    "client_id": "2222222222",
+    "relative_id": "1111111111",
+    "relationship_type": 185,
+    "same_home_status": "Y",
+    "absent_parent_indicator": true
+  }
+]

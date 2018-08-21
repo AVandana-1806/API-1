@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.resources;
+package gov.ca.cwds.rest.resources.relationship;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 
@@ -59,7 +59,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_noRelationsNoParticipants()
       throws IOException, JSONException {
-    String actualJson = getStringResponse(doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -80,6 +81,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
+    System.out.println(actualJson);
+
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -88,6 +91,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);

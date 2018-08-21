@@ -188,6 +188,12 @@ public class TestSystemCodeCache implements SystemCodeCache {
       }
     }
 
+    if (SystemCodeCategoryId.CLIENT_RELATIONSHIP.equals(metaId)) {
+      if (190 == systemCodeId.intValue()) {
+        return true;
+      }
+    }
+
     return false;
   }
 
@@ -231,6 +237,9 @@ public class TestSystemCodeCache implements SystemCodeCache {
     }
     if (SystemCodeCategoryId.ETHNICITY.equals(arg1) && "White - Central American*".equals(arg0)) {
       return 841;
+    }
+    if (SystemCodeCategoryId.ETHNICITY.equals(arg1) && "Unable to Determine*".equals(arg0)) {
+      return 6351;
     }
     return null;
   }

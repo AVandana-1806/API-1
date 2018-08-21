@@ -141,7 +141,8 @@ public class HOIReferralService extends
     final Map<String, Set<Allegation>> referralAllegationsMap =
         allegationDao.findAllegationsWithClientsByReferralIds(hrd.getReferralIds());
     for (Referral referral : hrd.getReferrals().values()) {
-      referral.setAllegations(referralAllegationsMap.getOrDefault(referral.getId(), null));
+      referral
+          .setAllegations(referralAllegationsMap.getOrDefault(referral.getId(), new HashSet<>()));
     }
   }
 

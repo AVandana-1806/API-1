@@ -13,4 +13,5 @@ public final class FerbApiHealthCheckJob extends NewRelicReportingHealthCheckJob
   public String getEventType() {
     return HEALTH_CHECK_EVENT;
   }
+
 }

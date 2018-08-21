@@ -26,14 +26,16 @@ import gov.ca.cwds.health.SpGenclncntyHealthCheck;
 import gov.ca.cwds.health.SpSpssaname3HealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
 import gov.ca.cwds.health.SystemCodeCacheHealthCheck;
+import gov.ca.cwds.health.SystemCodeHealthCheck;
 import gov.ca.cwds.health.TriggerHealthCheck;
 import gov.ca.cwds.health.ViewsHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
-import gov.ca.cwds.health.resource.LovDbCheck;
+import gov.ca.cwds.health.resource.IntakeLovCheck;
 import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
 import gov.ca.cwds.health.resource.SpSpssaname3ExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
+import gov.ca.cwds.health.resource.SystemCodeCheck;
 import gov.ca.cwds.health.resource.TriggerExistCheck;
 import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.inject.ApplicationModule;
@@ -138,8 +140,12 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
 
     final LovHealthCheck lovHealthCheck =
-        new LovHealthCheck(injector.getInstance(LovDbCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.LOV_DB_STATUS, lovHealthCheck);
+        new LovHealthCheck(injector.getInstance(IntakeLovCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.LOV_STATUS, lovHealthCheck);
+
+    final SystemCodeHealthCheck sysCodesHealthCheck =
+        new SystemCodeHealthCheck(injector.getInstance(SystemCodeCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODES_STATUS, sysCodesHealthCheck);
 
     environment.healthChecks().register(Api.HealthCheck.INTAKE_LOV_CODE_CACHE_STATUS,
         new IntakeCodeCacheHealthCheck());

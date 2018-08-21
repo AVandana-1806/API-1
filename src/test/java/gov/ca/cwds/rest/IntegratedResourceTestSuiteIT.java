@@ -1,7 +1,7 @@
 package gov.ca.cwds.rest;
 
 import gov.ca.cwds.rest.resources.ScreeningParticipantResourceIRT;
-import gov.ca.cwds.rest.resources.ScreeningRelationshipsWithCandidatesIRT;
+import gov.ca.cwds.rest.resources.relationship.ScreeningRelationshipsWithCandidatesIRT;
 import gov.ca.cwds.rest.resources.ScreeningResourceIRT;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;

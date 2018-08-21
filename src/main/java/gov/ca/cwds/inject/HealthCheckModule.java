@@ -9,8 +9,9 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import gov.ca.cwds.health.resource.AuthServer;
-import gov.ca.cwds.health.resource.LovDbCheck;
+import gov.ca.cwds.health.resource.IntakeLovCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
+import gov.ca.cwds.health.resource.SystemCodeCheck;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
@@ -31,7 +32,8 @@ public class HealthCheckModule extends AbstractModule {
         .toInstance(MediaType.APPLICATION_JSON);
     bind(AuthServer.class);
     bind(SwaggerEndpoint.class);
-    bind(LovDbCheck.class);
+    bind(IntakeLovCheck.class);
+    bind(SystemCodeCheck.class);
   }
 
   @Named("authClient")

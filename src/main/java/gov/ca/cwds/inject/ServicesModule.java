@@ -41,7 +41,6 @@ import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.CachingIntakeCodeService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
-import gov.ca.cwds.rest.services.IntakeLovService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.ScreeningService;
@@ -162,6 +161,7 @@ public class ServicesModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    LOGGER.info("configure: point 1");
     bind(AddressService.class);
     bind(AllegationService.class);
     bind(AssignmentService.class);
@@ -206,6 +206,8 @@ public class ServicesModule extends AbstractModule {
     bind(TickleService.class);
     bind(DroolsService.class);
 
+    LOGGER.info("configure: point 2");
+
     // Enable AOP for DropWizard @UnitOfWork.
     final CaresUnitOfWorkInterceptor interceptor = new CaresUnitOfWorkInterceptor();
     bindInterceptor(Matchers.any(), Matchers.annotatedWith(UnitOfWork.class), interceptor);
@@ -228,6 +230,7 @@ public class ServicesModule extends AbstractModule {
 
     // @Singleton does not work with DropWizard Guice.
     bind(GovernmentOrganizationService.class).toProvider(GovtOrgSvcProvider.class);
+    LOGGER.info("configure: point 3");
   }
 
   /**
@@ -261,7 +264,7 @@ public class ServicesModule extends AbstractModule {
   @Provides
   public synchronized SystemCodeCache provideSystemCodeCache(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
-    LOGGER.debug("provide syscode cache");
+    LOGGER.info("provide syscode cache");
     if (systemCodeCache == null) {
       SystemCodeService systemCodeService =
           createSystemCodeService(systemCodeDao, systemMetaDao, config);
@@ -275,16 +278,14 @@ public class ServicesModule extends AbstractModule {
    * Provides IntakeCodeCache.
    *
    * @param intakeLovDao Intake list of values (LOV) DAO
-   * @param config Ferb API configuration
    * @return IntakeCodeCache initialized Intake LOV code cache
    */
   @Provides
-  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao,
-      ApiConfiguration config) {
-    LOGGER.debug("provide intakeCode cache");
+  public synchronized IntakeCodeCache provideIntakeLovCodeCache(IntakeLovDao intakeLovDao) {
+    LOGGER.info("provide intakeCode cache");
     if (intakeCodeCache == null) {
-      IntakeLovService intakeLovService = createIntakeLovService(intakeLovDao, config);
-      intakeCodeCache = (IntakeCodeCache) intakeLovService;
+      CachingIntakeCodeService intakeLovService = new CachingIntakeCodeService(intakeLovDao);
+      intakeCodeCache = intakeLovService;
       intakeCodeCache.register();
     }
     return intakeCodeCache;
@@ -296,7 +297,7 @@ public class ServicesModule extends AbstractModule {
    */
   @Provides
   public CmsSystemCodeSerializer provideCmsSystemCodeSerializer(SystemCodeCache systemCodeCache) {
-    LOGGER.debug("provide syscode serializer");
+    LOGGER.info("provide syscode serializer");
     return new CmsSystemCodeSerializer(systemCodeCache);
   }
 
@@ -306,6 +307,7 @@ public class ServicesModule extends AbstractModule {
 
   private SystemCodeService createSystemCodeService(SystemCodeDao systemCodeDao,
       SystemMetaDao systemMetaDao, ApiConfiguration config) {
+    LOGGER.info("createSystemCodeService");
     SystemCodeService ret;
 
     boolean preLoad = true; // default is true
@@ -331,22 +333,5 @@ public class ServicesModule extends AbstractModule {
     }
 
     return ret;
-  }
-
-  private IntakeLovService createIntakeLovService(IntakeLovDao intakeLovDao,
-      ApiConfiguration config) {
-    LOGGER.debug("provide intakeCode service");
-
-    boolean preLoad = true; // default is true
-    long secondsToRefreshCache = 365L * 24 * 60 * 60; // default is 365 days
-
-    final SystemCodeCacheConfiguration intakeCodeCacheConfig =
-        config != null ? config.getIntakeCodeCacheConfiguration() : null;
-    if (intakeCodeCacheConfig != null) {
-      preLoad = intakeCodeCacheConfig.getPreLoad(preLoad);
-      secondsToRefreshCache = intakeCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
-    }
-
-    return new CachingIntakeCodeService(intakeLovDao, secondsToRefreshCache, preLoad);
   }
 }

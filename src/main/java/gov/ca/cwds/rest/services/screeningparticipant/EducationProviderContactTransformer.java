@@ -13,6 +13,7 @@ import gov.ca.cwds.data.persistence.cms.EducationProvider;
 import gov.ca.cwds.data.persistence.cms.EducationProviderContact;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
@@ -49,8 +50,8 @@ public class EducationProviderContactTransformer
     EducationProvider educationProvider = educationProviderContact.getEducationProvider();
     String streetAddress =
         educationProvider.getStreetNumber() + " " + educationProvider.getStreetName();
-    String state =
-        IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(educationProvider.getStateCd());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        educationProvider.getStateCd(), IntakeLovType.US_STATE.getValue());
 
     LegacyDescriptor educationProviderLegacyDescriptor = new LegacyDescriptor(
         educationProvider.getId(), null,
@@ -58,8 +59,8 @@ public class EducationProviderContactTransformer
         LegacyTable.EDUCATION_PROVIDER.getName(), LegacyTable.EDUCATION_PROVIDER.getDescription());
 
     List<AddressIntakeApi> addresses = Collections.singletonList(
-        new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(),
-            state, getZip(educationProvider), null, educationProviderLegacyDescriptor));
+        new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(), state,
+            getZip(educationProvider), null, educationProviderLegacyDescriptor));
 
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
         Arrays.asList(new PhoneNumber(null, educationProviderContact.getPhoneNumber(), null)));

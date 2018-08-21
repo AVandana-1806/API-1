@@ -1,24 +1,27 @@
 package gov.ca.cwds.rest.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.ca.cwds.rest.api.Request;
-import gov.ca.cwds.rest.api.Response;
-import io.dropwizard.validation.OneOf;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.api.Response;
+import io.dropwizard.validation.OneOf;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author CWDS TPT-3 Team
  */
-public class ScreeningRelationshipsWithCandidates extends ReportingDomain implements Request,
-    Response {
+public class ScreeningRelationshipsWithCandidates extends ReportingDomain
+    implements Request, Response {
 
   public static final class ScreeningRelationshipsWithCandidatesBuilder {
 
@@ -37,8 +40,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       if (dateOfBirth == null) {
         return this;
       }
-      screeningRelationshipsWithCandidates.dateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-          .format(dateOfBirth);
+      screeningRelationshipsWithCandidates.dateOfBirth =
+          new SimpleDateFormat(DATE_PATTERN).format(dateOfBirth);
       return this;
     }
 
@@ -84,8 +87,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       if (dateOfDeath == null) {
         return this;
       }
-      screeningRelationshipsWithCandidates.dateOfDeath = new SimpleDateFormat(DATE_PATTERN)
-          .format(dateOfDeath);
+      screeningRelationshipsWithCandidates.dateOfDeath =
+          new SimpleDateFormat(DATE_PATTERN).format(dateOfDeath);
       return this;
     }
 
@@ -122,6 +125,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
   }
 
   public static final class RelatedTo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final class RelatedToBuilder {
 
@@ -171,8 +176,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relatedDateOfBirth == null) {
           return this;
         }
-        relatedTo.relatedDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(relatedDateOfBirth);
+        relatedTo.relatedDateOfBirth =
+            new SimpleDateFormat(DATE_PATTERN).format(relatedDateOfBirth);
         return this;
       }
 
@@ -209,12 +214,17 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         return this;
       }
 
+      public RelatedToBuilder withReversedRelationship(boolean reversed) {
+        relatedTo.reversed = reversed;
+        return this;
+      }
+
       public RelatedToBuilder withRelationshipStartDate(Date relationshipStartDate) {
         if (relationshipStartDate == null) {
           return this;
         }
-        relatedTo.relationshipStartDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipStartDate);
+        relatedTo.relationshipStartDate =
+            new SimpleDateFormat(DATE_PATTERN).format(relationshipStartDate);
         return this;
       }
 
@@ -222,17 +232,14 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (relationshipEndDate == null) {
           return this;
         }
-        relatedTo.relationshipEndDate = new SimpleDateFormat(DATE_PATTERN)
-            .format(relationshipEndDate);
+        relatedTo.relationshipEndDate =
+            new SimpleDateFormat(DATE_PATTERN).format(relationshipEndDate);
         return this;
       }
 
       public RelatedTo build() {
         return relatedTo;
       }
-    }
-
-    private RelatedTo() {
     }
 
     @JsonProperty("relationship_id")
@@ -264,8 +271,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     private String relatedGender;
 
     @JsonProperty("related_person_date_of_birth")
-    @ApiModelProperty(value = "date of birth",
-        example = "1999-10-01")
+    @ApiModelProperty(value = "date of birth", example = "1999-10-01")
     private String relatedDateOfBirth;
 
     @JsonProperty("related_person_age")
@@ -285,24 +291,28 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     private String sameHomeCode;
 
     @JsonProperty("indexed_person_relationship")
-    @ApiModelProperty(value = "relationship to the person",
-        example = "Sister")
+    @ApiModelProperty(value = "relationship to the person", example = "Sister")
     private String relationshipToPerson;
 
     @JsonProperty("related_person_relationship")
-    @ApiModelProperty(value = "relationship to the person",
-        example = "Sister")
+    @ApiModelProperty(value = "relationship to the person", example = "Sister")
     private String relatedPersonRelationship;
 
     @JsonProperty("relationship_start_date")
-    @ApiModelProperty(value = "relationship start date",
-        example = "2000-10-01")
+    @ApiModelProperty(value = "relationship start date", example = "2000-10-01")
     private String relationshipStartDate;
 
     @JsonProperty("relationship_end_date")
-    @ApiModelProperty(value = "relationship end date",
-        example = "2001-10-01")
+    @ApiModelProperty(value = "relationship end date", example = "2001-10-01")
     private String relationshipEndDate;
+
+    @JsonProperty("reversed")
+    @ApiModelProperty(value = "If is reversed - related participant ID is Primary client ",
+        example = "true")
+    private boolean reversed;
+
+    private RelatedTo() {
+    }
 
     public String getRelationshipId() {
       return relationshipId;
@@ -368,6 +378,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
       return relationshipEndDate;
     }
 
+    public boolean isReversed() {
+      return reversed;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -380,8 +394,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
 
       RelatedTo relatedTo = (RelatedTo) o;
 
-      return new EqualsBuilder()
-          .append(relationshipId, relatedTo.relationshipId)
+      return new EqualsBuilder().append(relationshipId, relatedTo.relationshipId)
           .append(relatedPersonId, relatedTo.relatedPersonId)
           .append(relatedFirstName, relatedTo.relatedFirstName)
           .append(relatedMiddleName, relatedTo.relatedMiddleName)
@@ -389,37 +402,25 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
           .append(relatedNameSuffix, relatedTo.relatedNameSuffix)
           .append(relatedGender, relatedTo.relatedGender)
           .append(relatedDateOfBirth, relatedTo.relatedDateOfBirth)
-          .append(relatedAge, relatedTo.relatedAge)
-          .append(relatedAgeUnit, relatedTo.relatedAgeUnit)
+          .append(relatedAge, relatedTo.relatedAge).append(relatedAgeUnit, relatedTo.relatedAgeUnit)
           .append(absentParentCode, relatedTo.absentParentCode)
           .append(sameHomeCode, relatedTo.sameHomeCode)
           .append(relationshipToPerson, relatedTo.relationshipToPerson)
           .append(relatedPersonRelationship, relatedTo.relatedPersonRelationship)
           .append(relationshipStartDate, relatedTo.relationshipStartDate)
           .append(relationshipEndDate, relatedTo.relationshipEndDate)
+          .append(reversed, relatedTo.reversed)
           .isEquals();
     }
 
     @Override
     public int hashCode() {
-      return new HashCodeBuilder(17, 37)
-          .append(relationshipId)
-          .append(relatedPersonId)
-          .append(relatedFirstName)
-          .append(relatedMiddleName)
-          .append(relatedLastName)
-          .append(relatedNameSuffix)
-          .append(relatedGender)
-          .append(relatedDateOfBirth)
-          .append(relatedAge)
-          .append(relatedAgeUnit)
-          .append(absentParentCode)
-          .append(sameHomeCode)
-          .append(relationshipToPerson)
-          .append(relatedPersonRelationship)
-          .append(relationshipStartDate)
-          .append(relationshipEndDate)
-          .toHashCode();
+      return new HashCodeBuilder(17, 37).append(relationshipId).append(relatedPersonId)
+          .append(relatedFirstName).append(relatedMiddleName).append(relatedLastName)
+          .append(relatedNameSuffix).append(relatedGender).append(relatedDateOfBirth)
+          .append(relatedAge).append(relatedAgeUnit).append(absentParentCode).append(sameHomeCode)
+          .append(relationshipToPerson).append(relatedPersonRelationship)
+          .append(relationshipStartDate).append(relationshipEndDate).append(reversed).toHashCode();
     }
   }
 
@@ -467,8 +468,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
         if (candidateDateOfBirth == null) {
           return this;
         }
-        candidateTo.candidateDateOfBirth = new SimpleDateFormat(DATE_PATTERN)
-            .format(candidateDateOfBirth);
+        candidateTo.candidateDateOfBirth =
+            new SimpleDateFormat(DATE_PATTERN).format(candidateDateOfBirth);
         return this;
       }
 
@@ -493,27 +494,35 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
     @JsonProperty("candidate_id")
     @ApiModelProperty(value = "Id")
     private String candidateId;
+
     @JsonProperty("candidate_first_name")
     @ApiModelProperty(value = "Candidate first name")
     private String candidateFirstName;
+
     @JsonProperty("candidate_middle_name")
     @ApiModelProperty(value = "Candidate middle name")
     private String candidateMiddleName;
+
     @JsonProperty("candidate_last_name")
     @ApiModelProperty(value = "Candidate last name")
     private String candidateLastName;
+
     @JsonProperty("candidate_name_suffix")
     @ApiModelProperty(value = "Candidate suffix name")
     private String candidateSuffixtName;
+
     @JsonProperty("candidate_gender")
     @ApiModelProperty(value = "Candidate gender")
     private String candidateGender;
+
     @JsonProperty("candidate_date_of_birth")
     @ApiModelProperty(value = "Candidate date of birth")
     private String candidateDateOfBirth;
+
     @JsonProperty("candidate_age")
     @ApiModelProperty(value = "Candidate age")
     private short candidateAge;
+
     @JsonProperty("candidate_age_unit")
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
@@ -565,32 +574,22 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
 
       CandidateTo that = (CandidateTo) o;
 
-      return new EqualsBuilder()
-          .append(candidateAge, that.candidateAge)
-          .append(candidateId, that.candidateId)
-          .append(candidateFirstName, that.candidateFirstName)
+      return new EqualsBuilder().append(candidateAge, that.candidateAge)
+          .append(candidateId, that.candidateId).append(candidateFirstName, that.candidateFirstName)
           .append(candidateMiddleName, that.candidateMiddleName)
           .append(candidateLastName, that.candidateLastName)
           .append(candidateSuffixtName, that.candidateSuffixtName)
           .append(candidateGender, that.candidateGender)
           .append(candidateDateOfBirth, that.candidateDateOfBirth)
-          .append(candidateAgeUnit, that.candidateAgeUnit)
-          .isEquals();
+          .append(candidateAgeUnit, that.candidateAgeUnit).isEquals();
     }
 
     @Override
     public int hashCode() {
-      return new HashCodeBuilder(17, 37)
-          .append(candidateId)
-          .append(candidateFirstName)
-          .append(candidateMiddleName)
-          .append(candidateLastName)
-          .append(candidateSuffixtName)
-          .append(candidateGender)
-          .append(candidateDateOfBirth)
-          .append(candidateAge)
-          .append(candidateAgeUnit)
-          .toHashCode();
+      return new HashCodeBuilder(17, 37).append(candidateId).append(candidateFirstName)
+          .append(candidateMiddleName).append(candidateLastName).append(candidateSuffixtName)
+          .append(candidateGender).append(candidateDateOfBirth).append(candidateAge)
+          .append(candidateAgeUnit).toHashCode();
     }
   }
 
@@ -598,13 +597,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("id")
-  @ApiModelProperty(required = true, value = "identifier",
-      example = "ABC1234567")
+  @ApiModelProperty(required = true, value = "identifier", example = "ABC1234567")
   private String id;
 
   @JsonProperty("date_of_birth")
-  @ApiModelProperty(required = true, value = "date of birth",
-      example = "1999-10-01")
+  @ApiModelProperty(required = true, value = "date of birth", example = "1999-10-01")
   private String dateOfBirth;
 
   @JsonProperty("age")
@@ -638,8 +635,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
   private String gender;
 
   @JsonProperty("date_of_death")
-  @ApiModelProperty(value = "date of death",
-      example = "2010-10-01")
+  @ApiModelProperty(value = "date of death", example = "2010-10-01")
   private String dateOfDeath;
 
   @JsonProperty("sensitive")
@@ -713,4 +709,5 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain implem
   public Set<RelatedTo> getRelatedTo() {
     return relatedTo;
   }
+
 }

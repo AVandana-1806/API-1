@@ -11,7 +11,7 @@ import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo.CandidateToBuilder;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
@@ -19,7 +19,9 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import io.dropwizard.hibernate.UnitOfWork;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,37 +32,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.management.AttributeList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author CWDS TPT-3 Team
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class RelationshipFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipFacade.class);
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
   private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription = new HashMap<>();
   private final Map<Short, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedById = new HashMap<>();
+  private final static String DB_ERROR_MESSAGE = "Relationship couldn't be created"; // For now I don't know how it would be shown on the UI I am waiting for this information
 
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
   private final SystemCodeCache systemCodeDao;
+  private final ScreeningRelationshipService screeningRelationshipService;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao) {
+      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
+      ScreeningRelationshipService screeningRelationshipService) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
+    this.screeningRelationshipService = screeningRelationshipService;
     this.systemCodeDao = SystemCodeCache.global();
     initSystemCodes();
   }
@@ -77,6 +82,30 @@ public class RelationshipFacade {
       systemCodes.forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
       systemCodes.forEach(e -> codesMappedById.put(e.getSystemId(), e));
     }
+  }
+
+  public List<gov.ca.cwds.rest.api.Response> createRelationships(
+      List<ScreeningRelationshipBase> relationships) {
+    List<gov.ca.cwds.rest.api.Response> responses = new ArrayList<>();
+    if (CollectionUtils.isEmpty(relationships)) {
+      return responses;
+    }
+
+    relationships.forEach(relationship -> {
+      try {
+        responses.add(createRelationship(relationship));
+      } catch (Exception e) {
+        ScreeningRelationship faildRelationship = new ScreeningRelationship(relationship);
+        faildRelationship.setError(
+            DB_ERROR_MESSAGE);  // it the future it would be manege by drools and business rules
+      }
+    });
+    return responses;
+  }
+
+  @UnitOfWork(value = "ns")
+  private ScreeningRelationship createRelationship(ScreeningRelationshipBase relationshipBase) {
+    return (ScreeningRelationship) screeningRelationshipService.create(relationshipBase);
   }
 
   public List<gov.ca.cwds.rest.api.Response> getRelationshipsWithCandidatesByScreeningId(
@@ -143,9 +172,19 @@ public class RelationshipFacade {
       Set<ScreeningRelationship> allRelationships,
       Map<String, ParticipantEntity> allMappedParticipants, String screeningId) {
     Set<RelatedTo> relatedTos = new HashSet<>();
+
+    if (CollectionUtils.isEmpty(allRelationships)) {
+      return relatedTos;
+    }
+
     allRelationships.forEach(relationship -> {
       ParticipantEntity participantPrimary = allMappedParticipants.get(relationship.getClientId());
-      ParticipantEntity participantSecondary = allMappedParticipants.get(relationship.getRelativeId());
+      ParticipantEntity participantSecondary = allMappedParticipants
+          .get(relationship.getRelativeId());
+
+      if (participantPrimary == null || participantSecondary == null) {
+        return;
+      }
 
       if (screeningParticipant.getScreeningId().equals(screeningId)) {
         if (relationship.getClientId().equals(screeningParticipant.getId())) {
@@ -183,13 +222,15 @@ public class RelationshipFacade {
     if (!isPrimary) {
       relatedToBuilder
           .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
-       .withRelationshipToPerson(
-          String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+          .withRelationshipToPerson(
+              String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+      relatedToBuilder.withReversedRelationship(true);
     } else {
       relatedToBuilder
           .withRelationshipToPerson(String.valueOf(relationship.getRelationshipType()))
           .withRelatedPersonRelationship(
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
+      relatedToBuilder.withReversedRelationship(false);
     }
     return relatedToBuilder.build();
   }
@@ -284,6 +325,10 @@ public class RelationshipFacade {
     result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
     // select and return
+    if (participantDao.getSessionFactory().getCurrentSession().getTransaction().getStatus()
+        == TransactionStatus.ACTIVE) {
+      participantDao.getSessionFactory().getCurrentSession().flush();
+    }
     return result;
   }
 

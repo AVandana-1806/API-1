@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -27,6 +28,10 @@ public class FerbDateUtils {
 
   public static LocalDateTime shiftTimeZone(LocalDateTime dateTime, ZoneId from, ZoneId to) {
     return dateTime.atZone(from).withZoneSameInstant(to).toLocalDateTime();
+  }
+
+  public static LocalDate dateToLocalDate(Date date) {
+    return date != null ? new java.sql.Date(date.getTime()).toLocalDate() : null;
   }
 
 }

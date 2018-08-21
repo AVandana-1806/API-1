@@ -29,7 +29,7 @@ nsDataSourceFactory:
   logValidationErrors: true
   initialSize: ${DB_NS_CP_INITIAL_SIZE:-2}
   minSize: ${DB_NS_CP_MIN_SIZE:-2}
-  maxSize: ${DB_NS_CP_MAX_SIZE:-8}
+  maxSize: ${DB_NS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: gov.ca.cwds.data.persistence.hibernate.dialect.JsonPostgreSQLDialect
@@ -51,7 +51,7 @@ cmsDataSourceFactory:
   logValidationErrors: true
   initialSize: ${DB_CMS_CP_INITIAL_SIZE:-2}
   minSize: ${DB_CMS_CP_MIN_SIZE:-2}
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
+  maxSize: ${DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -75,7 +75,7 @@ rsDataSourceFactory:
   logValidationErrors: true
   initialSize: ${DB_CWSRS_CP_INITIAL_SIZE:-2}
   minSize: ${DB_CWSRS_CP_MIN_SIZE:-2}
-  maxSize: ${DB_CWSRS_CP_MAX_SIZE:-8}
+  maxSize: ${DB_CWSRS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
@@ -227,11 +227,6 @@ triggertables:
 systemCodeCache: 
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
-
-intakeCodeCache:
-  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
-  # This is 365 days
-  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}
  
 webSecurity:
   httpResponseSecurityHeaders:
