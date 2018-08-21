@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.PooledConnection;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
@@ -60,7 +62,7 @@ public class WorkFerbUserInfo implements Work {
     // no-op
   }
 
-  public WorkFerbUserInfo(boolean isDb2) {
+  public WorkFerbUserInfo(final boolean isDb2) {
     this.isDb2 = isDb2;
   }
 
@@ -77,7 +79,13 @@ public class WorkFerbUserInfo implements Work {
         LOGGER.warn("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
 
-        final DB2Connection db2con = (DB2Connection) con;
+        DB2Connection db2con;
+        if (con instanceof PooledConnection) {
+          db2con = (DB2Connection) ((PooledConnection) con).getConnection();
+        } else {
+          db2con = (DB2Connection) con;
+        }
+
         db2con.setDB2ClientAccountingInformation(userId);
         db2con.setDB2ClientApplicationInformation(userId);
         db2con.setDB2ClientUser(userId);
