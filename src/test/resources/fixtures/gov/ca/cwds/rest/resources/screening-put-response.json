@@ -119,7 +119,7 @@
           "end_date": "2018-03-31"
         }
       ],
-      "safelySurenderedBabies": {
+      "safely_surrendered_babies": {
         "surrendered_by": "Unknown",
         "relation_to_child": "Parents",
         "bracelet_id": "1234",
