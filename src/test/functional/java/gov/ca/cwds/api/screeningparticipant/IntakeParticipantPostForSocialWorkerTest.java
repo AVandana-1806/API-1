@@ -36,11 +36,11 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
   @Before
   public void setup() throws Exception {
     httpRequestHandler = new HttpRequestHandler();
-    getScreenigId();
+    getScreeningId();
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_SCREENINGS + "/{id}" + "/participant");
   }
 
-  private void getScreenigId() throws Exception {
+  private void getScreeningId() throws Exception {
     screeningPostPath = getResourceUrlFor("/" + Api.RESOURCE_INTAKE_SCREENINGS);
     String intakeScreeningRequest = fixture(INTAKE_SCREENING_POST_REQUEST);
     String response =
