@@ -1,16 +1,21 @@
 package gov.ca.cwds.health.resource;
 
-import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.inject.NsSessionFactory;
+import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
+import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
+import gov.ca.cwds.inject.CwsRsSessionFactory;
 
 public class TriggerExistCheck implements Pingable {
 
@@ -19,30 +24,28 @@ public class TriggerExistCheck implements Pingable {
           "TRIG_UPD_CLIENT", "TRIG_INS_CLN_RELT", "TRIG_UPD_CLN_RELT"};
 
   private SessionFactory sessionFactory;
+  protected static final Logger LOGGER = LoggerFactory.getLogger(TriggerExistCheck.class);
   private List<String> messages = new ArrayList<>();
 
   @Inject
-  TriggerExistCheck(@NsSessionFactory SessionFactory sessionFactory) {
+  TriggerExistCheck(@CwsRsSessionFactory SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 
   @Override
   public boolean ping() {
     boolean ok = true;
-    Session session = null;
+    messages.clear();
 
-    try {
-      session = sessionFactory.openSession();
+    try (final Session session = sessionFactory.openSession()) {
+      final String schema =
+          (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
+      final Connection con = CaresHibernateHackersKit.stealConnection(session);
       for (int i = 0; i < dbTriggers.length; i++) {
-        boolean triggerExists = checkIfTriggerExist(session, dbTriggers[i]);
+        boolean triggerExists = checkIfTriggerExist(con, schema, dbTriggers[i]);
         ok = ok && triggerExists;
       }
-    } finally {
-      if (session != null) {
-        session.close();
-      }
     }
-
     return ok;
   }
 
@@ -51,19 +54,30 @@ public class TriggerExistCheck implements Pingable {
     return messages.toString();
   }
 
-  private boolean checkIfTriggerExist(Session session, String triggerName) {
+  private boolean checkIfTriggerExist(Connection con, String schema, String triggerName) {
     boolean ok = true;
-    final Query<?> query = session.createNativeQuery(
-        "SELECT count(*) FROM SYSIBM.SYSTRIGGERS WHERE SCHEMA = {h-schema} AND NAME = "
-            + triggerName);
-    int count = ((BigInteger) query.list().get(0)).intValue();
+    int count = 0;
+    final String sql = "SELECT count(*) FROM SYSIBM.SYSTRIGGERS WHERE SCHEMA = '" + schema + "'"
+        + "AND NAME = '" + triggerName + "' WITH UR";
 
-    if (count < 1) {
-      ok = false;
-      addMessage("[Database Trigger " + triggerName + "does not exist]");
+    try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setMaxRows(1);
+      stmt.setQueryTimeout(60);
+
+      try (final ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          count = rs.getInt(1);
+        }
+        if (count < 1) {
+          ok = false;
+          addMessage("[Database Trigger" + triggerName + "does not exist]");
+        }
+      }
+    } catch (Exception e) {
+      LOGGER.trace("BOOM!", e);
+      throw CaresLogUtils.runtime(LOGGER, e, "Trigger HEALTH CHECK QUERY FAILED! SQL: {} {}", sql,
+          e.getMessage(), e);
     }
-
-
 
     return ok;
   }
@@ -71,4 +85,5 @@ public class TriggerExistCheck implements Pingable {
   private void addMessage(String message) {
     messages.add(message);
   }
+
 }

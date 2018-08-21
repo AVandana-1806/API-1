@@ -131,6 +131,7 @@ public class CachingIntakeCodeService extends IntakeLovService implements Intake
 
   @Override
   public List<IntakeLov> getAll() {
+
     List<IntakeLov> ret = new ArrayList<>();
     Map<CacheKey, Object> intakeLovs = intakeCodeCache.asMap();
 
