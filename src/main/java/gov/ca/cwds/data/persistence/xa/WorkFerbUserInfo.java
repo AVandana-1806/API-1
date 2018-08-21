@@ -54,6 +54,16 @@ public class WorkFerbUserInfo implements Work {
     }
   }
 
+  private boolean isDb2 = false;
+
+  public WorkFerbUserInfo() {
+    // no-op
+  }
+
+  public WorkFerbUserInfo(boolean isDb2) {
+    this.isDb2 = isDb2;
+  }
+
   @Override
   public void execute(Connection con) throws SQLException {
     LOGGER.warn("execute: Connection class: {}", con.getClass().getName());
@@ -62,7 +72,7 @@ public class WorkFerbUserInfo implements Work {
     final String userId = ctx.getUserId();
     LOGGER.warn("execute: user id: {}, staff id: {}", userId, staffId);
 
-    if (con instanceof DB2Connection) {
+    if (isDb2 || con instanceof DB2Connection) {
       try {
         LOGGER.warn("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
