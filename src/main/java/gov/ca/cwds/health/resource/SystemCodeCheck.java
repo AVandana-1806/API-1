@@ -21,6 +21,7 @@ import gov.ca.cwds.inject.NsSessionFactory;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2077"})
 public class SystemCodeCheck implements Pingable {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(SystemCodeCheck.class);

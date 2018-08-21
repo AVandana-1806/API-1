@@ -35,13 +35,13 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao) {
-    intakeLovs = intakeLovDao.findAll();
+    this.intakeLovs = intakeLovDao.findAll();
 
-    if (intakeLovs == null) {
-      intakeLovs = new ArrayList<>();
+    if (this.intakeLovs == null) {
+      this.intakeLovs = new ArrayList<>();
     }
 
-    for (IntakeLov intakeLov : intakeLovs) {
+    for (IntakeLov intakeLov : this.intakeLovs) {
       Long sysCodeId = intakeLov.getLegacySystemCodeId();
       String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
 
@@ -71,14 +71,14 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   @SuppressWarnings("unchecked")
   @Override
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {
-    List<IntakeLov> intakeLovs = new ArrayList<>();
+    List<IntakeLov> intakeLovCodes = new ArrayList<>();
     if (StringUtils.isNotBlank(metaId)) {
-      intakeLovs = mapByMeta.get(metaId.toLowerCase());
-      if (intakeLovs == null) {
-        intakeLovs = new ArrayList<>();
+      intakeLovCodes = mapByMeta.get(metaId.toLowerCase());
+      if (intakeLovCodes == null) {
+        intakeLovCodes = new ArrayList<>();
       }
     }
-    return intakeLovs;
+    return intakeLovCodes;
   }
 
   @Override
