@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.data.persistence.cms.CollateralIndividual;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
@@ -43,12 +44,12 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
             : null;
     String streetAddress =
         collateralIndividual.getStreetNumber() + " " + collateralIndividual.getStreetName();
-    String state = IntakeCodeCache.global()
-        .getIntakeCodeForLegacySystemCode(collateralIndividual.getStateCode());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        collateralIndividual.getStateCode(), IntakeLovType.US_STATE.getValue());
 
     List<AddressIntakeApi> addresses = Collections.singletonList(
-        new AddressIntakeApi(null, null, streetAddress, collateralIndividual.getCity(),
-            state, getZip(collateralIndividual), null, legacyDescriptor));
+        new AddressIntakeApi(null, null, streetAddress, collateralIndividual.getCity(), state,
+            getZip(collateralIndividual), null, legacyDescriptor));
 
     String phone = collateralIndividual.getPrimaryPhoneNo() != null
         ? collateralIndividual.getPrimaryPhoneNo().toString()
