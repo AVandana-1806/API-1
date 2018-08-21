@@ -72,13 +72,14 @@ public class WorkFerbUserInfo implements Work {
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
     final String staffId = ctx.getStaffId();
     final String userId = ctx.getUserId();
-    LOGGER.warn("execute: user id: {}, staff id: {}", userId, staffId);
 
-    if (isDb2 || con instanceof DB2Connection) {
+    if (isDb2 || con instanceof DB2Connection || (con instanceof PooledConnection
+        && ((PooledConnection) con).getConnection() instanceof DB2Connection)) {
       try {
         LOGGER.warn("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
 
+        // Unwrap pooled connections.
         DB2Connection db2con;
         if (con instanceof PooledConnection) {
           db2con = (DB2Connection) ((PooledConnection) con).getConnection();
