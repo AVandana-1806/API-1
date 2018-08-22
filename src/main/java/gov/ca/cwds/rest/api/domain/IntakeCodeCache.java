@@ -49,7 +49,7 @@ public interface IntakeCodeCache extends ApiMarker {
    * Get the valid intake Code based on the legacy systemId
    * 
    * @param systemCodeId - systemCodeId
-   * @param intakeType
+   * @param intakeType intake type
    * @return the intake Code
    */
   String getIntakeCodeForLegacySystemCode(Number systemCodeId, String intakeType);
