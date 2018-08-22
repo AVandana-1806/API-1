@@ -226,7 +226,7 @@ public class R00786VictimAgeRestrictionTest {
    */
   private void validateVictimAge(int victimAgeYears, int overAgeDays, int underAgeDays,
       int expectedViolations) {
-    String screeningStartedAt = "2017-01-01T00:00:00.000-08:00";
+    String screeningStartedAt = "2017-01-01T00:00:00.000Z";
     DateTime screeningStartedAtDateTime =
         new DateTime(DomainChef.uncookDateString(screeningStartedAt));
 
