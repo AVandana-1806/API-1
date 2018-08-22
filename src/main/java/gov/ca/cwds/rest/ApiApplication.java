@@ -20,11 +20,9 @@ import com.google.inject.Module;
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
 import gov.ca.cwds.health.IntakeCodeCacheHealthCheck;
-import gov.ca.cwds.health.LovHealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
 import gov.ca.cwds.health.SystemCodeCacheHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
-import gov.ca.cwds.health.resource.LovDbCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
@@ -127,9 +125,9 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         new AuthHealthCheck(injector.getInstance(AuthServer.class));
     environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
 
-    final LovHealthCheck lovHealthCheck =
-        new LovHealthCheck(injector.getInstance(LovDbCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.LOV_DB_STATUS, lovHealthCheck);
+    // final LovHealthCheck lovHealthCheck =
+    // new LovHealthCheck(injector.getInstance(LovDbCheck.class));
+    // environment.healthChecks().register(Api.HealthCheck.LOV_DB_STATUS, lovHealthCheck);
 
     environment.healthChecks().register(Api.HealthCheck.INTAKE_LOV_CODE_CACHE_STATUS,
         new IntakeCodeCacheHealthCheck());
