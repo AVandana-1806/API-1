@@ -111,7 +111,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.info("CandaceSessionImpl.close");
+    LOGGER.info("close");
     if (session != null) {
       session.close();
       session = null; // release session references

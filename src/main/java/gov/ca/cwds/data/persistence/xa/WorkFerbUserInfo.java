@@ -128,7 +128,8 @@ public class WorkFerbUserInfo implements Work {
             final String resultWorkstation =
                 StringUtils.trimToEmpty(rs.getString("CUR_WORKSTATION"));
 
-            LOGGER.info("client user: {}, application: {}, accounting: {}, workstation: {}",
+            LOGGER.info(
+                "client user: \"{}\", application: \"{}\", accounting: \"{}\", workstation: \"{}\"",
                 resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
           }
         } finally {
