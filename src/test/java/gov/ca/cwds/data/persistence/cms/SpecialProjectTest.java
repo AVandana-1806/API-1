@@ -20,7 +20,7 @@ public class SpecialProjectTest {
   private String projectDescription = "special project description";
   private LocalDate endDate = null;
   private Short governmentEntityType = 1084;
-  private String name = "S-CESC";
+  private String name = "S-CSEC Referral";
   private LocalDate startDate = LocalDate.now();
   
   private static final ObjectMapper MAPPER = SystemCodeTestHarness.MAPPER;
