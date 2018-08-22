@@ -9,6 +9,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
+
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.util.ParticipantUtils;
@@ -36,6 +38,7 @@ public class ParticipantBirthValidator
       for (Participant victim : paricipants) {
         if (!hasValidBirthDateOrAge(victim, context)) {
           valid = false;
+          break;
         }
       }
     }
@@ -51,6 +54,7 @@ public class ParticipantBirthValidator
   }
 
   /**
+   * Validates victim should have date of birth Or Approximate Age
    * 
    * @param victim - victim
    * @param context - context
@@ -74,18 +78,23 @@ public class ParticipantBirthValidator
   }
 
   /**
-   * Checking for the participant date of birth should not be in the future.
+   * Validates the participant date of birth should not be in the future.
    */
   private boolean hasParticipantValidDOB(ScreeningToReferral screening, Participant participant,
       ConstraintValidatorContext context) {
+    ImmutableList.Builder<String> messages = new ImmutableList.Builder<>();
     if (StringUtils.isNotBlank(screening.getStartedAt())
         && StringUtils.isNotBlank(participant.getDateOfBirth())) {
       String date = StartDateTimeValidator.extractStartDate(screening.getStartedAt(), null);
       LocalDate startDate = LocalDate.parse(date);
       LocalDate participantDob = LocalDate.parse(participant.getDateOfBirth());
-      String message = "Participant date of birth is in future";
-      buildMessage(context, message);
-      return participantDob.isAfter(startDate);
+      if (participantDob.isAfter(startDate) == Boolean.TRUE) {
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate("date of Birth can not be in future")
+            .addPropertyNode(participant.getFirstName()).addConstraintViolation();
+        messages.add();
+        return false;
+      }
     }
     return true;
   }
