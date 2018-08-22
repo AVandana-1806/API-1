@@ -14,7 +14,7 @@
    "report_narrative":"Narrative 123 test",
    "reference":"123ABC",
    "response_time":1520,
-   "started_at":"2016-08-03T01:00:00.000",
+   "started_at":"2016-08-03T01:00:00.000Z",
    "assignee":"Michael Bastow",
    "assignee_staff_id":"0X5",
    "additional_information":"additional information about the referral",
@@ -99,7 +99,7 @@
 	  	]
 	},
      {
-        "date_of_birth":"2017-05-12",
+        "date_of_birth":"2015-05-12",
         "first_name":"Robert",
        "middle_name": "T.",
         "gender":"M",
