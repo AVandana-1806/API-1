@@ -33,5 +33,4 @@ public class FerbDateUtils {
   public static LocalDate dateToLocalDate(Date date) {
     return date != null ? new java.sql.Date(date.getTime()).toLocalDate() : null;
   }
-
 }

@@ -13,6 +13,7 @@ import gov.ca.cwds.data.legacy.cms.entity.PlacementHome;
 import gov.ca.cwds.data.persistence.cms.OtherChildInPlacemtHome;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
@@ -51,8 +52,8 @@ public class OtherChildInPlacemtHomeTransformer
 
     PlacementHome placementHome = otherChildInPlacemtHome.getPlacementHome();
     String streetAddress = placementHome.getStreetNo() + " " + placementHome.getStreetNm();
-    String state =
-        IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(placementHome.getStateCode());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        placementHome.getStateCode(), IntakeLovType.US_STATE.getValue());
 
     LegacyDescriptor placemtHomeLegacyDescriptor = new LegacyDescriptor(
         placementHome.getIdentifier(), null,

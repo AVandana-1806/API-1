@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.data.persistence.cms.Reporter;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
@@ -32,8 +33,8 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
         new DateTime(reporter.getLastUpdatedTime()), LegacyTable.REPORTER.getName(),
         LegacyTable.REPORTER.getDescription());
 
-    String state =
-        IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(reporter.getStateCodeType());
+    String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+        reporter.getStateCodeType(), IntakeLovType.US_STATE.getValue());
     String streetAddress = reporter.getStreetNumber() + " " + reporter.getStreetName();
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor));

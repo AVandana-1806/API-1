@@ -227,11 +227,6 @@ triggertables:
 systemCodeCache: 
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
-
-intakeCodeCache:
-  preLoad: ${PRE_LOAD_INTAKE_CODE_CACHE:-true}
-  # This is 365 days
-  refreshAfter: ${INTAKE_CODE_CACHE_REFRESH_AFTER:-31536000}
  
 webSecurity:
   httpResponseSecurityHeaders:
@@ -267,9 +262,10 @@ server:
   requestLog:
     appenders:
       - type: console
+    # - type: file
 
 logging:
-  level: ${LOGLEVEL:-INFO}
+  level: ${LOGLEVEL:-DEBUG}
   loggers:
     "org.hibernate.SQL":
       # Use DEBUG to see SQL logged
@@ -289,22 +285,22 @@ logging:
     "io.dropwizard.jersey.DropwizardResourceConfig":
       level: INFO
     "AUDIT":
-      level: ${LOGLEVEL:-TRACE}
+      level: ${LOGLEVEL:-DEBUG}
   appenders:
     - type: console
       threshold: DEBUG
       timeZone: UTC
       target: stdout
       logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
-    
-#    - type: file
-#      currentLogFilename: logs/ferb.log
-#      threshold: ALL
-#      queueSize: 512
-#      discardingThreshold: 0
-#      maxFileSize: 20MB
-#      archive: true
-#      archivedLogFilenamePattern: logs/ferb-%i.log
-#      archivedFileCount: 5
-#      timeZone: UTC
-#      logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'
+
+#   - type: file
+#     currentLogFilename: logs/ferb.log
+#     threshold: ALL
+#     queueSize: 512
+#     discardingThreshold: 0
+#     maxFileSize: 20MB
+#     archive: true
+#     archivedLogFilenamePattern: logs/ferb-%i.log
+#     archivedFileCount: 5
+#     timeZone: UTC
+#     logFormat: '[%date{ISO8601}] [LEVEL=%level] [REMOTE_ADDRESS=%X{REMOTE_ADDRESS}] [REQUEST_ID=%X{REQUEST_ID}] [SESSION_ID=%X{SESSION_ID}] [STAFF_ID=%X{STAFF_ID}] [STAFF_COUNTY=%X{STAFF_COUNTY}] [RESPONSE_STATUS=%X{RESPONSE_STATUS}] [THREAD=%thread] [LOGGER=%logger] [MESSAGE=%message] [THROWABLE=%throwable]%n'

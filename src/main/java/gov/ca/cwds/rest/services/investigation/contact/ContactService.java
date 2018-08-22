@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.services.investigation.contact;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import gov.ca.cwds.rest.api.domain.DomainObject;
@@ -99,7 +100,7 @@ public class ContactService implements TypedCrudsService<String, ContactReferral
         deliveredService.getTheLastUpdatedByStaffPerson(deliveredServiceEntity);
     String note = deliveredService.combineDetailTextAndContinuation(deliveredServiceEntity);
 
-    Set<IndividualDeliveredService> peopleInIndividualDeliveredService =
+    Map<String, IndividualDeliveredService> peopleInIndividualDeliveredService =
         deliveredToIndividualService.getPeopleInIndividualDeliveredService(deliveredServiceEntity);
 
     return new Contact(deliveredServiceEntity, lastUpdatedBy, note,

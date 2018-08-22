@@ -6,6 +6,7 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -41,6 +42,40 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
         objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-response.json");
+    expectedResponse = populateGeneratedIdentifiers(expectedResponse, participant);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  @Test
+  public void testPostWithDefaultsInSsb() throws Exception {
+    ParticipantIntakeApi participantRequest = objectMapper.readValue(
+        fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json").
+            getBytes(), ParticipantIntakeApi.class);
+    SafelySurrenderedBabiesIntakeApi ssb = new SafelySurrenderedBabiesIntakeApi();
+    ssb.setSurrenderedBy("Unknown");
+    participantRequest.setSafelySurenderedBabies(ssb);
+
+    String actualJson = getStringResponse(
+        doPostCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS,
+            objectMapper.writeValueAsString(participantRequest)));
+
+    ParticipantIntakeApi participant =
+        objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
+    String expectedResponse =
+        fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-response.json");
+    expectedResponse = populateGeneratedIdentifiers(expectedResponse, participant);
+
+    expectedResponse = expectedResponse.replaceAll("\\\"relation_to_child.*", "");
+    expectedResponse = expectedResponse.replaceAll("\\\"bracelet_id.*", "");
+    expectedResponse = expectedResponse.replaceAll("\\\"parent_guardian_given_bracelet_id.*", "");
+    expectedResponse = expectedResponse.replaceAll("\\\"parent_guardian_provided_med_questionaire.*", "");
+    expectedResponse = expectedResponse.replaceAll("\\\"med_questionaire_return_date.*", "");
+    expectedResponse = expectedResponse.replaceAll("\\\"comments.*", "");
+
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  private String populateGeneratedIdentifiers(String expectedResponse, ParticipantIntakeApi participant) {
     expectedResponse = expectedResponse.replace("${participant_id}", participant.getId());
     expectedResponse =
         expectedResponse.replace("${address_id_1}", participant.getAddresses().stream()
@@ -62,7 +97,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
         participant.getCsecs().stream()
             .filter(csec -> "Victim Before Foster Care".equals(csec.getCsecCodeId())).findFirst()
             .orElse(null).getId());
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+    return expectedResponse;
   }
 
   @Test

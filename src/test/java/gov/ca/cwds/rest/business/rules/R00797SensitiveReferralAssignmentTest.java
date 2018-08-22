@@ -50,6 +50,7 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.persistence.cms.CaseLoad;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.AddressEntityBuilder;
 import gov.ca.cwds.fixture.AllegationPerpetratorHistoryEntityBuilder;
 import gov.ca.cwds.fixture.AssignmentEntityBuilder;
@@ -137,6 +138,7 @@ public class R00797SensitiveReferralAssignmentTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
+  private DroolsService droolsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -184,6 +186,7 @@ public class R00797SensitiveReferralAssignmentTest {
   public void setup() throws Exception {
     new TestingRequestExecutionContext("02f");
     validator = Validation.buildDefaultValidatorFactory().getValidator();
+    droolsService = mock(DroolsService.class);
 
     referralDao = mock(ReferralDao.class);
     nonLACountyTriggers = mock(NonLACountyTriggers.class);
@@ -222,6 +225,7 @@ public class R00797SensitiveReferralAssignmentTest {
 
     addressDao = mock(AddressDao.class);
     addressService = new AddressService(addressDao, ssaName3Dao, upperCaseTables, validator);
+    addressService.setDroolsService(droolsService);
 
     clientAddressDao = mock(ClientAddressDao.class);
     riClientAddress = mock(RIClientAddress.class);

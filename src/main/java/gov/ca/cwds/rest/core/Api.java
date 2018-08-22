@@ -69,8 +69,9 @@ public final class Api {
 
     public static final String AUTH_STATUS = "auth";
     public static final String SWAGGER_STATUS = "swagger";
-    public static final String LOV_DB_STATUS = "lov_db";
-    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "intake_lov_code_cache";
+    public static final String LOV_STATUS = "lov";
+    public static final String SYSTEM_CODES_STATUS = "system_code";
+    public static final String INTAKE_LOV_CODE_CACHE_STATUS = "lov_code_cache";
     public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
 
     private HealthCheck() {}

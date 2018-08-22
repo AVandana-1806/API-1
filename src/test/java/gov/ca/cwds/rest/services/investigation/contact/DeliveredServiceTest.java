@@ -11,7 +11,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityExistsException;
@@ -155,7 +157,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity("id",
             deliveredServiceDomain, "ABC", new Date());
     String actual = target.combineDetailTextAndContinuation(toTest);
-    assertEquals(actual, null);
+    assertEquals(null, actual);
   }
 
   @Test
@@ -168,7 +170,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity("id",
             deliveredServiceDomain, "ABC", new Date());
     String actual = target.combineDetailTextAndContinuation(toTest);
-    assertEquals(actual, "test");
+    assertEquals("test", actual);
   }
 
   @Test
@@ -182,7 +184,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity("id",
             deliveredServiceDomain, "ABC", new Date());
     String actual = target.combineDetailTextAndContinuation(toTest);
-    assertEquals(actual, "test");
+    assertEquals("test", actual);
   }
 
   @Test
@@ -194,7 +196,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity("id",
             deliveredServiceDomain, "ABC", new Date());
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408",
         "C", services, "415",
         "some text describing the contact of up to 8000 characters can be stored in CMS", people);
@@ -214,7 +216,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity("id",
             deliveredServiceDomain, "ABC", new Date());
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408",
         "C", services, "415",
         "some text describing the contact of up to 8000 characters can be stored in CMS", people);
@@ -232,7 +234,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity(DEFAULT_KEY,
             deliveredServiceDomain, "ABC", new Date());
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408",
         "C", services, "415",
         "some text describing the contact of up to 8000 characters can be stored in CMS", people);
@@ -261,7 +263,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity(DEFAULT_KEY,
             deliveredServiceDomain, "ABC", new Date());
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408",
         "C", services, "415", sb.toString(), people);
     ContactReferralRequest request = new ContactReferralRequest("referralid", contactRequest);
@@ -282,7 +284,7 @@ public class DeliveredServiceTest {
         new gov.ca.cwds.data.persistence.contact.DeliveredServiceEntity(DEFAULT_KEY,
             deliveredServiceDomain, "ABC", new Date());
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408",
         "C", services, "415", null, people);
     ContactReferralRequest request = new ContactReferralRequest("referralid", contactRequest);
@@ -298,7 +300,7 @@ public class DeliveredServiceTest {
   @Test(expected = ServiceException.class)
   public void createWhenEntityExists() throws Exception {
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     ContactRequest contactRequest = new ContactRequest("2010-04-27T20:20:14.000Z", "", "433", "408",
         "C", services, "415",
         "some text describing the contact of up to 8000 characters can be stored in CMS", people);

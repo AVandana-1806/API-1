@@ -9,7 +9,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -214,7 +216,7 @@ public class DeliveredToIndividualServiceTest {
     IndividualDeliveredService person =
         deliveredToIndividualService.findPerson(individualDeliveredService);
     String expected = person.getFirstName();
-    assertEquals(expected, "John");
+    assertEquals("John", expected);
   }
 
   @Test(expected = ApiException.class)
@@ -256,19 +258,19 @@ public class DeliveredToIndividualServiceTest {
   @Test
   public void valueOfCode() throws Exception {
     DeliveredToIndividualService.Code test = DeliveredToIndividualService.Code.valueOf("CLIENT");
-    assertEquals(test, DeliveredToIndividualService.Code.CLIENT);
+    assertEquals(DeliveredToIndividualService.Code.CLIENT, test);
   }
 
   private ContactRequest validContactRequest() {
-    final Set<IndividualDeliveredService> people = validPeople();
+    final Map<String, IndividualDeliveredService> people = validPeople();
     return new ContactRequest("2010-04-27T23:30:14.000Z", "", "433", "408", "C",
         new HashSet<Integer>(), "415",
         "some text describing the contact of up to 8000 characters can be stored in CMS", people);
   }
 
 
-  private Set<IndividualDeliveredService> validPeople() {
-    final Set<IndividualDeliveredService> ret = new HashSet<>();
+  private Map<String, IndividualDeliveredService> validPeople() {
+    final Map<String, IndividualDeliveredService> ret = new HashMap<>();
     CmsRecordDescriptor person1LegacyDescriptor =
         new CmsRecordDescriptorEntityBuilder().setId("3456789ABC").setUiId("2222-2222-3333-4444555")
             .setTableName("CLIENT_T").setTableDescription("Client").build();
@@ -276,9 +278,9 @@ public class DeliveredToIndividualServiceTest {
         new CmsRecordDescriptorEntityBuilder().setId("4567890ABC").setUiId("3333-2222-3333-4444555")
             .setTableName("REPTR_T").setTableDescription("Reporter").build();
 
-    ret.add(new IndividualDeliveredService(person1LegacyDescriptor, "John", "Bob", "Smith",
+    ret.put("1", new IndividualDeliveredService(person1LegacyDescriptor, "John", "Bob", "Smith",
         "Mr.", "Jr.", ""));
-    ret.add(new IndividualDeliveredService(person2LegacyDescriptor, "Sam", "Bill", "Jones",
+    ret.put("2", new IndividualDeliveredService(person2LegacyDescriptor, "Sam", "Bill", "Jones",
         "Mr.", "III", "Reporter"));
     return ret;
   }
