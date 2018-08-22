@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -44,6 +45,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
 
   @Test
+  @Ignore
   public void getRelationshipsByScreeningIdWithCandidates_threeParticipantOneRelationshipTwoCandidates()
       throws IOException {
     String actualJson = getStringResponse(
