@@ -167,7 +167,8 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         applicationModule.getDataAccessModule().getPaperTrailInterceptor());
 
     final Map<String, String> env = System.getenv();
-    LOGGER.info("******************* environment variables ***********************************");
+    LOGGER.info(
+        "\n\n******************* ENVIRONMENT VARIABLES ***********************************\n");
     for (Map.Entry<String, String> entry : env.entrySet()) {
       LOGGER.info("{}={}", entry.getKey(), entry.getValue());
     }
@@ -183,8 +184,8 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
       databaseHelper.runScript(LIQUIBASE_INTAKE_NS_DATABASE_MASTER_XML,
           nsDataSourceFactory.getProperties().get(HIBERNATE_DEFAULT_SCHEMA_PROPERTY_NAME));
     } catch (Exception e) {
-      LOGGER.error("INTAKE_NS DB upgrade failed. ", e);
-      throw new ApiException("INTAKE_NS DB upgrade failed", e);
+      LOGGER.error("INTAKE_NS DB UPGRADE FAILED!", e);
+      throw new ApiException("INTAKE_NS DB UPGRADE FAILED", e);
     }
 
     LOGGER.info("Finished Upgrading INTAKE_NS DB");

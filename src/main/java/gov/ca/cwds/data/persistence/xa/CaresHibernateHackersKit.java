@@ -97,8 +97,8 @@ public class CaresHibernateHackersKit {
    * @param work Hibernate Work instance
    */
   public static void doWork(final Session session, Work work) {
-    clearSession(session);
     grabTransaction(session);
+    clearSession(session);
     session.doWork(work);
     clearSession(session);
   }

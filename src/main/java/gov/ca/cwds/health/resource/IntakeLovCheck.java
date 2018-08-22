@@ -13,9 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
 import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Health check for Postgres list of value (LOV) tables and views. Feel the LOVe.
@@ -35,12 +39,16 @@ public class IntakeLovCheck implements Pingable {
     this.sessionFactory = sessionFactory;
   }
 
+  @UnitOfWork
   @Override
   public boolean ping() {
     LOGGER.info("Postgres LOV health check: ping start");
+    BaseAuthorizationDao.clearXaMode();
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
     boolean ok = true;
 
-    try (final Session session = sessionFactory.openSession()) {
+    try {
+      final Session session = sessionFactory.getCurrentSession();
       final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
@@ -51,7 +59,9 @@ public class IntakeLovCheck implements Pingable {
           tableName);
       ok = ok && tableCountOk;
       txn.commit();
-    } // Session and connection go out of scope.
+    } finally {
+      // Session and connection go out of scope.
+    }
 
     LOGGER.info("Postgres LOV health check: ping done");
     return ok;

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 import gov.ca.cwds.rest.filters.RequestExecutionContextRegistry;
 
@@ -38,7 +39,7 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
   public ReentrantXAUnitOfWorkAspectFactoryImpl(Map<String, SessionFactory> sessionFactories) {
     this.sessionFactories = sessionFactories;
 
-    // Notify this instance upon request start and end.
+    // Notify this instance when requests start or end.
     RequestExecutionContextRegistry.registerCallback(this);
   }
 
@@ -47,22 +48,28 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
     return ReentrantXAUnitOfWorkAspectFactoryImpl.class.getName();
   }
 
-  @Override
-  public void startRequest(RequestExecutionContext ctx) {
-    LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.startRequest");
+  private void clearRequest() {
     local.set(null); // clear the current thread
     BaseAuthorizationDao.clearXaMode();
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+  }
+
+  @Override
+  public void startRequest(RequestExecutionContext ctx) {
+    LOGGER.info("start request");
+    clearRequest();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    LOGGER.info("ReentrantXAUnitOfWorkAspectFactoryImpl.endRequest");
-    local.set(null); // clear the current thread
-    BaseAuthorizationDao.clearXaMode();
+    LOGGER.info("end request");
+    clearRequest();
   }
 
   protected XAUnitOfWorkAspect make(Map<String, SessionFactory> someSessionFactories) {
     BaseAuthorizationDao.setXaMode(true);
+    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.TRUE);
+
     XAUnitOfWorkAspect ret = local.get();
     if (ret == null) {
       ret = new XAUnitOfWorkAspect(someSessionFactories);

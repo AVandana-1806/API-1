@@ -98,7 +98,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   }
 
   /**
-   * Is this request currently in an XA transaction?
+   * Is this request participating in an XA transaction?
    * 
    * @return true = request is using XA
    */
@@ -128,7 +128,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
       this.normSessionFactory = hibernateBundle.getSessionFactory();
       this.xaSessionFactory = xaHibernateBundle.getSessionFactory();
 
-      // Notify this instance upon request start and end.
+      // Notify this instance when requests start or end.
       RequestExecutionContextRegistry.registerCallback(this);
     }
   }
