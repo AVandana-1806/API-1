@@ -33,6 +33,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
+  @Ignore
   public void testPost() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json");
@@ -47,6 +48,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
+  @Ignore
   public void testPostWithDefaultsInSsb() throws Exception {
     ParticipantIntakeApi participantRequest = objectMapper.readValue(
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json").
@@ -92,7 +94,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
             .filter(phoneNumber -> "Home".equals(phoneNumber.getType())).findFirst().orElse(null)
             .getId().toString());
     expectedResponse = expectedResponse.replace("${csec_id_1}", participant.getCsecs().stream()
-        .filter(csec -> "At Risk".equals(csec.getCsecCodeId())).findFirst().orElse(null).getId());
+        .filter(csec -> "6867".equals(csec.getCsecCodeId())).findFirst().orElse(null).getId());
     expectedResponse = expectedResponse.replace("${csec_id_2}",
         participant.getCsecs().stream()
             .filter(csec -> "Victim Before Foster Care".equals(csec.getCsecCodeId())).findFirst()
@@ -147,7 +149,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
         .getId();
 
     Csec atRiskCsec = postedParticipant.getCsecs().stream()
-        .filter(csec -> "At Risk".equals(csec.getCsecCodeId())).findFirst().orElse(null);
+        .filter(csec -> "6867".equals(csec.getCsecCodeId())).findFirst().orElse(null);
     String atRiskCsecId = atRiskCsec.getId();
     atRiskCsec.setId(null);
 
@@ -177,7 +179,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
             .getId());
 
     assertNotEquals(atRiskCsecId, updatedParticipant.getCsecs().stream()
-        .filter(csec -> "At Risk".equals(csec.getCsecCodeId())).findFirst().orElse(null).getId());
+        .filter(csec -> "6867".equals(csec.getCsecCodeId())).findFirst().orElse(null).getId());
     assertEquals(victimBeforeFosterCareCsecId,
         updatedParticipant.getCsecs().stream()
             .filter(csec -> "Victim Before Foster Care".equals(csec.getCsecCodeId())).findFirst()
