@@ -88,7 +88,7 @@ public class ParticipantBirthValidator
       String date = StartDateTimeValidator.extractStartDate(screening.getStartedAt(), null);
       LocalDate startDate = LocalDate.parse(date);
       LocalDate participantDob = LocalDate.parse(participant.getDateOfBirth());
-      if (participantDob.isAfter(startDate) == Boolean.TRUE) {
+      if (participantDob.isAfter(startDate)) {
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate("date of Birth can not be in future")
             .addPropertyNode(participant.getFirstName()).addConstraintViolation();
