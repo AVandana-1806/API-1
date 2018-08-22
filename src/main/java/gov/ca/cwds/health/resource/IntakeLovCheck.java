@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class IntakeLovCheck implements Pingable {
 
     try {
       final Session session = sessionFactory.getCurrentSession();
-      final Transaction txn = session.beginTransaction();
+      // final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       final String tableName = "VW_INTAKE_LOV";
@@ -58,7 +57,7 @@ public class IntakeLovCheck implements Pingable {
       LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk,
           tableName);
       ok = ok && tableCountOk;
-      txn.commit();
+      // txn.commit();
     } finally {
       // Session and connection go out of scope.
     }

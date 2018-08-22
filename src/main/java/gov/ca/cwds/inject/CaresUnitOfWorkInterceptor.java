@@ -108,10 +108,11 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         currentSessionFactory = nsSessionFactory;
         break;
       default:
-        throw new IllegalStateException("Unknown datasource! " + annotation.value());
+        LOGGER.error("UNKNOWN DATASOURCE! {}", annotation.value());
+        throw new IllegalStateException("UNKNOWN DATASOURCE! " + annotation.value());
     }
 
-    LOGGER.debug("{}", name);
+    LOGGER.debug("@UnitOfWork datasource: {}", name);
 
     // Not XA, so clear XA flags.
     BaseAuthorizationDao.clearXaMode();
