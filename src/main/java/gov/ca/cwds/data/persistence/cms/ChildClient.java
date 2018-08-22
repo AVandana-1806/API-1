@@ -34,7 +34,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
  * @author CWDS API Team
  */
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.ChildClient.findVictimClients",
-    query = "SELECT C FROM ChildClient C, ReferralClient R, Allegation A"
+    query = "SELECT C FROM gov.ca.cwds.data.persistence.cms.ChildClient C, ReferralClient R, Allegation A"
         + " WHERE C.victimClientId = R.clientId " + " AND A.victimClientId = R.clientId"
         + " AND R.referralId = :referralId")
 @Entity

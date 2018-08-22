@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.api.domain.investigation.contact;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -119,7 +120,7 @@ public class Contact extends ReportingDomain implements Request, Response {
 
   @ApiModelProperty(required = false, readOnly = false)
   @JsonProperty("people")
-  private Set<IndividualDeliveredService> people;
+  private Map<String, IndividualDeliveredService> people;
 
   /**
    * @param legacyDescriptor the CmsRecordDescriptor
@@ -142,7 +143,7 @@ public class Contact extends ReportingDomain implements Request, Response {
       @JsonProperty("communication_method") String communicationMethod,
       @JsonProperty("status") String status, @JsonProperty("services") Set<Integer> services,
       @JsonProperty("location") String location, @JsonProperty("note") String note,
-      @JsonProperty("people") Set<IndividualDeliveredService> people) {
+      @JsonProperty("people") Map<String, IndividualDeliveredService> people) {
     super();
     this.legacyDescriptor = legacyDescriptor;
     this.lastUpdatedBy = lastUpdatedBy;
@@ -164,7 +165,7 @@ public class Contact extends ReportingDomain implements Request, Response {
    * @param people - people
    */
   public Contact(DeliveredServiceEntity persistedDeliverdService, LastUpdatedBy lastUpdatedBy,
-      String note, Set<IndividualDeliveredService> people) {
+      String note, Map<String, IndividualDeliveredService> people) {
     super();
     this.legacyDescriptor = CmsRecordUtils.createLegacyDescriptor(persistedDeliverdService.getId(),
         LegacyTable.DELIVERED_SERVICE);
@@ -262,10 +263,8 @@ public class Contact extends ReportingDomain implements Request, Response {
     return note;
   }
 
-  /**
-   * @return the people
-   */
-  public Set<IndividualDeliveredService> getPeople() {
+
+  public Map<String, IndividualDeliveredService> getPeople() {
     return people;
   }
 
