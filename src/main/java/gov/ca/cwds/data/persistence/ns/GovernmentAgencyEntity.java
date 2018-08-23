@@ -31,6 +31,8 @@ import gov.ca.cwds.rest.util.FerbDateUtils;
 @Table(name = "agencies")
 public class GovernmentAgencyEntity implements PersistentObject {
 
+  private static final long serialVersionUID = 1L;
+
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agencies_id_seq")
