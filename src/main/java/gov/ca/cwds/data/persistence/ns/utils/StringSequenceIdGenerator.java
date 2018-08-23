@@ -67,7 +67,7 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
     }
 
     sequenceCallSyntax = dialect.getSequenceNextValString(sequenceName);
-    LOGGER.debug("sequence SQL: {}", sequenceCallSyntax);
+    LOGGER.info("sequence SQL: {}", sequenceCallSyntax);
   }
 
   @SuppressWarnings("rawtypes")
@@ -85,7 +85,7 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
         ((Number) Session.class.cast(session).createNativeQuery(sequenceCallSyntax).uniqueResult())
             .longValue();
 
-    LOGGER.debug("Next key: {}", seqValue);
+    LOGGER.info("Next key: {}", seqValue);
     return String.valueOf(seqValue);
   }
 
