@@ -24,7 +24,6 @@ public class SpecialProjectReferral extends ReportingDomain implements Request, 
   
   private static final long serialVersionUID = 1L;
 
-  @NotNull
   @Size(max = CMS_ID_LEN)
   @ApiModelProperty(required = true, readOnly = true, value = "", example = "1234ABC123")
   private String id;
