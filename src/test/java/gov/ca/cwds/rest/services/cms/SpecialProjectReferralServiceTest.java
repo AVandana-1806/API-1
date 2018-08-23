@@ -140,6 +140,7 @@ public class SpecialProjectReferralServiceTest {
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted.getClass(),
         is(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral.class));
+    assertThat(messageBuilder.getMessages().size(), is(0));
   }
 
   @Test
