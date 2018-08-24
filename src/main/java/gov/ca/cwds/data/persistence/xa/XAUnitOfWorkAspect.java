@@ -20,6 +20,7 @@ import com.atomikos.icatch.jta.UserTransactionImp;
 
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.std.ApiMarker;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 
@@ -78,9 +79,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   public void beforeStart(Method method, XAUnitOfWork xaUnitOfWork) throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.beforeStart()");
+    LOGGER.info("beforeStart()");
     if (xaUnitOfWork == null) {
-      LOGGER.error("XA beforeStart.beforeStart(): no annotation");
+      LOGGER.error("XA beforeStart(): no annotation");
       return;
     }
 
@@ -107,14 +108,14 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   public void afterEnd() throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.afterEnd()");
+    LOGGER.info("afterEnd()");
     if (sessions.isEmpty()) {
       LOGGER.warn("XA afterEnd: no sessions");
       return;
     }
 
     try {
-      LOGGER.warn("XaUnitOfWorkAspect.afterEnd(): commit");
+      LOGGER.warn("afterEnd(): commit");
       commit();
     } catch (Exception e) {
       LOGGER.error("XaUnitOfWorkAspect.afterEnd(): ERROR ON COMMIT! {}", e.getMessage(), e);
@@ -128,7 +129,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   public void onError() throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.onError()");
+    LOGGER.info("onError()");
     if (sessions.isEmpty()) {
       LOGGER.warn("XA onError: no sessions");
       return;
@@ -147,7 +148,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Close open sessions, set transactions to null.
    */
   public void onFinish() {
-    LOGGER.info("XaUnitOfWorkAspect.onFinish()");
+    LOGGER.info("onFinish()");
 
     try {
       closeSessions();
@@ -183,7 +184,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @return session current session for this datasource
    */
   protected Session grabSession(String key, SessionFactory sessionFactory) {
-    LOGGER.info("XaUnitOfWorkAspect.grabSession()");
+    LOGGER.info("grabSession()");
     Session session;
     if (sessions.containsKey(key)) {
       session = sessions.get(key);
@@ -192,9 +193,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       try {
         session = sessionFactory.getCurrentSession();
       } catch (Exception e) {
-        LOGGER.info("No current session. Open a new one. {}", e.getMessage());
+        LOGGER.warn("No current session. Open a NEW one. {}", e.getMessage());
         if (LOGGER.isTraceEnabled()) {
-          LOGGER.trace("No current session. Open a new one. {}", e.getMessage(), e);
+          LOGGER.trace("No current session. Open a NEW one. {}", e.getMessage(), e);
         }
         session = sessionFactory.openSession();
       }
@@ -203,7 +204,9 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       sessions.put(key, session);
 
       // Add user info to DB2 connections. Harmless for other connections.
-      session.doWork(new WorkFerbUserInfo());
+      session.doWork(
+          new WorkFerbUserInfo(Api.DATASOURCE_CMS.equals(key) || Api.DATASOURCE_CMS_REP.equals(key)
+              || Api.DATASOURCE_XA_CMS.equals(key) || Api.DATASOURCE_XA_CMS_RS.equals(key)));
     }
 
     return session;
@@ -215,7 +218,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @return true = any unit is transactional
    */
   protected boolean hasTransactionalFlag() {
-    LOGGER.info("XaUnitOfWorkAspect.hasTransactionalFlag()");
+    LOGGER.info("hasTransactionalFlag()");
     return this.units.values().stream().anyMatch(XAUnitOfWork::transactional);
   }
 
@@ -223,7 +226,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Open sessions for selected datasources.
    */
   protected void openSessions() {
-    LOGGER.info("XaUnitOfWorkAspect.openSessions()");
+    LOGGER.info("openSessions()");
     sessionFactories.entrySet().stream().forEach(e -> grabSession(e.getKey(), e.getValue()));
   }
 
@@ -231,7 +234,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Close all sessions.
    */
   protected void closeSessions() {
-    LOGGER.info("XaUnitOfWorkAspect.closeSessions()");
+    LOGGER.info("closeSessions()");
     sessions.values().stream().forEach(this::closeSession);
     sessions.clear();
   }
@@ -242,7 +245,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @param session target XA session
    */
   protected void closeSession(Session session) {
-    LOGGER.info("XaUnitOfWorkAspect.closeSession()");
+    LOGGER.info("closeSession()");
     if (session != null) {
       LOGGER.info("XA CLOSE SESSION!");
       try {
@@ -263,7 +266,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @param session - target Hibernate session
    */
   protected void configureSession(Session session) {
-    LOGGER.info("XaUnitOfWorkAspect.configureSession()");
+    LOGGER.info("configureSession()");
     session.setDefaultReadOnly(firstXaUnitOfWork.readOnly());
     session.setCacheMode(firstXaUnitOfWork.cacheMode());
     session.setHibernateFlushMode(
@@ -276,7 +279,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   protected void beginXaTransaction() throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.beginXaTransaction()");
+    LOGGER.info("beginXaTransaction()");
     if (!hasTransactionalFlag()) {
       LOGGER.trace("XA BEGIN TRANSACTION: unit of work is not transactional");
       return;
@@ -305,7 +308,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
   }
 
   protected void rollbackSessionTransaction(Session session) {
-    LOGGER.info("XaUnitOfWorkAspect.rollbackSessionTransaction()");
+    LOGGER.info("rollbackSessionTransaction()");
     try {
       final Transaction sessionTran = session.getTransaction();
       if (sessionTran != null && sessionTran.getStatus().canRollback()) {
@@ -322,7 +325,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   protected void rollback() throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.rollback()");
+    LOGGER.info("rollback()");
     if (!hasTransactionalFlag()) {
       LOGGER.trace("XA ROLLBACK TRANSACTION: unit of work not transactional");
       return;
@@ -353,7 +356,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @throws CaresXAException on database error
    */
   protected void commit() throws CaresXAException {
-    LOGGER.info("XaUnitOfWorkAspect.commit()");
+    LOGGER.info("commit()");
     if (!firstXaUnitOfWork.transactional()) {
       LOGGER.info("XA COMMIT TRANSACTION: unit of work not transactional");
       return;

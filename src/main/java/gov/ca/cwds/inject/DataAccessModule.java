@@ -675,7 +675,7 @@ public class DataAccessModule extends AbstractModule {
 
       for (Map.Entry<String, ElasticsearchConfiguration> esConfigKey : esConfigs.entrySet()) {
         final ElasticsearchConfiguration config = esConfigs.get(esConfigKey.getKey());
-        TransportClient transportClient = ElasticUtils.buildElasticsearchClient(config);
+        final TransportClient transportClient = ElasticUtils.buildElasticsearchClient(config);
         clients.put(esConfigKey.getKey(), transportClient);
       }
     }

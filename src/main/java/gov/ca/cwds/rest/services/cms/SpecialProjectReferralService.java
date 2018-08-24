@@ -52,7 +52,7 @@ public class SpecialProjectReferralService implements
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SpecialProjectReferralService.class);
 
-  private static final String S_CESC_REFERRAL = "S-CESC Referral";
+  private static final String S_CSEC_REFERRAL = "S-CSEC Referral";
   private static final short MEDICAL_RECORD_SYSTEM_CODE_ID = 1331;
 
   @Inject
@@ -151,7 +151,7 @@ public class SpecialProjectReferralService implements
 
     short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
         LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
-    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);
+    String specialProjectId = findSpecialProjectId(S_CSEC_REFERRAL, governmentEntityType);
     
     try {
       Csec csecDomain = csecs.get(0);
@@ -187,10 +187,10 @@ public class SpecialProjectReferralService implements
       return Boolean.FALSE;
     }
  
-    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);   
+    String specialProjectId = findSpecialProjectId(S_CSEC_REFERRAL, governmentEntityType);   
     if (StringUtils.isBlank(specialProjectId)) {
       String message = "Special Project does not exist for: " 
-        + S_CESC_REFERRAL + " " + governmentEntityType;
+        + S_CSEC_REFERRAL + " " + governmentEntityType;
       messageBuilder.addMessageAndLog(message, LOGGER);
       return Boolean.FALSE;
     }

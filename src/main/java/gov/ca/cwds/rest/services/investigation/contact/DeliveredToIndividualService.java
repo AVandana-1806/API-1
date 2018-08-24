@@ -3,8 +3,10 @@ package gov.ca.cwds.rest.services.investigation.contact;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -166,13 +168,15 @@ public class DeliveredToIndividualService {
    * @param deliveredServiceEntity The persistence object
    * @return People In IndividualDeliveredService
    */
-  public Set<IndividualDeliveredService> getPeopleInIndividualDeliveredService(
+  public Map<String, IndividualDeliveredService> getPeopleInIndividualDeliveredService(
       DeliveredServiceEntity deliveredServiceEntity) {
-    final Set<IndividualDeliveredService> people = new HashSet<>();
+    final Map<String, IndividualDeliveredService> people = new HashMap<>();
     final IndividualDeliveredServiceEntity[] individualDeliveredServices =
         individualDeliveredServiceDao.findByDeliveredServiceId(deliveredServiceEntity.getId());
+
     for (IndividualDeliveredServiceEntity individualDeliveredService : individualDeliveredServices) {
-      people.add(this.findPerson(individualDeliveredService));
+      IndividualDeliveredService person = this.findPerson(individualDeliveredService);
+      people.put(person.getLegacyDescriptor().getId(), this.findPerson(individualDeliveredService));
     }
     return people;
   }
@@ -267,8 +271,8 @@ public class DeliveredToIndividualService {
     Date endedAt = DomainChef.uncookISO8601Timestamp(contactRequest.getEndedAt());
     Date startedAt = DomainChef.uncookISO8601Timestamp(contactRequest.getStartedAt());
     Integer serviceContactType = Integer.valueOf(contactRequest.getPurpose());
-    Set<IndividualDeliveredService> people = contactRequest.getPeople();
-    for (IndividualDeliveredService person : people) {
+    Map<String, IndividualDeliveredService> people = contactRequest.getPeople();
+    for (IndividualDeliveredService person : people.values()) {
       String deliveredToIndividualCode = DeliveredToIndividualService.Code
           .lookupByValue(person.getLegacyDescriptor().getTableName()).getCodeLiteral();
       String deliveredToIndividualId = person.getLegacyDescriptor().getId();
@@ -295,12 +299,13 @@ public class DeliveredToIndividualService {
     Date endedAt = DomainChef.uncookISO8601Timestamp(contactRequest.getEndedAt());
     Date startedAt = DomainChef.uncookISO8601Timestamp(contactRequest.getStartedAt());
     Integer serviceContactType = Integer.valueOf(contactRequest.getPurpose());
-    Set<IndividualDeliveredService> people = contactRequest.getPeople();
+    Map<String, IndividualDeliveredService> people = contactRequest.getPeople();
     IndividualDeliveredServiceEntity[] entities =
         individualDeliveredServiceDao.findByDeliveredServiceId(deliveredServiceId);
-    deleteRemovedPeopleFromIndividualDeliveredService(people, entities);
+    Set<IndividualDeliveredService> peopleSet = new HashSet<>(people.values());
+    deleteRemovedPeopleFromIndividualDeliveredService(peopleSet, entities);
     List<IndividualDeliveredService> peopleToAdd =
-        findNewPeopleToAddToIndividualDeliveredService(people, entities);
+        findNewPeopleToAddToIndividualDeliveredService(peopleSet, entities);
     for (IndividualDeliveredService newPerson : peopleToAdd) {
       String deliveredToIndividualCode = DeliveredToIndividualService.Code
           .lookupByValue(newPerson.getLegacyDescriptor().getTableName()).getCodeLiteral();

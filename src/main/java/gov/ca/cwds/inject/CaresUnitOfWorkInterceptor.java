@@ -92,14 +92,17 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
     final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
     final String name = annotation.value().trim();
     SessionFactory currentSessionFactory;
+    boolean isDb2 = false;
 
     // Find the right session factory.
     switch (name) {
       case Api.DS_CMS:
         currentSessionFactory = cmsSessionFactory;
+        isDb2 = true;
         break;
       case Api.DATASOURCE_CMS_REP:
         currentSessionFactory = rsSessionFactory;
+        isDb2 = true;
         break;
       case Api.DS_NS:
         currentSessionFactory = nsSessionFactory;
@@ -132,7 +135,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
       aspect.beforeStart(annotation);
 
       // Set client information on the JDBC connection.
-      currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo());
+      currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo(isDb2));
       prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
     }
 

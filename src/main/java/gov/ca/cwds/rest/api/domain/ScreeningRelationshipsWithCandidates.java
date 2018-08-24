@@ -418,6 +418,14 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       return reversed;
     }
 
+    public void setRelatedAge(Short relatedAge) {
+      this.relatedAge = relatedAge;
+    }
+
+    public void setRelatedAgeUnit(String relatedAgeUnit) {
+      this.relatedAgeUnit = relatedAgeUnit;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -581,6 +589,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     private CandidateTo() {
     }
 
+    public String getCandidateId() {
+      return candidateId;
+    }
+
     public String getCandidateFirstName() {
       return candidateFirstName;
     }
@@ -611,6 +623,14 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
     public String getCandidateAgeUnit() {
       return candidateAgeUnit;
+    }
+
+    public void setCandidateAge(short candidateAge) {
+      this.candidateAge = candidateAge;
+    }
+
+    public void setCandidateAgeUnit(String candidateAgeUnit) {
+      this.candidateAgeUnit = candidateAgeUnit;
     }
 
     @Override
