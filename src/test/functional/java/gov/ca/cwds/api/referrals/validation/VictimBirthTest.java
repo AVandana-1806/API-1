@@ -102,7 +102,7 @@ public class VictimBirthTest extends FunctionalTest {
         .body("legacy_id", notNullValue());
   }
 
-  private ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,
+  protected ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,
       String approximateAgeUnits) {
     Participant victim = new ParticipantResourceBuilder().setDateOfBirth(dateOfBith)
         .setApproximateAge(approximateAge).setApproximateAgeUnits(approximateAgeUnits)
