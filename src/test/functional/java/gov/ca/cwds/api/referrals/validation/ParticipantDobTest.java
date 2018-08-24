@@ -32,7 +32,7 @@ public class ParticipantDobTest extends FunctionalTest {
    * Test to check the validation on future date of Birth
    */
   @Test
-  public void testVictimDObOrAgeIsRequired() {
+  public void testParticipantDobCanNotInFuture() {
     String dateOfBith = "2018-06-18";
     String approximateAge = null;
     String approximateAgeUnits = null;
