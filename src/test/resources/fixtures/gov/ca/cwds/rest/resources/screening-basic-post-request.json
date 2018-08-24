@@ -1,0 +1,27 @@
+{  
+   "screening":{  
+      "cross_reports":[  
+
+      ],
+      "participants":[  
+
+      ],
+      "allegations":[  
+
+      ],
+      "addresses":[  
+
+      ],
+      "incident_address":{  
+
+      },
+      "communication_method":"fax",
+      "assignee_staff_id":"0X5",
+      "name":"Screenig Name",
+      "reference":"C08UKT",
+      "indexable":true,
+      "assignee":"Testing CWDS - State of California",
+      "fetch_status":"FETCHED",
+      "incident_county":"99"
+   }
+}

@@ -23,7 +23,7 @@ import gov.ca.cwds.rest.core.Api;
  */
 public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
   private static final String INTAKE_SCREENING_POST_REQUEST =
-      "fixtures/gov/ca/cwds/rest/resources/screening-post-request.json";
+      "fixtures/gov/ca/cwds/rest/resources/screening-basic-post-request.json";
   String resourcePath;
   String screeningPostPath;
   private HttpRequestHandler httpRequestHandler;
