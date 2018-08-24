@@ -35,7 +35,6 @@ public class WorkFerbUserInfo implements Work {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkFerbUserInfo.class);
 
   public static final String PROGRAM_NAME = "Ferb";
-
   public static final String IP_ADDRESS;
   public static final String WORKSTATION;
 
