@@ -24,6 +24,7 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
 
   private static final PerryUserIdentity DEFAULT_IDENTITY;
 
+  // Build default user identity.
   static {
     PerryUserIdentity pui = null;
     final String staffId = System.getProperty("DEFAULT_FERB_STAFF_ID");
@@ -35,7 +36,7 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   }
 
   /**
-   * Context parameters
+   * Context parameters. Not thread-safe, because it runs on a single thread.
    */
   private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
 
@@ -51,6 +52,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
     put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
     put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
     put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    put(Parameter.NON_HTTP_REQUEST, Boolean.FALSE);
+    put(Parameter.THREAD_ID, Thread.currentThread().getId());
   }
 
   /**
@@ -137,14 +140,20 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
 
   @Override
   public boolean isResourceReadOnly() {
-    final Boolean readOnly = (Boolean) get(Parameter.RESOURCE_READ_ONLY);
-    return readOnly != null && readOnly.booleanValue();
+    final Boolean ret = (Boolean) get(Parameter.RESOURCE_READ_ONLY);
+    return ret != null && ret.booleanValue();
   }
 
   @Override
   public boolean isXaTransaction() {
     final Boolean ret = (Boolean) get(Parameter.XA_TRANSACTION);
     return ret != null && ret.booleanValue();
+  }
+
+  @Override
+  public long getInitiatorThreadId() {
+    final Long ret = (Long) get(Parameter.THREAD_ID);
+    return ret != null ? ret.longValue() : 0;
   }
 
   /**

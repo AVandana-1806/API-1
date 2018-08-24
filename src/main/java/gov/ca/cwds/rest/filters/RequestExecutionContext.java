@@ -33,6 +33,19 @@ public interface RequestExecutionContext {
      */
     XA_TRANSACTION,
 
+    /**
+     * Request initiated by a non-HTTP source, such as cron'd health checks or scheduled tasks.
+     */
+    NON_HTTP_REQUEST,
+
+    /**
+     * Thread id of the request initiator.
+     */
+    THREAD_ID,
+
+    /**
+     * Convenient marker for read-only resources.
+     */
     RESOURCE_READ_ONLY,
 
     SEQUENCE_EXTERNAL_TABLE,
@@ -94,7 +107,23 @@ public interface RequestExecutionContext {
    */
   PerryUserIdentity getUserIdentity();
 
+  /**
+   * Return whether the resource is expected to perform read-only operations only.
+   * 
+   * @return true = resource is read-only
+   */
   boolean isResourceReadOnly();
+
+  /**
+   * Get the initiator's thread id.
+   * 
+   * <p>
+   * Helps to distinguish HTTP requests from non-HTTP requests.
+   * </p>
+   * 
+   * @return the thread id
+   */
+  long getInitiatorThreadId();
 
   /**
    * Get the message builder for warnings and errors for this request.

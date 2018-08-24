@@ -27,6 +27,7 @@ import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
+import gov.ca.cwds.data.persistence.xa.CaresUnitOfWorkInterceptor;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;

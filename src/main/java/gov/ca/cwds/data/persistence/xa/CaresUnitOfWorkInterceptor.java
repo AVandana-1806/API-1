@@ -1,4 +1,4 @@
-package gov.ca.cwds.inject;
+package gov.ca.cwds.data.persistence.xa;
 
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.prepareHibernateStatisticsConsumer;
 import static gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.provideHibernateStatistics;
@@ -15,8 +15,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
-import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
-import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
+import gov.ca.cwds.inject.CmsSessionFactory;
+import gov.ca.cwds.inject.CwsRsSessionFactory;
+import gov.ca.cwds.inject.NsSessionFactory;
+import gov.ca.cwds.inject.UnitOfWorkModule;
 import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
@@ -69,7 +71,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
       ThreadLocal.withInitial(HashMap::new);
 
   @Override
-  protected void resetRequest() {
+  public void resetRequest() {
     super.resetRequest();
     requestAspects.get().clear();
   }
@@ -88,7 +90,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
       return mi.proceed();
     }
 
-    // Use our wrapped (Candace) session factories and related wrappers.
+    // Use CARES wrapped (Candace) session factories and related wrappers.
     final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
     final String name = annotation.value().trim();
     SessionFactory currentSessionFactory;
@@ -112,7 +114,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         throw new IllegalStateException("UNKNOWN DATASOURCE! " + annotation.value());
     }
 
-    LOGGER.debug("@UnitOfWork datasource: {}", name);
+    LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
 
     // Not XA, so clear XA flags.
     BaseAuthorizationDao.clearXaMode();

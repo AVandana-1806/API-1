@@ -14,12 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.dao.cms.BaseAuthorizationDao;
 import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
 import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
-import gov.ca.cwds.rest.filters.RequestExecutionContext;
-import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
@@ -44,8 +41,6 @@ public class IntakeLovCheck implements Pingable {
   @Override
   public boolean ping() {
     LOGGER.info("Postgres LOV health check: ping start");
-    BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
     boolean ok = true;
 
     try {
