@@ -273,6 +273,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         relatedTo.relatedAge = (Short) ageWithUnit.get("AGE");
       }
 
+      public RelatedToBuilder withLegacyDescriptor(LegacyDescriptor legacyDescriptor) {
+        relatedTo.legacyDescriptor = legacyDescriptor;
+        return this;
+      }
+
       public RelatedTo build() {
         return relatedTo;
       }
@@ -346,6 +351,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(value = "If is reversed - related participant ID is Primary client ",
         example = "true")
     private boolean reversed;
+
+    @JsonProperty("legacy_descriptor")
+    @ApiModelProperty
+    private LegacyDescriptor legacyDescriptor;
 
     private RelatedTo() {
     }
@@ -424,6 +433,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
     public void setRelatedAgeUnit(String relatedAgeUnit) {
       this.relatedAgeUnit = relatedAgeUnit;
+    }
+
+    public LegacyDescriptor getLegacyDescriptor() {
+      return legacyDescriptor;
     }
 
     @Override
@@ -545,6 +558,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         candidateTo.candidateAge = (Short) ageWithUnit.get("AGE");
       }
 
+      public CandidateToBuilder withLegacyDescriptor(LegacyDescriptor legacyDescriptor) {
+        candidateTo.legacyDescriptor = legacyDescriptor;
+        return this;
+      }
+
       public CandidateTo build() {
         return candidateTo;
       }
@@ -586,6 +604,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(value = "Candidate age unit")
     private String candidateAgeUnit;
 
+    @JsonProperty("legacy_descriptor")
+    @ApiModelProperty
+    private LegacyDescriptor legacyDescriptor;
+
     private CandidateTo() {
     }
 
@@ -615,6 +637,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
     public String getCandidateDateOfBirth() {
       return candidateDateOfBirth;
+    }
+
+    public LegacyDescriptor getLegacyDescriptor() {
+      return legacyDescriptor;
     }
 
     public short getCandidateAge() {

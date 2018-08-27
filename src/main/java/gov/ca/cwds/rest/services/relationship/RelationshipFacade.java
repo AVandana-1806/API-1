@@ -3,13 +3,16 @@ package gov.ca.cwds.rest.services.relationship;
 import com.google.inject.Inject;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
+import gov.ca.cwds.data.ns.LegacyDescriptorDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.RelationshipDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientRelationship;
+import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
@@ -19,6 +22,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.services.ParticipantService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -56,17 +60,20 @@ public class RelationshipFacade {
   private final ClientDao cmsClientDao;
   private final SystemCodeCache systemCodeDao;
   private final ScreeningRelationshipService screeningRelationshipService;
+  private final LegacyDescriptorDao legacyDescriptorDao;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
       RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
-      ScreeningRelationshipService screeningRelationshipService) {
+      ScreeningRelationshipService screeningRelationshipService,
+      LegacyDescriptorDao legacyDescriptorDao) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
     this.screeningRelationshipService = screeningRelationshipService;
     this.systemCodeDao = SystemCodeCache.global();
+    this.legacyDescriptorDao = legacyDescriptorDao;
     initSystemCodes();
   }
 
@@ -218,6 +225,13 @@ public class RelationshipFacade {
     relatedToBuilder.withRelationshipStartDate(relationship.getStartDate());
     relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
 
+    LegacyDescriptorEntity legacyDescriptorEntity = legacyDescriptorDao
+        .findParticipantLegacyDescriptor(participantEntity.getId());
+    if (legacyDescriptorEntity != null) {
+      LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
+      relatedToBuilder.withLegacyDescriptor(legacyDescriptor);
+    }
+
     if (!isPrimary) {
       relatedToBuilder
           .withRelatedPersonRelationship(String.valueOf(relationship.getRelationshipType()))
@@ -249,6 +263,14 @@ public class RelationshipFacade {
 
       if (!relationshipExist(screeningParticipant, participant, allRelationships)) {
         CandidateToBuilder builder = new CandidateToBuilder();
+
+        LegacyDescriptorEntity legacyDescriptorEntity = legacyDescriptorDao
+            .findParticipantLegacyDescriptor(participant.getId());
+        if (legacyDescriptorEntity != null) {
+          LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
+          builder.withLegacyDescriptor(legacyDescriptor);
+        }
+
         builder.withCandidateAge(participant.getApproximateAge())
             .withCandidateAgeUnit(participant.getApproximateAgeUnits())
             .withCandidateDateOfBirth(participant.getDateOfBirth())
