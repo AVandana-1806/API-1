@@ -176,7 +176,7 @@ public class CaresHibernateHackersKit {
 
     try {
       final DatabaseMetaData meta = con.getMetaData();
-      LOGGER.debug("meta: product name: {}, production version: {}, major: {}, minor: {}",
+      LOGGER.info("meta: product name: {}, production version: {}, major: {}, minor: {}",
           meta.getDatabaseProductName(), meta.getDatabaseProductVersion(),
           meta.getDatabaseMajorVersion(), meta.getDatabaseMinorVersion());
 

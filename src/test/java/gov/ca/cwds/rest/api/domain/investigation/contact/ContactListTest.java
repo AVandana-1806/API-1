@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -37,7 +39,7 @@ public class ContactListTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
     Set<Integer> services = new HashSet<>();
-    final Set<IndividualDeliveredService> people = validPeople();
+    final Map<String, IndividualDeliveredService> people = validPeople();
     CmsRecordDescriptor legacyDescriptor = new CmsRecordDescriptorEntityBuilder().setId("0X5")
         .setUiId("0X5").setTableName("STFPERST").setTableDescription("Staff").build();
     CmsRecordDescriptor contactLegacyDescriptor =
@@ -64,8 +66,8 @@ public class ContactListTest {
     EqualsVerifier.forClass(ContactList.class).suppress(Warning.NONFINAL_FIELDS).verify();
   }
 
-  private Set<IndividualDeliveredService> validPeople() {
-    final Set<IndividualDeliveredService> ret = new HashSet<>();
+  private Map<String, IndividualDeliveredService> validPeople() {
+    final Map<String, IndividualDeliveredService> ret = new HashMap<>();
     CmsRecordDescriptor person1LegacyDescriptor =
         new CmsRecordDescriptorEntityBuilder().setId("3456789ABC").setUiId("2222-2222-3333-4444555")
             .setTableName("CLIENT_T").setTableDescription("Client").build();
@@ -73,9 +75,9 @@ public class ContactListTest {
         new CmsRecordDescriptorEntityBuilder().setId("4567890ABC").setUiId("3333-2222-3333-4444555")
             .setTableName("REPTR_T").setTableDescription("Reporter").build();
 
-    ret.add(new IndividualDeliveredService(person1LegacyDescriptor, "John", "Bob", "Smith",
+    ret.put("1", new IndividualDeliveredService(person1LegacyDescriptor, "John", "Bob", "Smith",
         "Mr.", "Jr.", ""));
-    ret.add(new IndividualDeliveredService(person2LegacyDescriptor, "Sam", "Bill", "Jones",
+    ret.put("1", new IndividualDeliveredService(person2LegacyDescriptor, "Sam", "Bill", "Jones",
         "Mr.", "III", "Reporter"));
     return ret;
   }

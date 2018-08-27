@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @JsonSnakeCase
 @SuppressWarnings({"common-java:DuplicatedBlocks"})
-public class SafelySurenderedBabiesIntakeApi extends DomainObject {
+public class SafelySurrenderedBabiesIntakeApi extends DomainObject {
 
   private static final long serialVersionUID = -5667060392833194010L;
 
@@ -59,7 +59,7 @@ public class SafelySurenderedBabiesIntakeApi extends DomainObject {
   private String participantId;
 
 
-  public SafelySurenderedBabiesIntakeApi() {
+  public SafelySurrenderedBabiesIntakeApi() {
     // required by third party library
   }
 

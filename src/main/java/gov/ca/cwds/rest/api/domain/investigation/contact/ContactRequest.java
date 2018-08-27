@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api.domain.investigation.contact;
 
+import java.util.Map;
 import java.util.Set;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -88,7 +89,7 @@ public class ContactRequest implements Request {
   @ApiModelProperty(required = true, readOnly = false)
   @JsonProperty("people")
   // ("contact_participants") INDIVIDUAL_DELIVERED_SERVICE
-  private Set<IndividualDeliveredService> people;
+  private Map<String, IndividualDeliveredService> people;
 
   /**
    * @param startedAt started at
@@ -107,7 +108,7 @@ public class ContactRequest implements Request {
       @JsonProperty("communication_method") String communicationMethod,
       @JsonProperty("status") String status, @JsonProperty("services") Set<Integer> services,
       @JsonProperty("location") String location, @JsonProperty("note") String note,
-      @JsonProperty("people") Set<IndividualDeliveredService> people) {
+      @JsonProperty("people") Map<String, IndividualDeliveredService> people) {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.purpose = purpose;
@@ -195,7 +196,7 @@ public class ContactRequest implements Request {
   /**
    * @return the people
    */
-  public Set<IndividualDeliveredService> getPeople() {
+  public Map<String, IndividualDeliveredService> getPeople() {
     return people;
   }
 

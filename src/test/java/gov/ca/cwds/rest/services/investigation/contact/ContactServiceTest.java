@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Before;
@@ -72,7 +73,7 @@ public class ContactServiceTest {
         .thenReturn(new LastUpdatedBy(staffLegacyDescriptor, "Joe", "M", "Friday", "Mr.", "Jr."));
     when(deliveredService.combineDetailTextAndContinuation(any())).thenReturn("this is a test");
     when(deliveredToIndividualService.getPeopleInIndividualDeliveredService(any()))
-        .thenReturn(new HashSet<IndividualDeliveredService>());
+        .thenReturn(new HashMap<>());
 
     ReferralClientDeliveredServiceEntity[] entity =
         {new ReferralClientDeliveredServiceEntityBuilder().build()};

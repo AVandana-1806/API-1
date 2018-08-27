@@ -55,6 +55,7 @@ import gov.ca.cwds.data.persistence.cms.DrmsDocument;
 import gov.ca.cwds.data.persistence.cms.ReferralClient;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.AddressEntityBuilder;
 import gov.ca.cwds.fixture.AllegationEntityBuilder;
 import gov.ca.cwds.fixture.AllegationPerpetratorHistoryEntityBuilder;
@@ -144,6 +145,7 @@ public class R07577CreateDummyDocsForReferralTest {
   private RIReferral riReferral;
   private RIReferralClient riReferralClient;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
+  private DroolsService droolsService;
 
   private ReferralDao referralDao;
   private ClientDao clientDao;
@@ -190,6 +192,7 @@ public class R07577CreateDummyDocsForReferralTest {
   @Before
   public void setup() throws Exception {
     validator = Validation.buildDefaultValidatorFactory().getValidator();
+    droolsService = mock(DroolsService.class);
 
     new TestingRequestExecutionContext("0X5");
     referralDao = mock(ReferralDao.class);
@@ -235,6 +238,7 @@ public class R07577CreateDummyDocsForReferralTest {
 
     addressDao = mock(AddressDao.class);
     addressService = new AddressService(addressDao, ssaName3Dao, upperCaseTables, validator);
+    addressService.setDroolsService(droolsService);
 
     clientAddressDao = mock(ClientAddressDao.class);
     laCountyTrigger = mock(LACountyTrigger.class);

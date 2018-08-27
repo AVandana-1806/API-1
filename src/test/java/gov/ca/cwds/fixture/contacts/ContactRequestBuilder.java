@@ -1,6 +1,8 @@
 package gov.ca.cwds.fixture.contacts;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import gov.ca.cwds.fixture.investigation.CmsRecordDescriptorEntityBuilder;
 import gov.ca.cwds.rest.api.domain.IndividualDeliveredService;
@@ -18,7 +20,7 @@ public class ContactRequestBuilder {
   private String location = "415";
   private String note =
       "some text describing the contact of up to 8000 characters can be stored in CMS";
-  private Set<IndividualDeliveredService> people = new HashSet();
+  private Map<String, IndividualDeliveredService> people = new HashMap<>();
   CmsRecordDescriptor personLegacyDescriptor =
       new CmsRecordDescriptorEntityBuilder().setId("1234567ABC").setUiId("3333-2222-3333-4444555")
           .setTableName("CLIENT_T").setTableDescription("Client").build();
@@ -27,7 +29,7 @@ public class ContactRequestBuilder {
       personLegacyDescriptor, "first", "middle", "last", "phd", "Mr", "teacher");
 
   public ContactRequest build() {
-    people.add(person);
+    people.put("1", person);
     return new ContactRequest(startedAt, endedAt, purpose.toString(), communicationMetod.toString(),
         status, services, location.toString(), note, people);
   }
@@ -72,7 +74,7 @@ public class ContactRequestBuilder {
     return this;
   }
 
-  public ContactRequestBuilder setPeople(Set<IndividualDeliveredService> people) {
+  public ContactRequestBuilder setPeople(Map<String, IndividualDeliveredService> people) {
     this.people = people;
     return this;
   }

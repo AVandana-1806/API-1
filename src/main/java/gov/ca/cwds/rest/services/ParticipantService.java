@@ -543,9 +543,8 @@ public class ParticipantService implements CrudsService {
         messageBuilder.addError("There is no CSEC code id provided for client with id: " + clientId,
             ErrorMessage.ErrorType.VALIDATION);
       } else {
-        Short csecLegacyId = IntakeCodeCache.global().getLegacySystemCodeForIntakeCode(
-            SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN, csecCodeId);
-
+        Short csecLegacyId = Short.valueOf(csecCodeId);
+        
         SexualExploitationType sexualExploitationType = null;
         if (csecLegacyId == null) {
           messageBuilder.addError("LOV code is not found for CSEC code id: " + csecCodeId,
