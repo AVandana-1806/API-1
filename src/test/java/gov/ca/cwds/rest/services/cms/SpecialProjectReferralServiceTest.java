@@ -138,7 +138,7 @@ public class SpecialProjectReferralServiceTest {
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
-    assertThat(sprPosted.getClass(),
+                            assertThat(sprPosted.getClass(),
         is(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral.class));
     assertThat(messageBuilder.getMessages().size(), is(0));
   }
