@@ -13,6 +13,7 @@ import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
+import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
@@ -22,9 +23,11 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ParticipantService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import io.dropwizard.hibernate.UnitOfWork;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,12 +64,16 @@ public class RelationshipFacade {
   private final SystemCodeCache systemCodeDao;
   private final ScreeningRelationshipService screeningRelationshipService;
   private final LegacyDescriptorDao legacyDescriptorDao;
+  private final ParticipantIntakeApiService participantIntakeApiService;
+  private final ClientTransformer clientTransformer;
 
   @Inject
   public RelationshipFacade(ParticipantDao participantDao, ClientRelationshipDao cmsRelationshipDao,
       RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
       ScreeningRelationshipService screeningRelationshipService,
-      LegacyDescriptorDao legacyDescriptorDao) {
+      LegacyDescriptorDao legacyDescriptorDao,
+      ParticipantIntakeApiService participantIntakeApiService,
+      ClientTransformer clientTransformer) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
@@ -74,6 +81,8 @@ public class RelationshipFacade {
     this.screeningRelationshipService = screeningRelationshipService;
     this.systemCodeDao = SystemCodeCache.global();
     this.legacyDescriptorDao = legacyDescriptorDao;
+    this.participantIntakeApiService = participantIntakeApiService;
+    this.clientTransformer = clientTransformer;
     initSystemCodes();
   }
 
@@ -388,74 +397,30 @@ public class RelationshipFacade {
     List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
 
+    ParticipantEntity participantEntity1;
+    ParticipantEntity participantEntity2;
+
     for (ClientRelationship clientRelationship : shouldBeCreated) {
-      ParticipantEntity participantEntity1;
-      ParticipantEntity participantEntity2;
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         if (client == null) {
           continue;
         }
-
-        participantEntity1 = participantDao.create(new ParticipantEntity(
-            null,
-            client.getBirthDate(),
-            client.getDeathDate(),
-            client.getFirstName(),
-            client.getGender(),
-            client.getLastName(),
-            client.getSsn(),
-            null,
-            client.getId(),
-            null,
-            null,
-            client.getMiddleName(),
-            client.getNameSuffix(),
-            null,
-            null,
-            null,
-            Boolean.FALSE,
-            Boolean.FALSE,
-            null,
-            null,
-            null
-        ));
-      } else {
-        participantEntity1 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+        createParticipant(client);
       }
+      participantEntity1 = participantDao
+          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
         if (client == null) {
           continue;
         }
-        participantEntity2 = participantDao.create(new ParticipantEntity(
-            null,
-            client.getBirthDate(),
-            client.getDeathDate(),
-            client.getFirstName(),
-            client.getGender(),
-            client.getLastName(),
-            client.getSsn(),
-            null,
-            client.getId(),
-            null,
-            null,
-            client.getMiddleName(),
-            client.getNameSuffix(),
-            null,
-            null,
-            null,
-            Boolean.FALSE,
-            Boolean.FALSE,
-            null,
-            null,
-            null
-        ));
-      } else {
-        participantEntity2 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+        createParticipant(client);
       }
+      participantEntity2 = participantDao
+          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+
       Relationship newRelationship = new Relationship();
       newRelationship.setClientId(participantEntity1.getId());
       newRelationship.setRelativeId(participantEntity2.getId());
@@ -473,6 +438,11 @@ public class RelationshipFacade {
       result.add(mapper.map(newRelationship));
     }
     return result;
+  }
+
+  private void createParticipant(Client client) {
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    participantIntakeApiService.create(participantIntakeApi);
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
