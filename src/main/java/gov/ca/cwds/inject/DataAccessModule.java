@@ -155,7 +155,7 @@ public class DataAccessModule extends AbstractModule {
           gov.ca.cwds.data.legacy.cms.entity.LicensingVisit.class,
           gov.ca.cwds.data.legacy.cms.entity.LicensingIssue.class,
           gov.ca.cwds.data.legacy.cms.entity.CsecHistory.class,
-          gov.ca.cwds.data.legacy.cms.entity.LicensingVisit.class,
+          gov.ca.cwds.data.legacy.cms.entity.syscodes.SystemCode.class,
           gov.ca.cwds.data.legacy.cms.entity.LongText.class,
           gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber.class,
           gov.ca.cwds.data.legacy.cms.entity.OtherAdultsInPlacementHome.class,
