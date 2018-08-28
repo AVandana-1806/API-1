@@ -3,6 +3,7 @@ package gov.ca.cwds.api.client.access;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.FunctionalTest;
@@ -21,6 +22,7 @@ import io.restassured.http.ContentType;
  * @author CWDS API Team
  *
  */
+@Ignore
 public class ClientAccessForStaffInLakeCountyWithSensitiveAccessTest extends FunctionalTest {
   String resourcePath;
   private HttpRequestHandler httpRequestHandler;
