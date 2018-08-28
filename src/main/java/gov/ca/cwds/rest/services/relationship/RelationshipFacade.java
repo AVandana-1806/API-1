@@ -408,8 +408,7 @@ public class RelationshipFacade {
         }
         createParticipant(client);
       }
-      participantEntity1 = participantDao
-          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+
 
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
         Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
@@ -418,8 +417,17 @@ public class RelationshipFacade {
         }
         createParticipant(client);
       }
+
+      participantDao.getSessionFactory().getCurrentSession().flush();
+
+      participantEntity1 = participantDao
+          .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
       participantEntity2 = participantDao
           .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+
+      if (participantEntity1 == null || participantEntity2 == null) {
+        return result;
+      }
 
       Relationship newRelationship = new Relationship();
       newRelationship.setClientId(participantEntity1.getId());
