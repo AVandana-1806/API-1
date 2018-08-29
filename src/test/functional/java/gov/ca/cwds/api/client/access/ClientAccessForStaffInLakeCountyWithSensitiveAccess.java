@@ -3,6 +3,7 @@ package gov.ca.cwds.api.client.access;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.FunctionalTest;
@@ -78,12 +79,14 @@ public class ClientAccessForStaffInLakeCountyWithSensitiveAccess extends Functio
   }
   
   @Test
+  @Ignore
   public void shouldReturnClientInNoCountyWithSensitive() {
     assertFalse(Boolean.TRUE);
   
   }
   
   @Test
+  @Ignore
   public void shouldNotReturnClientInNoCountyWithSealed() {
     assertFalse(Boolean.TRUE);
    

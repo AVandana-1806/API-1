@@ -1,15 +1,23 @@
 package gov.ca.cwds.api;
 
 import static io.restassured.RestAssured.given;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 public class ClientRelationshipTest extends FunctionalTest {
@@ -23,6 +31,7 @@ public class ClientRelationshipTest extends FunctionalTest {
 
 //    clientRelationshipPath = getResourceUrlFor(ResourceEndPoint.CLIENTS_RELATIONSHIPS.getResourcePath());
     httpRequestHandler = new HttpRequestHandler();
+    
   }
   
   @Test
@@ -32,15 +41,17 @@ public class ClientRelationshipTest extends FunctionalTest {
 
   @Test
   public void shouldReturnKnownRelationshipsOfPerson() {
-    String clientId = "0LIZAWH00h";
+    String clientId = "C3IquYc0Co";
     clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put(httpRequestHandler.TOKEN, token);
     
+    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
+    System.out.println(response.body().asString());
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
       .assertThat()
-      .body("relationship_to.legacy_descriptor.legacy_id", Matchers.hasItems("GkKl1Q900h", "DDA9oZd00h", "GjRyRJh00h", "P2Yok4X00h"))
+      .body("relationship_to.legacy_descriptor.legacy_id", Matchers.hasItems("4GrHFQK0Fj", "TBCF40g0D8", "3ju7sbi0Co"))
       .and()
       .statusCode(200);
     
@@ -52,8 +63,6 @@ public class ClientRelationshipTest extends FunctionalTest {
     clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put(httpRequestHandler.TOKEN, token);
-//    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
-//    System.out.println(response.body().asString());
   
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
@@ -94,4 +103,21 @@ public class ClientRelationshipTest extends FunctionalTest {
       .statusCode(200);    
   }
     
+  @Test
+  public void shouldReturnKnownRelationshipsOfClients() {
+    clientRelationshipPath = clientRelationshipPath + "clients/relationships";
+    String clientId = "C3IquYc0Co";
+    Map<String, Object> queryParams = new HashMap<String, Object>();
+    queryParams.put("clientIds", clientId);
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
+    JsonPath jsonPathEvaluator = response.jsonPath();
+    ArrayList relatedIds = jsonPathEvaluator.get("relationship_to.legacy_descriptor.legacy_id");
+    System.out.println(relatedIds);
+    List<ArrayList> ids = (List<ArrayList>) relatedIds.get(0);
+    assertThat(ids.contains("4GrHFQK0Fj"), is(true));
+    assertThat(ids.contains("TBCF40g0D8"), is(true));
+    assertThat(ids.contains("3ju7sbi0Co"), is(true));
+  }
+  
 }

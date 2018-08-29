@@ -1,19 +1,16 @@
 package gov.ca.cwds.api.client.collaterals;
 
-import static org.junit.Assert.assertFalse;
-import java.awt.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.fixture.ClientCollateralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.cms.ClientCollateral;
-import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 
 public class ClientCollateralsTest extends FunctionalTest {
   String resourcePath;
@@ -22,6 +19,7 @@ public class ClientCollateralsTest extends FunctionalTest {
 
   @Before
   public void setup() {
+    
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_CLIENT_COLLATERALS);
     getResourcePath = getResourceUrlFor("/" + Api.RESOURCE_CLIENT_COLLATERALS + "/{id}");
     httpRequestHandler = new HttpRequestHandler();
@@ -51,6 +49,7 @@ public class ClientCollateralsTest extends FunctionalTest {
   }
   
   @Test
+  @Ignore
   public void shouldReturn200WhenPostValidClientCollateral() {
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()
@@ -59,13 +58,14 @@ public class ClientCollateralsTest extends FunctionalTest {
         .setCollateralIndividualId("AITMPVV0Ki")
         .setCollateralClientReporterRelationshipType(relationshipType)
         .buildClientCollateral();
-
+    
     httpRequestHandler.postRequest(clientCollateral, resourcePath, token)
     .then()
     .statusCode(200);
   }
 
   @Test
+  @Ignore
   public void shouldReturn409WhenPostDuplicateClientCollateral() {
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()

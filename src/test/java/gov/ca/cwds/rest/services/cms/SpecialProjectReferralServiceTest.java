@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.cms;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
@@ -9,7 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import static org.mockito.Matchers.any;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,11 +20,6 @@ import java.util.List;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
@@ -140,6 +135,7 @@ public class SpecialProjectReferralServiceTest {
         .saveCsecSpecialProjectReferral(csecs, referralId, incidentCounty, messageBuilder);
     assertThat(sprPosted.getClass(),
         is(gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral.class));
+    assertThat(messageBuilder.getMessages().size(), is(equalTo(0)));
   }
 
   @Test

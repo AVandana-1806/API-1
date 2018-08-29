@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -8,8 +10,15 @@ import static org.junit.Assert.assertEquals;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import org.junit.Before;
 import org.junit.Test;
 import gov.ca.cwds.rest.api.domain.DomainChef;
+import io.dropwizard.validation.ConstraintViolations;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -27,6 +36,41 @@ public class SpecialProjectTest {
   private String startDateString = "2018-05-01";
   private LocalDate startDate = LocalDate.now();
   private String id = "1234567ABC";
+  
+  private Validator validator;
+  
+  @Before
+  public void setup(){
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    validator = factory.getValidator();
+  }
+
+  @Test
+  public void descriptionShouldErrorWhenNull() {
+    SpecialProject sp = new SpecialProject(Boolean.TRUE, null,
+        endDateString, governmentEntityType, name, startDateString);
+    Set<ConstraintViolation<SpecialProject>> errors = validator.validate(sp);
+    assertThat(ConstraintViolations.format(errors)).containsOnly("description may not be null");
+    
+  }
+  
+  @Test
+  public void governmentEntityTypeShouldErrorWhenNull() {
+    SpecialProject sp = new SpecialProject(Boolean.TRUE, description,
+        endDateString, null, name, startDateString);
+    Set<ConstraintViolation<SpecialProject>> errors = validator.validate(sp);
+    assertThat(ConstraintViolations.format(errors)).containsOnly("governmentEntityType may not be null");
+    
+  }
+  
+  @Test
+  public void nameShouldErrorWhenNull() {
+    SpecialProject sp = new SpecialProject(archiveAssociationIndicator, description,
+        endDateString, governmentEntityType, null, startDateString);
+    Set<ConstraintViolation<SpecialProject>> errors = validator.validate(sp);
+    assertThat(ConstraintViolations.format(errors)).containsOnly("name may not be null");
+   
+  }
   
   @Test
   public void testConstructor() throws Exception {

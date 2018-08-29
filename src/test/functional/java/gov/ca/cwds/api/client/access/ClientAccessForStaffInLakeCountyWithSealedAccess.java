@@ -1,6 +1,7 @@
 package gov.ca.cwds.api.client.access;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertFalse;
@@ -43,7 +44,7 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
   
   @Test
   public void shouldReturnClientInSameCountyWithSealed() {
-    given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
+    given().pathParam("id", "Ba29OOP75a").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
 //    assertFalse(Boolean.TRUE);
@@ -69,12 +70,14 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
   }
   
   @Test
+  @Ignore
   public void shouldNotReturnClientInNoCountyWithSensitive() {
     assertFalse(Boolean.TRUE);
     
   }
   
   @Test
+  @Ignore
   public void shouldReturnClientInNoCountyWithSealed() {
     assertFalse(Boolean.TRUE);
     
