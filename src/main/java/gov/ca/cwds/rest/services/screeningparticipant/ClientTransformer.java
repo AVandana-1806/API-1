@@ -66,15 +66,18 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
     addresses.addAll(intakeAddressConverter.convert(client));
 
-    String[] approxAgeAndUnits = {null, null};
+    String approxAge = null;
+    String approxAgeUnits = null;
     if ("Y".equals(client.getEstimatedDobCode()) && client.getBirthDate() != null) {
-      approxAgeAndUnits = calcApproximateAgeAndUnits(client.getBirthDate());
+      String approxAgeAndUnits = calcApproximateAgeAndUnits(client.getBirthDate());
+      approxAge = approxAgeAndUnits.substring(0, approxAgeAndUnits.length() - 2);
+      approxAgeUnits = approxAgeAndUnits.substring(approxAgeAndUnits.length() - 1);
     }
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
-        client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender,
-        approxAgeAndUnits[0], approxAgeAndUnits[1], convertSSN(client), client.getBirthDate(),
-        client.getDeathDate(), languages, races, hispanic, null, new HashSet<>(), addresses, null,
+        client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, approxAge,
+        approxAgeUnits, convertSSN(client), client.getBirthDate(), client.getDeathDate(), languages,
+        races, hispanic, null, new HashSet<>(), addresses, null,
         getSealedIndicator(client), getSensitivieIndicator(client));
   }
 
@@ -85,27 +88,27 @@ public class ClientTransformer implements ParticipantMapper<Client> {
    * So no rules were requested from PO about how exactly the estimated DOB should be converted to Approximate Age and Units.
    * This coding is done based on developer's gut feeling as a temporary solution.
    */
-  private String[] calcApproximateAgeAndUnits(Date dob) {
+  private String calcApproximateAgeAndUnits(Date dob) {
     LocalDate localDob = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     LocalDate localToday = LocalDate.now();
 
     long days = DAYS.between(localDob, localToday);
     if (days < 7) {
-      return new String[]{String.valueOf(days), "D"};
+      return String.valueOf(days) + ":D";
     }
 
     long weeks = WEEKS.between(localDob, localToday);
     if (weeks < 8 && weeks % 4 != 0) {
-      return new String[]{String.valueOf(weeks), "W"};
+      return String.valueOf(weeks) + ":W";
     }
 
     long months = MONTHS.between(localDob, localToday);
     if (months < 12) {
-      return new String[]{String.valueOf(months), "M"};
+      return String.valueOf(months) + ":M";
     }
 
     long years = YEARS.between(localDob, localToday);
-    return new String[]{String.valueOf(years), "Y"};
+    return String.valueOf(years) + ":Y";
   }
 
   private String convertSSN(Client client) {
