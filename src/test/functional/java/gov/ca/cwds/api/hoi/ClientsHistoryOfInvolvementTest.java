@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -47,6 +48,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCanAccessToNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -61,6 +63,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -75,6 +78,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToDifferentCountySensitiveClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "9PIxHucCON");
@@ -88,6 +92,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -102,6 +107,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantToAccessToDifferentCountySealedClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");
