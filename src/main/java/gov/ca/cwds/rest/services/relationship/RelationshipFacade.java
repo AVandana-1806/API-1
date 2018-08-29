@@ -396,8 +396,8 @@ public class RelationshipFacade {
     List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
 
-    ParticipantIntakeApi participantEntity1;
-    ParticipantIntakeApi participantEntity2;
+    ParticipantEntity participantEntity1;
+    ParticipantEntity participantEntity2;
 
     for (ClientRelationship clientRelationship : shouldBeCreated) {
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
@@ -407,9 +407,8 @@ public class RelationshipFacade {
         }
         participantEntity1 = createParticipant(client);
       } else {
-        participantEntity1 = participantIntakeApiService.find(
-            new ParticipantResourceParameters(screeningId,
-                clientRelationship.getPrimaryClientId()));
+        participantEntity1 = participantDao
+            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
       }
 
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
@@ -419,12 +418,9 @@ public class RelationshipFacade {
         }
         participantEntity2 = createParticipant(client);
       } else {
-        participantEntity2 = participantIntakeApiService.find(
-            new ParticipantResourceParameters(screeningId,
-                clientRelationship.getSecondaryClientId()));
+        participantEntity2 = participantDao
+            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
       }
-
-      participantDao.getSessionFactory().getCurrentSession().flush();
 
       if (participantEntity1 == null || participantEntity2 == null) {
         return result;
@@ -449,9 +445,11 @@ public class RelationshipFacade {
     return result;
   }
 
-  private ParticipantIntakeApi createParticipant(Client client) {
+  private ParticipantEntity createParticipant(Client client) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
-    return participantIntakeApiService.create(participantIntakeApi);
+    participantIntakeApi = participantIntakeApiService.create(participantIntakeApi);
+    participantDao.getSessionFactory().getCurrentSession().flush();
+    return participantDao.find(participantIntakeApi.getId());
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
