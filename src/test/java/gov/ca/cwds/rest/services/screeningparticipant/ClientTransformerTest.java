@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 
 import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import org.apache.shiro.authz.AuthorizationException;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -176,6 +177,32 @@ public class ClientTransformerTest {
     clientTransformer.setAuthorizationService(authorizationService);
     Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
     clientTransformer.tranform(client);
+  }
+
+  @Test
+  public void testTransformEstimatedDob() {
+    Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    DateTime today = new DateTime();
+    
+    client.setBirthDate(today.minusDays(4).toDate());
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("4")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("D")));
+
+    client.setBirthDate(today.minusWeeks(7).toDate());
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("7")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("W")));
+
+    client.setBirthDate(today.minusWeeks(14).toDate());
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("3")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("M")));
+
+    client.setBirthDate(today.minusYears(5).toDate());
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("5")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("Y")));
   }
 
 }

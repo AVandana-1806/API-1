@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,10 +22,13 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.submit.Gender;
+import org.joda.time.Days;
+import org.joda.time.Months;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ClientTransformer implements ParticipantMapper<Client> {
 
@@ -59,16 +63,51 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
     addresses.addAll(intakeAddressConverter.convert(client));
 
+    String[] approxAgeAndUnits = {null, null};
+    if ("Y".equals(client.getEstimatedDobCode()) && client.getBirthDate() != null) {
+      approxAgeAndUnits = calcApproximateAgeAndUnits(client.getBirthDate());
+    }
+
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
-        client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, null, null,
-        convertSSN(client), client.getBirthDate(), client.getDeathDate(), languages, races,
-        hispanic, null, new HashSet<>(), addresses, null, getSealedIndicator(client),
-        getSensitivieIndicator(client));
+        client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender,
+        approxAgeAndUnits[0], approxAgeAndUnits[1], convertSSN(client), client.getBirthDate(),
+        client.getDeathDate(), languages, races, hispanic, null, new HashSet<>(), addresses, null,
+        getSealedIndicator(client), getSensitivieIndicator(client));
+  }
+
+  /*
+   * This code is temporary and will be removed after resolution of an issue that is mentioned in this comment:
+   * https://osi-cwds.atlassian.net/browse/HOT-2447?focusedCommentId=105060&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-105060
+   *
+   * So no rules were requested from PO about how exactly the estimated DOB should be converted to Approximate Age and Units.
+   * This coding is done based on developer's gut feeling as a temporary solution.
+   */
+  private String[] calcApproximateAgeAndUnits(Date dob) {
+    DateTime dtDob = new DateTime(dob);
+    DateTime dtToday = new DateTime();
+
+    int days = Days.daysBetween(dtDob, dtToday).getDays();
+    if (days < 7) {
+      return new String[]{String.valueOf(days), "D"};
+    }
+
+    int weeks = Weeks.weeksBetween(dtDob, dtToday).getWeeks();
+    if (weeks < 8 && weeks % 4 != 0) {
+      return new String[]{String.valueOf(weeks), "W"};
+    }
+
+    int months = Months.monthsBetween(dtDob, dtToday).getMonths();
+    if (months < 12) {
+      return new String[]{String.valueOf(months), "M"};
+    }
+
+    int years = Years.yearsBetween(dtDob, dtToday).getYears();
+    return new String[]{String.valueOf(years), "Y"};
   }
 
   private String convertSSN(Client client) {
     String ssn = client.getSocialSecurityNumber();
-    if ((ssn != "0") && StringUtils.isNotBlank(ssn)) {
+    if ((!"0".equals(ssn)) && StringUtils.isNotBlank(ssn)) {
       StringBuilder builder = new StringBuilder(client.getSocialSecurityNumber());
       builder.insert(3, "-");
       builder.insert(6, "-");
@@ -96,19 +135,11 @@ public class ClientTransformer implements ParticipantMapper<Client> {
   }
 
   private Boolean getSealedIndicator(Client client) {
-    Boolean sealed = Boolean.FALSE;
-    if ("R".equals(client.getSensitivityIndicator())) {
-      return Boolean.TRUE;
-    }
-    return sealed;
+    return "R".equals(client.getSensitivityIndicator());
   }
 
   private Boolean getSensitivieIndicator(Client client) {
-    Boolean sensitive = Boolean.FALSE;
-    if ("S".equals(client.getSensitivityIndicator())) {
-      return Boolean.TRUE;
-    }
-    return sensitive;
+    return "S".equals(client.getSensitivityIndicator());
   }
 
   /**
