@@ -1,5 +1,6 @@
 package gov.ca.cwds.api.client.access;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertFalse;
@@ -38,33 +39,32 @@ public class ClientAccessForStaffInStateWithSensitiveAccess extends FunctionalTe
     given().pathParam("id", "CFOmFrm057").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
-//    assertFalse(Boolean.TRUE);
   }
   
   @Test
+  @Ignore
   public void shouldReturnClientInSameCountyWithSensitive() {
-//    given().pathParam("id", "1S3k0iH00T").queryParam(httpRequestHandler.TOKEN, token)
-//    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
-//    .statusCode(200);
-    assertFalse(Boolean.TRUE);
+    given().pathParam("id", "1S3k0iH00T").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(200);
     
   }
   
   @Test
+  @Ignore
   public void shouldNotReturnClientInSameCountyWithSealed() {
-//    given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
-//    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
-//    .statusCode(403);
-    assertFalse(Boolean.TRUE);
-    
+    given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(403);
+     
   }
  
   @Test
+  @Ignore
   public void shouldNotReturnClientInDifferentCountyWithSensitive() {
     given().pathParam("id", "9PIxHucCON").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
-//    assertFalse(Boolean.TRUE);
     
   }
   
@@ -73,17 +73,18 @@ public class ClientAccessForStaffInStateWithSensitiveAccess extends FunctionalTe
     given().pathParam("id", "AIwcGUp0Nu").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
-//    assertFalse(Boolean.TRUE);
     
   }
   
   @Test
+  @Ignore
   public void shouldNotReturnClientInNoCountyWithSensitive() {
     assertFalse(Boolean.TRUE);
     
   }
   
   @Test
+  @Ignore
   public void shouldNotReturnClientInNoCountyWithSealed() {
     assertFalse(Boolean.TRUE);
     
