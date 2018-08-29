@@ -4,6 +4,7 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import gov.ca.cwds.IntakeBaseTest;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.json.JSONException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -48,11 +48,11 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
 
   @Test
-  @Ignore
   public void getRelationshipsByScreeningIdWithCandidates_threeParticipantOneRelationshipTwoCandidates()
       throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
     validateResponse(actualJson, expectedResponse);
@@ -63,6 +63,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
 
@@ -74,6 +75,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+    System.out.println(actualJson);
+
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -82,6 +85,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
 
@@ -93,6 +98,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
     System.out.println(actualJson);
@@ -105,10 +112,46 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
       throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
 
     validateResponse(actualJson, expectedResponse);
+  }
+
+  @Test
+  public void getRelationshipsWithLegacyDescriptor() throws IOException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + "1106" + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+
+    System.out.println(actualJson);
+    List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
+        .readValue(actualJson,
+            new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
+            });
+    assertNotNull(fromResponse);
+    assertEquals(3, fromResponse.size());
+    assertNotNull(fromResponse.get(0).getRelatedCandidatesTo());
+    assertEquals(1, fromResponse.get(0).getRelatedCandidatesTo().size());
+    assertNotNull(fromResponse.get(0).getRelatedTo());
+    assertEquals(1, fromResponse.get(0).getRelatedTo().size());
+    assertNull(fromResponse.get(0).getRelatedTo().iterator().next().getLegacyDescriptor());
+    assertNull(fromResponse.get(0).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor());
+
+    assertNotNull(fromResponse.get(1).getRelatedCandidatesTo());
+    assertEquals(0, fromResponse.get(1).getRelatedCandidatesTo().size());
+    assertEquals(2, fromResponse.get(1).getRelatedTo().size());
+    assertNotNull(fromResponse.get(1).getRelatedTo().iterator().next().getLegacyDescriptor());
+    assertEquals("0000000008", fromResponse.get(1).getRelatedTo().iterator().next().getLegacyDescriptor().getId());
+
+    assertNotNull(fromResponse.get(2).getRelatedCandidatesTo());
+    assertEquals(1, fromResponse.get(2).getRelatedCandidatesTo().size());
+    assertNotNull(fromResponse.get(2).getRelatedTo());
+    assertEquals(1, fromResponse.get(2).getRelatedTo().size());
+    assertNull(fromResponse.get(2).getRelatedTo().iterator().next().getLegacyDescriptor());
+    assertNotNull(fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor());
+    assertEquals("0000000008", fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor().getId());
   }
 
   private void validateResponse(String actualJson, String expectedResponse)
@@ -126,28 +169,32 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
     assertNotEquals(0, fromResponse.size());
     assertNotEquals(0, expected.size());
 
-    expected.forEach(e->{
-      Optional<ScreeningRelationshipsWithCandidates> optional = fromResponse.stream().filter(b-> b.getId().equals(e.getId())).findFirst();
-      if(optional.isPresent()) {
+    expected.forEach(e -> {
+      Optional<ScreeningRelationshipsWithCandidates> optional = fromResponse.stream()
+          .filter(b -> b.getId().equals(e.getId())).findFirst();
+      if (optional.isPresent()) {
         e.setAge(optional.get().getAge());
         e.setAgeUnit(optional.get().getAgeUnit());
 
         Set<RelatedTo> relatedTos = optional.get().getRelatedTo();
         e.getRelatedTo().forEach(relatedTo -> {
-          Optional<RelatedTo> optionalRelatedTo = relatedTos.stream().filter(c-> c.getRelationshipId().equals(relatedTo.getRelationshipId())).findFirst();
+          Optional<RelatedTo> optionalRelatedTo = relatedTos.stream()
+              .filter(c -> c.getRelationshipId().equals(relatedTo.getRelationshipId())).findFirst();
           if (optionalRelatedTo.isPresent()) {
             relatedTo.setRelatedAge(optionalRelatedTo.get().getRelatedAge());
             relatedTo.setRelatedAgeUnit(optionalRelatedTo.get().getRelatedAgeUnit());
           }
 
           assertEquals(optionalRelatedTo.get().getRelationshipId(), relatedTo.getRelationshipId());
-          assertEquals(optionalRelatedTo.get().getRelatedPersonId(), relatedTo.getRelatedPersonId());
+          assertEquals(optionalRelatedTo.get().getRelatedPersonId(),
+              relatedTo.getRelatedPersonId());
 
         });
 
         Set<CandidateTo> candidateTos = optional.get().getRelatedCandidatesTo();
         e.getRelatedCandidatesTo().forEach(candidateTo -> {
-          Optional<CandidateTo> optionalCandidateTo = candidateTos.stream().filter(c-> c.getCandidateId().equals(candidateTo.getCandidateId())).findFirst();
+          Optional<CandidateTo> optionalCandidateTo = candidateTos.stream()
+              .filter(c -> c.getCandidateId().equals(candidateTo.getCandidateId())).findFirst();
           if (optionalCandidateTo.isPresent()) {
             candidateTo.setCandidateAge(optionalCandidateTo.get().getCandidateAge());
             candidateTo.setCandidateAgeUnit(optionalCandidateTo.get().getCandidateAgeUnit());
