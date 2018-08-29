@@ -92,11 +92,6 @@ public class HealthCheckTest extends FunctionalTest {
         equalTo(true));
   }
   @Test
-  public void testLOVCacheIsOK() {
-    given().queryParam("token", token).when().get(healthCheckPath).then().body("intake_lov_code_cache.healthy",
-        equalTo(true));
-  }
-  @Test
   public void testDeadLocksIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("deadlocks.healthy",
         equalTo(true));
