@@ -1,5 +1,12 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.YEARS;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,10 +29,6 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.submit.Gender;
-import org.joda.time.Days;
-import org.joda.time.Months;
-import org.joda.time.Weeks;
-import org.joda.time.Years;
 
 /**
  * @author CWDS API Team
@@ -83,25 +86,25 @@ public class ClientTransformer implements ParticipantMapper<Client> {
    * This coding is done based on developer's gut feeling as a temporary solution.
    */
   private String[] calcApproximateAgeAndUnits(Date dob) {
-    DateTime dtDob = new DateTime(dob);
-    DateTime dtToday = new DateTime();
+    LocalDate localDob = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    LocalDate localToday = LocalDate.now();
 
-    int days = Days.daysBetween(dtDob, dtToday).getDays();
+    long days = DAYS.between(localDob, localToday);
     if (days < 7) {
       return new String[]{String.valueOf(days), "D"};
     }
 
-    int weeks = Weeks.weeksBetween(dtDob, dtToday).getWeeks();
+    long weeks = WEEKS.between(localDob, localToday);
     if (weeks < 8 && weeks % 4 != 0) {
       return new String[]{String.valueOf(weeks), "W"};
     }
 
-    int months = Months.monthsBetween(dtDob, dtToday).getMonths();
+    long months = MONTHS.between(localDob, localToday);
     if (months < 12) {
       return new String[]{String.valueOf(months), "M"};
     }
 
-    int years = Years.yearsBetween(dtDob, dtToday).getYears();
+    long years = YEARS.between(localDob, localToday);
     return new String[]{String.valueOf(years), "Y"};
   }
 
