@@ -481,12 +481,12 @@ public class ParticipantService implements CrudsService {
       messageBuilder.addDomainValidationError(validator.validate(childClient));
       exsistingChild = this.childClientService.create(childClient);
     }
-
+    
     if (csecReportType && isValidCsecs(csecs, messageBuilder)) {
       saveOrUpdateCsec(clientId, csecs, messageBuilder);
       // create a special project for this referral
-      specialProjectReferralService.saveCsecSpecialProjectReferral(csecs, referralId,
-          screeningToReferral.getIncidentCounty(), messageBuilder);
+      specialProjectReferralService.saveCsecSpecialProjectReferral(referralId,
+          screeningToReferral.getIncidentCounty(), dateStarted, messageBuilder);
     }
 
     if (ssbReportType && isValidSafelySurrenderedBabies(ssb, messageBuilder)) {
