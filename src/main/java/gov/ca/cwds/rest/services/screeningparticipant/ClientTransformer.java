@@ -69,7 +69,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     Date clientDob = client.getBirthDate();
     String approxAge = null;
     String approxAgeUnits = null;
-    if ("Y".equals(client.getEstimatedDobCode()) && clientDob != null) {
+    if (clientDob != null && "Y".equals(client.getEstimatedDobCode())) {
       String approxAgeAndUnits = calcApproximateAgeAndUnits(clientDob);
       approxAge = approxAgeAndUnits.substring(0, approxAgeAndUnits.length() - 2);
       approxAgeUnits = approxAgeAndUnits.substring(approxAgeAndUnits.length() - 1);
