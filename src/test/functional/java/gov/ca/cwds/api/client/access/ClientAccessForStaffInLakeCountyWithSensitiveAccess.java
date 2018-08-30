@@ -32,6 +32,8 @@ public class ClientAccessForStaffInLakeCountyWithSensitiveAccess extends Functio
    */
   @Before
   public void setup() {
+    // logged in staff with Sensitive access and
+    // USERID->STAFF_PERSON->CWS_OFFICE.Government_Entity_type=1084 (Lake)
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_AUTHORIZE + "/client" + "/{id}");
     httpRequestHandler = new HttpRequestHandler();
     this.loginUserGroup(UserGroup.COUNTY_SENSITIVE);
@@ -79,16 +81,20 @@ public class ClientAccessForStaffInLakeCountyWithSensitiveAccess extends Functio
   }
   
   @Test
-  @Ignore
   public void shouldReturnClientInNoCountyWithSensitive() {
-    assertFalse(Boolean.TRUE);
+    // client with limited access code = 'S' and government entity of 1126 (California)
+    given().pathParam("id", "AYk7k55aaf").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(200);
   
   }
   
   @Test
-  @Ignore
   public void shouldNotReturnClientInNoCountyWithSealed() {
-    assertFalse(Boolean.TRUE);
+    // client with limited access code = 'R' and government entity of 1126 (California)
+    given().pathParam("id", "BK3EnRK0DE").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(403);
    
   }
 

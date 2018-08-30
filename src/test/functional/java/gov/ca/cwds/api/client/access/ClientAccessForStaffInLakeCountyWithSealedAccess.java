@@ -20,6 +20,8 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
    */
   @Before
   public void setup() {
+    // logged in staff with Sensitive access and
+    // USERID->STAFF_PERSON->CWS_OFFICE.Government_Entity_type=1084 (Lake)
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_AUTHORIZE + "/client" + "/{id}");
     httpRequestHandler = new HttpRequestHandler();
     this.loginUserGroup(UserGroup.COUNTY_SEALED);
@@ -27,7 +29,6 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
 
   @Test
   public void shouldReturnClientWithNoAccessRestrictions() {
-//    assertFalse(Boolean.TRUE);
     given().pathParam("id", "CFOmFrm057").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
@@ -38,7 +39,6 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
     given().pathParam("id", "B5mi8Qr00T").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
-//    assertFalse(Boolean.TRUE);
     
   }
   
@@ -47,7 +47,6 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
     given().pathParam("id", "Ba29OOP75a").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
-//    assertFalse(Boolean.TRUE);
     
   }
  
@@ -56,7 +55,6 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
     given().pathParam("id", "9PIxHucCON").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
-//    assertFalse(Boolean.TRUE);
     
   }
   
@@ -65,21 +63,26 @@ public class ClientAccessForStaffInLakeCountyWithSealedAccess extends Functional
     given().pathParam("id", "AIwcGUp0Nu").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
-//    assertFalse(Boolean.TRUE);
     
   }
   
   @Test
-  @Ignore
+  @Ignore("test is failing - returns status 200")
   public void shouldNotReturnClientInNoCountyWithSensitive() {
-    assertFalse(Boolean.TRUE);
+    // client with limited access code = 'S' and government entity of 1126 (California)
+    given().pathParam("id", "AYk7k55aaf").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(403);
     
   }
   
   @Test
   @Ignore
   public void shouldReturnClientInNoCountyWithSealed() {
-    assertFalse(Boolean.TRUE);
+    // client with limited access code = 'R' and government entity of 1126 (California)
+    given().pathParam("id", "BK3EnRK0DE").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(200);
     
   }
 

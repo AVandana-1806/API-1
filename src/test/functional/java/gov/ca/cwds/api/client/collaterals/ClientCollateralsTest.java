@@ -49,7 +49,7 @@ public class ClientCollateralsTest extends FunctionalTest {
   }
   
   @Test
-  @Ignore
+  @Ignore("test fails - returns status = 500")
   public void shouldReturn200WhenPostValidClientCollateral() {
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()
@@ -65,7 +65,7 @@ public class ClientCollateralsTest extends FunctionalTest {
   }
 
   @Test
-  @Ignore
+  @Ignore("test fails - returns status = 500")
   public void shouldReturn409WhenPostDuplicateClientCollateral() {
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()

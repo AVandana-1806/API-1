@@ -19,6 +19,8 @@ public class ClientAccessForStaffInStateWithSealedAccess extends FunctionalTest 
    */
   @Before
   public void setup() {
+    // logged in staff with Sealed access and
+    // USERID->STAFF_PERSON->CWS_OFFICE.Government_Entity_type=1126 (California)
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_AUTHORIZE + "/client" + "/{id}");
     httpRequestHandler = new HttpRequestHandler();
     this.loginUserGroup(UserGroup.STATE_SEALED);
@@ -30,9 +32,9 @@ public class ClientAccessForStaffInStateWithSealedAccess extends FunctionalTest 
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
   }
-  
+   
   @Test
-  @Ignore
+  @Ignore("requires sensitive client owned by 1126")
   public void shouldNotReturnClientInSameCountyWithSensitive() {
     given().pathParam("id", "1S3k0iH00T").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
@@ -41,14 +43,14 @@ public class ClientAccessForStaffInStateWithSealedAccess extends FunctionalTest 
   }
   
   @Test
-  @Ignore
+  @Ignore("requires sealed client owned by 1126")
   public void shouldReturnClientInSameCountyWithSealed() {
     given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
-    
+     
   }
- 
+
   @Test
   public void shouldNotReturnClientInDifferentCountyWithSensitive() {
     given().pathParam("id", "9PIxHucCON").queryParam(httpRequestHandler.TOKEN, token)
@@ -66,16 +68,19 @@ public class ClientAccessForStaffInStateWithSealedAccess extends FunctionalTest 
   }
   
   @Test
-  @Ignore
-  public void shouldReturnClientInNoCountyWithSensitive() {
-    assertFalse(Boolean.TRUE);
+  @Ignore("test is failing - returns status 200")
+  public void shouldNotReturnClientInNoCountyWithSensitive() {
+    given().pathParam("id", "AYk7k55aaf").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(403);
     
   }
   
   @Test
-  @Ignore
   public void shouldReturnClientInNoCountyWithSealed() {
-    assertFalse(Boolean.TRUE);
+    given().pathParam("id", "BK3EnRK0DE").queryParam(httpRequestHandler.TOKEN, token)
+    .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
+    .statusCode(200);
     
   }
 
