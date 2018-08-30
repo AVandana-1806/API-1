@@ -8,6 +8,7 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -137,7 +138,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
               client.getSecondaryLanguageType(), IntakeLovType.LANGUAGE.getValue())));
     } else if (client.getPrimaryLanguageType() != 0 && client.getSecondaryLanguageType() == 0) {
       return new LinkedList<>(
-          Arrays.asList(IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+          Collections.singletonList(IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
               client.getPrimaryLanguageType(), IntakeLovType.LANGUAGE.getValue())));
     }
     return languages;
@@ -154,14 +155,14 @@ public class ClientTransformer implements ParticipantMapper<Client> {
   /**
    * @param authorizationService - authorizationService
    */
-  public void setAuthorizationService(AuthorizationService authorizationService) {
+  void setAuthorizationService(AuthorizationService authorizationService) {
     this.authorizationService = authorizationService;
   }
 
   /**
    * @param placementEpisodeDao - placementEpisodeDao
    */
-  public void setPlacementEpisodeDao(PlacementEpisodeDao placementEpisodeDao) {
+  void setPlacementEpisodeDao(PlacementEpisodeDao placementEpisodeDao) {
     this.placementEpisodeDao = placementEpisodeDao;
   }
 }
