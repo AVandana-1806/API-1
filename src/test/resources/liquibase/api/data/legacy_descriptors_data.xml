@@ -151,5 +151,15 @@
       <column name="describable_type" value="Participant"/>
       <column name="describable_id" valueNumeric="902"/>
     </insert>
+    <insert tableName="legacy_descriptors">
+      <column name="id" valueNumeric="1179"/>
+      <column name="legacy_id" value="0000000008"/>
+      <column name="legacy_ui_id" value="1076-8971-9689-8000838"/>
+      <column name="legacy_table_name" value="CLIENT_T"/>
+      <column name="legacy_table_description" value="Client"/>
+      <column name="legacy_last_updated" value="2000-10-11T14:25:49.254-0700"/>
+      <column name="describable_type" value="Participant"/>
+      <column name="describable_id" valueNumeric="1015"/>
+    </insert>
   </changeSet>
 </databaseChangeLog>

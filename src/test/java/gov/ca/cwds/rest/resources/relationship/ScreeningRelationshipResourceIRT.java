@@ -21,7 +21,6 @@ import java.util.Optional;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
-import org.json.JSONException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
