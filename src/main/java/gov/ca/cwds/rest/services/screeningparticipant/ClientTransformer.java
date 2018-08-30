@@ -66,17 +66,19 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
     addresses.addAll(intakeAddressConverter.convert(client));
 
+    Date clientDob = client.getBirthDate();
     String approxAge = null;
     String approxAgeUnits = null;
-    if ("Y".equals(client.getEstimatedDobCode()) && client.getBirthDate() != null) {
-      String approxAgeAndUnits = calcApproximateAgeAndUnits(client.getBirthDate());
+    if (clientDob != null && "Y".equals(client.getEstimatedDobCode())) {
+      String approxAgeAndUnits = calcApproximateAgeAndUnits(clientDob);
       approxAge = approxAgeAndUnits.substring(0, approxAgeAndUnits.length() - 2);
       approxAgeUnits = approxAgeAndUnits.substring(approxAgeAndUnits.length() - 1);
+      clientDob = null;
     }
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
         client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, approxAge,
-        approxAgeUnits, convertSSN(client), client.getBirthDate(), client.getDeathDate(), languages,
+        approxAgeUnits, convertSSN(client), clientDob, client.getDeathDate(), languages,
         races, hispanic, null, new HashSet<>(), addresses, null,
         getSealedIndicator(client), getSensitivieIndicator(client));
   }
