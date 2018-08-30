@@ -1,6 +1,7 @@
 package gov.ca.cwds.api.client.access;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +11,7 @@ import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.core.Api;
 import io.restassured.http.ContentType;
 
+@Ignore
 public class ClientAccessForStaffInLakeCountyWithSealedAccessTest extends FunctionalTest {
   String resourcePath;
   private HttpRequestHandler httpRequestHandler;
