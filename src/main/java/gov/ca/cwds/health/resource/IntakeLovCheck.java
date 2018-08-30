@@ -1,7 +1,5 @@
 package gov.ca.cwds.health.resource;
 
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +7,7 @@ import java.sql.SQLException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,6 @@ import com.google.inject.Inject;
 import gov.ca.cwds.data.persistence.xa.CaresHibernateHackersKit;
 import gov.ca.cwds.data.persistence.xa.CaresLogUtils;
 import gov.ca.cwds.inject.NsSessionFactory;
-import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Health check for Postgres list of value (LOV) tables and views. Feel the LOVe.
@@ -37,14 +35,14 @@ public class IntakeLovCheck implements Pingable {
     this.sessionFactory = sessionFactory;
   }
 
-  @UnitOfWork(DATASOURCE_NS)
+  // @UnitOfWork(DATASOURCE_NS)
   @Override
   public boolean ping() {
     LOGGER.info("Postgres LOV health check: ping start");
     boolean ok = true;
 
-    try {
-      final Session session = sessionFactory.getCurrentSession();
+    try (final Session session = sessionFactory.getCurrentSession()) {
+      final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       final String tableName = "VW_INTAKE_LOV";
