@@ -602,9 +602,11 @@ public class CandaceSessionImpl implements Session {
   public void clear() {
     LOGGER.debug("clear()");
     logStack("clear()");
-    final Transaction txn = session.getTransaction();
-    if (txn != null && txn.isActive()) {
-      session.clear();
+    if (session != null) {
+      final Transaction txn = session.getTransaction();
+      if (txn != null && txn.isActive()) {
+        session.clear();
+      }
     }
   }
 
