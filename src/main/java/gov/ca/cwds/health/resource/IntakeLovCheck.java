@@ -41,7 +41,7 @@ public class IntakeLovCheck implements Pingable {
     LOGGER.info("Postgres LOV health check: ping start");
     boolean ok = true;
 
-    try (final Session session = sessionFactory.getCurrentSession()) {
+    try (final Session session = sessionFactory.openSession()) {
       final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);

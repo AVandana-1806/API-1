@@ -40,6 +40,7 @@ public class CaresHibernateHackersKit {
    * @return the session's connection
    */
   public static Connection stealConnection(final Session session) {
+    clearSession(session);
     final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
     doWork(session, work);
     return work.getConnection();
