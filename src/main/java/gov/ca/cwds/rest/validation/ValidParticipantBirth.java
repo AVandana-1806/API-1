@@ -22,8 +22,8 @@ import javax.validation.Payload;
  */
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = VictimBirthValidator.class)
-public @interface ValidVictimBirth {
+@Constraint(validatedBy = ParticipantBirthValidator.class)
+public @interface ValidParticipantBirth {
 
   String message() default "";
 

@@ -25,7 +25,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  * @author CWDS API Team
  *
  */
-public class VictimBirthValidatorTest {
+public class ParticipantBirthValidatorTest {
 
   private Validator validator;
   /*
@@ -90,12 +90,26 @@ public class VictimBirthValidatorTest {
    * Test success when Dob, AgeNumber and AgeUnit are set
    */
   @Test
-  public void testValidationSuceesWhen3FieldsSet() {
+  public void testValidationSuccesssWhen3FieldsSet() {
     String dateOfBith = "2005-08-14";
     String approximateAge = "13";
     String approximateAgeUnits = "Y";
     int expectedViolations = 0;
     String expectedViolationMessage = null;
+    validVictimBirth(dateOfBith, approximateAge, approximateAgeUnits, expectedViolations,
+        expectedViolationMessage);
+  }
+
+  /**
+   * Test Failure when participant victim dob in future
+   */
+  @Test
+  public void testValidationFailWhenDobInFuture() {
+    String dateOfBith = "2017-08-14";
+    String approximateAge = null;
+    String approximateAgeUnits = null;
+    int expectedViolations = 1;
+    String expectedViolationMessage = "date of Birth can not be in future";
     validVictimBirth(dateOfBith, approximateAge, approximateAgeUnits, expectedViolations,
         expectedViolationMessage);
   }

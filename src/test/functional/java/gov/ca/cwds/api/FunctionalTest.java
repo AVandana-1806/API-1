@@ -29,9 +29,9 @@ public class FunctionalTest {
 
   CwdsAuthenticationClientConfig config;
 
-  public String token;
+  public static String token;
 
-  public UserInfo userInfo;
+  public static UserInfo userInfo;
 
   /**
    * @throws FileNotFoundException - FileNotFoundException

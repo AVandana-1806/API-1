@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -48,6 +49,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void testSuccessToAccessNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -62,6 +64,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void failedToAccessSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -76,6 +79,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void failedToAccessSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -89,6 +93,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void failedToAccessDifferentCountySensitiveClient() {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "9PIxHucCON");
@@ -101,6 +106,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void failedToAccessDifferentCountySealedClient() {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");

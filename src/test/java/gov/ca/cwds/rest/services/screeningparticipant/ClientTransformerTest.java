@@ -10,6 +10,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import org.apache.shiro.authz.AuthorizationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +27,6 @@ import gov.ca.cwds.rest.services.auth.AuthorizationService;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ClientTransformerTest {
 
@@ -50,7 +52,7 @@ public class ClientTransformerTest {
   private TestSystemCodeCache testSystemCodeCache = new TestSystemCodeCache();
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformIsNotNull() {
@@ -60,7 +62,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testLegacyDescriptorNotNull() {
@@ -73,7 +75,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformTheGender() {
@@ -83,7 +85,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformPrimaryAndSecondayLanguage() {
@@ -95,7 +97,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformSsnCorrectly() {
@@ -105,7 +107,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformSsnWhen0() {
@@ -115,7 +117,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformSsnWhenNull() {
@@ -125,7 +127,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformWhenOnlyPrimatyLanguageSet() {
@@ -136,7 +138,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformWhenLanguages0() {
@@ -147,7 +149,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformSensitiveIndicator() {
@@ -157,7 +159,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testTranformSealedIndicator() {
@@ -167,7 +169,7 @@ public class ClientTransformerTest {
   }
 
   /**
-   * 
+   *
    */
   @Test(expected = AuthorizationException.class)
   public void testTranformSealedIndicator1() {
@@ -176,6 +178,36 @@ public class ClientTransformerTest {
     clientTransformer.setAuthorizationService(authorizationService);
     Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
     clientTransformer.tranform(client);
+  }
+
+  @Test
+  public void testTransformEstimatedDob() {
+    Client client = new ClientEntityBuilder().setEstimatedDobCode("Y").build();
+    LocalDate today = LocalDate.now();
+
+    client.setBirthDate(
+        Date.from(today.minusDays(4).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("4")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("days")));
+
+    client.setBirthDate(
+        Date.from(today.minusWeeks(7).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("7")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("weeks")));
+
+    client.setBirthDate(
+        Date.from(today.minusWeeks(14).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("3")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("months")));
+
+    client.setBirthDate(
+        Date.from(today.minusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    participantIntakeApi = clientTransformer.tranform(client);
+    assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("5")));
+    assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("years")));
   }
 
 }
