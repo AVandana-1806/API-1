@@ -49,9 +49,13 @@ public class ReentrantXAUnitOfWorkAspectFactoryImpl
   }
 
   private void clearRequest() {
-    local.set(null); // clear the current thread
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    if (ctx != null) {
+      RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    }
     BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+
+    local.set(null); // clear the current thread
   }
 
   @Override
