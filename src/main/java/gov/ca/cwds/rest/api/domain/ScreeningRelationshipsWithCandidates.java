@@ -605,7 +605,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     private String candidateAgeUnit;
 
     @JsonProperty("legacy_descriptor")
-    @ApiModelProperty
+    @ApiModelProperty(required = true)
     private LegacyDescriptor legacyDescriptor;
 
     private CandidateTo() {
