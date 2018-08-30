@@ -134,9 +134,9 @@ public class SpecialProjectReferralService implements
   /**
    * save CSEC Special Project Referral
    * 
-   * @param csecs - list of CSEC domain objects
    * @param referralId - referral ID
    * @param incidentCounty - county Code
+   * @param startDate - start date of screening
    * @param messageBuilder - message builder
    * 
    * @return PostedSpecialProjectReferral - posted Special Project Referral
