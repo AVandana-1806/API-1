@@ -53,9 +53,13 @@ public class CaresHibernateHackersKit {
    * @param session active Hibernate session
    */
   public static void clearSession(final Session session) {
+    LOGGER.debug("clear()");
     try {
-      grabTransaction(session);
-      session.clear(); // Hibernate "duplicate object" bug
+      // grabTransaction(session);
+      final Transaction txn = session.getTransaction();
+      if (txn != null && txn.isActive()) {
+        session.clear(); // Hibernate "duplicate object" bug
+      }
     } catch (Exception e) {
       LOGGER.warn("'clear' without transaction", e);
     }

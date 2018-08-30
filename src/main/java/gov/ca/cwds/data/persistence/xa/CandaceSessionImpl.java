@@ -192,6 +192,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Criteria createCriteria(Class persistentClass) {
+    LOGGER.debug("createCriteria: persistentClass: {}", persistentClass);
     return session.createCriteria(persistentClass);
   }
 
@@ -601,7 +602,10 @@ public class CandaceSessionImpl implements Session {
   public void clear() {
     LOGGER.debug("clear()");
     logStack("clear()");
-    session.clear();
+    final Transaction txn = session.getTransaction();
+    if (txn != null && txn.isActive()) {
+      session.clear();
+    }
   }
 
   @Override

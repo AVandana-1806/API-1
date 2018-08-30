@@ -188,19 +188,19 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public SessionFactoryOptions getSessionFactoryOptions() {
-    LOGGER.debug("getSessionFactoryOptions");
+    LOGGER.trace("getSessionFactoryOptions");
     return pick().getSessionFactoryOptions();
   }
 
   @Override
   public EntityManager createEntityManager(Map map) {
-    LOGGER.debug("createEntityManager(Map)");
+    LOGGER.trace("createEntityManager(Map)");
     return pick().createEntityManager(map);
   }
 
   @Override
   public SessionBuilder withOptions() {
-    LOGGER.debug("withOptions");
+    LOGGER.trace("withOptions");
     return pick().withOptions();
   }
 
@@ -274,7 +274,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public Statistics getStatistics() {
     // IDEA: store statistics by request.
-    LOGGER.debug("getStatistics");
+    LOGGER.trace("getStatistics");
     return pick().getStatistics();
   }
 
@@ -317,7 +317,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.warn("******** CandaceSessionFactoryImpl.close ********");
+    LOGGER.info("******** CandaceSessionFactoryImpl.close ********");
     local.set(null);
     pick().close();
     CaresStackUtils.logStack();
