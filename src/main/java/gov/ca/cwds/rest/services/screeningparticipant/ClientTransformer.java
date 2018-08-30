@@ -71,8 +71,9 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     String approxAgeUnits = null;
     if (clientDob != null && "Y".equals(client.getEstimatedDobCode())) {
       String approxAgeAndUnits = calcApproximateAgeAndUnits(clientDob);
-      approxAge = approxAgeAndUnits.substring(0, approxAgeAndUnits.length() - 2);
-      approxAgeUnits = approxAgeAndUnits.substring(approxAgeAndUnits.length() - 1);
+      int idx = approxAgeAndUnits.indexOf(':');
+      approxAge = approxAgeAndUnits.substring(0, idx);
+      approxAgeUnits = approxAgeAndUnits.substring(idx + 1);
       clientDob = null;
     }
 
@@ -96,21 +97,21 @@ public class ClientTransformer implements ParticipantMapper<Client> {
 
     long days = DAYS.between(localDob, localToday);
     if (days < 7) {
-      return String.valueOf(days) + ":D";
+      return String.valueOf(days) + ":days";
     }
 
     long weeks = WEEKS.between(localDob, localToday);
     if (weeks < 8 && weeks % 4 != 0) {
-      return String.valueOf(weeks) + ":W";
+      return String.valueOf(weeks) + ":weeks";
     }
 
     long months = MONTHS.between(localDob, localToday);
     if (months < 12) {
-      return String.valueOf(months) + ":M";
+      return String.valueOf(months) + ":months";
     }
 
     long years = YEARS.between(localDob, localToday);
-    return String.valueOf(years) + ":Y";
+    return String.valueOf(years) + ":years";
   }
 
   private String convertSSN(Client client) {
