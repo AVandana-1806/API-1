@@ -60,7 +60,7 @@ public class RequestExecutionContextFilter implements Filter {
 
       try {
         final String userId = RequestExecutionContext.instance().getUserId();
-        LOGGER.warn("user id {} started request at {}", userId, requestStartTimeStr);
+        LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
         MDC.put("userId", userId);
 
         chain.doFilter(httpServletRequest, httpServletResponse);

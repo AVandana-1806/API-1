@@ -131,7 +131,7 @@ public interface RequestExecutionContext {
    * 
    * @param nonWebUser user id for health checks or batch operations
    */
-  // void refreshIfNotOwner(String nonWebUser);
+  // void remakeIfNotOwner(String nonWebUser, String staffId);
 
   /**
    * Get the message builder for warnings and errors for this request.
