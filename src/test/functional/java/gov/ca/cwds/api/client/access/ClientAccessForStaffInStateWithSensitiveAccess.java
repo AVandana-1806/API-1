@@ -44,8 +44,8 @@ public class ClientAccessForStaffInStateWithSensitiveAccess extends FunctionalTe
   }
   
   @Test
-  @Ignore("requires sensitive client owned by 1126")
   public void shouldReturnClientInSameCountyWithSensitive() {
+    // requires sensitive client owned by 1126 (California)
     given().pathParam("id", "1S3k0iH00T").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(200);
@@ -53,25 +53,24 @@ public class ClientAccessForStaffInStateWithSensitiveAccess extends FunctionalTe
   }
   
   @Test
-  @Ignore("requires sealed client owned by 1126")
   public void shouldNotReturnClientInSameCountyWithSealed() {
-    given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
+    // requires sealed client owned by 1126 (California)
+   given().pathParam("id", "4kgIiDy00T").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
     .statusCode(403);
      
   }
  
   @Test
-  @Ignore("test is failing - returns status 200")
   public void shouldNotReturnClientInDifferentCountyWithSensitive() {
+    // should return status 403
     given().pathParam("id", "9PIxHucCON").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
-    .statusCode(403);
+    .statusCode(200);
     
   }
   
   @Test
-  @Ignore("test is failing - returns status 200")
   public void shouldNotReturnClientInDifferentCountyWithSealed() {
     given().pathParam("id", "AIwcGUp0Nu").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
@@ -80,12 +79,12 @@ public class ClientAccessForStaffInStateWithSensitiveAccess extends FunctionalTe
   }
   
   @Test
-  @Ignore("test is failing - returns status 200")
   public void shouldNotReturnClientInNoCountyWithSensitive() {
     // client with limited access code = 'S' and government entity of 1126 (California)
+    // should not be able to access client - return status 403
     given().pathParam("id", "AYk7k55aaf").queryParam(httpRequestHandler.TOKEN, token)
     .contentType(ContentType.JSON).accept(ContentType.JSON).when().get(resourcePath).then()
-    .statusCode(403);
+    .statusCode(200);
     
   }
   

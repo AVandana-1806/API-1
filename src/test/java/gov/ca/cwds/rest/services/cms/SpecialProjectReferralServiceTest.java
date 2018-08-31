@@ -72,6 +72,7 @@ public class SpecialProjectReferralServiceTest {
 
   @Test
   public void shouldReturnSpecialProjectReferralObjectWhenCreate() throws Exception {
+    String startDate = "2018-08-20";
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
         new SpecialProjectReferralResourceBuilder().build();
 
@@ -82,7 +83,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -105,6 +106,7 @@ public class SpecialProjectReferralServiceTest {
 
     String referralId = "0987654ABC";
     String incidentCounty = "34";
+    String startDate = "2018-08-20";
     MessageBuilder messageBuilder = new MessageBuilder();
     
     SpecialProject specialProject = new SpecialProjectEntityBuilder()
@@ -125,7 +127,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -147,6 +149,7 @@ public class SpecialProjectReferralServiceTest {
 
     String referralId = "0987654ABC";
     String incidentCounty = "34";
+    String startDate = "2018-08-20";
     LocalDate endDate = LocalDate.now();
     MessageBuilder messageBuilder = new MessageBuilder();
     
@@ -167,7 +170,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -189,6 +192,7 @@ public class SpecialProjectReferralServiceTest {
     String referralId = "9876543ABC";
     String specialProjectId = "0987654ABC";
     String incidentCounty = "34";
+    String startDate = "2018-08-20";
     MessageBuilder messageBuilder = new MessageBuilder();
 
     // mock the special project find dao
@@ -210,7 +214,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -238,6 +242,7 @@ public class SpecialProjectReferralServiceTest {
 
     String referralId = "0987654ABC";
     String incidentCounty = "ZZ";
+    String startDate = "2018-08-20";
     MessageBuilder messageBuilder = new MessageBuilder();
 
     SpecialProject specialProject = new SpecialProjectEntityBuilder().setName("test").build();
@@ -255,7 +260,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -274,6 +279,7 @@ public class SpecialProjectReferralServiceTest {
 
     String referralId = "0987654ABC";
     String incidentCounty = "34";
+    String startDate = "2018-08-20";
     MessageBuilder messageBuilder = new MessageBuilder();
     
     SpecialProject specialProject = new SpecialProjectEntityBuilder()
@@ -294,7 +300,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());

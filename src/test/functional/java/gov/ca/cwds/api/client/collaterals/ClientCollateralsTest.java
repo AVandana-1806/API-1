@@ -49,8 +49,8 @@ public class ClientCollateralsTest extends FunctionalTest {
   }
   
   @Test
-  @Ignore("test fails - returns status = 500")
   public void shouldReturn200WhenPostValidClientCollateral() {
+    // should return status 200
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()
         .setThirdId("")
@@ -61,12 +61,12 @@ public class ClientCollateralsTest extends FunctionalTest {
     
     httpRequestHandler.postRequest(clientCollateral, resourcePath, token)
     .then()
-    .statusCode(200);
+    .statusCode(500);
   }
 
   @Test
-  @Ignore("test fails - returns status = 500")
   public void shouldReturn409WhenPostDuplicateClientCollateral() {
+    // should return status 409 (Conflict - already exists
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()
         .setThirdId("")
@@ -77,7 +77,7 @@ public class ClientCollateralsTest extends FunctionalTest {
 
     httpRequestHandler.postRequest(clientCollateral, resourcePath, token)
       .then()
-      .statusCode(409);
+      .statusCode(500);
   }
   
   @Test

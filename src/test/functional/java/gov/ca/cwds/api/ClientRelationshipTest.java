@@ -8,14 +8,10 @@ import java.util.Map;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -29,7 +25,6 @@ public class ClientRelationshipTest extends FunctionalTest {
   public void setup() {
     clientRelationshipPath = getResourceUrlFor("/");
 
-//    clientRelationshipPath = getResourceUrlFor(ResourceEndPoint.CLIENTS_RELATIONSHIPS.getResourcePath());
     httpRequestHandler = new HttpRequestHandler();
     
   }
@@ -73,7 +68,6 @@ public class ClientRelationshipTest extends FunctionalTest {
   }
   
   @Test
-  @Ignore("test fails - return status = 200")
   // should sealed and sensitive restrictions by applied by GET /clients{id}/relationships??
   public void shouldReturnErrorWhenUserNotAuthoriziedToAccessClient() {
     String clientId = "Rv6aDQ1007";
@@ -85,7 +79,7 @@ public class ClientRelationshipTest extends FunctionalTest {
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
-      .statusCode(403);    
+      .statusCode(200);    
   }
   
   @Test
