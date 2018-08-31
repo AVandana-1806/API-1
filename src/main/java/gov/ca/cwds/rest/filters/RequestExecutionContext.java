@@ -126,6 +126,14 @@ public interface RequestExecutionContext {
   long getInitiatorThreadId();
 
   /**
+   * Refresh if created for another thread or user, which could happen for non-HTTP requests, such
+   * as health checks.
+   * 
+   * @param nonWebUser user id for health checks or batch operations
+   */
+  // void refreshIfNotOwner(String nonWebUser);
+
+  /**
    * Get the message builder for warnings and errors for this request.
    * 
    * @return message builder for warnings and errors

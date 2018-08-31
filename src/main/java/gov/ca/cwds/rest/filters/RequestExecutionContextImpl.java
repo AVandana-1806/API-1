@@ -5,12 +5,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
 
@@ -20,7 +17,9 @@ import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
  * 
  * @author CWDS API Team
  */
-class RequestExecutionContextImpl implements RequestExecutionContext {
+class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestExecutionContext {
+
+  private static final long serialVersionUID = 1L;
 
   private static final PerryUserIdentity DEFAULT_IDENTITY;
 
@@ -105,7 +104,7 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   @Override
   public String getStaffId() {
     String staffId = null;
-    PerryUserIdentity userIdentity = getUserIdentity();
+    final PerryUserIdentity userIdentity = getUserIdentity();
 
     if (userIdentity != null) {
       staffId = userIdentity.getStaffId();
@@ -157,8 +156,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   }
 
   /**
-   * Servlet filter marks the start of a web request. This method is only accessible by the filters
-   * package.
+   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
+   * the filters package.
    */
   static void startRequest() {
     PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
@@ -173,21 +172,6 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
    */
   static void stopRequest() {
     RequestExecutionContextRegistry.remove();
-  }
-
-  @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true);
-  }
-
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, false);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, false);
   }
 
 }
