@@ -67,7 +67,7 @@ public class StringSequenceIdGenerator implements IdentifierGenerator, Configura
     }
 
     sequenceCallSyntax = dialect.getSequenceNextValString(sequenceName);
-    LOGGER.info("sequence SQL: {}", sequenceCallSyntax);
+    LOGGER.debug("sequence SQL: {}", sequenceCallSyntax);
   }
 
   @SuppressWarnings("rawtypes")
