@@ -26,7 +26,7 @@ import gov.ca.cwds.security.web.PerryAuthenticatingFilter;
 
 /**
  * Store common info when an HTTP request begins. Can be merged with
- * {@link PerryAuthenticatingFilter} when ready. See story #147865633.
+ * {@link PerryAuthenticatingFilter} when ready. See Pivotal story #147865633.
  * 
  * @author CWDS API Team
  * @see RequestExecutionContextImpl
@@ -60,7 +60,7 @@ public class RequestExecutionContextFilter implements Filter {
 
       try {
         final String userId = RequestExecutionContext.instance().getUserId();
-        LOGGER.warn("user id {} started request at {}", userId, requestStartTimeStr);
+        LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
         MDC.put("userId", userId);
 
         chain.doFilter(httpServletRequest, httpServletResponse);

@@ -92,4 +92,9 @@ public class TestingRequestExecutionContext implements RequestExecutionContext {
     return false;
   }
 
+  @Override
+  public long getInitiatorThreadId() {
+    return 0;
+  }
+
 }

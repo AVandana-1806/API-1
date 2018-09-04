@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.data.persistence.xa.CaresUnitOfWorkInterceptor;
 import gov.ca.cwds.rest.resources.investigation.InvestigationsResource;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.security.realm.PerryAccount;
 
 /**
- * Custom Implementation for additional security attributes in JWT token
+ * Custom implementation of additional security attributes in JWT token.
  * 
  * @author CWDS API Team
  */
@@ -23,4 +23,5 @@ public class PerryUserIdentity extends PerryAccount {
   public void setStaffId(String staffId) {
     this.staffId = staffId;
   }
+
 }

@@ -32,12 +32,17 @@ public class RequestExecutionContextFilterTest extends AbstractShiroTest {
 
   @Mock
   ServletRequest request;
+
   @Mock
   ServletResponse response;
+
   @Mock
   FilterChain chain;
+
   @Mock
   FilterConfig filterConfig;
+
+  RequestExecutionContextFilter target;
 
   @Before
   public void setup() {
@@ -56,6 +61,8 @@ public class RequestExecutionContextFilterTest extends AbstractShiroTest {
     when(principalCollection.asList()).thenReturn(list);
     when(mockSubject.getPrincipals()).thenReturn(principalCollection);
     setSubject(mockSubject);
+
+    target = new RequestExecutionContextFilter();
   }
 
   @Test
@@ -65,63 +72,46 @@ public class RequestExecutionContextFilterTest extends AbstractShiroTest {
 
   @Test
   public void instantiation() throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     assertThat(target, notNullValue());
   }
 
   @Test
   public void doFilter_Args__ServletRequest__ServletResponse__FilterChain() throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     target.doFilter(request, response, chain);
   }
 
-  @Test
+  @Test(expected = IOException.class)
   public void doFilter_Args__ServletRequest__ServletResponse__FilterChain_T__IOException()
       throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     doThrow(new IOException("uh oh")).when(chain).doFilter(request, response);
 
-    try {
-      target.doFilter(request, response, chain);
-      fail("Expected exception was not thrown!");
-    } catch (IOException e) {
-    }
+    target.doFilter(request, response, chain);
+    fail("Expected exception was not thrown!");
   }
 
-  @Test
+  @Test(expected = ServletException.class)
   public void doFilter_Args__ServletRequest__ServletResponse__FilterChain_T__ServletException()
       throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     doThrow(new ServletException("uh oh")).when(chain).doFilter(request, response);
-
-    try {
-      target.doFilter(request, response, chain);
-      fail("Expected exception was not thrown!");
-    } catch (ServletException e) {
-    }
+    target.doFilter(request, response, chain);
+    fail("Expected exception was not thrown!");
   }
 
   @Test
   public void init_Args__FilterConfig() throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     target.init(filterConfig);
   }
 
-  // @Test
+  // @Test(expected = ServletException.class)
   public void init_Args__FilterConfig_T__ServletException() throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     doThrow(new ServletException("uh oh")).when(filterConfig).getFilterName();
 
-    try {
-      target.init(filterConfig);
-      fail("Expected exception was not thrown!");
-    } catch (ServletException e) {
-    }
+    target.init(filterConfig);
+    fail("Expected exception was not thrown!");
   }
 
   @Test
   public void destroy_Args__() throws Exception {
-    RequestExecutionContextFilter target = new RequestExecutionContextFilter();
     target.destroy();
   }
 

@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.cms;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -36,17 +37,20 @@ public class GovernmentOrganizationCrossReportService implements
   private static final Logger LOGGER =
       LoggerFactory.getLogger(GovernmentOrganizationCrossReportService.class);
 
-  private GovernmentOrganizationCrossReportDao governmentOrganizationCrossReportDao;
+  private static final Map<String, String> agencyCodeMap;
 
-  private static Map<String, String> agencyCodeMap = new HashMap<>();
   static {
-    agencyCodeMap.put("DISTRICT_ATTORNEY", "A");
-    agencyCodeMap.put("COUNTY_LICENSING", "C");
-    agencyCodeMap.put("DEPARTMENT_OF_JUSTICE", "D");
-    agencyCodeMap.put("COMMUNITY_CARE_LICENSING", "L");
-    agencyCodeMap.put("PROBATION", "P");
+    final Map<String, String> map = new HashMap<>();
+    map.put("DISTRICT_ATTORNEY", "A");
+    map.put("COUNTY_LICENSING", "C");
+    map.put("DEPARTMENT_OF_JUSTICE", "D");
+    map.put("COMMUNITY_CARE_LICENSING", "L");
+    map.put("PROBATION", "P");
 
+    agencyCodeMap = Collections.unmodifiableMap(map);
   }
+
+  private GovernmentOrganizationCrossReportDao governmentOrganizationCrossReportDao;
 
   // Used to implicitly check for referential Integrity. Better to find way to make explicit
   private RIGovernmentOrganizationCrossReport riGovernmentOrganizationCrossReport;
@@ -71,8 +75,7 @@ public class GovernmentOrganizationCrossReportService implements
    */
   @Override
   public GovernmentOrganizationCrossReport create(GovernmentOrganizationCrossReport request) {
-
-    GovernmentOrganizationCrossReport governmentOrganizationCrossReport = request;
+    final GovernmentOrganizationCrossReport governmentOrganizationCrossReport = request;
 
     try {
       gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport managed =
@@ -101,13 +104,12 @@ public class GovernmentOrganizationCrossReportService implements
       if (AgencyType.LAW_ENFORCEMENT.name().equals(agency.getType())) {
         continue;
       }
-      GovernmentOrganizationCrossReport governmentOrganizationCrossReport =
+      final GovernmentOrganizationCrossReport governmentOrganizationCrossReport =
           new GovernmentOrganizationCrossReport(null, postedCrossReport.getCountySpecificCode(),
               postedCrossReport.getThirdId(), postedCrossReport.getReferralId(), agency.getId(),
               agencyCodeMap.get(agency.getType()));
       create(governmentOrganizationCrossReport);
     }
-
   }
 
   /**
@@ -117,8 +119,7 @@ public class GovernmentOrganizationCrossReportService implements
    */
   @Override
   public GovernmentOrganizationCrossReport delete(String primaryKey) {
-
-    gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport persistedGovernmentOrganizationCrossReport =
+    final gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport persistedGovernmentOrganizationCrossReport =
         governmentOrganizationCrossReportDao.delete(primaryKey);
     if (persistedGovernmentOrganizationCrossReport != null) {
       return new gov.ca.cwds.rest.api.domain.cms.GovernmentOrganizationCrossReport(
@@ -134,8 +135,7 @@ public class GovernmentOrganizationCrossReportService implements
    */
   @Override
   public GovernmentOrganizationCrossReport find(String primaryKey) {
-
-    gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport persistedGovernmentOrganizationCrossReport =
+    final gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport persistedGovernmentOrganizationCrossReport =
         governmentOrganizationCrossReportDao.find(primaryKey);
     if (persistedGovernmentOrganizationCrossReport != null) {
       return new gov.ca.cwds.rest.api.domain.cms.GovernmentOrganizationCrossReport(
@@ -154,8 +154,7 @@ public class GovernmentOrganizationCrossReportService implements
   @Override
   public GovernmentOrganizationCrossReport update(String primaryKey,
       GovernmentOrganizationCrossReport request) {
-
-    GovernmentOrganizationCrossReport governmentOrganizationCrossReport = request;
+    final GovernmentOrganizationCrossReport governmentOrganizationCrossReport = request;
 
     try {
       gov.ca.cwds.data.persistence.cms.GovernmentOrganizationCrossReport managed =
