@@ -221,6 +221,7 @@ public class Participant extends ReportingDomain implements Request, Response {
    * @param addresses The addresses of the participant
    * @param raceAndEthnicity The race And Ethnicity
    * @param csecs CSEC list
+   * @param safelySurrenderedBabies safely surrendered babies
    * @throws ServiceException throw any exception
    */
   @JsonCreator

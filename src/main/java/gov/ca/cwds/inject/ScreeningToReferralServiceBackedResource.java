@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 import com.google.inject.BindingAnnotation;
 
 /**
- * Annotation for binding to our a service backed screening to referral resource
+ * Annotation for binding to our a service-backed screening-to-referral resource.
  * 
  * @author CWDS API Team
  */

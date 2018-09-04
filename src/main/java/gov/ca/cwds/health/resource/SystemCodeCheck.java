@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,7 @@ public class SystemCodeCheck implements Pingable {
     boolean ok = true;
 
     try (final Session session = sessionFactory.openSession()) {
+      final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       final String tableName = "SYSTEM_CODES";

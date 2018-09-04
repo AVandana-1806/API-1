@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_REFERRALS;
 
 import javax.validation.Valid;
@@ -49,7 +50,7 @@ public class ScreeningToReferralResource {
   /**
    * Constructor
    * 
-   * @param resourceDelegate The resourceDelegate to delegate to.
+   * @param resourceDelegate The resource delegate to delegate to.
    */
   @Inject
   public ScreeningToReferralResource(
@@ -58,13 +59,13 @@ public class ScreeningToReferralResource {
   }
 
   /**
-   * Finds an referral by id.
+   * Finds a CMS referral by id.
    * 
    * @param id the id
    * 
    * @return the response
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DATASOURCE_CMS)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),

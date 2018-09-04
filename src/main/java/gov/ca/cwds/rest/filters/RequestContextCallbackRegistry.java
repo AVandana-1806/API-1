@@ -32,10 +32,20 @@ final class RequestContextCallbackRegistry implements ApiMarker {
     callbacks.putIfAbsent(callback.key(), callback);
   }
 
+  /**
+   * Start a request. Notify all registered callbacks.
+   * 
+   * @param ctx request context
+   */
   public void startRequest(RequestExecutionContext ctx) {
     callbacks.values().stream().sequential().forEach(c -> c.startRequest(ctx));
   }
 
+  /**
+   * End a request. Notify all registered callbacks.
+   * 
+   * @param ctx request context
+   */
   public void endRequest(RequestExecutionContext ctx) {
     callbacks.values().stream().sequential().forEach(c -> c.endRequest(ctx));
   }

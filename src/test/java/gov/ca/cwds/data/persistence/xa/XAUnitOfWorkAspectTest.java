@@ -85,8 +85,8 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
 
   @Test
   public void grabSession_A$SessionFactory() throws Exception {
-    Session actual = target.grabSession(Api.DATASOURCE_XA_CMS, sessionFactory);
-    Session expected = session;
+    final Session actual = target.grabSession(Api.DATASOURCE_XA_CMS, sessionFactory);
+    final Session expected = session;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -127,8 +127,8 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
 
   @Test
   public void getSessionFactories_A$() throws Exception {
-    Map<String, SessionFactory> actual = target.getSessionFactories();
-    Map<String, SessionFactory> expected = this.sessionFactories;
+    final Map<String, SessionFactory> actual = target.getSessionFactories();
+    final Map<String, SessionFactory> expected = this.sessionFactories;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -168,15 +168,15 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
         MethodUtils.getMatchingMethod(this.getClass(), "beforeStart_A1", new Class[0]);
     target.beforeStart(method, xaUnitOfWork);
 
-    String key = "xa_cms";
+    final String key = "xa_cms";
     Session actual = target.grabSession(key, sessionFactory);
     assertThat(actual, is(notNullValue()));
   }
 
   @Test
   public void hasTransactionalFlag_A$() throws Exception {
-    boolean actual = target.hasTransactionalFlag();
-    boolean expected = false;
+    final boolean actual = target.hasTransactionalFlag();
+    final boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
   }
 
@@ -196,7 +196,6 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
 
   @Test
   public void rollbackSessionTransaction_A$Session() throws Exception {
-    Session session = mock(Session.class);
     target.rollbackSessionTransaction(session);
   }
 
