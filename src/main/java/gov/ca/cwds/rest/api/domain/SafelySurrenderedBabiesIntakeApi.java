@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.api.domain;
 
-import io.dropwizard.validation.OneOf;
 import java.time.LocalDate;
 
 import javax.validation.constraints.Size;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * {@link DomainObject} representing an SafelySurenderedBabies
@@ -28,28 +26,22 @@ public class SafelySurrenderedBabiesIntakeApi extends DomainObject {
   private String surrenderedBy;
 
   @JsonProperty("relation_to_child")
-  @ApiModelProperty(required = true, readOnly = false, value = "", example = "1592",
-      notes = "The code for relationship")
-  @NotEmpty
+  @ApiModelProperty(example = "1592", notes = "The code for relationship")
   private String relationToChild;
 
   @JsonProperty("bracelet_id")
-  @ApiModelProperty(required = true, readOnly = false, example = "1234")
+  @ApiModelProperty(example = "1234")
   @Size(max = 10)
   private String braceletId;
 
   @JsonProperty("parent_guardian_given_bracelet_id")
-  @ApiModelProperty(required = true, readOnly = false, example = "U")
-  @NotEmpty
+  @ApiModelProperty(example = "U")
   @Size(max = 1)
-  @OneOf(value = {"A", "N", "U", "Y"})
   private String parentGuardGivenBraceletId;
 
   @JsonProperty("parent_guardian_provided_med_questionaire")
-  @ApiModelProperty(required = true, readOnly = false, example = "U")
-  @NotEmpty
+  @ApiModelProperty(example = "U")
   @Size(max = 1)
-  @OneOf(value = {"D", "M", "N", "R", "U"})
   private String parentGuardProvMedQuestion;
 
   @SuppressWarnings("squid:S3437")

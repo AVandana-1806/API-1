@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services.cms;
 
+import gov.ca.cwds.rest.exception.BusinessValidationException;
+import gov.ca.cwds.rest.exception.IssueDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -288,8 +290,6 @@ public class SpecialProjectReferralService implements
     ssbEntity.setSurrenderedByName(ssb.getSurrenderedByName());
     ssbEntity.setSurrenderedDate(referralReceivedDate);
     ssbEntity.setSurrenderedTime(referralRecievedTime);
-    droolsService.performBusinessRules(createConfiguration(), ssbEntity);
-    safelySurrenderedBabiesDao.create(ssbEntity);
 
     /**
      * Create bracelet ID.
@@ -301,6 +301,14 @@ public class SpecialProjectReferralService implements
     braceltInfo.setLastUpdateTime(now);
     braceltInfo.setOtherId(ssb.getBraceletId());
     braceltInfo.setOtherIdCode(MEDICAL_RECORD_SYSTEM_CODE_ID);
+
+    Set<IssueDetails> detailsList =
+        droolsService.performBusinessRules(createConfiguration(), ssbEntity, braceltInfo);
+    if (!detailsList.isEmpty()) {
+      throw new BusinessValidationException(detailsList);
+    }
+
+    safelySurrenderedBabiesDao.create(ssbEntity);
     nonCWSNumberDao.create(braceltInfo);
   }
 
@@ -345,7 +353,7 @@ public class SpecialProjectReferralService implements
    * logical code and FKSMeta
    * 
    * @param logicalCode
-   * @param governmentEntityCode
+   * @param metaTableName
    * @return - sysId of the SystemCode
    */
   private short convertLogicalIdToSystemCodeFor(String logicalCode, String metaTableName) {

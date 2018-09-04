@@ -1,0 +1,45 @@
+import org.apache.commons.lang3.StringUtils
+import gov.ca.cwds.rest.exception.IssueDetails
+import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies
+import gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber
+
+global java.util.Set validationDetailsList
+
+rule "bracelet id is required"
+  dialect "mvel"
+  agenda-group "safely-surrender-babies-agenda"
+  when
+    $braceletInfo: NonCWSNumber();
+    eval(StringUtils.isBlank($braceletInfo.getOtherId()))
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("safely-surrender-babies-rules");
+    details.setUserMessage("Safely Surrendered Babies Bracelet ID is required");
+    validationDetailsList.add(details);
+end
+
+rule "bracelet id info code allowed values"
+  dialect "mvel"
+  agenda-group "safely-surrender-babies-agenda"
+
+  when
+    not SafelySurrenderedBabies(braceletIdInfoCode in ("A", "N", "U", "Y") );
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("safely-surrender-babies-rules");
+    details.setUserMessage("Parent/Guardian Given Bracelet ID should be one of ['A', 'N', 'U', 'Y']");
+    validationDetailsList.add(details);
+end
+
+rule "medical questionnaire code allowed values"
+  dialect "mvel"
+  agenda-group "safely-surrender-babies-agenda"
+
+  when
+    not SafelySurrenderedBabies(medicalQuestionnaireCode in ("D", "M", "N", "R", "U") );
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("safely-surrender-babies-rules");
+    details.setUserMessage("Parent/Guardian Provided Medical Questionaire should be one of ['D', 'M', 'N', 'R', 'U']");
+    validationDetailsList.add(details);
+end
