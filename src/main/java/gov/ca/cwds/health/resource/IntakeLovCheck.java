@@ -41,6 +41,7 @@ public class IntakeLovCheck implements Pingable {
     LOGGER.info("Postgres LOV health check: ping start");
     boolean ok = true;
 
+    // NEXT: handle non-HTTP "requests" and use @UnitOfWork like other resources/services.
     try (final Session session = sessionFactory.openSession()) {
       final Transaction txn = session.beginTransaction();
       final String schema = (String) sessionFactory.getProperties().get("hibernate.default_schema");
