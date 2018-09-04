@@ -81,7 +81,7 @@ public class CandaceSessionImpl implements Session {
    */
   protected void logStack(Object obj, String methodMsg) {
     if (LOGGER.isTraceEnabled()) {
-      if (obj != null && obj instanceof PersistentObject) {
+      if (obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
         LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
             po.getPrimaryKey());

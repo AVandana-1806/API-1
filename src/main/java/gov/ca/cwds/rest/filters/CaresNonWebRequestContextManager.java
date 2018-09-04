@@ -35,6 +35,7 @@ public class CaresNonWebRequestContextManager {
       LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
       MDC.put("userId", userId);
     } finally {
+      // Appease SonarQube ...
     }
   }
 

@@ -17,6 +17,7 @@ import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"squid:S1948"})
 class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestExecutionContext {
 
   private static final long serialVersionUID = 1L;
