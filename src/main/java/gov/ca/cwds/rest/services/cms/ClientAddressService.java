@@ -229,7 +229,7 @@ public class ClientAddressService implements
   }
 
   private boolean hasClient(String clientId, MessageBuilder messageBuilder) {
-    if (clientId.isEmpty()) {
+    if (StringUtils.isBlank(clientId)) {
       String message = " CLIENT/IDENTIFIER is required for CLIENT_ADDRESS ";
       ServiceException se = new ServiceException(message);
       messageBuilder.addMessageAndLog(message, se, LOGGER);
@@ -239,7 +239,7 @@ public class ClientAddressService implements
   }
 
   private boolean hasAddress(MessageBuilder messageBuilder, String addressId) {
-    if (addressId.isEmpty()) {
+    if (StringUtils.isBlank(addressId)) {
       String message = " ADDRESS/IDENTIFIER is required for CLIENT_ADDRESS table ";
       ServiceException se = new ServiceException(message);
       messageBuilder.addMessageAndLog(message, se, LOGGER);
