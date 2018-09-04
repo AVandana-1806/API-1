@@ -243,7 +243,8 @@ public class Participant extends ReportingDomain implements Request, Response {
       @JsonProperty("approximate_age_units") String approximateAgeUnits,
       @JsonProperty("roles") Set<String> roles, @JsonProperty("addresses") Set<Address> addresses,
       @JsonProperty("race_ethnicity") RaceAndEthnicity raceAndEthnicity,
-      @JsonProperty("csec") List<Csec> csecs) {
+      @JsonProperty("csec") List<Csec> csecs,
+      @JsonProperty("safely_surrendered_babies") SafelySurrenderedBabies safelySurrenderedBabies) {
     super();
     this.id = id;
     this.legacySourceTable = legacySourceTable;
@@ -269,6 +270,7 @@ public class Participant extends ReportingDomain implements Request, Response {
     this.sensitivityIndicator = sensitivityIndicator;
     this.raceAndEthnicity = raceAndEthnicity;
     this.csecs = csecs;
+    this.safelySurrenderedBabies = safelySurrenderedBabies;
 
     try {
       victim = ParticipantValidator.hasVictimRole(this);

@@ -325,8 +325,7 @@ public class ParticipantResourceBuilder {
         firstName, middleName, lastName, suffix, gender, ssn, dateOfBirth, primaryLanguage,
         secondaryLanguage, screeningId, reporterConfidentialWaiver, reporterEmployerName,
         clientStaffPersonAdded, sensitivityIndicator, approximateAge, approximateAgeUnits, roles,
-        addresses, raceAndEthnicity, csecs);
-    participant.setSafelySurrenderedBabies(safelySurrenderedBabies);
+        addresses, raceAndEthnicity, csecs, safelySurrenderedBabies);
     return participant;
   }
 }
