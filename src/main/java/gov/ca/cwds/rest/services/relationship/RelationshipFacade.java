@@ -85,7 +85,8 @@ public class RelationshipFacade {
     initSystemCodes();
   }
 
-  public gov.ca.cwds.rest.api.Response updateRelationship(String relationshipId, ScreeningRelationship relationship) {
+  public gov.ca.cwds.rest.api.Response updateRelationship(String relationshipId,
+      ScreeningRelationship relationship) {
     if (relationship.isReversed()) {
       relationship = enrichReversedRelationship(relationship);
     }
@@ -94,7 +95,7 @@ public class RelationshipFacade {
 
   private ScreeningRelationship enrichReversedRelationship(
       ScreeningRelationship relationship) {
-    String clientId = relationship.getRelativeId();
+    String clientId = relationship.getClientId();
     relationship.setClientId(relationship.getRelativeId());
     relationship.setRelativeId(clientId);
     relationship.setRelationshipType(getOppositeSystemCode(relationship.getRelationshipType()));
@@ -564,7 +565,8 @@ public class RelationshipFacade {
   private short getOppositeSystemCode(int systemCodeId) {
     short oppositeCode = -1;
 
-    gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode = codesMappedById.get(systemCodeId);
+    gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode = codesMappedById
+        .get((short) systemCodeId);
     if (systemCode != null) {
       String str = systemCode.getShortDescription();
       if (StringUtils.isNoneEmpty(str)) {
