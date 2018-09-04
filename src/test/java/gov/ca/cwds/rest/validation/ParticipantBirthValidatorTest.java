@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.validation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ import org.junit.Test;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 
@@ -105,12 +107,12 @@ public class ParticipantBirthValidatorTest {
    */
   @Test
   public void testValidationFailWhenDobInFuture() {
-    String dateOfBith = "2017-08-14";
+    String dateOfBirthInFuture = DomainChef.cookLocalDate(LocalDate.now().plusDays(1));
     String approximateAge = null;
     String approximateAgeUnits = null;
     int expectedViolations = 1;
-    String expectedViolationMessage = "date of Birth can not be in future";
-    validVictimBirth(dateOfBith, approximateAge, approximateAgeUnits, expectedViolations,
+    String expectedViolationMessage = "Date of Birth cannot be in the future";
+    validVictimBirth(dateOfBirthInFuture, approximateAge, approximateAgeUnits, expectedViolations,
         expectedViolationMessage);
   }
 

@@ -134,18 +134,18 @@ public class SpecialProjectReferralService implements
   /**
    * save CSEC Special Project Referral
    * 
-   * @param csecs - list of CSEC domain objects
    * @param referralId - referral ID
    * @param incidentCounty - county Code
+   * @param startDate - start date of screening
    * @param messageBuilder - message builder
    * 
    * @return PostedSpecialProjectReferral - posted Special Project Referral
    * 
    */
-  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(List<Csec> csecs,
-      String referralId, String incidentCounty, MessageBuilder messageBuilder) {
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(String referralId, 
+      String incidentCounty, String startDate, MessageBuilder messageBuilder) {
     
-    if (!validSpecialProjectReferral(csecs, incidentCounty, messageBuilder)) {
+    if (!validSpecialProjectReferral(incidentCounty, messageBuilder)) {
       return null;
     }
 
@@ -154,11 +154,10 @@ public class SpecialProjectReferralService implements
     String specialProjectId = findSpecialProjectId(S_CSEC_REFERRAL, governmentEntityType);
     
     try {
-      Csec csecDomain = csecs.get(0);
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
           new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(incidentCounty, referralId,
-              specialProjectId, DomainChef.cookLocalDate(csecDomain.getEndDate()),
-              DomainChef.cookLocalDate(csecDomain.getStartDate()), Boolean.FALSE);
+              specialProjectId, null,
+              startDate, Boolean.FALSE);
       messageBuilder.addDomainValidationError(validator.validate(sprDomain));
 
       if (!specialProjectReferralExists(referralId, specialProjectId)) {
@@ -173,12 +172,7 @@ public class SpecialProjectReferralService implements
     }
   }
   
-  private Boolean validSpecialProjectReferral(List<Csec> csecs, String incidentCounty, MessageBuilder messageBuilder) {
-    if (csecs.isEmpty()) {
-      String message = "CSEC data not sent or empty";
-      messageBuilder.addMessageAndLog(message, LOGGER);
-      return Boolean.FALSE;
-    }
+  private Boolean validSpecialProjectReferral(String incidentCounty, MessageBuilder messageBuilder) {
     short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
         LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
     if (governmentEntityType == 0) {
