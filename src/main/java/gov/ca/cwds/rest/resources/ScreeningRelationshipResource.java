@@ -105,13 +105,14 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY,
               message = "Unable to validate ScreeningRelationship"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
-  @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Update Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
   public Response update(
       @Valid @ApiParam(required = true) ScreeningRelationship screeningRelationship,
       @PathParam("id") @ApiParam(required = true,
           value = "The id of the Relationship to find") String id) {
-    return resourceDelegate.update(id, screeningRelationship);
+    return new ResponseConverter()
+        .withUpdatedResponse(relationshipFacade.updateRelationship(id, screeningRelationship));
   }
 
   /**
