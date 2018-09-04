@@ -67,7 +67,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String request = fixture(JSON_REQUEST_FOR_FAILURE_UPDATE);
     Response response =
         doPutCall(SCREENING_RELATIONSHIPS + "/" + ID_NOT_EXISTING_RELATIONSHIP_FOR_UPDATE, request);
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatus());
   }
 
   @Test

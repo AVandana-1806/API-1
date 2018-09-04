@@ -79,4 +79,16 @@ public class ResponseConverterTest {
         Response response = converter.withCreatedResponse(Arrays.asList(relationship));
         assertEquals(201, response.getStatus());
     }
+
+    @Test
+    public void withUpdatedResponsesShouldReturn200StatusWhenDataIsNotNul(){
+        Response response = converter.withUpdatedResponse(relationship);
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void withUpdatedResponsesShouldReturn404StatusWhenDataIsNul(){
+        Response response = converter.withUpdatedResponse(null);
+        assertEquals(404, response.getStatus());
+    }
 }
