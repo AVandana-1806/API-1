@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api.domain;
 
+import io.dropwizard.validation.OneOf;
 import java.time.LocalDate;
 
 import javax.validation.constraints.Size;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * {@link DomainObject} representing an SafelySurenderedBabies
@@ -26,22 +28,28 @@ public class SafelySurrenderedBabiesIntakeApi extends DomainObject {
   private String surrenderedBy;
 
   @JsonProperty("relation_to_child")
-  @ApiModelProperty(required = false, readOnly = false, value = "", example = "1234",
+  @ApiModelProperty(required = true, readOnly = false, value = "", example = "1592",
       notes = "The code for relationship")
+  @NotEmpty
   private String relationToChild;
 
   @JsonProperty("bracelet_id")
-  @ApiModelProperty(example = "1234")
+  @ApiModelProperty(required = true, readOnly = false, example = "1234")
+  @Size(max = 10)
   private String braceletId;
 
   @JsonProperty("parent_guardian_given_bracelet_id")
-  @ApiModelProperty(example = "U")
+  @ApiModelProperty(required = true, readOnly = false, example = "U")
+  @NotEmpty
   @Size(max = 1)
+  @OneOf(value = {"A", "N", "U", "Y"})
   private String parentGuardGivenBraceletId;
 
   @JsonProperty("parent_guardian_provided_med_questionaire")
-  @ApiModelProperty(example = "U")
+  @ApiModelProperty(required = true, readOnly = false, example = "U")
+  @NotEmpty
   @Size(max = 1)
+  @OneOf(value = {"D", "M", "N", "R", "U"})
   private String parentGuardProvMedQuestion;
 
   @SuppressWarnings("squid:S3437")
@@ -58,92 +66,71 @@ public class SafelySurrenderedBabiesIntakeApi extends DomainObject {
   @ApiModelProperty(example = "ABC12345")
   private String participantId;
 
-
   public SafelySurrenderedBabiesIntakeApi() {
     // required by third party library
   }
-
 
   public String getSurrenderedBy() {
     return surrenderedBy;
   }
 
-
   public void setSurrenderedBy(String surrenderedBy) {
     this.surrenderedBy = surrenderedBy;
   }
-
 
   public String getRelationToChild() {
     return relationToChild;
   }
 
-
   public void setRelationToChild(String relationToChild) {
     this.relationToChild = relationToChild;
   }
-
 
   public String getBraceletId() {
     return braceletId;
   }
 
-
   public void setBraceletId(String braceletId) {
     this.braceletId = braceletId;
   }
-
-
 
   public String getParentGuardGivenBraceletId() {
     return parentGuardGivenBraceletId;
   }
 
-
   public void setParentGuardGivenBraceletId(String parentGuardGivenBraceletId) {
     this.parentGuardGivenBraceletId = parentGuardGivenBraceletId;
   }
-
 
   public String getParentGuardProvMedQuestion() {
     return parentGuardProvMedQuestion;
   }
 
-
   public void setParentGuardProvMedQuestion(String parentGuardProvMedQuestion) {
     this.parentGuardProvMedQuestion = parentGuardProvMedQuestion;
   }
-
 
   public LocalDate getMedQuestionaireReturnDate() {
     return medQuestionaireReturnDate;
   }
 
-
   public void setMedQuestionaireReturnDate(LocalDate medQuestionaireReturnDate) {
     this.medQuestionaireReturnDate = medQuestionaireReturnDate;
   }
-
 
   public String getComments() {
     return comments;
   }
 
-
   public void setComments(String comments) {
     this.comments = comments;
   }
-
 
   public String getParticipantId() {
     return participantId;
   }
 
-
   public void setParticipantId(String participantId) {
     this.participantId = participantId;
   }
-
-
-
 }
