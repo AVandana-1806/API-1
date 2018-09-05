@@ -69,6 +69,13 @@
       "gender": "male",
       "ssn": "456-47-8798",
       "date_of_birth": "2002-11-15",
+      "legacy_descriptor": {
+        "legacy_id": "6YtTyyc0ND",
+        "legacy_ui_id": "0372-7697-7418-2001439",
+        "legacy_last_updated": "2002-11-21T07:46:30.298-0800",
+        "legacy_table_name": "CLIENT_T",
+        "legacy_table_description": "Client"
+      },
       "roles": [
         "Victim"
       ],

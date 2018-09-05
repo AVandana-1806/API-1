@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -461,6 +463,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     when(participantDao.findByScreeningIdAndParticipantId("-1", pId)).thenReturn(participantEntity);
     when(participantDao.update(any())).thenReturn(participantEntity);
 
+    LegacyDescriptorEntity legacyDesciptor = new LegacyDescriptorEntity();
+    when(legacyDescriptorDao.findParticipantLegacyDescriptor(pId)).thenReturn(legacyDesciptor);
 
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
     ParticipantIntakeApi expected00 = new ParticipantIntakeApi(participantEntity);
@@ -472,6 +476,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     expected.addAddresses(Arrays.asList(addressIntakeApi1, addressIntakeApi3));
     expected00.addAddresses(Arrays.asList(addressIntakeApi11, addressIntakeApi33));
     expected00.setSafelySurenderedBabies(null);
+
+    expected00.setLegacyDescriptor(new LegacyDescriptor());
 
     PhoneNumber phoneNumber1 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber11 = new PhoneNumber(phoneNumbers1);
