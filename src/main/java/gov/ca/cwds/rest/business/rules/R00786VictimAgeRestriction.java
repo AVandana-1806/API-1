@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.util.ParticipantUtils;
 import gov.ca.cwds.rest.validation.VictimAgeRestriction;
 
@@ -49,7 +50,8 @@ public class R00786VictimAgeRestriction
 
     if (!victims.isEmpty()) {
       // Referral receive timestamp
-      String referralReceiveTimestampStr = screening.getStartedAt();
+      String referralReceiveTimestampStr =
+          DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
       DateTime referralReceiveTimestamp =
           new DateTime(DomainChef.uncookDateString(referralReceiveTimestampStr));
 

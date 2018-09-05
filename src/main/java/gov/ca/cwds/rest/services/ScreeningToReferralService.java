@@ -134,10 +134,12 @@ public class ScreeningToReferralService implements CrudsService {
      * </blockquote>
      * </pre>
      */
+    String referralToBeCreatedAt =
+        DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
     final String dateStarted =
-        StartDateTimeValidator.extractStartDate(screeningToReferral.getStartedAt(), messageBuilder);
+        StartDateTimeValidator.extractStartDate(referralToBeCreatedAt, messageBuilder);
     final String timeStarted =
-        StartDateTimeValidator.extractStartTime(screeningToReferral.getStartedAt(), messageBuilder);
+        StartDateTimeValidator.extractStartTime(referralToBeCreatedAt, messageBuilder);
     final String referralId = createCmsReferral(screeningToReferral, dateStarted, timeStarted);
     final ClientParticipants clientParticipants = processParticipants(screeningToReferral,
         dateStarted, timeStarted, referralId, messageBuilder);
