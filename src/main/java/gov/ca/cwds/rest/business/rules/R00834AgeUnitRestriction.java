@@ -74,7 +74,7 @@ public class R00834AgeUnitRestriction implements RuleAction {
     } else if (noOfDays > 7) {
       age = Long.toString(noOfDays / 7);
       ageUnits = CalendarEnum.WEEKS.getName();
-    } else if (noOfDays > 1) {
+    } else if (noOfDays >= 0) {
       age = Long.toString(noOfDays);
       ageUnits = CalendarEnum.DAYS.getName();
     }
