@@ -271,7 +271,6 @@ public class ParticipantIntakeApiService implements
       throw new ServiceException(new EntityNotFoundException(
           "Entity ParticipantEntity with id = [" + participantId + "] was not found."));
     }
-
     participantEntityManaged =
         participantDao.update(participantEntityManaged.updateFrom(participant));
 
@@ -285,8 +284,12 @@ public class ParticipantIntakeApiService implements
     Set<PhoneNumber> phoneSet =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
+    LegacyDescriptorEntity foundDescriptor = legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
+    LegacyDescriptor discriptor = foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
+
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
+    participantIntakeApiPosted.setLegacyDescriptor(discriptor);
     participantIntakeApiPosted.addAddresses(addressIntakeApiList);
     participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());

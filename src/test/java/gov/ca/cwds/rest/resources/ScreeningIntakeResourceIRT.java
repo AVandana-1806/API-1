@@ -76,5 +76,4 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-put-response.json");
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
-
 }
