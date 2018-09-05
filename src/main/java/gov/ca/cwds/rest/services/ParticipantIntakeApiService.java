@@ -373,16 +373,18 @@ public class ParticipantIntakeApiService implements
     for (CsecEntity csecEntity : toDeleteList) {
       csecDao.delete(csecEntity.getId());
     }
+
+    List<CsecEntity> csecEntities = new ArrayList<>();
     for (CsecEntity csecEntity : toUpdateList) {
       csecEntity.setParticipantId(participantId);
-      csecDao.update(csecEntity);
+      //"update" is not working here due to XA transaction implementation
+      csecEntities.add(csecDao.merge(csecEntity));
     }
     for (CsecEntity csecEntity : toCreateList) {
       csecEntity.setParticipantId(participantId);
-      csecDao.create(csecEntity);
+      csecEntities.add(csecDao.create(csecEntity));
     }
 
-    List<CsecEntity> csecEntities = csecDao.findByParticipantId(participantId);
     participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
   }
 

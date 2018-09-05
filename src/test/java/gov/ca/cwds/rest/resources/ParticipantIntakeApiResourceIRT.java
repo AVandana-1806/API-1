@@ -6,8 +6,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -72,7 +70,6 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  @Ignore
   public void testPut() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-put-request.json");
