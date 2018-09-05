@@ -1,7 +1,6 @@
 package gov.ca.cwds.api.client.collaterals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import gov.ca.cwds.api.FunctionalTest;

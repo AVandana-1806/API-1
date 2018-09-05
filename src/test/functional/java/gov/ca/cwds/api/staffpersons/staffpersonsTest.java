@@ -1,10 +1,7 @@
 package gov.ca.cwds.api.staffpersons;
 
-import static org.hamcrest.Matchers.equalTo;
 import org.junit.Before;
 import org.junit.Test;
-import java.util.HashMap;
-import java.util.Map;
 import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.rest.authenticate.UserGroup;

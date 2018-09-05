@@ -10,11 +10,6 @@ import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.rest.authenticate.UserGroup;
 import gov.ca.cwds.rest.core.Api;
-import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
-import junit.framework.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class CmsUiEdTest extends FunctionalTest {
 
