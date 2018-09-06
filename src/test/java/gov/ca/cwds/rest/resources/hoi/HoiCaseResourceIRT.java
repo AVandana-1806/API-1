@@ -28,7 +28,7 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
     assertHOICasesAreSorted(new String[]{"Co8uaDi0DW", "IdQImWo0DW"}, actualHOICases);
 
     assertQueryExecutionCount(Api.DATASOURCE_CMS, 8);
-    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP, Api.DATASOURCE_NS);
+    assertDatasourceNotTouched(Api.DS_CMS_REP, Api.DATASOURCE_NS);
   }
 
   private String doGet() throws Exception {

@@ -37,7 +37,7 @@ public class HoiScreeningResourceIRT extends HOIBaseTest {
     assertNull(actualHOIScreenings.get(0).getStartDate());
 
     assertQueryExecutionCount(Api.DATASOURCE_CMS, 1);
-    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP);
+    assertDatasourceNotTouched(Api.DS_CMS_REP);
     assertQueryExecutionCount(Api.DATASOURCE_NS, 4);
   }
 

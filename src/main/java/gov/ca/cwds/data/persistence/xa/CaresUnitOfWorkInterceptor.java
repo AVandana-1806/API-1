@@ -102,7 +102,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         currentSessionFactory = cmsSessionFactory;
         isDb2 = true;
         break;
-      case Api.DATASOURCE_CMS_REP:
+      case Api.DS_CMS_REP:
         currentSessionFactory = rsSessionFactory;
         isDb2 = true;
         break;
@@ -116,34 +116,35 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
 
     LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
 
-    // Not XA, so clear XA flags.
-    BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-
     // Does this request already have an aspect for this session factory?
-    UnitOfWorkAspect aspect;
+    UnitOfWorkAspect aspect = null;
     boolean firstUnitOfWork = false;
-
-    if (requestAspects.get().containsKey(name)) {
-      LOGGER.info("RE-USE @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
-          m.getDeclaringClass(), m.getName(), name);
-      aspect = requestAspects.get().get(name);
-    } else {
-      LOGGER.info("NEW @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
-          m.getDeclaringClass(), m.getName(), name);
-      firstUnitOfWork = true;
-      aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
-          .newAspect(ImmutableMap.of(name, currentSessionFactory));
-      requestAspects.get().put(name, aspect);
-      aspect.beforeStart(annotation);
-
-      // Set client information on the JDBC connection.
-      currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo(isDb2));
-      prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
-    }
 
     boolean barfed = false;
     try {
+      if (requestAspects.get().containsKey(name)) {
+        LOGGER.debug("RE-USE @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+            m.getDeclaringClass(), m.getName(), name);
+        aspect = requestAspects.get().get(name);
+      } else {
+        LOGGER.info("NEW @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+            m.getDeclaringClass(), m.getName(), name);
+        firstUnitOfWork = true;
+
+        // Not XA, so clear XA flags.
+        BaseAuthorizationDao.clearXaMode();
+        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+
+        aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
+            .newAspect(ImmutableMap.of(name, currentSessionFactory));
+        requestAspects.get().put(name, aspect);
+        aspect.beforeStart(annotation);
+
+        // Set client information on the JDBC connection.
+        currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo(isDb2));
+        prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
+      }
+
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
       final long requestCalls = incrementRequestCount(m);

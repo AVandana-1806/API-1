@@ -62,4 +62,5 @@ public class AuthorizationResource {
     simpleResourceDelegate.handle(new AuthorizationRequest(id));
     return Response.status(Response.Status.OK).build();
   }
+
 }

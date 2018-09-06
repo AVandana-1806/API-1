@@ -45,7 +45,7 @@ public class HoiUsingClientIdResourceIRT extends HOIBaseTest {
         actualInvolvementHistory.getScreenings());
 
     assertQueryExecutionCount(Api.DATASOURCE_CMS, 14);
-    assertDatasourceNotTouched(Api.DATASOURCE_CMS_REP);
+    assertDatasourceNotTouched(Api.DS_CMS_REP);
     assertQueryExecutionCount(Api.DATASOURCE_NS, 4);
   }
 

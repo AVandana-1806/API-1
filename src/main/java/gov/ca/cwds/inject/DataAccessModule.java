@@ -1,11 +1,11 @@
 package gov.ca.cwds.inject;
 
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS_REP;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS_RS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
+import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_XA_CMS_RS;
+import static gov.ca.cwds.rest.core.Api.DS_XA_NS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -323,7 +323,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_CMS_REP;
+          return DS_CMS_REP;
         }
       };
 
@@ -339,7 +339,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_XA_CMS;
+          return DS_XA_CMS;
         }
       };
 
@@ -355,7 +355,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_XA_CMS_RS;
+          return DS_XA_CMS_RS;
         }
       };
 
@@ -371,7 +371,7 @@ public class DataAccessModule extends AbstractModule {
 
         @Override
         public String name() {
-          return DATASOURCE_XA_NS;
+          return DS_XA_NS;
         }
       };
 
