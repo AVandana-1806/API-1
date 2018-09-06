@@ -60,10 +60,10 @@ public class ScreeningToReferralTest extends FunctionalTest {
    * 
    */
   @Test
-  public void return500ErrorWhenNoVictimIsPresent() {
+  public void return422ErrorWhenNoVictimIsPresent() {
     ScreeningToReferral referral =
         new ScreeningToReferralResourceBuilder().setName("return500ErrorWhenNoVictimIsPresent")
-            .setassigneeStaffId("NONE").setParticipants(null).createScreeningToReferral();
+            .setassigneeStaffId("aab").setParticipants(null).createScreeningToReferral();
 
     httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message",

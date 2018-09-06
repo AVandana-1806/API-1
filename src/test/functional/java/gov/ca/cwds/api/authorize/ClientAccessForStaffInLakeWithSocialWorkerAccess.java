@@ -1,4 +1,4 @@
-package gov.ca.cwds.api;
+package gov.ca.cwds.api.authorize;
 
 import static io.restassured.RestAssured.given;
 import java.util.ArrayList;
@@ -12,11 +12,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
+import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
-public class ClientRelationshipTest extends FunctionalTest {
+public class ClientAccessForStaffInLakeWithSocialWorkerAccess extends FunctionalTest {
 
   String clientRelationshipPath;
   private HttpRequestHandler httpRequestHandler;
@@ -41,8 +42,6 @@ public class ClientRelationshipTest extends FunctionalTest {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put(httpRequestHandler.TOKEN, token);
     
-    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
-    System.out.println(response.body().asString());
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
       .assertThat()
@@ -74,8 +73,6 @@ public class ClientRelationshipTest extends FunctionalTest {
     clientRelationshipPath = clientRelationshipPath + "clients/" + clientId + "/relationships";
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put(httpRequestHandler.TOKEN, token);
-    Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
-    System.out.println(response.body().asString());
     
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams)
       .then()
@@ -107,7 +104,6 @@ public class ClientRelationshipTest extends FunctionalTest {
     Response response = httpRequestHandler.getRequest(clientRelationshipPath, queryParams);
     JsonPath jsonPathEvaluator = response.jsonPath();
     ArrayList relatedIds = jsonPathEvaluator.get("relationship_to.legacy_descriptor.legacy_id");
-    System.out.println(relatedIds);
     List<ArrayList> ids = (List<ArrayList>) relatedIds.get(0);
     assertThat(ids.contains("4GrHFQK0Fj"), is(true));
     assertThat(ids.contains("TBCF40g0D8"), is(true));
