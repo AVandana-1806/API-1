@@ -132,7 +132,7 @@ import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
 /**
  * Identifies all CWDS API domain resource classes available for dependency injection by Guice.
- * 
+ *
  * @author CWDS API Team
  */
 public class ResourcesModule extends AbstractModule {
@@ -186,7 +186,6 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
-    bind(RelationshipFacade.class);
     bind(IntakeLovResource.class);
     LOGGER.info("configure: done");
   }
@@ -549,5 +548,4 @@ public class ResourcesModule extends AbstractModule {
     return new TypedServiceBackedResourceDelegate<>(
         injector.getInstance(ContactIntakeApiService.class));
   }
-
 }
