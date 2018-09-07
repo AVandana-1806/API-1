@@ -66,7 +66,7 @@ public class IntakeLovResource {
    * @return web service response
    */
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
-      readOnly = true, transactional = true)
+      readOnly = true, transactional = false)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
@@ -76,15 +76,14 @@ public class IntakeLovResource {
   public Response getAll() {
     Response ret;
     try {
-      List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAll();
-      List<IntakeLovEntry> intakeLovEntries = new ArrayList<>();
+      final List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAll();
+      final List<IntakeLovEntry> intakeLovEntries = new ArrayList<>(intakeLovs.size());
       for (IntakeLov lov : intakeLovs) {
-        IntakeLovEntry intakeLovEntry = new IntakeLovEntry(lov);
-        intakeLovEntries.add(intakeLovEntry);
+        intakeLovEntries.add(new IntakeLovEntry(lov));
       }
 
-      IntakeLovResponse intakeLovResponse = new IntakeLovResponse(intakeLovEntries);
-      ret = Response.status(Response.Status.OK).entity(intakeLovResponse).build();
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(intakeLovEntries))
+          .build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
       throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);

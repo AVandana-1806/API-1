@@ -317,7 +317,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.info("******** CandaceSessionFactoryImpl.close ********");
+    LOGGER.info("close");
     local.set(null);
     pick().close();
     CaresStackUtils.logStack();

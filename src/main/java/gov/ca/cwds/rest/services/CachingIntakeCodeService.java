@@ -14,24 +14,23 @@ import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 
 /**
- * Intake code cache Implementation
+ * Intake code cache implementation.
  * 
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("squid:S2160")
 public class CachingIntakeCodeService implements IntakeCodeCache {
+
+  private static final long serialVersionUID = 1L;
 
   private transient List<IntakeLov> intakeLovs = new ArrayList<>();
   private transient Map<Short, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
   private transient Map<String, List<IntakeLov>> mapByMeta = new TreeMap<>();
 
-  private static final long serialVersionUID = 1L;
-
   /**
    * Construct the object.
    * 
-   * @param intakeLovDao Intake Lov Dao
+   * @param intakeLovDao Intake LOV Dao
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao) {
@@ -42,12 +41,12 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
 
     for (IntakeLov intakeLov : this.intakeLovs) {
-      Long sysCodeId = intakeLov.getLegacySystemCodeId();
-      String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
+      final Long sysCodeId = intakeLov.getLegacySystemCodeId();
+      final String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
 
       // populate mapBySystemCodeId map
       if (sysCodeId != null) {
-        Short sysCodeIdShort = sysCodeId.shortValue();
+        final Short sysCodeIdShort = sysCodeId.shortValue();
         List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeIdShort);
         if (lovsForSysCode == null) {
           lovsForSysCode = new ArrayList<>();
@@ -85,7 +84,7 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public Short getLegacySystemCodeForIntakeCode(String metaId, String intakeCode) {
     Short sysCodeId = null;
 
-    List<IntakeLov> intakeLovs = getAllLegacySystemCodesForMeta(metaId);
+    final List<IntakeLov> intakeLovs = getAllLegacySystemCodesForMeta(metaId);
     for (IntakeLov lov : intakeLovs) {
       if (StringUtils.equalsIgnoreCase(intakeCode, lov.getIntakeCode())) {
         sysCodeId = lov.getLegacySystemCodeId().shortValue();
@@ -126,4 +125,5 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public long getCacheSize() {
     return this.intakeLovs.size();
   }
+
 }

@@ -1,6 +1,21 @@
 package gov.ca.cwds.rest.services;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.PersistenceException;
+import javax.validation.Validator;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.cms.CaseDao;
 import gov.ca.cwds.data.cms.ReferralClientDao;
@@ -46,17 +61,6 @@ import gov.ca.cwds.rest.services.cms.ReferralClientService;
 import gov.ca.cwds.rest.services.cms.ReporterService;
 import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
 import gov.ca.cwds.rest.validation.ParticipantValidator;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.PersistenceException;
-import javax.validation.Validator;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Business layer object to work on {@link Address}
@@ -186,7 +190,7 @@ public class ParticipantService implements CrudsService {
     for (String role : roles) {
       boolean isRegularReporter = ParticipantValidator.roleIsReporterType(role)
           && (!ParticipantValidator.roleIsAnonymousReporter(role)
-          && !ParticipantValidator.selfReported(incomingParticipant));
+              && !ParticipantValidator.selfReported(incomingParticipant));
       if (isRegularReporter) {
         saveRegularReporter(screeningToReferral, referralId, messageBuilder, incomingParticipant,
             role);
@@ -481,7 +485,7 @@ public class ParticipantService implements CrudsService {
       messageBuilder.addDomainValidationError(validator.validate(childClient));
       exsistingChild = this.childClientService.create(childClient);
     }
-    
+
     if (csecReportType && isValidCsecs(csecs, messageBuilder)) {
       saveOrUpdateCsec(clientId, csecs, messageBuilder);
       // create a special project for this referral
@@ -538,13 +542,13 @@ public class ParticipantService implements CrudsService {
   private void saveOrUpdateCsec(String clientId, List<Csec> csecs, MessageBuilder messageBuilder) {
     List<CsecHistory> csecHistories = new ArrayList<>();
     for (Csec csec : csecs) {
-      String csecCodeId = csec.getCsecCodeId();
+      final String csecCodeId = csec.getCsecCodeId();
       if (csecCodeId == null) {
         messageBuilder.addError("There is no CSEC code id provided for client with id: " + clientId,
             ErrorMessage.ErrorType.VALIDATION);
       } else {
         Short csecLegacyId = Short.valueOf(csecCodeId);
-        
+
         SexualExploitationType sexualExploitationType = null;
         if (csecLegacyId == null) {
           messageBuilder.addError("LOV code is not found for CSEC code id: " + csecCodeId,
@@ -557,7 +561,7 @@ public class ParticipantService implements CrudsService {
               "Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC",
               ErrorMessage.ErrorType.VALIDATION);
         } else {
-          CsecHistory csecHistory = new CsecHistory();
+          final CsecHistory csecHistory = new CsecHistory();
           csecHistory.setSexualExploitationType(sexualExploitationType);
           csecHistory.setChildClient(clientId);
           csecHistory.setStartDate(csec.getStartDate());
@@ -575,7 +579,6 @@ public class ParticipantService implements CrudsService {
    */
   private Participant processClientAddress(Participant clientParticipant, String referralId,
       String clientId, MessageBuilder messageBuilder) {
-
     return clientAddressService.saveClientAddress(clientParticipant, referralId, clientId,
         messageBuilder);
   }
@@ -621,11 +624,9 @@ public class ParticipantService implements CrudsService {
 
   private void executeR04466ClientSensitivityIndicator(Client client,
       ScreeningToReferral screeningToReferral) {
-    R04466ClientSensitivityIndicator r04466ClientSensitivityIndicator =
-        new R04466ClientSensitivityIndicator(client,
-            LimitedAccessType.getByValue(screeningToReferral.getLimitedAccessCode()), caseDao,
-            referralClientDao);
-    r04466ClientSensitivityIndicator.execute();
+    new R04466ClientSensitivityIndicator(client,
+        LimitedAccessType.getByValue(screeningToReferral.getLimitedAccessCode()), caseDao,
+        referralClientDao).execute();
   }
 
   void setCsecHistoryService(CsecHistoryService csecHistoryService) {

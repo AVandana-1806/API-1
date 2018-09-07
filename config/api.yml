@@ -41,6 +41,7 @@ nsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.temp.use_jdbc_metadata_defaults: false
       hibernate.connection.isolation: 2
+      connection.logAbandoned: true
 
 cmsDataSourceFactory:
   autoCommitByDefault: false
@@ -116,10 +117,10 @@ xaCmsDataSourceFactory:
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: after_transaction
-      connection.release_mode: after_transaction
       hibernate.connection.isolation: 2
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.release_mode: after_transaction
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider

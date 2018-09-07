@@ -13,7 +13,7 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.std.ApiObjectIdentity;
 
 /**
- * {@link NsPersistentObject} representing a Person.
+ * {@link NsPersistentObject} representing a list-of-values (LOV) entry.
  * 
  * @author CWDS API Team
  */
