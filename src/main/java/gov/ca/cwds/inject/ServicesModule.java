@@ -1,5 +1,9 @@
 package gov.ca.cwds.inject;
 
+import com.google.inject.Scope;
+import com.google.inject.Singleton;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -206,6 +210,7 @@ public class ServicesModule extends AbstractModule {
     bind(StaffPersonService.class);
     bind(TickleService.class);
     bind(DroolsService.class);
+    bind(RelationshipFacade.class).to(RelationshipFacadeLegacyAndNewDB.class);
 
     LOGGER.info("configure: point 2");
 
