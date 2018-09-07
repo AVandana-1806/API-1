@@ -81,6 +81,7 @@ public class ParticipantService implements CrudsService {
   private ChildClientService childClientService;
   private ClientAddressService clientAddressService;
   private ClientScpEthnicityService clientScpEthnicityService;
+
   private CaseDao caseDao;
   private ReferralClientDao referralClientDao;
 
@@ -163,7 +164,7 @@ public class ParticipantService implements CrudsService {
     Set<Participant> participants = screeningToReferral.getParticipants();
     for (Participant incomingParticipant : participants) {
       if (!ParticipantValidator.hasValidRoles(incomingParticipant)) {
-        String message = " Participant contains incompatible roles ";
+        final String message = " Participant contains incompatible roles ";
         messageBuilder.addMessageAndLog(message, LOGGER);
         // next participant
         continue;
@@ -188,7 +189,7 @@ public class ParticipantService implements CrudsService {
      * process the roles of this participant
      */
     for (String role : roles) {
-      boolean isRegularReporter = ParticipantValidator.roleIsReporterType(role)
+      final boolean isRegularReporter = ParticipantValidator.roleIsReporterType(role)
           && (!ParticipantValidator.roleIsAnonymousReporter(role)
               && !ParticipantValidator.selfReported(incomingParticipant));
       if (isRegularReporter) {
@@ -232,7 +233,7 @@ public class ParticipantService implements CrudsService {
       processReferralClient(screeningToReferral, referralId, messageBuilder, incomingParticipant,
           clientId, dateStarted);
     } catch (ServiceException e) {
-      String message = "Error saving client: " + e.getMessage();
+      final String message = "Error saving client: " + e.getMessage();
       messageBuilder.addMessageAndLog(message, e, LOGGER, ErrorType.DATA_ACCESS);
       // next role
     }
@@ -261,8 +262,7 @@ public class ParticipantService implements CrudsService {
       // addresses associated with a client
       processClientAddress(incomingParticipant, referralId, clientId, messageBuilder);
     } catch (ServiceException e) {
-      String message = e.getMessage();
-      messageBuilder.addMessageAndLog(message, e, LOGGER);
+      messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
       // next role
     }
   }
@@ -278,16 +278,14 @@ public class ParticipantService implements CrudsService {
      * reporter or self-reported
      */
     try {
-      Reporter savedReporter = saveReporter(incomingParticipant, role, referralId,
+      final Reporter savedReporter = saveReporter(incomingParticipant, role, referralId,
           screeningToReferral.getIncidentCounty(), messageBuilder);
       incomingParticipant.setLegacyDescriptor(new LegacyDescriptor(savedReporter.getReferralId(),
           null, savedReporter.getLastUpdatedTime(), LegacyTable.REPORTER.getName(),
           LegacyTable.REPORTER.getDescription()));
     } catch (ServiceException e) {
-      String message = e.getMessage();
-      messageBuilder.addMessageAndLog(message, e, LOGGER);
-      // next role
-      return true;
+      messageBuilder.addMessageAndLog(e.getMessage(), e, LOGGER);
+      return true; // next role
     }
     return false;
   }
@@ -335,7 +333,7 @@ public class ParticipantService implements CrudsService {
 
   private void updateClientIfItExistsInLegacy(ScreeningToReferral screeningToReferral,
       MessageBuilder messageBuilder, Participant incomingParticipant, String clientId) {
-    Client foundClient = this.clientService.find(clientId);
+    final Client foundClient = this.clientService.find(clientId);
     if (foundClient != null) {
       try {
         updateClient(screeningToReferral, messageBuilder, incomingParticipant, foundClient);
@@ -383,7 +381,7 @@ public class ParticipantService implements CrudsService {
 
       update(messageBuilder, incomingParticipant, foundClient, otherRaceCodes);
     } else {
-      String message = String.format(
+      final String message = String.format(
           "Unable to update client %s %s. Client has been modified by another process.",
           incomingParticipant.getFirstName(), incomingParticipant.getLastName());
       messageBuilder.addMessageAndLog(message, LOGGER);
@@ -398,7 +396,7 @@ public class ParticipantService implements CrudsService {
 
   private void update(MessageBuilder messageBuilder, Participant incomingParticipant,
       Client foundClient, List<Short> otherRaceCodes) {
-    Client savedClient =
+    final Client savedClient =
         this.clientService.update(incomingParticipant.getLegacyDescriptor().getId(), foundClient);
     clientScpEthnicityService.createOtherEthnicity(foundClient.getExistingClientId(),
         otherRaceCodes);
@@ -413,13 +411,13 @@ public class ParticipantService implements CrudsService {
       MessageBuilder messageBuilder, Participant incomingParticipant, String sexAtBirth) {
     String clientId;
 
-    List<Short> allRaceCodes = getAllRaceCodes(incomingParticipant.getRaceAndEthnicity());
-    Short primaryRaceCode = getPrimaryRaceCode(allRaceCodes);
-    List<Short> otherRaceCodes = getOtherRaceCodes(allRaceCodes, primaryRaceCode);
-    boolean childClientIndicatorVar =
+    final List<Short> allRaceCodes = getAllRaceCodes(incomingParticipant.getRaceAndEthnicity());
+    final Short primaryRaceCode = getPrimaryRaceCode(allRaceCodes);
+    final List<Short> otherRaceCodes = getOtherRaceCodes(allRaceCodes, primaryRaceCode);
+    final boolean childClientIndicatorVar =
         new R02265ChildClientExists(incomingParticipant, dateStarted).isValid();
 
-    Client client = Client.createWithDefaults(incomingParticipant, dateStarted, sexAtBirth,
+    final Client client = Client.createWithDefaults(incomingParticipant, dateStarted, sexAtBirth,
         primaryRaceCode, childClientIndicatorVar);
 
     /*
@@ -429,7 +427,7 @@ public class ParticipantService implements CrudsService {
 
     messageBuilder.addDomainValidationError(validator.validate(client));
     try {
-      PostedClient postedClient = this.clientService.create(client);
+      final PostedClient postedClient = this.clientService.create(client);
       clientId = postedClient.getId();
       incomingParticipant.setLegacyDescriptor(
           new LegacyDescriptor(clientId, null, postedClient.getLastUpdatedTime(),
@@ -446,7 +444,7 @@ public class ParticipantService implements CrudsService {
     gov.ca.cwds.rest.api.domain.Address reporterAddress = null;
 
     if (ip.getAddresses() != null) {
-      Set<gov.ca.cwds.rest.api.domain.Address> addresses = new HashSet<>(ip.getAddresses());
+      final Set<gov.ca.cwds.rest.api.domain.Address> addresses = new HashSet<>(ip.getAddresses());
 
       for (gov.ca.cwds.rest.api.domain.Address address : addresses) {
         if (address != null) {
@@ -457,10 +455,10 @@ public class ParticipantService implements CrudsService {
       }
     }
 
-    Boolean mandatedReporterIndicator = ParticipantValidator.roleIsMandatedReporter(role);
+    final Boolean mandatedReporterIndicator = ParticipantValidator.roleIsMandatedReporter(role);
     Reporter theReporter = reporterService.find(referralId);
     if (theReporter == null) {
-      Reporter reporter = Reporter.createWithDefaults(referralId, mandatedReporterIndicator,
+      final Reporter reporter = Reporter.createWithDefaults(referralId, mandatedReporterIndicator,
           reporterAddress, ip, countySpecificCode);
 
       messageBuilder.addDomainValidationError(validator.validate(reporter));
@@ -474,13 +472,13 @@ public class ParticipantService implements CrudsService {
       SafelySurrenderedBabies ssb, ScreeningToReferral screeningToReferral) {
     ChildClient exsistingChild = this.childClientService.find(clientId);
 
-    boolean ssbReportType =
+    final boolean ssbReportType =
         FerbConstants.ReportType.SSB.equals(screeningToReferral.getReportType());
-    boolean csecReportType =
+    final boolean csecReportType =
         FerbConstants.ReportType.CSEC.equals(screeningToReferral.getReportType());
 
     if (exsistingChild == null) {
-      ChildClient childClient = ChildClient.createWithDefaults(clientId);
+      final ChildClient childClient = ChildClient.createWithDefaults(clientId);
       childClient.setSafelySurrendedBabiesIndicatorVar(ssbReportType);
       messageBuilder.addDomainValidationError(validator.validate(childClient));
       exsistingChild = this.childClientService.create(childClient);
@@ -514,7 +512,7 @@ public class ParticipantService implements CrudsService {
       }
     }
 
-    List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAllLegacySystemCodesForMeta(
+    final List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAllLegacySystemCodesForMeta(
         SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
     for (IntakeLov intakeLov : intakeLovs) {
       if (csecs.stream().filter(c -> intakeLov.getIntakeCode().equals(c.getCsecCodeId()))
@@ -540,16 +538,16 @@ public class ParticipantService implements CrudsService {
   }
 
   private void saveOrUpdateCsec(String clientId, List<Csec> csecs, MessageBuilder messageBuilder) {
-    List<CsecHistory> csecHistories = new ArrayList<>();
+    final List<CsecHistory> csecHistories = new ArrayList<>();
     for (Csec csec : csecs) {
       final String csecCodeId = csec.getCsecCodeId();
       if (csecCodeId == null) {
         messageBuilder.addError("There is no CSEC code id provided for client with id: " + clientId,
             ErrorMessage.ErrorType.VALIDATION);
       } else {
-        Short csecLegacyId = Short.valueOf(csecCodeId);
-
+        final Short csecLegacyId = Short.valueOf(csecCodeId);
         SexualExploitationType sexualExploitationType = null;
+
         if (csecLegacyId == null) {
           messageBuilder.addError("LOV code is not found for CSEC code id: " + csecCodeId,
               ErrorMessage.ErrorType.VALIDATION);
@@ -598,7 +596,7 @@ public class ParticipantService implements CrudsService {
   }
 
   private List<Short> getOtherRaceCodes(List<Short> allRaceCodes, Short primaryRaceCode) {
-    List<Short> otherRaceCodes = new ArrayList<>(allRaceCodes);
+    final List<Short> otherRaceCodes = new ArrayList<>(allRaceCodes);
     if (!otherRaceCodes.isEmpty()) {
       otherRaceCodes.remove(primaryRaceCode);
     }
@@ -606,15 +604,15 @@ public class ParticipantService implements CrudsService {
   }
 
   private List<Short> getAllRaceCodes(RaceAndEthnicity raceAndEthnicity) {
-    List<Short> allRaceCodes = new ArrayList<>();
+    final List<Short> allRaceCodes = new ArrayList<>();
 
     if (raceAndEthnicity != null) {
-      List<Short> raceCodes = raceAndEthnicity.getRaceCode();
+      final List<Short> raceCodes = raceAndEthnicity.getRaceCode();
       if (raceCodes != null) {
         allRaceCodes.addAll(raceCodes);
       }
 
-      List<Short> hispanicCodes = raceAndEthnicity.getHispanicCode();
+      final List<Short> hispanicCodes = raceAndEthnicity.getHispanicCode();
       if (hispanicCodes != null) {
         allRaceCodes.addAll(hispanicCodes);
       }
@@ -645,4 +643,5 @@ public class ParticipantService implements CrudsService {
       SpecialProjectReferralService specialProjectReferralService) {
     this.specialProjectReferralService = specialProjectReferralService;
   }
+
 }

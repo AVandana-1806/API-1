@@ -62,6 +62,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
+  // Core members.
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
   private SessionFactory xaSessionFactory;
@@ -86,6 +87,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.sessionFactoryName = makeSessionFactoryName(sessionFactoryName);
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
   }
 
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
@@ -95,6 +99,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.sessionFactoryName = makeSessionFactoryName(xaHibernateBundle.name());
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
+    init();
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
   }
 
   /**
@@ -123,7 +131,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   /**
    * Initialize once.
    */
-  protected synchronized void init() {
+  protected final synchronized void init() {
     if (normSessionFactory == null || xaSessionFactory == null) {
       this.normSessionFactory = hibernateBundle.getSessionFactory();
       this.xaSessionFactory = xaHibernateBundle.getSessionFactory();
@@ -204,14 +212,14 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     return pick().withOptions();
   }
 
+  //
   @Override
   public Session openSession() throws HibernateException {
     LOGGER.debug("openSession");
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource: {}, XA: {}",
+      LOGGER.info("openSession(): opening **NEW** session: datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = new CandaceSessionImpl(pick().openSession());
       local.set(session);
@@ -238,8 +246,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource: {}, is XA: {}",
+      LOGGER.info("getCurrentSession(): call openSession(): datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = openSession();
     }

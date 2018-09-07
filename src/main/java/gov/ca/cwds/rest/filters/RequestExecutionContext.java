@@ -115,15 +115,17 @@ public interface RequestExecutionContext {
   boolean isResourceReadOnly();
 
   /**
-   * Get the initiator's thread id.
+   * Get the initiator's thread id. Helps to distinguish HTTP requests from non-HTTP requests.
    * 
    * <p>
-   * Helps to distinguish HTTP requests from non-HTTP requests.
+   * If the current thread's id doesn't match the request context's thread id, then the request
+   * context was created for a different thread. Simple but useful metric to identify the owner of a
+   * lingering request or resource, like open database sessions.
    * </p>
    * 
    * @return the thread id
    */
-  long getInitiatorThreadId();
+  long getThreadId();
 
   /**
    * Refresh if created for another thread or user, which could happen for non-HTTP requests, such

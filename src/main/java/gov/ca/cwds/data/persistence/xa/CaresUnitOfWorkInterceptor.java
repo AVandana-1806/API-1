@@ -79,14 +79,14 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
   @Override
   public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
     final Method m = mi.getMethod();
-    final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
+    LOGGER.info("@UnitOfWork interceptor: class: {}, method: {}", m.getDeclaringClass(),
         m.getName());
 
     // If already in an XA transaction, skip this @UnitOfWork.
-    if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-      LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
-          m.getDeclaringClass(), m.getName());
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    if (ctx != null && ctx.isXaTransaction()) {
+      LOGGER.debug("XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}", m.getDeclaringClass(),
+          m.getName());
       return mi.proceed();
     }
 
@@ -114,16 +114,15 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         throw new IllegalStateException("UNKNOWN DATASOURCE! " + annotation.value());
     }
 
-    LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
-
     // Does this request already have an aspect for this session factory?
+    LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
     UnitOfWorkAspect aspect = null;
     boolean firstUnitOfWork = false;
-
     boolean barfed = false;
+
     try {
       if (requestAspects.get().containsKey(name)) {
-        LOGGER.debug("RE-USE @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+        LOGGER.debug("Re-use @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
             m.getDeclaringClass(), m.getName(), name);
         aspect = requestAspects.get().get(name);
       } else {
@@ -163,7 +162,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
       aspect.onError();
       throw e;
     } finally {
-      LOGGER.debug("Unit of work finished");
+      LOGGER.info("@UnitOfWork interceptor finished");
       if (barfed || firstUnitOfWork) {
         aspect.onFinish();
         resetRequest();

@@ -85,16 +85,8 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
    */
   @Override
   public String getUserId() {
-    String userId = null;
-    PerryUserIdentity userIdentity = (PerryUserIdentity) get(Parameter.USER_IDENTITY);
-    if (userIdentity == null) {
-      userIdentity = DEFAULT_IDENTITY;
-    }
-
-    if (userIdentity != null) {
-      userId = userIdentity.getUser();
-    }
-    return userId;
+    final PerryUserIdentity userIdentity = (PerryUserIdentity) get(Parameter.USER_IDENTITY);
+    return userIdentity != null ? userIdentity.getUser() : DEFAULT_IDENTITY.getUser();
   }
 
   /**
@@ -104,13 +96,8 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
    */
   @Override
   public String getStaffId() {
-    String staffId = null;
     final PerryUserIdentity userIdentity = getUserIdentity();
-
-    if (userIdentity != null) {
-      staffId = userIdentity.getStaffId();
-    }
-    return staffId;
+    return userIdentity != null ? userIdentity.getStaffId() : null;
   }
 
   @Override
@@ -151,7 +138,7 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
   }
 
   @Override
-  public long getInitiatorThreadId() {
+  public long getThreadId() {
     final Long ret = (Long) get(Parameter.THREAD_ID);
     return ret != null ? ret.longValue() : 0;
   }
