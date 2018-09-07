@@ -41,6 +41,25 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
   private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
 
   /**
+   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
+   * the filters package.
+   */
+  static void startRequest() {
+    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
+    if (userIdentity == null) {
+      userIdentity = DEFAULT_IDENTITY;
+    }
+    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
+  }
+
+  /**
+   * Perform cleanup after request completion.
+   */
+  static void stopRequest() {
+    RequestExecutionContextRegistry.remove();
+  }
+
+  /**
    * Private constructor
    * 
    * @param userIdentity User identity
@@ -143,23 +162,9 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
     return ret != null ? ret.longValue() : 0;
   }
 
-  /**
-   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
-   * the filters package.
-   */
-  static void startRequest() {
-    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
-    if (userIdentity == null) {
-      userIdentity = DEFAULT_IDENTITY;
-    }
-    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
-  }
-
-  /**
-   * Perform cleanup after request completion.
-   */
-  static void stopRequest() {
-    RequestExecutionContextRegistry.remove();
+  @Override
+  public String getRequestId() {
+    return null;
   }
 
 }

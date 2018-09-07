@@ -97,4 +97,9 @@ public class TestingRequestExecutionContext implements RequestExecutionContext {
     return 0;
   }
 
+  @Override
+  public String getRequestId() {
+    return null;
+  }
+
 }

@@ -3,18 +3,22 @@ package gov.ca.cwds.data.persistence.xa;
 import java.util.Date;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
+import gov.ca.cwds.data.std.ApiMarker;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- *
+ * Track when database session open or close.
  * 
  * @author CWDS API Team
  */
-public class CandaceSessionTracker {
+public class CandaceSessionTracker implements ApiMarker {
 
-  final long startTime = System.currentTimeMillis();
-  final long threadId = Thread.currentThread().getId();
-  final RequestExecutionContext ctx = RequestExecutionContext.instance();
+  private static final long serialVersionUID = 1L;
+
+  private final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+  private final long startTime = System.currentTimeMillis();
+  private final long threadId = Thread.currentThread().getId();
+  private final RequestExecutionContext ctx = RequestExecutionContext.instance();
 
   CandaceSessionTracker() {
     // no-op
@@ -45,7 +49,7 @@ public class CandaceSessionTracker {
   }
 
   public long getThreadId() {
-    return ctx.getThreadId();
+    return threadId;
   }
 
   public boolean thisThreadIsOwner() {
@@ -58,6 +62,10 @@ public class CandaceSessionTracker {
 
   public long getStartTime() {
     return startTime;
+  }
+
+  public StackTraceElement[] getStack() {
+    return stack.clone();
   }
 
 }

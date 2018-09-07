@@ -37,4 +37,20 @@ public class CaresStackUtils {
     }
   }
 
+  public static String stackToString() {
+    StringBuilder buf = new StringBuilder();
+    try {
+      final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+      Arrays.stream(stack, 0, stack.length - 1)
+          .filter(e -> e.getClassName().startsWith("gov.ca.cwds")
+              && !e.getClassName().startsWith("gov.ca.cwds.rest.filters")
+              && !e.getClassName().contains("$$"))
+          .forEach(e -> buf.append('\n').append(e));
+    } catch (Exception e) {
+      throw e;
+    }
+
+    return buf.toString();
+  }
+
 }
