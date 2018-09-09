@@ -219,8 +219,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.info("openSession(): opening **NEW** session: datasource: {}, XA: {}",
-          sessionFactoryName, isXaTransaction());
+      LOGGER.info("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
+          isXaTransaction());
       session = new CandaceSessionImpl(pick().openSession());
       local.set(session);
     }

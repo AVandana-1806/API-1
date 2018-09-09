@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManagerFactory;
@@ -63,13 +64,19 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
+  private static final Map<Integer, CandaceSessionTracker> outstanding = new ConcurrentHashMap<>();
+
   protected Session session;
+
+  protected CandaceSessionTracker tracker;
 
   protected transient CandaceTransactionImpl txn;
 
   public CandaceSessionImpl(Session session) {
     LOGGER.debug("CandaceSessionImpl.ctor");
     this.session = session;
+    this.tracker = new CandaceSessionTracker(session);
+    outstanding.put(tracker.getId(), tracker);
   }
 
   /**
@@ -128,6 +135,8 @@ public class CandaceSessionImpl implements Session {
     if (session != null) {
       session.close();
       session = null; // release session references
+      outstanding.remove(tracker.getId());
+      tracker = null;
     }
   }
 
@@ -234,7 +243,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.debug("***** CandaceSessionImpl.flush *****");
+    LOGGER.debug("flush()");
     logStack("flush");
     session.flush();
   }
@@ -965,6 +974,10 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
         resultClass);
     return session.createNativeQuery(sqlString, resultClass);
+  }
+
+  public static Map<Integer, CandaceSessionTracker> getOutstanding() {
+    return outstanding;
   }
 
 }

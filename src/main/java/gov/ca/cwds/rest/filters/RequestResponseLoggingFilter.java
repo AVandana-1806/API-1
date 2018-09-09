@@ -93,8 +93,7 @@ public class RequestResponseLoggingFilter implements Filter {
         LOGGER.error("Unable to handle request: {}", uniqueId, e);
         throw e;
       } finally {
-        loggingContext.close();
-        // TODO: remove MDC mappings from this thread.
+        loggingContext.close(); // clears MDC mappings
       }
     }
   }
