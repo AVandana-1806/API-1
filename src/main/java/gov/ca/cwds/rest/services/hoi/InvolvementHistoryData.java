@@ -1,12 +1,13 @@
 package gov.ca.cwds.rest.services.hoi;
 
-import gov.ca.cwds.rest.api.domain.hoi.HOICase;
-import gov.ca.cwds.rest.api.domain.hoi.HOIReferral;
-import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+
+import gov.ca.cwds.rest.api.domain.hoi.HOICase;
+import gov.ca.cwds.rest.api.domain.hoi.HOIReferral;
+import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 
 class InvolvementHistoryData {
 
@@ -60,4 +61,5 @@ class InvolvementHistoryData {
   void setHoiReferrals(List<HOIReferral> hoiReferrals) {
     this.hoiReferrals = hoiReferrals;
   }
+
 }

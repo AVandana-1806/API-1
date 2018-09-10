@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.hoi;
 
 import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.DS_NS;
 
 import java.util.ArrayList;
@@ -63,7 +64,10 @@ public class InvolvementHistoryService
     return findInvolvementHistory(new InvolvementHistoryData(clientIds));
   }
 
-  private InvolvementHistory findInvolvementHistory(InvolvementHistoryData ihd) {
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
+  @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
+  protected InvolvementHistory findInvolvementHistory(InvolvementHistoryData ihd) {
     loadDataFromNS(ihd);
     loadDataFromCMS(ihd);
     buildHoiScreenings(ihd);

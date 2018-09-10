@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.hoi;
 
 import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.DS_NS;
 
 import java.util.Collection;
@@ -79,9 +80,11 @@ public class HOIScreeningService
   }
 
   /**
-   * @param hoiRequest HOI Request containing a list of Client Id-s
+   * @param hoiRequest HOI Request containing a list of Client Id's
    * @return list of HOI Screenings
    */
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
   @Override
   public HOIScreeningResponse handleFind(HOIRequest hoiRequest) {
     final HOIScreeningData hoiScreeningData = new HOIScreeningData(hoiRequest.getClientIds());
@@ -96,6 +99,8 @@ public class HOIScreeningService
     fetchDataFromNS(hoiScreeningData);
   }
 
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   void fetchDataFromNS(HOIScreeningData hsd) {
     /*
      * NOTE: When we want to enable authorizations for screening history, we can add following line
@@ -152,6 +157,7 @@ public class HOIScreeningService
     hsd.setStaffPersonMap(staffPersonDao.findByIds(hsd.getAssigneeStaffIds()));
   }
 
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   Set<HOIScreening> buildHoiScreenings(HOIScreeningData hsd) {
     final Set<HOIScreening> screenings = new TreeSet<>(screeningsComparator);
     for (ScreeningEntity screeningEntity : hsd.getScreeningEntities()) {

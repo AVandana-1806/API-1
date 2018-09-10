@@ -1,17 +1,21 @@
 package gov.ca.cwds.rest.services;
 
+import static gov.ca.cwds.rest.core.Api.DS_NS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Intake code cache implementation.
@@ -27,6 +31,8 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   private transient Map<Short, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
   private transient Map<String, List<IntakeLov>> mapByMeta = new TreeMap<>();
 
+  private IntakeLovDao intakeLovDao;
+
   /**
    * Construct the object.
    * 
@@ -34,6 +40,11 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao) {
+    this.intakeLovDao = intakeLovDao;
+  }
+
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  protected final void init() {
     this.intakeLovs = intakeLovDao.findAll();
 
     if (this.intakeLovs == null) {
