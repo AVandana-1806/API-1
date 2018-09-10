@@ -79,13 +79,13 @@ public class IntakeLovResource {
   public Response getAll() {
     Response ret;
     try {
-      final List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAll();
-      final List<IntakeLovEntry> intakeLovEntries = new ArrayList<>(intakeLovs.size());
-      for (IntakeLov lov : intakeLovs) {
-        intakeLovEntries.add(new IntakeLovEntry(lov));
+      final List<IntakeLov> lovs = IntakeCodeCache.global().getAll();
+      final List<IntakeLovEntry> lovEntries = new ArrayList<>(lovs.size());
+      for (IntakeLov lov : lovs) {
+        lovEntries.add(new IntakeLovEntry(lov));
       }
 
-      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(intakeLovEntries))
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(lovEntries))
           .build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
