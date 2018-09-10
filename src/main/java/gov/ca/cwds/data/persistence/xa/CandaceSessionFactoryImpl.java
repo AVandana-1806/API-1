@@ -1,11 +1,16 @@
 package gov.ca.cwds.data.persistence.xa;
 
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.persistence.EntityGraph;
@@ -16,6 +21,7 @@ import javax.persistence.SynchronizationType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.EntityType;
 
+import org.apache.tomcat.jdbc.pool.jmx.ConnectionPoolMBean;
 import org.hibernate.Cache;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -72,6 +78,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
+  private transient ConnectionPoolMBean mbean;
 
   /**
    * Construct from session factories directly.
@@ -138,6 +145,24 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
       // Notify this instance when requests start or end.
       RequestExecutionContextRegistry.registerCallback(this);
+
+      // Enable JMX for Tomcat-JDBC connection pool.
+      try {
+        final String domain = "tomcat.jdbc";
+        final Hashtable<String, String> properties = new Hashtable<String, String>();
+        properties.put("type", "ConnectionPool");
+        properties.put("class", this.getClass().getName());
+
+        final ObjectName oname = new ObjectName(domain, properties);
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
+        mbean.checkAbandoned();
+        mbean.checkIdle();
+        mbean.isPoolSweeperEnabled();
+        mbean.isJmxEnabled();
+      } catch (Exception e) {
+        LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
+      }
     }
   }
 

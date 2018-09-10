@@ -133,10 +133,24 @@ public class CandaceSessionImpl implements Session {
   public void close() throws HibernateException {
     LOGGER.info("close");
     if (session != null) {
-      session.close();
-      session = null; // release session references
-      outstanding.remove(tracker.getId());
-      tracker = null;
+      final Transaction txn = session.getTransaction();
+      if (txn.isActive() && !txn.getRollbackOnly()) {
+        try {
+          txn.rollback();
+        } catch (Exception e) {
+          LOGGER.error("FAILED TO ROLLBACK ACTIVE TRANSACTION!", e);
+        }
+      }
+
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.error("FAILED TO CLOSE SESSION!", e);
+      } finally {
+        outstanding.remove(tracker.getId());
+        tracker = null;
+        session = null; // release session references
+      }
     }
   }
 
