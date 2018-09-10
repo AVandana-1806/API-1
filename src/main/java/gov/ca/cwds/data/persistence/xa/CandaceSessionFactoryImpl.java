@@ -16,7 +16,6 @@ import javax.persistence.SynchronizationType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.EntityType;
 
-import org.apache.tomcat.jdbc.pool.jmx.ConnectionPoolMBean;
 import org.hibernate.Cache;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -73,7 +72,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
-  private transient ConnectionPoolMBean mbean;
+  // private transient ConnectionPoolMBean mbean;
 
   /**
    * Construct from session factories directly.

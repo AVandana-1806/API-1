@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_NS;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,7 +71,7 @@ public class InvolvementHistoryService
         ihd.getHoiScreenings());
   }
 
-  @UnitOfWork(value = "ns", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromNS(InvolvementHistoryData ihd) {
     final HOIScreeningData hsd = ihd.getHoiScreeningData();
@@ -81,7 +84,7 @@ public class InvolvementHistoryService
     }
   }
 
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromCMS(InvolvementHistoryData ihd) {
     final HOIScreeningData hsd = ihd.getHoiScreeningData();

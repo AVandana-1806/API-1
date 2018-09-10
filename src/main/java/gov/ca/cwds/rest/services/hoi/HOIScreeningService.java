@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_NS;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -87,7 +90,7 @@ public class HOIScreeningService
     return new HOIScreeningResponse(buildHoiScreenings(hoiScreeningData));
   }
 
-  @UnitOfWork(value = "ns", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromNS(HOIScreeningData hoiScreeningData) {
     fetchDataFromNS(hoiScreeningData);
@@ -139,7 +142,7 @@ public class HOIScreeningService
     hsd.setAssigneeStaffIds(assigneeStaffIds);
   }
 
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromCMS(HOIScreeningData hoiScreeningData) {
     fetchDataFromCMS(hoiScreeningData);
