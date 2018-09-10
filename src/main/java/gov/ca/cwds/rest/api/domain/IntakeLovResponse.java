@@ -147,7 +147,7 @@ public class IntakeLovResponse implements Response, ApiMarker {
   }
 
   /**
-   * Setter for array of {@link IntakeLovEntry lovs}.
+   * Setter for array of {@link IntakeLovEntry LOV's}.
    * 
    * @param lovs LOV entries
    */

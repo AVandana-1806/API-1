@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.auth;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_AUTHORIZE;
 
 import javax.ws.rs.GET;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * A resource to determine if logged in staff person is authorized to access entities.
+ * A resource to determine if logged-in staff person is authorized to access entities.
  *
  * @author CWDS API Team
  */
@@ -50,7 +51,7 @@ public class AuthorizationResource {
    * @param id the id
    * @return the response
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DS_CMS_REP)
   @GET
   @Path("/client/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
