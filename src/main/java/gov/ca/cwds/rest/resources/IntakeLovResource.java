@@ -77,8 +77,8 @@ public class IntakeLovResource {
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
     } catch (Exception e) {
-      LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
-      throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);
+      LOGGER.error("FAILED TO SHOW OUTSTANDING DATABASE SESSIONS: {}", e.getMessage(), e);
+      throw new ApiException("FAILED TO SHOW OUTSTANDING DATABASE SESSIONS: " + e.getMessage(), e);
     }
 
     return ret;

@@ -9,6 +9,7 @@ import org.hibernate.Session;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
 import gov.ca.cwds.data.std.ApiObjectIdentity;
+import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
@@ -16,7 +17,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  * 
  * @author CWDS API Team
  */
-public class CandaceSessionTracker extends ApiObjectIdentity {
+public class CandaceSessionTracker extends ApiObjectIdentity implements Response {
 
   private static final long serialVersionUID = 1L;
 
