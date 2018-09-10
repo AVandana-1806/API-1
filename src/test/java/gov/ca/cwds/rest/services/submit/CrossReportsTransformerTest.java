@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.services.submit;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -48,7 +50,7 @@ public class CrossReportsTransformerTest {
     crossReportIntake.setLegacySourceTable("");
     crossReportIntake.setMethod("Electronic Report");
     crossReportIntake.setFiledOutOfState(false);
-    crossReportIntake.setInformDate("2017-03-15T00:00:00.000-0700");
+    crossReportIntake.setInformDate("2017-03-15T00:00:00.000Z");
     crossReportIntake.setAgencies(agencies);
     crossReportIntake.setCountyId("1101");
 
@@ -97,7 +99,7 @@ public class CrossReportsTransformerTest {
 
   @Test
   public void shouldTransformDate() {
-    crossReportIntake.setInformDate("2017-03-15T10:20:30.000-0700");
+    crossReportIntake.setInformDate("2017-03-15T10:20:30.000Z");
     Set<CrossReport> transformedSetOfCrossReports = new CrossReportsTransformer().transform(nsCrossReports);
 
     Iterator<CrossReport>  iter = transformedSetOfCrossReports.iterator();
