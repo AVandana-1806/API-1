@@ -46,16 +46,18 @@ public class ScreeningTransformerTest {
 
   private TestSystemCodeCache testSystemCodeCache = new TestSystemCodeCache();
 
+  private Set<CrossReport> crossReports;
+  private Set<Allegation> allegations;
+  private ScreeningToReferralResourceBuilder screeningBuilder;
+
   @Before
   public void setup() throws Exception {
     screening = new ScreeningResourceBuilder().build();
-  }
 
-  @Test
-  public void transformConvertsScreeningToScreeningToReferral() throws JsonProcessingException {
-    Set<CrossReport> crossReports = new HashSet<>();
-    Set<Allegation> allegations = new HashSet<>();
-    ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
+    crossReports = new HashSet<>();
+    allegations = new HashSet<>();
+
+    screeningBuilder = new ScreeningToReferralResourceBuilder()
         .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime((short) 1519).setScreeningDecisionDetail("evaluate_out")
@@ -63,8 +65,12 @@ public class ScreeningTransformerTest {
         .setAdditionalInformation("additional information")
         .setScreeningDecision("Screening Decision").setCurrentLocationOfChildren(null)
         .setParticipants(null).setCrossReports(crossReports).setAddress(null)
-        .setAllegations(allegations).setSafetyAlerts(null).setSafetyAlertInformationn(null)
-        .createScreeningToReferral();
+        .setAllegations(allegations).setSafetyAlerts(null).setSafetyAlertInformationn(null);
+  }
+
+  @Test
+  public void transformConvertsScreeningToScreeningToReferral() throws JsonProcessingException {
+    ScreeningToReferral expected = screeningBuilder.createScreeningToReferral();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
 
     assertEquals(actual, expected);
@@ -72,18 +78,7 @@ public class ScreeningTransformerTest {
 
   @Test
   public void transformConvertsScreeningToScreeningToReferralWhenCommunicationMethodNull() {
-    Set<CrossReport> crossReports = new HashSet<>();
-    Set<Allegation> allegations = new HashSet<>();
-    ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
-        .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
-        .setResponseTime((short) 1519).setScreeningDecisionDetail("evaluate_out")
-        .setLimitedAccessAgency("34").setLimitedAccessCode("N").setCommunicationMethod(null)
-        .setAdditionalInformation("additional information")
-        .setScreeningDecision("Screening Decision").setCurrentLocationOfChildren(null)
-        .setParticipants(null).setCrossReports(crossReports).setAddress(null)
-        .setAllegations(allegations).setSafetyAlerts(null).setSafetyAlertInformationn(null)
-        .createScreeningToReferral();
+    ScreeningToReferral expected = screeningBuilder.setCommunicationMethod(null).createScreeningToReferral();
     Screening screening = new ScreeningResourceBuilder().setCommunicationMethod("").build();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
 
@@ -92,18 +87,7 @@ public class ScreeningTransformerTest {
 
   @Test
   public void transformConvertsScreeningToScreeningToReferralWhenScreeningDecisionDetailBlank() {
-    Set<CrossReport> crossReports = new HashSet<>();
-    Set<Allegation> allegations = new HashSet<>();
-    ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
-        .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
-        .setResponseTime(null).setScreeningDecisionDetail("evaluate_out")
-        .setLimitedAccessAgency("34").setLimitedAccessCode("N").setCommunicationMethod((short) 408)
-        .setAdditionalInformation("additional information")
-        .setScreeningDecision("Screening Decision").setScreeningDecisionDetail("")
-        .setCurrentLocationOfChildren(null).setParticipants(null).setCrossReports(crossReports)
-        .setAddress(null).setAllegations(allegations).setSafetyAlerts(null)
-        .setSafetyAlertInformationn(null).createScreeningToReferral();
+    ScreeningToReferral expected = screeningBuilder.setResponseTime(null).setScreeningDecisionDetail("").createScreeningToReferral();
     Screening screening = new ScreeningResourceBuilder().setScreeningDecisionDetail("").build();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
 
@@ -119,21 +103,9 @@ public class ScreeningTransformerTest {
     Address address = new Address("ADDRESS_T", "1234567ABC", "742 Evergreen Terrace", "Springfield",
         1828, "93838", 28, legacyDescriptor);
 
-    Set<CrossReport> crossReports = new HashSet<>();
-    Set<Allegation> allegations = new HashSet<>();
-    ScreeningToReferral expected = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
-        .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
-        .setResponseTime((short) 1519).setScreeningDecisionDetail("evaluate_out")
-        .setLimitedAccessAgency("34").setLimitedAccessCode("N").setCommunicationMethod((short) 408)
-        .setAdditionalInformation("additional information")
-        .setScreeningDecision("Screening Decision").setCurrentLocationOfChildren(null)
-        .setParticipants(null).setCrossReports(crossReports).setAddress(address)
-        .setAllegations(allegations).setSafetyAlerts(null).setSafetyAlertInformationn(null)
-        .createScreeningToReferral();
+    ScreeningToReferral expected = screeningBuilder.setAddress(address).createScreeningToReferral();
     Screening screening = new ScreeningResourceBuilder().setIncidentAddress(nsAddress).build();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
     assertEquals(actual, expected);
   }
-
 }
