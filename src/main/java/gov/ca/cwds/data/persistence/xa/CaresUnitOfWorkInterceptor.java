@@ -131,7 +131,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         firstUnitOfWork = true;
 
         // Not XA, so clear XA flags.
-        BaseAuthorizationDao.clearXaMode();
+        BaseAuthorizationDao.setXaMode(true); // Don't mess with session management!
         RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
 
         aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
@@ -144,15 +144,18 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
       }
 
-      final Object result = mi.proceed();
+      final Object result = mi.proceed(); // Call the annotated method!
       final long totalCalls = incrementTotalCount(m);
       final long requestCalls = incrementRequestCount(m);
       LOGGER.info("@UnitOfWork interceptor: after  method: {}, total: {}, request: {}", m,
           totalCalls, requestCalls);
 
       if (firstUnitOfWork) {
+        LOGGER.info("@UnitOfWork interceptor: first annotation. Clean up.");
         provideHibernateStatistics(name, currentSessionFactory.getStatistics());
         aspect.afterEnd(); // commit
+      } else {
+        LOGGER.debug("@UnitOfWork interceptor: NOT first annotation. Move along.");
       }
 
       return result;

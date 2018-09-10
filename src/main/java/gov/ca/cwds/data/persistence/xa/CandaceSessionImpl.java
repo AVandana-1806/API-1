@@ -2,10 +2,10 @@ package gov.ca.cwds.data.persistence.xa;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManagerFactory;
@@ -81,11 +81,12 @@ public class CandaceSessionImpl implements Session {
   }
 
   public static List<CandaceSessionTracker> getOutstandingSessions() {
-    return new ArrayList<>(outstanding.values());
+    return outstanding.values().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId()))
+        .collect(Collectors.toList());
   }
 
   public static void printOutstandingSessions() {
-    outstanding.values().stream().forEach(s -> LOGGER.info("outstanding session: {}", s));
+    getOutstandingSessions().stream().forEach(s -> LOGGER.info("outstanding session: {}", s));
   }
 
   /**
