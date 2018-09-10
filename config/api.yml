@@ -41,7 +41,7 @@ nsDataSourceFactory:
       hibernate.connection.autocommit: false
       hibernate.temp.use_jdbc_metadata_defaults: false
       hibernate.connection.isolation: 2
-      connection.logAbandoned: true
+      # connection.logAbandoned: true
 
 cmsDataSourceFactory:
   autoCommitByDefault: false
@@ -64,7 +64,8 @@ cmsDataSourceFactory:
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 2
-      debugUnreturnedConnectionStackTraces: true
+      # connection.debugUnreturnedConnectionStackTraces: true
+      # connection.logAbandoned: true
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.current_session_context_class: thread
 
@@ -122,7 +123,7 @@ xaCmsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.release_mode: after_transaction
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
@@ -161,7 +162,7 @@ xaCmsRsDataSourceFactory:
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
@@ -201,7 +202,7 @@ xaNsDataSourceFactory:
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
