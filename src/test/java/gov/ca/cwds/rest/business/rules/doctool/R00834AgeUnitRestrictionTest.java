@@ -19,9 +19,6 @@ import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
  */
 public class R00834AgeUnitRestrictionTest {
 
-  /**
-   * 
-   */
   @Test
   public void TestClientDObisNull() {
     String dateStarted = "2018-05-14";
@@ -35,9 +32,6 @@ public class R00834AgeUnitRestrictionTest {
     assertThat(referralClient.getAgePeriodCode(), is(equalTo("")));
   }
 
-  /**
-   * 
-   */
   @Test
   public void TestWhenAgeAndAgeUnitSetYears() {
     String dateStarted = "2018-05-07";
@@ -52,9 +46,6 @@ public class R00834AgeUnitRestrictionTest {
     assertThat(referralClient.getAgePeriodCode(), is(equalTo("Y")));
   }
 
-  /**
-   * 
-   */
   @Test
   public void TestWhenAgeAndAgeUnitSetMonths() {
     String dateStarted = "2018-05-07";
@@ -69,9 +60,6 @@ public class R00834AgeUnitRestrictionTest {
     assertThat(referralClient.getAgePeriodCode(), is(equalTo("M")));
   }
 
-  /**
-   * 
-   */
   @Test
   public void TestWhenAgeAndAgeUnitSetWeeks() {
     String dateStarted = "2018-05-07";
@@ -86,9 +74,6 @@ public class R00834AgeUnitRestrictionTest {
     assertThat(referralClient.getAgePeriodCode(), is(equalTo("W")));
   }
 
-  /**
-   * 
-   */
   @Test
   public void TestWhenAgeAndAgeUnitSetDays() {
     String dateStarted = "2018-05-07";
@@ -100,6 +85,20 @@ public class R00834AgeUnitRestrictionTest {
         new R00834AgeUnitRestriction(client, referralClient, dateStarted);
     r00834AgeUnitRestriction.execute();
     assertThat(referralClient.getAgeNumber(), is(equalTo((short) 6)));
+    assertThat(referralClient.getAgePeriodCode(), is(equalTo("D")));
+  }
+
+  @Test
+  public void TestBirthDateIsTheSameAsDateStarted() {
+    String dateStarted = "2018-05-01";
+    Client client =
+        new ClientResourceBuilder().setBirthDate("2018-05-01").setEstimatedDobCode("N").build();
+    ReferralClient referralClient = new ReferralClientResourceBuilder().setAgeNumber(null)
+        .setAgePeriodCode(null).buildReferralClient();
+    R00834AgeUnitRestriction r00834AgeUnitRestriction =
+        new R00834AgeUnitRestriction(client, referralClient, dateStarted);
+    r00834AgeUnitRestriction.execute();
+    assertThat(referralClient.getAgeNumber(), is(equalTo((short) 0)));
     assertThat(referralClient.getAgePeriodCode(), is(equalTo("D")));
   }
 
