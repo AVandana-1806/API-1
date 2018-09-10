@@ -1,16 +1,11 @@
 package gov.ca.cwds.data.persistence.xa;
 
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.JMX;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.persistence.EntityGraph;
@@ -147,22 +142,22 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
       RequestExecutionContextRegistry.registerCallback(this);
 
       // Enable JMX for Tomcat-JDBC connection pool.
-      try {
-        final String domain = "tomcat.jdbc";
-        final Hashtable<String, String> properties = new Hashtable<String, String>();
-        properties.put("type", "ConnectionPool");
-        properties.put("class", ConnectionPoolMBean.class.getName());
-
-        final ObjectName oname = new ObjectName(domain, properties);
-        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
-        // mbean.checkAbandoned();
-        // mbean.checkIdle();
-        // mbean.isPoolSweeperEnabled();
-        // mbean.isJmxEnabled();
-      } catch (Exception e) {
-        LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
-      }
+      // try {
+      // final String domain = "tomcat.jdbc";
+      // final Hashtable<String, String> properties = new Hashtable<String, String>();
+      // properties.put("type", "ConnectionPool");
+      // properties.put("class", ConnectionPoolMBean.class.getName());
+      //
+      // final ObjectName oname = new ObjectName(domain, properties);
+      // final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+      // mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
+      // // mbean.checkAbandoned();
+      // // mbean.checkIdle();
+      // // mbean.isPoolSweeperEnabled();
+      // // mbean.isJmxEnabled();
+      // } catch (Exception e) {
+      // LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
+      // }
     }
   }
 
