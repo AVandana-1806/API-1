@@ -29,19 +29,27 @@ public class PingableServer implements Pingable {
 
   @Override
   public boolean ping() {
-    WebTarget webTarget = client.target(url);
-    Invocation.Builder invocationBuilder = webTarget.request(mediaType);
-    Response response = invocationBuilder.get();
+	Response response = null;
+	boolean ok = false;
+	
+	try {
+      WebTarget webTarget = client.target(url);
+      Invocation.Builder invocationBuilder = webTarget.request(mediaType);
+      response = invocationBuilder.get();
+      int status = response != null ? response.getStatus() : -1;
 
-    boolean ok = false;
-    int status = response != null ? response.getStatus() : -1;
-
-    if (acceptableResponse(status)) {
-      ok = true;
-      message = "Status is OK: " + status;
-    } else {
-      message = "Status: " + status + ", URL: " + url;
-    }
+      if (acceptableResponse(status)) {
+        ok = true;
+        message = "Status is OK: " + status;
+      } else {
+        message = "Status: " + status + ", URL: " + url;
+      }
+	} finally {
+	  if (response != null) {
+	    response.close();	    
+	  }
+	}
+        
     return ok;
   }
 
