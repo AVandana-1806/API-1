@@ -92,7 +92,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
 
     // Use CARES wrapped (Candace) session factories and related wrappers.
     final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-    final String name = annotation.value().trim();
+    final String name = annotation.value().trim().toLowerCase();
     SessionFactory currentSessionFactory;
     boolean isDb2 = false;
 
