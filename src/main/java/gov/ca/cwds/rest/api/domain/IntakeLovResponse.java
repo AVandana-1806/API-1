@@ -39,9 +39,6 @@ import io.swagger.annotations.ApiModel;
 // @JsonSerialize(using = IntakeLovResponse.IntakeLovSerializer.class)
 public class IntakeLovResponse implements Response, ApiMarker {
 
-  /**
-   * Base serialization version. Increment by class version.
-   */
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResponse.class);

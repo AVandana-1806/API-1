@@ -2,6 +2,7 @@ package gov.ca.cwds.data.persistence.xa;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,6 +78,14 @@ public class CandaceSessionImpl implements Session {
     this.session = session;
     this.tracker = new CandaceSessionTracker(session);
     outstanding.put(tracker.getId(), tracker);
+  }
+
+  public static List<CandaceSessionTracker> getOutstandingSessions() {
+    return new ArrayList<>(outstanding.values());
+  }
+
+  public static void printOutstandingSessions() {
+    outstanding.values().stream().forEach(s -> LOGGER.info("outstanding session: {}", s));
   }
 
   /**

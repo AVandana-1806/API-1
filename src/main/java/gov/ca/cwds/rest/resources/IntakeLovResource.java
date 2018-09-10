@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
@@ -62,6 +63,27 @@ public class IntakeLovResource {
     // Default
   }
 
+  @Path("/health")
+  @GET
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
+      @ApiResponse(code = 404, message = "Not found"),
+      @ApiResponse(code = 400, message = "Unable to parse parameters")})
+  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
+      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
+  public Response showDatabaseConnectionHealth() {
+    Response ret;
+    try {
+      CandaceSessionImpl.printOutstandingSessions();
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
+          .build();
+    } catch (Exception e) {
+      LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
+      throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);
+    }
+
+    return ret;
+  }
+
   /**
    * Endpoint for Intake LOV.
    * 
@@ -74,8 +96,8 @@ public class IntakeLovResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})
-  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
-      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
+  @ApiOperation(value = "Show Postgres LOV's", code = HttpStatus.SC_OK,
+      response = IntakeLovEntry[].class)
   public Response getAll() {
     Response ret;
     try {
@@ -85,8 +107,7 @@ public class IntakeLovResource {
         lovEntries.add(new IntakeLovEntry(lov));
       }
 
-      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(lovEntries))
-          .build();
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(lovEntries)).build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
       throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);

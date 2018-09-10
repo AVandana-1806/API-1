@@ -151,15 +151,15 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
         final String domain = "tomcat.jdbc";
         final Hashtable<String, String> properties = new Hashtable<String, String>();
         properties.put("type", "ConnectionPool");
-        properties.put("class", this.getClass().getName());
+        properties.put("class", ConnectionPoolMBean.class.getName());
 
         final ObjectName oname = new ObjectName(domain, properties);
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
-        mbean.checkAbandoned();
-        mbean.checkIdle();
-        mbean.isPoolSweeperEnabled();
-        mbean.isJmxEnabled();
+        // mbean.checkAbandoned();
+        // mbean.checkIdle();
+        // mbean.isPoolSweeperEnabled();
+        // mbean.isJmxEnabled();
       } catch (Exception e) {
         LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
       }
