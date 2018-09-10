@@ -104,8 +104,16 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
    */
   @Override
   public String getUserId() {
-    final PerryUserIdentity userIdentity = (PerryUserIdentity) get(Parameter.USER_IDENTITY);
-    return userIdentity != null ? userIdentity.getUser() : DEFAULT_IDENTITY.getUser();
+    String userId = null;
+    PerryUserIdentity userIdentity = (PerryUserIdentity) get(Parameter.USER_IDENTITY);
+    if (userIdentity == null) {
+      userIdentity = DEFAULT_IDENTITY;
+    }
+
+    if (userIdentity != null) {
+      userId = userIdentity.getUser();
+    }
+    return userId;
   }
 
   /**
