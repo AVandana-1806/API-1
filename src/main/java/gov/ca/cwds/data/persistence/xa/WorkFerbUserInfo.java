@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.PooledConnection;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
@@ -33,7 +35,6 @@ public class WorkFerbUserInfo implements Work {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkFerbUserInfo.class);
 
   public static final String PROGRAM_NAME = "Ferb";
-
   public static final String IP_ADDRESS;
   public static final String WORKSTATION;
 
@@ -54,30 +55,47 @@ public class WorkFerbUserInfo implements Work {
     }
   }
 
+  private boolean isDb2 = false;
+
+  public WorkFerbUserInfo() {
+    // no-op
+  }
+
+  public WorkFerbUserInfo(final boolean isDb2) {
+    this.isDb2 = isDb2;
+  }
+
   @Override
   public void execute(Connection con) throws SQLException {
+    LOGGER.info("execute: Connection class: {}", con.getClass().getName());
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
     final String staffId = ctx.getStaffId();
     final String userId = ctx.getUserId();
 
-    con.setAutoCommit(false);
-
-    if (con instanceof DB2Connection) {
+    if (isDb2 || con instanceof DB2Connection || (con instanceof PooledConnection
+        && ((PooledConnection) con).getConnection() instanceof DB2Connection)) {
       try {
-        // https://vsis-www.informatik.uni-hamburg.de/oldServer/teaching/ws-06.07/dbms/materialien/db2-manuals/db2aje90.pdf
-        // Properties start on page 232.
-        LOGGER.info("DB2 connection, set user info");
+        LOGGER.info("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
 
-        final DB2Connection db2con = (DB2Connection) con;
-        db2con.setDB2ClientAccountingInformation(userId);
-        db2con.setDB2ClientApplicationInformation(userId);
-        db2con.setDB2ClientUser(staffId);
+        // Unwrap pooled connections.
+        DB2Connection db2con;
+        if (con instanceof PooledConnection) {
+          db2con = (DB2Connection) ((PooledConnection) con).getConnection();
+        } else {
+          db2con = (DB2Connection) con;
+        }
+
+        // Yes, the DB2 methods are deprecated, but underlying properties *differ* by platform.
+        // These deprecated methods consistently set the right target property, regardless of
+        // platform.
+        db2con.setDB2ClientUser(userId);
+        db2con.setDB2ClientAccountingInformation(staffId);
+        db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
         db2con.setDB2ClientWorkstation(WORKSTATION);
 
-        if (CaresHibernateHackersKit.isDB2OnZOS(con)) {
-          db2con.setDB2ClientProgramId(PROGRAM_NAME);
-        }
+        // Verify that DB2 "special registers" for client user info are indeed set.
+        // Ronald Reagan: "Trust -- but verify."
 
         //@formatter:off
         final String sql = 
@@ -109,7 +127,8 @@ public class WorkFerbUserInfo implements Work {
             final String resultWorkstation =
                 StringUtils.trimToEmpty(rs.getString("CUR_WORKSTATION"));
 
-            LOGGER.info("client user: {}, application: {}, accounting: {}, workstation: {}",
+            LOGGER.info(
+                "client user: \"{}\", application: \"{}\", accounting: \"{}\", workstation: \"{}\"",
                 resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
           }
         } finally {

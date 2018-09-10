@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.investigation.contact;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -90,8 +91,8 @@ public class ReferralClientDeliveredService {
    */
   protected void addOnBehalfOfClients(String deliveredServiceId, String referralId,
       String countySpecificCode) {
-    ChildClient[] victimClients = childClientDao.findVictimClients(referralId);
-    if (victimClients != null && victimClients.length > 0) {
+    List<ChildClient> victimClients = childClientDao.findVictimClients(referralId);
+    if (victimClients != null && !victimClients.isEmpty()) {
       addReferralClientDeliveredServiceEntities(victimClients, deliveredServiceId, referralId,
           countySpecificCode);
     } else {
@@ -100,7 +101,7 @@ public class ReferralClientDeliveredService {
     }
   }
 
-  private void addReferralClientDeliveredServiceEntities(ChildClient[] victimClients,
+  private void addReferralClientDeliveredServiceEntities(List<ChildClient> victimClients,
       String deliveredServiceId, String referralId, String countySpecificCode) {
     for (ChildClient childClient : victimClients) {
       ReferralClientDeliveredServiceEntity referralClientDeliveredServiceEntity =
@@ -132,8 +133,8 @@ public class ReferralClientDeliveredService {
     ReferralClientDeliveredServiceEntity[] referralClientDeliveredServices =
         referralClientDeliveredServiceDao.findByReferralId(referralId);
 
-    ChildClient[] victimClients = childClientDao.findVictimClients(referralId);
-    if (victimClients != null && victimClients.length > 0) {
+    List<ChildClient> victimClients = childClientDao.findVictimClients(referralId);
+    if (victimClients != null && !victimClients.isEmpty()) {
       for (ChildClient childClient : victimClients) {
         if (notExistsReferralClientDeliveredServiceEntity(referralClientDeliveredServices,
             childClient.getPrimaryKey())) {

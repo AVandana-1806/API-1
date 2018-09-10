@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.builder.HttpRequestHandler;
@@ -75,6 +76,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
    * 
    */
   @Test
+  @Ignore("TEMP Causes table lock")
   public void return201SuccessForValidReferrals() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setName("return201SuccessForValidReferrals").setAssigneeStaffId(userInfo.getStaffId())

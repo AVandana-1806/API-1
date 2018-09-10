@@ -72,6 +72,13 @@ public class CandaceSessionImpl implements Session {
     this.session = session;
   }
 
+  /**
+   * Log the stack of method calls that brought us to this point. Shows who called what and in what
+   * order.
+   * 
+   * @param obj persistent object
+   * @param methodMsg calling method
+   */
   protected void logStack(Object obj, String methodMsg) {
     if (LOGGER.isTraceEnabled()) {
       if (obj instanceof PersistentObject) {
@@ -89,6 +96,11 @@ public class CandaceSessionImpl implements Session {
     logStack(null, methodMsg);
   }
 
+  /**
+   * Is this session currently participating in an XA distributed transaction?
+   * 
+   * @return true = in XA transaction
+   */
   public boolean isXaTransaction() {
     return CandaceSessionFactoryImpl.isXaTransaction();
   }
@@ -101,6 +113,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public String getTenantIdentifier() {
+    LOGGER.trace("getTenantIdentifier");
     return session.getTenantIdentifier();
   }
 
@@ -111,7 +124,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.info("CandaceSessionImpl.close");
+    LOGGER.info("close");
     if (session != null) {
       session.close();
       session = null; // release session references
@@ -192,6 +205,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Criteria createCriteria(Class persistentClass) {
+    LOGGER.debug("createCriteria: persistentClass: {}", persistentClass);
     return session.createCriteria(persistentClass);
   }
 
@@ -220,7 +234,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.warn("***** CandaceSessionImpl.flush *****");
+    LOGGER.debug("***** CandaceSessionImpl.flush *****");
     logStack("flush");
     session.flush();
   }
@@ -309,11 +323,13 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public SessionFactory getSessionFactory() {
+    LOGGER.debug("getSessionFactory()");
     return session.getSessionFactory();
   }
 
   @Override
   public void cancelQuery() throws HibernateException {
+    LOGGER.debug("cancelQuery()");
     session.cancelQuery();
   }
 
@@ -388,11 +404,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void lock(Object entity, LockModeType lockMode) {
-    session.lock(entity, lockMode);
-  }
-
-  @Override
   public <T> T load(Class<T> theClass, Serializable id) {
     return session.load(theClass, id);
   }
@@ -405,11 +416,6 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void load(Object object, Serializable id) {
     session.load(object, id);
-  }
-
-  @Override
-  public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-    session.lock(entity, lockMode, properties);
   }
 
   @Override
@@ -451,11 +457,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object entity, Map<String, Object> properties) {
-    session.refresh(entity, properties);
-  }
-
-  @Override
   public void update(Object object) {
     LOGGER.debug("update(Object)");
     logStack(object, "update(Object)");
@@ -470,8 +471,25 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public void refresh(Object entity, Map<String, Object> properties) {
+    session.refresh(entity, properties);
+  }
+
+  @Override
   public void refresh(Object entity, LockModeType lockMode) {
     session.refresh(entity, lockMode);
+  }
+
+  @Override
+  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+    session.refresh(entity, lockMode, properties);
+  }
+
+  @Override
+  public void refresh(Object object) {
+    LOGGER.trace("refresh(Object)");
+    logStack("refresh(Object)");
+    session.refresh(object);
   }
 
   @Override
@@ -499,11 +517,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-    session.refresh(entity, lockMode, properties);
-  }
-
-  @Override
   public void delete(Object object) {
     LOGGER.info("delete");
     session.delete(object);
@@ -514,6 +527,16 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("delete(String,Object): entityName: {}", entityName);
     logStack(object, "delete(String,Object)");
     session.delete(entityName, object);
+  }
+
+  @Override
+  public void lock(Object entity, LockModeType lockMode) {
+    session.lock(entity, lockMode);
+  }
+
+  @Override
+  public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+    session.lock(entity, lockMode, properties);
   }
 
   @Override
@@ -551,13 +574,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object object) {
-    LOGGER.debug("refresh(Object)");
-    logStack("refresh(Object)");
-    session.refresh(object);
-  }
-
-  @Override
   public void setProperty(String propertyName, Object value) {
     session.setProperty(propertyName, value);
   }
@@ -569,31 +585,37 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void refresh(String entityName, Object object) {
+    LOGGER.trace("refresh(String,Object)");
     session.refresh(entityName, object);
   }
 
   @Override
   public void refresh(Object object, LockMode lockMode) {
+    LOGGER.trace("refresh(Object,LockMode)");
     session.refresh(object, lockMode);
   }
 
   @Override
   public void refresh(Object object, LockOptions lockOptions) {
+    LOGGER.trace("refresh(Object,LockOptions)");
     session.refresh(object, lockOptions);
   }
 
   @Override
   public void refresh(String entityName, Object object, LockOptions lockOptions) {
+    LOGGER.trace("refresh(String,Object,LockOptions)");
     session.refresh(entityName, object, lockOptions);
   }
 
   @Override
   public LockMode getCurrentLockMode(Object object) {
+    LOGGER.trace("getCurrentLockMode()");
     return session.getCurrentLockMode(object);
   }
 
   @Override
   public Query createFilter(Object collection, String queryString) {
+    LOGGER.trace("createFilter()");
     return session.createFilter(collection, queryString);
   }
 
@@ -601,7 +623,12 @@ public class CandaceSessionImpl implements Session {
   public void clear() {
     LOGGER.debug("clear()");
     logStack("clear()");
-    session.clear();
+    if (session != null) {
+      final Transaction txn = session.getTransaction();
+      if (txn != null && txn.isActive()) {
+        session.clear();
+      }
+    }
   }
 
   @Override
@@ -659,12 +686,14 @@ public class CandaceSessionImpl implements Session {
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       Class... resultClasses) {
+    LOGGER.debug("createStoredProcedureQuery(String,Class...): procedureName: {}", procedureName);
     return session.createStoredProcedureQuery(procedureName, resultClasses);
   }
 
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       String... resultSetMappings) {
+    LOGGER.debug("createStoredProcedureQuery(String,String...): procedureName: {}", procedureName);
     return session.createStoredProcedureQuery(procedureName, resultSetMappings);
   }
 
@@ -807,11 +836,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void setReadOnly(Object entityOrProxy, boolean readOnly) {
-    session.setReadOnly(entityOrProxy, readOnly);
-  }
-
-  @Override
   public EntityGraph<?> getEntityGraph(String graphName) {
     LOGGER.trace("getEntityGraph(String): graphName: {}", graphName);
     return session.getEntityGraph(graphName);
@@ -821,6 +845,12 @@ public class CandaceSessionImpl implements Session {
   public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
     LOGGER.trace("getEntityGraphs(Class<T>): entityClass: {}", entityClass);
     return session.getEntityGraphs(entityClass);
+  }
+
+  @Override
+  public void setReadOnly(Object entityOrProxy, boolean readOnly) {
+    LOGGER.trace("setReadOnly(Object,boolean): readOnly: {}", readOnly);
+    session.setReadOnly(entityOrProxy, readOnly);
   }
 
   @Override
@@ -924,8 +954,8 @@ public class CandaceSessionImpl implements Session {
   }
 
   /*
-   * DRS: confusing and contradictory method signatures. After stripping types, method signature is
-   * the same as {@link EntityManager.createNativeQuery(String, Class)};
+   * DRS: confusing and contradictory method signatures. After stripping types, this method
+   * signature is the same as {@link EntityManager.createNativeQuery(String, Class)};
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */

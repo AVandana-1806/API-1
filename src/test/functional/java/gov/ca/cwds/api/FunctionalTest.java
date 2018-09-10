@@ -29,9 +29,9 @@ public class FunctionalTest {
 
   CwdsAuthenticationClientConfig config;
 
-  public String token;
+  public static String token;
 
-  public UserInfo userInfo;
+  public static UserInfo userInfo;
 
   /**
    * @throws FileNotFoundException - FileNotFoundException
@@ -47,7 +47,10 @@ public class FunctionalTest {
     token = login(configImpl, UserGroup.SOCIAL_WORKER);
     userInfo = getStaffpersonInfo(configImpl);
   }
-  
+
+  /**
+   * @param userGroup - userGroup
+   */
   public void loginUserGroup(UserGroup userGroup) {
     // login as a specified user required for the specific test
     ConfigImpl configImpl = new ConfigImpl();

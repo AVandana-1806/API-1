@@ -1,7 +1,9 @@
 package gov.ca.cwds.fixture.contacts;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import gov.ca.cwds.fixture.investigation.CmsRecordDescriptorEntityBuilder;
 import gov.ca.cwds.rest.api.domain.DomainChef;
@@ -23,14 +25,14 @@ public class ContactEntityBuilder {
   private Set<Integer> services = new HashSet<>();
   private Integer location = 415;
   private String note = "contact description";
-  private Set<IndividualDeliveredService> people = new HashSet<>();
+  private Map<String, IndividualDeliveredService> people = new HashMap<>();
   private CmsRecordDescriptor legacyDescriptor = new CmsRecordDescriptorEntityBuilder().build();
 
   private IndividualDeliveredService person = new IndividualDeliveredService(
       legacyDescriptor, "first", "middle", "last", "phd", "Mr", "teacher");
 
   public Contact build() {
-    people.add(person);
+    people.put("1", person);
     return new Contact(legacyDescriptor, lastUpdatedBy, startedAt, endedAt, purpose.toString(),
         communicationMetod.toString(), status, services, location.toString(), note, people);
   }

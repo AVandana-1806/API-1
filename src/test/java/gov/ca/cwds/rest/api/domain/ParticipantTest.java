@@ -69,6 +69,7 @@ public class ParticipantTest {
   private Set<Address> addresses = new HashSet<>();
   private LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
   private List<Csec> csecs = new ArrayList<>();
+  private SafelySurrenderedBabies safelySurrenderedBabies = new SafelySurrenderedBabies();
 
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
   private Validator validator;
@@ -146,7 +147,7 @@ public class ParticipantTest {
         firstName, middleName, lastName, suffix, gender, ssn, dateOfBirth, primaryLanguage,
         secondaryLanguage, screeningId, reporterConfidentialWaiver, reporterEmployerName,
         clientStaffPersonAdded, sensitivityIndicator, approximateAge, approximateAgeUnits, roles,
-        addresses, raceAndEthnicity, csecs);
+        addresses, raceAndEthnicity, csecs, safelySurrenderedBabies);
 
     assertThat(domain.getId(), is(equalTo(id)));
     assertThat(domain.getLegacySourceTable(), is(equalTo(legacySourceTable)));
@@ -171,6 +172,7 @@ public class ParticipantTest {
     assertThat(domain.getAddresses(), is(equalTo(addresses)));
     assertThat(domain.getRaceAndEthnicity(), is(equalTo(raceAndEthnicity)));
     assertThat(domain.getCsecs(), is(equalTo(csecs)));
+    assertThat(domain.getSafelySurrenderedBabies(), is(equalTo(safelySurrenderedBabies)));
   }
 
   @Test
@@ -375,7 +377,7 @@ public class ParticipantTest {
           firstName, middleName, lastName, suffix, gender, ssn, dateOfBirth, primaryLanguage,
           secondaryLanguage, screeningId, reporterConfidentialWaiver, reporterEmployerName,
           clientStaffPersonAdded, sensitivityIndicator, approximateAge, approximateAgeUnits, roles,
-          addresses, raceAndEthnicity, null);
+          addresses, raceAndEthnicity, null, null);
     } catch (Exception e) {
       e.printStackTrace();
     }

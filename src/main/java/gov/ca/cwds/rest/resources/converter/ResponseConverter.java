@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.resources.converter;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 public class ResponseConverter {
 
@@ -24,6 +25,18 @@ public class ResponseConverter {
   public Response withCreatedResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
     return javax.ws.rs.core.Response.status(Response.Status.CREATED).entity(serviceResponse)
         .build();
+  }
+
+  public Response withUpdatedResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
+    return serviceResponse != null ? javax.ws.rs.core.Response.status(Status.OK)
+        .entity(serviceResponse)
+        .build() : notFound();
+  }
+
+  public Response withCreatedResponse(List<gov.ca.cwds.rest.api.Response> serviceResponse) {
+    return serviceResponse != null ? javax.ws.rs.core.Response.status(Response.Status.CREATED)
+        .entity(serviceResponse)
+        .build() : notFound();
   }
 
   private Response notFound() {

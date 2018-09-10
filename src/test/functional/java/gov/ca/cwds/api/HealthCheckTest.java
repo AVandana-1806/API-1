@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,9 +29,9 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  public void testPerryIsAvailible() {
+  public void tesAuthIsAvailable() {
     given().queryParam("token", token).when().get(healthCheckPath).then()
-        .body("auth_status.healthy", equalTo(true));
+        .body("auth.healthy", equalTo(true));
   }
 
   /**
@@ -39,7 +40,7 @@ public class HealthCheckTest extends FunctionalTest {
   @Test
   public void testSwaggerIsAvailable() {
     given().queryParam("token", token).when().get(healthCheckPath).then()
-        .body("swagger_status.healthy", equalTo(true));
+        .body("swagger.healthy", equalTo(true));
   }
 
   /**
@@ -69,4 +70,35 @@ public class HealthCheckTest extends FunctionalTest {
         equalTo(true));
   }
 
+  @Test
+  public void testXsForNSConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_ns.healthy",
+        equalTo(true));
+  }
+  @Test
+  public void testXaForCmsRsConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms_rs.healthy",
+        equalTo(true));
+  }
+  @Test
+  public void testXaForCmsConnectionIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms.healthy",
+        equalTo(true));
+  }
+  @Test
+  @Ignore("Temp. Renable after lov instability is resolved")
+  public void testLOVIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("lov_db.healthy",
+        equalTo(true));
+  }
+  @Test
+  public void testDeadLocksIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("deadlocks.healthy",
+        equalTo(true));
+  }
+  @Test
+  public void testSystemCodeCacheIsOK() {
+    given().queryParam("token", token).when().get(healthCheckPath).then().body("system_code_cache.healthy",
+        equalTo(true));
+  }
 }

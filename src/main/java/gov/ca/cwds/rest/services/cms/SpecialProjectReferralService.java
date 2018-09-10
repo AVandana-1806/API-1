@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services.cms;
 
+import gov.ca.cwds.rest.exception.BusinessValidationException;
+import gov.ca.cwds.rest.exception.IssueDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,7 +54,7 @@ public class SpecialProjectReferralService implements
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SpecialProjectReferralService.class);
 
-  private static final String S_CESC_REFERRAL = "S-CESC Referral";
+  private static final String S_CSEC_REFERRAL = "S-CSEC Referral";
   private static final short MEDICAL_RECORD_SYSTEM_CODE_ID = 1331;
 
   @Inject
@@ -134,31 +136,30 @@ public class SpecialProjectReferralService implements
   /**
    * save CSEC Special Project Referral
    * 
-   * @param csecs - list of CSEC domain objects
    * @param referralId - referral ID
    * @param incidentCounty - county Code
+   * @param startDate - start date of screening
    * @param messageBuilder - message builder
    * 
    * @return PostedSpecialProjectReferral - posted Special Project Referral
    * 
    */
-  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(List<Csec> csecs,
-      String referralId, String incidentCounty, MessageBuilder messageBuilder) {
+  public gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral saveCsecSpecialProjectReferral(String referralId, 
+      String incidentCounty, String startDate, MessageBuilder messageBuilder) {
     
-    if (!validSpecialProjectReferral(csecs, incidentCounty, messageBuilder)) {
+    if (!validSpecialProjectReferral(incidentCounty, messageBuilder)) {
       return null;
     }
 
     short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
         LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
-    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);
+    String specialProjectId = findSpecialProjectId(S_CSEC_REFERRAL, governmentEntityType);
     
     try {
-      Csec csecDomain = csecs.get(0);
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
           new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(incidentCounty, referralId,
-              specialProjectId, DomainChef.cookLocalDate(csecDomain.getEndDate()),
-              DomainChef.cookLocalDate(csecDomain.getStartDate()), Boolean.FALSE);
+              specialProjectId, null,
+              startDate, Boolean.FALSE);
       messageBuilder.addDomainValidationError(validator.validate(sprDomain));
 
       if (!specialProjectReferralExists(referralId, specialProjectId)) {
@@ -173,12 +174,7 @@ public class SpecialProjectReferralService implements
     }
   }
   
-  private Boolean validSpecialProjectReferral(List<Csec> csecs, String incidentCounty, MessageBuilder messageBuilder) {
-    if (csecs.isEmpty()) {
-      String message = "CSEC data not sent or empty";
-      messageBuilder.addMessageAndLog(message, LOGGER);
-      return Boolean.FALSE;
-    }
+  private Boolean validSpecialProjectReferral(String incidentCounty, MessageBuilder messageBuilder) {
     short governmentEntityType = convertLogicalIdToSystemCodeFor(incidentCounty, 
         LegacyTable.GOVERNMENT_ORGANIZATION_ENTITY.getName());
     if (governmentEntityType == 0) {
@@ -187,10 +183,10 @@ public class SpecialProjectReferralService implements
       return Boolean.FALSE;
     }
  
-    String specialProjectId = findSpecialProjectId(S_CESC_REFERRAL, governmentEntityType);   
+    String specialProjectId = findSpecialProjectId(S_CSEC_REFERRAL, governmentEntityType);   
     if (StringUtils.isBlank(specialProjectId)) {
       String message = "Special Project does not exist for: " 
-        + S_CESC_REFERRAL + " " + governmentEntityType;
+        + S_CSEC_REFERRAL + " " + governmentEntityType;
       messageBuilder.addMessageAndLog(message, LOGGER);
       return Boolean.FALSE;
     }
@@ -294,8 +290,6 @@ public class SpecialProjectReferralService implements
     ssbEntity.setSurrenderedByName(ssb.getSurrenderedByName());
     ssbEntity.setSurrenderedDate(referralReceivedDate);
     ssbEntity.setSurrenderedTime(referralRecievedTime);
-    droolsService.performBusinessRules(createConfiguration(), ssbEntity);
-    safelySurrenderedBabiesDao.create(ssbEntity);
 
     /**
      * Create bracelet ID.
@@ -307,6 +301,14 @@ public class SpecialProjectReferralService implements
     braceltInfo.setLastUpdateTime(now);
     braceltInfo.setOtherId(ssb.getBraceletId());
     braceltInfo.setOtherIdCode(MEDICAL_RECORD_SYSTEM_CODE_ID);
+
+    Set<IssueDetails> detailsList =
+        droolsService.performBusinessRules(createConfiguration(), ssbEntity, braceltInfo);
+    if (!detailsList.isEmpty()) {
+      throw new BusinessValidationException(detailsList);
+    }
+
+    safelySurrenderedBabiesDao.create(ssbEntity);
     nonCWSNumberDao.create(braceltInfo);
   }
 
@@ -351,7 +353,7 @@ public class SpecialProjectReferralService implements
    * logical code and FKSMeta
    * 
    * @param logicalCode
-   * @param governmentEntityCode
+   * @param metaTableName
    * @return - sysId of the SystemCode
    */
   private short convertLogicalIdToSystemCodeFor(String logicalCode, String metaTableName) {

@@ -47,6 +47,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 import gov.ca.cwds.rest.core.Api;
+import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.resources.ScreeningToReferralResource;
 import io.dropwizard.jackson.Jackson;
@@ -93,6 +94,7 @@ public class ScreeningToReferralTest {
 
   @Before
   public void setup() {
+    new TestingRequestExecutionContext("0X5");
     messageBuilder = new MessageBuilder();
 
     MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);

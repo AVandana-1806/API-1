@@ -6,6 +6,13 @@
   "gender": "male",
   "ssn": "123456789",
   "date_of_birth": "1999-11-15",
+  "legacy_descriptor": {
+    "legacy_id": "9C7kKgc0CN",
+    "legacy_ui_id": "0522-3101-9120-2000767",
+    "legacy_last_updated": "1998-09-16T16:48:05.701-0700",
+    "legacy_table_name": "CLIENT_T",
+    "legacy_table_description": "Client"
+  },
   "roles": [],
   "addresses": [
     {
@@ -84,7 +91,7 @@
       "end_date": "2002-02-07"
     }
   ],
-      "safelySurenderedBabies": {
+      "safely_surrendered_babies": {
       "surrendered_by": "Unknown",
       "relation_to_child": "Parents",
       "bracelet_id": "1234",

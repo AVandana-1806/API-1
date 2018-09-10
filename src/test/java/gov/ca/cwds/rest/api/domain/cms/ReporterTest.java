@@ -222,7 +222,7 @@ public class ReporterTest {
         new LegacyDescriptor(), firstName, middleName, lastName, suffix, "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, approximateAge,
-        approximateAgeUnits, new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        approximateAgeUnits, new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     String countyCode = "countyCode";
     Short stateCode = new Short("0");
@@ -291,7 +291,7 @@ public class ReporterTest {
         new LegacyDescriptor(), firstName, middleName, lastName, "jr", "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, approximateAge,
-        approximateAgeUnits, new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        approximateAgeUnits, new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     String countyCode = "countyCode";
     Short stateCode = new Short("0");
@@ -342,7 +342,7 @@ public class ReporterTest {
         new LegacyDescriptor(), "firstName", "middleName", "lastName", "jr", "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, "12", "Y",
-        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     Reporter reporter =
         Reporter.createWithDefaults("referralId", true, address, participant, "countyCode");
@@ -366,7 +366,7 @@ public class ReporterTest {
         new LegacyDescriptor(), "firstName", "middleName", "lastName", "jr", "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, "12", "Y",
-        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     Reporter reporter =
         Reporter.createWithDefaults("referralId", true, address, participant, "countyCode");
@@ -389,7 +389,7 @@ public class ReporterTest {
         new LegacyDescriptor(), "firstName", "middleName", "lastName", "jr", "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, "12", "Y",
-        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     Reporter reporter =
         Reporter.createWithDefaults("referralId", true, address, participant, "countyCode");
@@ -413,7 +413,7 @@ public class ReporterTest {
         new LegacyDescriptor(), "firstName", "middleName", "lastName", "jr", "gender", "ssn",
         "date_of_birth", primaryLanguage, secondaryLanguage, 8L, reporterConfidentialWaiver,
         reporterEmployerName, clientStaffPersonAdded, sensitivityIndicator, "12", "Y",
-        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null);
+        new HashSet<>(), new HashSet<>(), raceAndEthnicity, null, null);
 
     Reporter reporter =
         Reporter.createWithDefaults("referralId", true, address, participant, "countyCode");

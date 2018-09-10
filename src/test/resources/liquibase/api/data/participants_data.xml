@@ -753,7 +753,7 @@
     </insert>
     <insert tableName="participants">
       <column name="id" value="2019"/>
-      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="date_of_birth" valueDate="2018-01-15"/>
       <column name="first_name" value="Alex4"/>
       <column name="gender" value="male"/>
       <column name="last_name" value="Pfeiffer"/>
@@ -772,7 +772,7 @@
     </insert>
     <insert tableName="participants">
       <column name="id" value="2020"/>
-      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="date_of_birth" valueDate="2018-08-08"/>
       <column name="first_name" value="Alex4"/>
       <column name="gender" value="male"/>
       <column name="last_name" value="Pfeiffer"/>

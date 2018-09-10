@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @JsonSnakeCase
 @SuppressWarnings({"common-java:DuplicatedBlocks"})
-public class SafelySurenderedBabiesIntakeApi extends DomainObject {
+public class SafelySurrenderedBabiesIntakeApi extends DomainObject {
 
   private static final long serialVersionUID = -5667060392833194010L;
 
@@ -26,12 +26,12 @@ public class SafelySurenderedBabiesIntakeApi extends DomainObject {
   private String surrenderedBy;
 
   @JsonProperty("relation_to_child")
-  @ApiModelProperty(required = false, readOnly = false, value = "", example = "1234",
-      notes = "The code for relationship")
+  @ApiModelProperty(example = "1592", notes = "The code for relationship")
   private String relationToChild;
 
   @JsonProperty("bracelet_id")
   @ApiModelProperty(example = "1234")
+  @Size(max = 10)
   private String braceletId;
 
   @JsonProperty("parent_guardian_given_bracelet_id")
@@ -58,92 +58,71 @@ public class SafelySurenderedBabiesIntakeApi extends DomainObject {
   @ApiModelProperty(example = "ABC12345")
   private String participantId;
 
-
-  public SafelySurenderedBabiesIntakeApi() {
+  public SafelySurrenderedBabiesIntakeApi() {
     // required by third party library
   }
-
 
   public String getSurrenderedBy() {
     return surrenderedBy;
   }
 
-
   public void setSurrenderedBy(String surrenderedBy) {
     this.surrenderedBy = surrenderedBy;
   }
-
 
   public String getRelationToChild() {
     return relationToChild;
   }
 
-
   public void setRelationToChild(String relationToChild) {
     this.relationToChild = relationToChild;
   }
-
 
   public String getBraceletId() {
     return braceletId;
   }
 
-
   public void setBraceletId(String braceletId) {
     this.braceletId = braceletId;
   }
-
-
 
   public String getParentGuardGivenBraceletId() {
     return parentGuardGivenBraceletId;
   }
 
-
   public void setParentGuardGivenBraceletId(String parentGuardGivenBraceletId) {
     this.parentGuardGivenBraceletId = parentGuardGivenBraceletId;
   }
-
 
   public String getParentGuardProvMedQuestion() {
     return parentGuardProvMedQuestion;
   }
 
-
   public void setParentGuardProvMedQuestion(String parentGuardProvMedQuestion) {
     this.parentGuardProvMedQuestion = parentGuardProvMedQuestion;
   }
-
 
   public LocalDate getMedQuestionaireReturnDate() {
     return medQuestionaireReturnDate;
   }
 
-
   public void setMedQuestionaireReturnDate(LocalDate medQuestionaireReturnDate) {
     this.medQuestionaireReturnDate = medQuestionaireReturnDate;
   }
-
 
   public String getComments() {
     return comments;
   }
 
-
   public void setComments(String comments) {
     this.comments = comments;
   }
-
 
   public String getParticipantId() {
     return participantId;
   }
 
-
   public void setParticipantId(String participantId) {
     this.participantId = participantId;
   }
-
-
-
 }

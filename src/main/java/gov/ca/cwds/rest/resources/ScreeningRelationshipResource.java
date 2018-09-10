@@ -105,13 +105,14 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY,
               message = "Unable to validate ScreeningRelationship"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
-  @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Update Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
   public Response update(
       @Valid @ApiParam(required = true) ScreeningRelationship screeningRelationship,
       @PathParam("id") @ApiParam(required = true,
           value = "The id of the Relationship to find") String id) {
-    return resourceDelegate.update(id, screeningRelationship);
+    return new ResponseConverter()
+        .withUpdatedResponse(relationshipFacade.updateRelationship(id, screeningRelationship));
   }
 
   /**
@@ -140,6 +141,7 @@ public class ScreeningRelationshipResource {
    * @param screeningRelationships The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
+  @UnitOfWork(value = "ns")
   @POST
   @Path("/batch")
   @Consumes(value = MediaType.APPLICATION_JSON)
@@ -155,7 +157,7 @@ public class ScreeningRelationshipResource {
   public Response batchCreate(@Valid @ApiParam(
       required = true) ScreeningRelationshipBase[] screeningRelationships) {
     return new ResponseConverter()
-        .withDataResponse(
+        .withCreatedResponse(
             relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
   }
 

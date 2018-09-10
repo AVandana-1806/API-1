@@ -40,6 +40,7 @@ public class CaresHibernateHackersKit {
    * @return the session's connection
    */
   public static Connection stealConnection(final Session session) {
+    clearSession(session);
     final CaresWorkConnectionStealer work = new CaresWorkConnectionStealer();
     doWork(session, work);
     return work.getConnection();
@@ -52,9 +53,13 @@ public class CaresHibernateHackersKit {
    * @param session active Hibernate session
    */
   public static void clearSession(final Session session) {
+    LOGGER.debug("clear()");
     try {
-      grabTransaction(session);
-      session.clear(); // Hibernate "duplicate object" bug
+      // grabTransaction(session);
+      final Transaction txn = session.getTransaction();
+      if (txn != null && txn.isActive()) {
+        session.clear(); // Hibernate "duplicate object" bug
+      }
     } catch (Exception e) {
       LOGGER.warn("'clear' without transaction", e);
     }
@@ -97,8 +102,8 @@ public class CaresHibernateHackersKit {
    * @param work Hibernate Work instance
    */
   public static void doWork(final Session session, Work work) {
-    clearSession(session);
     grabTransaction(session);
+    clearSession(session);
     session.doWork(work);
     clearSession(session);
   }
@@ -176,7 +181,7 @@ public class CaresHibernateHackersKit {
 
     try {
       final DatabaseMetaData meta = con.getMetaData();
-      LOGGER.debug("meta: product name: {}, production version: {}, major: {}, minor: {}",
+      LOGGER.info("meta: product name: {}, production version: {}, major: {}, minor: {}",
           meta.getDatabaseProductName(), meta.getDatabaseProductVersion(),
           meta.getDatabaseMajorVersion(), meta.getDatabaseMinorVersion());
 

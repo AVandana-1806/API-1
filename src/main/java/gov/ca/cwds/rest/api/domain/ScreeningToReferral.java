@@ -26,7 +26,7 @@ import gov.ca.cwds.rest.validation.Date;
 import gov.ca.cwds.rest.validation.ValidLogicalId;
 import gov.ca.cwds.rest.validation.ValidParticipantRoles;
 import gov.ca.cwds.rest.validation.ValidSystemCodeId;
-import gov.ca.cwds.rest.validation.ValidVictimBirth;
+import gov.ca.cwds.rest.validation.ValidParticipantBirth;
 import gov.ca.cwds.rest.validation.VictimAgeRestriction;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.dropwizard.validation.OneOf;
@@ -46,7 +46,7 @@ import io.swagger.annotations.ApiModelProperty;
     "alert_information", "address", "participants", "screeningRelationships", "cross_reports",
     "allegations", "report_type"})
 @VictimAgeRestriction
-@ValidVictimBirth
+@ValidParticipantBirth
 public class ScreeningToReferral extends ReportingDomain implements Request {
 
   private static final long serialVersionUID = 1L;

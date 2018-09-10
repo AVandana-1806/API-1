@@ -100,7 +100,7 @@ public class ReferralService implements
    */
   @Inject
   public ReferralService() {
-    //comment is required by sonar
+    // comment is required by sonar
   }
 
   /**
@@ -156,7 +156,6 @@ public class ReferralService implements
       Referral managed =
           new Referral(referralId, request, RequestExecutionContext.instance().getStaffId(),
               RequestExecutionContext.instance().getRequestStartTime());
-
       managed = referralDao.create(managed);
       if (managed == null || managed.getId() == null) {
         LOGGER.warn("Unable to save referral: {}", request);
@@ -582,7 +581,8 @@ public class ReferralService implements
     this.drmsDocumentService = drmsDocumentService;
   }
 
-  public void setDrmsDocumentTemplateService(DrmsDocumentTemplateService drmsDocumentTemplateService) {
+  public void setDrmsDocumentTemplateService(
+      DrmsDocumentTemplateService drmsDocumentTemplateService) {
     this.drmsDocumentTemplateService = drmsDocumentTemplateService;
   }
 

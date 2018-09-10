@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.resources.converter;
 
 import gov.ca.cwds.fixture.investigation.RelationshipEntityBuilder;
 import gov.ca.cwds.rest.api.domain.investigation.Relationship;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class ResponseConverterTest {
 
     @Test
     public void withCreatedResponseShouldNotReturnDataStatusWhenDataIsNull(){
-        Response response = converter.withCreatedResponse(null);
+        Response response = converter.withCreatedResponse((gov.ca.cwds.rest.api.Response) null);
         assertEquals(null, response.getEntity());
     }
 
@@ -71,5 +72,23 @@ public class ResponseConverterTest {
     public void withCreatedResponseShouldReturn201StatusWhenDataIsNull(){
         Response response = converter.withCreatedResponse(relationship);
         assertEquals(201, response.getStatus());
+    }
+
+    @Test
+    public void withCreatedResponsesShouldReturn201StatusWhenDataIsNotNul(){
+        Response response = converter.withCreatedResponse(Arrays.asList(relationship));
+        assertEquals(201, response.getStatus());
+    }
+
+    @Test
+    public void withUpdatedResponsesShouldReturn200StatusWhenDataIsNotNul(){
+        Response response = converter.withUpdatedResponse(relationship);
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void withUpdatedResponsesShouldReturn404StatusWhenDataIsNul(){
+        Response response = converter.withUpdatedResponse(null);
+        assertEquals(404, response.getStatus());
     }
 }

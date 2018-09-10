@@ -41,7 +41,7 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
-import gov.ca.cwds.rest.api.domain.SafelySurenderedBabiesIntakeApi;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
@@ -225,7 +225,7 @@ public class ParticipantIntakeApiService implements
     participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
-    SafelySurenderedBabiesIntakeApi createdSsb =
+    SafelySurrenderedBabiesIntakeApi createdSsb =
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies());
     participantIntakeApiPosted.setSafelySurenderedBabies(createdSsb);
 
@@ -271,7 +271,6 @@ public class ParticipantIntakeApiService implements
       throw new ServiceException(new EntityNotFoundException(
           "Entity ParticipantEntity with id = [" + participantId + "] was not found."));
     }
-
     participantEntityManaged =
         participantDao.update(participantEntityManaged.updateFrom(participant));
 
@@ -285,8 +284,12 @@ public class ParticipantIntakeApiService implements
     Set<PhoneNumber> phoneSet =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
+    LegacyDescriptorEntity foundDescriptor = legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
+    LegacyDescriptor discriptor = foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
+
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
+    participantIntakeApiPosted.setLegacyDescriptor(discriptor);
     participantIntakeApiPosted.addAddresses(addressIntakeApiList);
     participantIntakeApiPosted.addPhoneNumbers(phoneSet);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
@@ -373,23 +376,25 @@ public class ParticipantIntakeApiService implements
     for (CsecEntity csecEntity : toDeleteList) {
       csecDao.delete(csecEntity.getId());
     }
+
+    List<CsecEntity> csecEntities = new ArrayList<>();
     for (CsecEntity csecEntity : toUpdateList) {
       csecEntity.setParticipantId(participantId);
-      csecDao.update(csecEntity);
+      //"update" is not working here due to XA transaction implementation
+      csecEntities.add(csecDao.merge(csecEntity));
     }
     for (CsecEntity csecEntity : toCreateList) {
       csecEntity.setParticipantId(participantId);
-      csecDao.create(csecEntity);
+      csecEntities.add(csecDao.create(csecEntity));
     }
 
-    List<CsecEntity> csecEntities = csecDao.findByParticipantId(participantId);
     participantIntakeApi.setCsecs(csecMapper.toDomain(csecEntities));
   }
 
   private void createOrUpdateSafelySurrenderedBabies(ParticipantIntakeApi participantIntakeApi,
       ParticipantEntity participantEntityManaged) {
 
-    SafelySurenderedBabiesIntakeApi safelySurenderedBabies =
+    SafelySurrenderedBabiesIntakeApi safelySurenderedBabies =
         participantIntakeApi.getSafelySurenderedBabies();
 
     if (safelySurenderedBabies != null) {

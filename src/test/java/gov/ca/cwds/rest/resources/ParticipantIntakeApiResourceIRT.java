@@ -6,7 +6,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -41,6 +40,11 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
         objectMapper.readValue(actualJson.getBytes(), ParticipantIntakeApi.class);
     String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-response.json");
+    expectedResponse = populateGeneratedIdentifiers(expectedResponse, participant);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+  }
+
+  private String populateGeneratedIdentifiers(String expectedResponse, ParticipantIntakeApi participant) {
     expectedResponse = expectedResponse.replace("${participant_id}", participant.getId());
     expectedResponse =
         expectedResponse.replace("${address_id_1}", participant.getAddresses().stream()
@@ -62,11 +66,10 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
         participant.getCsecs().stream()
             .filter(csec -> "Victim Before Foster Care".equals(csec.getCsecCodeId())).findFirst()
             .orElse(null).getId());
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+    return expectedResponse;
   }
 
   @Test
-  @Ignore
   public void testPut() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-put-request.json");

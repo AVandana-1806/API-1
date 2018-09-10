@@ -28,9 +28,9 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    coreApiVersion = '1.7.5_846-RC' 
-    apiVersion = '0.8.4'
-    cwdsModelVersion = '0.8.1_631-RC'
+    coreApiVersion = '1.7.5_855-RC' 
+    apiVersion = '0.9.1'
+    cwdsModelVersion = '0.8.4_655-RC'
     configPath = '$rootProject.projectDir/config/'
     dropwizardVersion = '1.1.0'
     dropwizardFlywayVersion = '1.0.0-1'
@@ -275,6 +275,11 @@ task integrationTest(type: Test, dependsOn: testClasses) {
     // systemProperties project.properties.subMap(["DB_CMS_JDBC_URL", "DB_CMS_PASSWORD", "DB_CMS_SCHEMA", "DB_CMS_USER", "DB_NS_JDBC_URL", "DB_NS_PASSWORD", "DB_NS_SCHEMA", "DB_NS_USER", DB_CWSRS_JDBC_URL", "DB_CWSRS_PASSWORD", "DB_CWSRS_SCHEMA", "DB_CWSRS_USER"])
 }
 
+task acceptanceTests(type:Exec){
+    commandLine 'docker-compose', '-f',  'docker/docker-compose.functional-test-env.yml', 'pull'
+    commandLine 'docker-compose', '-f',  'docker/docker-compose.functional-test-env.yml',  'up', '--abort-on-container-exit'
+}
+
 run {
     args "server", configPath + "api.yml"
 }
@@ -327,7 +332,6 @@ task libLicenseReportFiles(type: Copy){
     include "licenses.csv"
 }
 
-
 task libLicenseReport(dependsOn:[generateLicenseReport, libLicenceFolders,
                                  libLicenseReportFiles ] ){
     println ("\n\n License files are generated in : ${licenceFolder}")
@@ -350,16 +354,11 @@ task apidocker(type: Docker,  dependsOn: [copyConfig, copyDist] ) {
     tagVersion = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 }
 
-task createGradleCache(type: Copy) {
-    from "$System.env.HOME/.gradle/caches/"
-    into 'build/gradle_cache'
-}
-
 task createSmokeTestDockerImage (type:Exec, dependsOn: shadowJar) {
     commandLine 'docker',  'build',  '-t',  'cwds/intake-api-smoketest', '-f', 'docker/DockerfileSmokeTests', '.'
 }
 
-task createFunctionalTestDockerImage (type:Exec, dependsOn: createGradleCache) {
+task createFunctionalTestDockerImage (type:Exec) {
   commandLine 'docker', 'build', '--file', 'docker/DockerfileTests',  '-t', 'cwds/api-functional-test', '.'
 }
 
@@ -379,6 +378,10 @@ task tagFunctionalTestDockerImage(type:Exec, dependsOn: createFunctionalTestDock
     commandLine 'docker',  'tag',  'cwds/api-functional-test',  "cwds/api-functional-test:$dockerTag"
 }
 
+task tagFunctionalTestDockerImageLatest(type:Exec, dependsOn: createFunctionalTestDockerImage) {
+    commandLine 'docker',  'tag',  'cwds/api-functional-test',  "cwds/api-functional-test:latest"
+}
+
 task tagIntegrationTestDockerImage(type:Exec, dependsOn: createIntegrationTestDockerImage) {
   commandLine 'docker',  'tag',  'cwds/api-integration-test',  "cwds/api-integration-test:$dockerTag"
 }
@@ -395,19 +398,16 @@ task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
   commandLine 'docker',  'push',  'cwds/api:latest'
 }
 
-task createFunctionalTests( dependsOn: tagFunctionalTestDockerImage){
-    doLast {
-        println 'created functional test container'
-    }
-}
-
-
 task pushSmokeTestVersionTagged(type:Exec, dependsOn: tagSmokeTestDockerImage) {
     commandLine 'docker',  'push',  "cwds/intake-api-smoketest:$dockerTag"
 }
 
-task pushFunctionalTestDockerVersionTagged(type:Exec, dependsOn: createFunctionalTests) {
+task pushFunctionalTestDockerVersionTagged(type:Exec, dependsOn: tagFunctionalTestDockerImage) {
     commandLine 'docker',  'push',  "cwds/api-functional-test:$dockerTag"
+}
+
+task pushFunctionalTestDockerLatestTagged(type:Exec, dependsOn: tagFunctionalTestDockerImageLatest) {
+    commandLine 'docker',  'push',  'cwds/api-functional-test:latest'
 }
 
 task pushIntegrationTestDockerVersionTagged(type:Exec, dependsOn: tagIntegrationTestDockerImage) {
@@ -433,8 +433,16 @@ task pushGitTag(type:Exec, dependsOn: createGitTag) {
         println "Pushed tagged to Git origin"
     }
 }
+
+task publishFunctionalTests(dependsOn: [pushFunctionalTestDockerVersionTagged, pushFunctionalTestDockerLatestTagged]){
+    doLast {
+        println 'Published FunctionalTest'
+    }
+}
+
 task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
-                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest] ) {
+                               pushIntegrationTestDockerVersionTagged, pushIntegrationTestDockerLatest,
+                               publishFunctionalTests] ) {
     doLast {
         println 'Published'
     }

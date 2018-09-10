@@ -6,8 +6,7 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 
 public class IntakeCodeCacheHealthCheck extends HealthCheck {
 
-  private static final long MINIMUM_CACHE_SIZE = 413;
-  private static final long MINIMUM_LOVS = 394;
+  private static final long MINIMUM_LOVS = 531;
 
   public IntakeCodeCacheHealthCheck() {
     super();
@@ -15,13 +14,11 @@ public class IntakeCodeCacheHealthCheck extends HealthCheck {
 
   @Override
   protected Result check() throws Exception {
-    long cacheSize = IntakeCodeCache.global().getCacheSize();
     int lovCount = IntakeCodeCache.global().getAll().size();
 
-    String message = "[Expected minimum LOV code cache size " + MINIMUM_CACHE_SIZE + ", found "
-        + cacheSize + "], [Expected minimum LOVs " + MINIMUM_LOVS + ", found " + lovCount + "]";
+    String message = "Expected minimum LOVs " + MINIMUM_LOVS + ", found " + lovCount;
 
-    if (cacheSize >= MINIMUM_CACHE_SIZE && lovCount >= MINIMUM_LOVS) {
+    if (lovCount >= MINIMUM_LOVS) {
       return Result.healthy(message);
     } else {
       return Result.unhealthy(message);

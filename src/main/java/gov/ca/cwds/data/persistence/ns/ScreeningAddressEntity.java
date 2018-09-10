@@ -1,17 +1,20 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import gov.ca.cwds.data.persistence.PersistentObject;
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
  * CWDS API Team
@@ -19,21 +22,19 @@ import org.hibernate.annotations.NamedQuery;
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.ScreeningAddressEntity.findByScreeningId",
     query = "FROM gov.ca.cwds.data.persistence.ns.ScreeningAddressEntity"
         + " WHERE screeningId = :screeningId")
-
 @Entity
 @Table(name = "screening_addresses")
 public class ScreeningAddressEntity implements PersistentObject {
+
+  private static final long serialVersionUID = 1L;
+
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "screening_addresses_id_seq")
-  @GenericGenerator(
-      name = "screening_addresses_id_seq",
+  @GenericGenerator(name = "screening_addresses_id_seq",
       strategy = "gov.ca.cwds.data.persistence.ns.utils.StringSequenceIdGenerator",
-      parameters = {
-          @org.hibernate.annotations.Parameter(
-              name = "sequence_name", value = "screening_addresses_id_seq")
-      }
-  )
+      parameters = {@org.hibernate.annotations.Parameter(name = "sequence_name",
+          value = "screening_addresses_id_seq")})
   private String id;
 
   @Column(name = "screening_id")
@@ -99,4 +100,5 @@ public class ScreeningAddressEntity implements PersistentObject {
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
+
 }

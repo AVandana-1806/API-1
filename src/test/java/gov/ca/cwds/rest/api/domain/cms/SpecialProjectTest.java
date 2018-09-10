@@ -32,7 +32,7 @@ public class SpecialProjectTest {
   private String endDateString = "2018-05-30";
   private LocalDate endDate = null;
   private Short governmentEntityType = 1084;
-  private String name = "S-CESC";
+  private String name = "S-CSEC Referral";
   private String startDateString = "2018-05-01";
   private LocalDate startDate = LocalDate.now();
   private String id = "1234567ABC";

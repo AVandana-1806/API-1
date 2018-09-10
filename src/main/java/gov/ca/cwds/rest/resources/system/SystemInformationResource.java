@@ -2,27 +2,33 @@ package gov.ca.cwds.rest.resources.system;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SYSTEM_INFORMATION;
 
-import com.codahale.metrics.health.HealthCheck.Result;
-import com.google.inject.Inject;
-import gov.ca.cwds.rest.ApiConfiguration;
-import io.dropwizard.setup.Environment;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.health.HealthCheck.Result;
+import com.google.inject.Inject;
+
+import gov.ca.cwds.rest.ApiConfiguration;
+import io.dropwizard.setup.Environment;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
- * @author Intake Team 4
+ * Display Ferb version and health checks.
+ * 
+ * @author CWDS API Team
  */
 @Api(value = RESOURCE_SYSTEM_INFORMATION)
 @Path(RESOURCE_SYSTEM_INFORMATION)
@@ -41,8 +47,7 @@ public class SystemInformationResource {
   private final String buildNumber;
 
   @Inject
-  public SystemInformationResource(
-      final ApiConfiguration configuration,
+  public SystemInformationResource(final ApiConfiguration configuration,
       final Environment environment) {
     this.applicationName = configuration.getApplicationName();
     this.environment = environment;
@@ -56,7 +61,7 @@ public class SystemInformationResource {
   /**
    * Get the name of the application.
    *
-   * @return the application data
+   * @return the application name
    */
   @GET
   @ApiOperation(value = "Returns System Information", response = SystemInformationDTO.class)
@@ -68,9 +73,8 @@ public class SystemInformationResource {
 
     final Map<String, Result> healthCheckResults = environment.healthChecks().runHealthChecks();
     for (Map.Entry<String, Result> resultEntry : healthCheckResults.entrySet()) {
-      systemInformation
-          .getHealthChecks()
-          .put(resultEntry.getKey(), new HealthCheckResultDTO(resultEntry.getValue()));
+      systemInformation.getHealthChecks().put(resultEntry.getKey(),
+          new HealthCheckResultDTO(resultEntry.getValue()));
     }
     return systemInformation;
   }
@@ -81,8 +85,8 @@ public class SystemInformationResource {
     String fullPath = this.getClass().getResource(resource).toExternalForm();
     String archivePath = fullPath.substring(0, fullPath.length() - resource.length());
     if (archivePath.endsWith("\\WEB-INF\\classes") || archivePath.endsWith("/WEB-INF/classes")) {
-      archivePath = archivePath
-          .substring(0, archivePath.length() - "/WEB-INF/classes".length()); // Required for wars
+      // Required for WAR files.
+      archivePath = archivePath.substring(0, archivePath.length() - "/WEB-INF/classes".length());
     }
     try (InputStream input = new URL(archivePath + "/META-INF/MANIFEST.MF").openStream()) {
       attributes = new Manifest(input).getMainAttributes();

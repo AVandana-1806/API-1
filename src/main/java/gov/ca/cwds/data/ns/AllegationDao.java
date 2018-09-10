@@ -12,9 +12,9 @@ import gov.ca.cwds.data.persistence.ns.AllegationEntity;
 import gov.ca.cwds.inject.NsSessionFactory;
 
 /**
- * Address DAO
+ * Address DAO.
  * 
- * @author Intake Team 4
+ * @author CWDS API Team
  */
 public class AllegationDao extends CrudsDaoImpl<AllegationEntity> {
 

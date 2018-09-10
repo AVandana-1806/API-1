@@ -1,11 +1,15 @@
 package gov.ca.cwds.rest.validation;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
@@ -18,21 +22,29 @@ import gov.ca.cwds.rest.util.ParticipantUtils;
  * @author CWDS API team
  *
  */
-public class VictimBirthValidator
-    implements ConstraintValidator<ValidVictimBirth, ScreeningToReferral> {
+public class ParticipantBirthValidator
+    implements ConstraintValidator<ValidParticipantBirth, ScreeningToReferral> {
 
   @Override
-  public void initialize(ValidVictimBirth constraintAnnotation) {
+  public void initialize(ValidParticipantBirth constraintAnnotation) {
     // nothing to initialize in this class
   }
 
   @Override
   public boolean isValid(ScreeningToReferral screening, ConstraintValidatorContext context) {
     boolean valid = true;
-    Collection<Participant> victims = ParticipantUtils.getVictims(screening.getParticipants());
-    if (!victims.isEmpty()) {
-      for (Participant victim : victims) {
+    Collection<Participant> paricipants = screening.getParticipants();
+    if (!ParticipantUtils.getVictims(screening.getParticipants()).isEmpty()) {
+      for (Participant victim : paricipants) {
         if (!hasValidBirthDateOrAge(victim, context)) {
+          valid = false;
+          break;
+        }
+      }
+    }
+    if (CollectionUtils.isNotEmpty(paricipants)) {
+      for (Participant participant : paricipants) {
+        if (!hasParticipantValidDOB(participant, context)) {
           valid = false;
           break;
         }
@@ -41,6 +53,13 @@ public class VictimBirthValidator
     return valid;
   }
 
+  /**
+   * Validates victim should have date of birth Or Approximate Age
+   * 
+   * @param victim - victim
+   * @param context - context
+   * @return the boolean
+   */
   private boolean hasValidBirthDateOrAge(Participant victim, ConstraintValidatorContext context) {
     if (StringUtils.isBlank(victim.getDateOfBirth())
         && StringUtils.isBlank(victim.getApproximateAge())) {
@@ -54,6 +73,26 @@ public class VictimBirthValidator
       String message = "Victim's approximateAgeUnits must be set if approximateAge is set";
       buildMessage(context, message);
       return false;
+    }
+    return true;
+  }
+
+  /**
+   * Validates the participant date of birth should not be in the future.
+   */
+  private boolean hasParticipantValidDOB(Participant participant,
+      ConstraintValidatorContext context) {
+    ImmutableList.Builder<String> messages = new ImmutableList.Builder<>();
+    if (StringUtils.isNotBlank(participant.getDateOfBirth())) {
+      LocalDate todaysDate = LocalDate.now();
+      LocalDate participantDob = LocalDate.parse(participant.getDateOfBirth());
+      if (participantDob.isAfter(todaysDate)) {
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate("Date of Birth cannot be in the future")
+            .addPropertyNode(participant.getFirstName()).addConstraintViolation();
+        messages.add();
+        return false;
+      }
     }
     return true;
   }
