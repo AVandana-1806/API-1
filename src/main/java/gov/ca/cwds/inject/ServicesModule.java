@@ -1,9 +1,5 @@
 package gov.ca.cwds.inject;
 
-import com.google.inject.Scope;
-import com.google.inject.Singleton;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -80,6 +76,8 @@ import gov.ca.cwds.rest.services.hoi.HOIReferralService;
 import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.investigation.contact.DeliveredToIndividualService;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;

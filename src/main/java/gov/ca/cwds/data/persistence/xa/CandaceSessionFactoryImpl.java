@@ -139,25 +139,28 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
       // Notify this instance when requests start or end.
       RequestExecutionContextRegistry.registerCallback(this);
-
-      // Enable JMX for Tomcat-JDBC connection pool.
-      // try {
-      // final String domain = "tomcat.jdbc";
-      // final Hashtable<String, String> properties = new Hashtable<String, String>();
-      // properties.put("type", "ConnectionPool");
-      // properties.put("class", ConnectionPoolMBean.class.getName());
-      //
-      // final ObjectName oname = new ObjectName(domain, properties);
-      // final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-      // mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
-      // // mbean.checkAbandoned();
-      // // mbean.checkIdle();
-      // // mbean.isPoolSweeperEnabled();
-      // // mbean.isJmxEnabled();
-      // } catch (Exception e) {
-      // LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
-      // }
+      enableConnectionPoolJmx();
     }
+  }
+
+  private final void enableConnectionPoolJmx() {
+    // Enable JMX for Tomcat-JDBC connection pool.
+    // try {
+    // final String domain = "tomcat.jdbc";
+    // final Hashtable<String, String> properties = new Hashtable<String, String>();
+    // properties.put("type", "ConnectionPool");
+    // properties.put("class", ConnectionPoolMBean.class.getName());
+    //
+    // final ObjectName oname = new ObjectName(domain, properties);
+    // final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    // mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
+    // // mbean.checkAbandoned();
+    // // mbean.checkIdle();
+    // // mbean.isPoolSweeperEnabled();
+    // // mbean.isJmxEnabled();
+    // } catch (Exception e) {
+    // LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
+    // }
   }
 
   // ==================================
@@ -231,7 +234,6 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     return pick().withOptions();
   }
 
-  //
   @Override
   public Session openSession() throws HibernateException {
     LOGGER.debug("openSession");
@@ -265,7 +267,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.info("getCurrentSession(): call openSession(): datasource: {}, XA: {}",
+      LOGGER.info("getCurrentSession(): call session.openSession(): datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = openSession();
     }
@@ -281,7 +283,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSessionBuilder withStatelessOptions() {
-    LOGGER.debug("withStatelessOptions");
+    LOGGER.trace("withStatelessOptions");
     return pick().withStatelessOptions();
   }
 

@@ -260,6 +260,11 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public Criteria createCriteria(String entityName) {
+    return session.createCriteria(entityName);
+  }
+
+  @Override
   public <T> T find(Class<T> entityClass, Object primaryKey) {
     LOGGER.trace("find(Class<T>,Object): entityClass: {}, primaryKey: {}", entityClass, primaryKey);
     return session.find(entityClass, primaryKey);
@@ -270,11 +275,6 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("flush()");
     logStack("flush");
     session.flush();
-  }
-
-  @Override
-  public Criteria createCriteria(String entityName) {
-    return session.createCriteria(entityName);
   }
 
   @Override

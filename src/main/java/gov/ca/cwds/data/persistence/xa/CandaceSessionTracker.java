@@ -1,13 +1,12 @@
 package gov.ca.cwds.data.persistence.xa;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
+import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
@@ -24,7 +23,7 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
   private static final AtomicInteger sequence = new AtomicInteger(0);
 
   private final int id = sequence.incrementAndGet(); // unique id
-  private final StackTraceElement[] stack = getStackTrace();
+  private final StackTraceElement[] stack = CaresStackUtils.getStackTrace();
   private final long startTime = System.currentTimeMillis();
   private final long threadId = Thread.currentThread().getId();
   private final RequestExecutionContext ctx = RequestExecutionContext.instance();
@@ -33,19 +32,6 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
 
   CandaceSessionTracker(Session session) {
     this.session = session;
-  }
-
-  public static StackTraceElement[] getStackTrace() {
-    try {
-      final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-      return Arrays.stream(stack, 0, stack.length - 1)
-          .filter(e -> e.getClassName().startsWith("gov.ca.cwds")
-              && !e.getClassName().startsWith("gov.ca.cwds.rest.filters")
-              && !e.getClassName().contains("$$"))
-          .collect(Collectors.toList()).toArray(new StackTraceElement[0]);
-    } catch (Exception e) {
-      throw e;
-    }
   }
 
   public String getUserId() {
