@@ -111,7 +111,7 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
     this.state = address.getState();
     this.zip = address.getZip();
     this.type = address.getType();
-    this.setLegacyIfo(address);    
+    this.setLegacyInfo(address);    
   }
 
   /**
@@ -127,7 +127,7 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
     this.state = address.getState();
     this.zip = address.getZip();
     this.type = address.getType();
-    this.setLegacyIfo(address);
+    this.setLegacyInfo(address);
   }
 
   /**
@@ -250,7 +250,7 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
     this.legacySourceTable = legacySourceTable;
   }
   
-  private void setLegacyIfo(gov.ca.cwds.rest.api.domain.AddressIntakeApi address) {
+  private void setLegacyInfo(gov.ca.cwds.rest.api.domain.AddressIntakeApi address) {
     this.legacyId = address.getLegacyId();
     this.legacySourceTable = address.getLegacySourceTable();
     LegacyDescriptor legacyDesc = address.getLegacyDescriptor();
