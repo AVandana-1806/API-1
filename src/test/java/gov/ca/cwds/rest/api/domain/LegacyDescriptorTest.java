@@ -93,6 +93,24 @@ public class LegacyDescriptorTest {
     assertEquals(1, items.size());
   }
 
+  @Test
+  public void shouldGenerateUuidWhenNotProvidedAndIdExists(){
+    String LegacyId = "JhHq86Iaaf";
+    LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor(LegacyId, null, LAST_UPDATED, TABLE_NAME, DESCRIPTION);
+    assertEquals("1118-8618-0978-2140657", legacyDescriptor.getUiId());
+  }
+
+  @Test
+  public void shouldPreserveUuidIfProvidedEvenIfIncorrect(){
+    String LegacyId = "JhHq86Iaaf";
+    String uuid = "AnIncorrectId";
+    LegacyDescriptor legacyDescriptor =
+        new LegacyDescriptor(LegacyId, uuid, LAST_UPDATED, TABLE_NAME, DESCRIPTION);
+    assertEquals(uuid, legacyDescriptor.getUiId());
+
+  }
+
   /**
    * 
    */
