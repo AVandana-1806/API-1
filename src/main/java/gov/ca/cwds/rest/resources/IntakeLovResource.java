@@ -93,6 +93,9 @@ public class IntakeLovResource {
     Response ret;
     try {
       logDatabaseHealth(cmsRsSessionFactory);
+      logDatabaseHealth(nsSessionFactory);
+      logDatabaseHealth(cmsRsSessionFactory);
+
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
     } catch (Exception e) {
