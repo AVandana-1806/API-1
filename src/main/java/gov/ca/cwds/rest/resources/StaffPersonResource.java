@@ -1,6 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_STAFF_PERSONS;
 
 import javax.ws.rs.Consumes;
@@ -62,8 +62,7 @@ public class StaffPersonResource {
    * 
    * @return the response
    */
-  @UnitOfWork(value = DATASOURCE_CMS, readOnly = true, flushMode = FlushMode.MANUAL,
-      transactional = false)
+  @UnitOfWork(value = DS_CMS, readOnly = true, flushMode = FlushMode.MANUAL, transactional = false)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
