@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpStatus;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,21 +61,27 @@ public class IntakeLovResource {
 
   @Inject
   @CmsSessionFactory
-  private CandaceSessionFactoryImpl cmsSessionFactory;
+  private SessionFactory cmsSessionFactory;
 
   @Inject
   @NsSessionFactory
-  private CandaceSessionFactoryImpl nsSessionFactory;
+  private SessionFactory nsSessionFactory;
 
   @Inject
   @CwsRsSessionFactory
-  private CandaceSessionFactoryImpl cmsRsSessionFactory;
+  private SessionFactory cmsRsSessionFactory;
 
   /**
    * Constructor
    */
   public IntakeLovResource() {
     // Default
+  }
+
+  protected void logDatabaseHealth(SessionFactory sessionFactory) {
+    final CandaceSessionFactoryImpl sf = (CandaceSessionFactoryImpl) sessionFactory;
+    LOGGER.info("DATASOURCE HEALTH: {}", sf.getSessionFactoryName());
+    sf.printOutstandingSessions();
   }
 
   @Path("/db_health")
@@ -87,8 +94,7 @@ public class IntakeLovResource {
   public Response showDatabaseConnectionHealth() {
     Response ret;
     try {
-      LOGGER.info("DATASOURCE HEALTH: {}", cmsSessionFactory.getSessionFactoryName());
-      cmsSessionFactory.printOutstandingSessions();
+      logDatabaseHealth(cmsRsSessionFactory);
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
     } catch (Exception e) {

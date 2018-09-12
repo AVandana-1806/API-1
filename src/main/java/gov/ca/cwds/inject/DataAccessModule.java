@@ -15,6 +15,7 @@ import javax.transaction.SystemException;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -596,7 +597,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @CmsSessionFactory
   @Singleton
-  public CandaceSessionFactoryImpl cmsSessionFactory(
+  public SessionFactory cmsSessionFactory(
       @CmsHibernateBundle HibernateBundle<ApiConfiguration> cmsHibernateBundle,
       @XaCmsHibernateBundle FerbHibernateBundle xaCmsHibernateBundle) {
     LOGGER.info("cmsSessionFactory()");
@@ -606,7 +607,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @NsSessionFactory
   @Singleton
-  public CandaceSessionFactoryImpl nsSessionFactory(
+  public SessionFactory nsSessionFactory(
       @NsHibernateBundle HibernateBundle<ApiConfiguration> nsHibernateBundle,
       @XaNsHibernateBundle FerbHibernateBundle xaNsHibernateBundle) {
     LOGGER.info("nsSessionFactory()");
@@ -616,7 +617,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @CwsRsSessionFactory
   @Singleton
-  public CandaceSessionFactoryImpl rsSessionFactory(
+  public SessionFactory rsSessionFactory(
       @CwsRsHibernateBundle HibernateBundle<ApiConfiguration> cmsRsHibernateBundle,
       @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
     LOGGER.info("rsSessionFactory()");
