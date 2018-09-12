@@ -2,6 +2,7 @@ package gov.ca.cwds.data.ns;
 
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator.readOnlyQuery;
 
 import java.util.ArrayList;
@@ -46,8 +47,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
    * @return Set of Legacy Id's
    */
   public Set<String> findLegacyIdListByScreeningId(String screeningId) {
-    @SuppressWarnings("unchecked")
-    final Query<String> query =
+    @SuppressWarnings("unchecked") final Query<String> query =
         grabSession().getNamedQuery(ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID)
             .setParameter(PathParam.SCREENING_ID, screeningId);
     readOnlyQuery(query);
@@ -57,14 +57,13 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   /**
    * @param screeningIds Set of Screening ID's
    * @return map where key is a Screening ID and value is a Set of Participant Entities bound to the
-   *         screening
+   * screening
    */
   public Map<String, Set<ParticipantEntity>> findByScreeningIds(Set<String> screeningIds) {
     if (screeningIds == null || screeningIds.isEmpty()) {
       return new HashMap<>();
     }
-    @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query =
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
         grabSession().getNamedQuery(FIND_PARTICIPANTS_BY_SCREENING_IDS).setParameter("screeningIds",
             screeningIds);
     readOnlyQuery(query);
@@ -81,8 +80,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   }
 
   public List<ParticipantEntity> getByScreeningId(String screeningId) {
-    @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query =
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
         grabSession().getNamedQuery(constructNamedQueryName("findByScreeningId"))
             .setParameter(PathParam.SCREENING_ID, screeningId);
     readOnlyQuery(query);
@@ -103,8 +101,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
 
   public ParticipantEntity findByScreeningIdAndParticipantId(String screeningId,
       String participantId) {
-    @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query = this.grabSession()
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByScreeningIdAndParticipantId"))
         .setParameter(PathParam.SCREENING_ID, screeningId)
         .setParameter(PathParam.PARTICIPANT_ID, participantId);
@@ -113,11 +110,26 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   }
 
   public ParticipantEntity findByScreeningIdAndLegacyId(String screeningId, String legacyId) {
-    @SuppressWarnings("unchecked")
-    final Query<ParticipantEntity> query =
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
         this.grabSession().getNamedQuery(FIND_BY_SCREENING_ID_AND_LEGACY_ID)
             .setParameter(PathParam.SCREENING_ID, screeningId)
             .setParameter(PathParam.LEGACY_ID, legacyId);
+    readOnlyQuery(query);
+    return query.uniqueResult();
+  }
+
+  /**
+   * @param screeningId screening id
+   * @param legacyId client legacy identifier
+   * @return Participant that has been create in scope of screening (related_screening_id) but has
+   * not been attached
+   */
+  public ParticipantEntity findByRelatedScreeningIdAndLegacyId(String screeningId,
+      String legacyId) {
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query = this.grabSession()
+        .getNamedQuery(FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID)
+        .setParameter(PathParam.RELATED_SCREENING_ID, screeningId)
+        .setParameter(PathParam.LEGACY_ID, legacyId);
     readOnlyQuery(query);
     return query.uniqueResult();
   }

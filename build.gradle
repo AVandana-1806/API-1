@@ -28,9 +28,9 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    coreApiVersion = '1.7.5_855-RC' 
+    coreApiVersion = '1.7.5_855-RC'
     apiVersion = '0.9.1'
-    cwdsModelVersion = '0.8.4_655-RC'
+    cwdsModelVersion = '0.8.4_661-RC'
     configPath = '$rootProject.projectDir/config/'
     dropwizardVersion = '1.1.0'
     dropwizardFlywayVersion = '1.0.0-1'
@@ -168,7 +168,7 @@ dependencies {
 	}
 	compile group: 'gov.ca.cwds.api', name: 'drools-engine', version: coreApiVersion
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
-    
+
 	// LOGGING:
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jVersion
   	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jVersion
