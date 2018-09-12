@@ -36,10 +36,10 @@ public class HoiCaseResourceIRT extends HOIBaseTest {
   }
 
   private String doGet() throws Exception {
-    WebTarget target = clientTestRule.withSecurityToken(USER_SOCIAL_WORKER_ONLY)
+    final WebTarget target = clientTestRule.withSecurityToken(USER_SOCIAL_WORKER_ONLY)
         .target(RESOURCE_CASE_HISTORY_OF_INVOLVEMENT);
     // clients with ID-s "1S3k0iv00T", "SZdBGYk75C" are sensitive and will be filtered out
-    Response response =
+    final Response response =
         target.queryParam("clientIds", "5DK5THO0DW", "SFpVhtC0DW", "1S3k0iv00T", "SZdBGYk75C")
             .request().accept(MediaType.APPLICATION_JSON).get();
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
