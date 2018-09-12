@@ -1,6 +1,5 @@
 authenticationMode: TEST
 
-
 testUrl:
    baseUrl: ${BASE_URL:-https://ferbapi.preint.cwds.io}
    perryLoginUrl: ${PERRY_LOGIN_URL:-https://web.preint.cwds.io/perry/login}
@@ -81,4 +80,3 @@ defaultUsers:
   ]
 }'
        password: ${PASSWORD:-}
-       

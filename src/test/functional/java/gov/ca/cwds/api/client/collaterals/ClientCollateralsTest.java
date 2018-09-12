@@ -1,6 +1,7 @@
 package gov.ca.cwds.api.client.collaterals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import gov.ca.cwds.api.FunctionalTest;
@@ -48,8 +49,8 @@ public class ClientCollateralsTest extends FunctionalTest {
   }
   
   @Test
+  // returns 500 when run locally
   public void shouldReturn200WhenPostValidClientCollateral() {
-    // should return status 200
     Short relationshipType = 573;
     ClientCollateral clientCollateral = new ClientCollateralResourceBuilder()
         .setThirdId("")
@@ -60,7 +61,7 @@ public class ClientCollateralsTest extends FunctionalTest {
     
     httpRequestHandler.postRequest(clientCollateral, resourcePath, token)
     .then()
-    .statusCode(500);
+    .statusCode(200);
   }
 
   @Test

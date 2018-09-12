@@ -20,7 +20,7 @@ public class DeliveredServiceTest extends FunctionalTest {
     // USERID->STAFF_PERSON->CWS_OFFICE.Government_Entity_type=1126 (California)
     resourcePath = getResourceUrlFor("/" + Api.RESOURCE_DELIVERY_SERVICE);
     httpRequestHandler = new HttpRequestHandler();
-    this.loginUserGroup(UserGroup.STATE_SEALED);
+    this.loginUserGroup(UserGroup.SOCIAL_WORKER);
   }
   
   @Test
