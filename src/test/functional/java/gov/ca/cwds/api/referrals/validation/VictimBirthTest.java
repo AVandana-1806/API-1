@@ -2,7 +2,8 @@ package gov.ca.cwds.api.referrals.validation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -72,6 +73,21 @@ public class VictimBirthTest extends FunctionalTest {
         .and().statusCode(422);
   }
 
+  @Test
+  public void shouldReturn422WhenDateOfBirthInFuture() {
+    LocalDate today = LocalDate.now();
+    LocalDate tomorrow = today.plus(1, ChronoUnit.DAYS);
+    String tomrrowString = tomorrow.toString();
+    String approximateAge = null;
+    String approximateAgeUnits = null;
+    ScreeningToReferral referral =
+        buildScreeningToReferral(tomrrowString, approximateAge, approximateAgeUnits);
+    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    .body("issue_details.user_message[0]",
+        equalTo("Date of Birth cannot be in the future"))
+    .and().statusCode(422);
+ }
+  
   /**
    * @throws JsonProcessingException
    * 

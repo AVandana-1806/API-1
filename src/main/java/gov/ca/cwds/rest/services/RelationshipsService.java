@@ -49,7 +49,7 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
 
   @Override
   public Response find(String id) {
-    List<RelationshipWrapper> relations = new ArrayList<RelationshipWrapper>();
+    List<RelationshipWrapper> relations = new ArrayList<>();
     if (authorized(id)) {
       relations = getClientRelationships(id);
     }
@@ -67,7 +67,7 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
    * @return the relationships
    */
   public Response findForIds(List<String> clientIds) {
-    final Set<Relationship> relationships = new HashSet<Relationship>();
+    final Set<Relationship> relationships = new HashSet<>();
     if (clientIds != null) {
       
       for (String id : clientIds) {

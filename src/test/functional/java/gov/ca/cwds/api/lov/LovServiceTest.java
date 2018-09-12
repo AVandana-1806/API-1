@@ -1,10 +1,11 @@
-package gov.ca.cwds.api;
+package gov.ca.cwds.api.lov;
 
 import static io.restassured.RestAssured.given;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import gov.ca.cwds.api.FunctionalTest;
 import static org.hamcrest.Matchers.equalTo;
 
 public class LovServiceTest extends FunctionalTest {
