@@ -23,6 +23,10 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
+import gov.ca.cwds.inject.CmsSessionFactory;
+import gov.ca.cwds.inject.CwsRsSessionFactory;
+import gov.ca.cwds.inject.NsSessionFactory;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
@@ -54,10 +58,21 @@ public class IntakeLovResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResource.class);
 
+  @Inject
+  @CmsSessionFactory
+  private CandaceSessionFactoryImpl cmsSessionFactory;
+
+  @Inject
+  @NsSessionFactory
+  private CandaceSessionFactoryImpl nsSessionFactory;
+
+  @Inject
+  @CwsRsSessionFactory
+  private CandaceSessionFactoryImpl cmsRsSessionFactory;
+
   /**
    * Constructor
    */
-  @Inject
   public IntakeLovResource() {
     // Default
   }
@@ -72,7 +87,8 @@ public class IntakeLovResource {
   public Response showDatabaseConnectionHealth() {
     Response ret;
     try {
-      // CandaceSessionImpl.printOutstandingSessions();
+      LOGGER.info("DATASOURCE HEALTH: {}", cmsSessionFactory.getSessionFactoryName());
+      cmsSessionFactory.printOutstandingSessions();
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
     } catch (Exception e) {
@@ -88,7 +104,7 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.HOURS)
+  @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
       readOnly = true, transactional = false)
   @GET

@@ -1,8 +1,8 @@
 package gov.ca.cwds.inject;
 
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
-import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
 import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_NS;
@@ -15,7 +15,6 @@ import javax.transaction.SystemException;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -597,7 +596,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @CmsSessionFactory
   @Singleton
-  public SessionFactory cmsSessionFactory(
+  public CandaceSessionFactoryImpl cmsSessionFactory(
       @CmsHibernateBundle HibernateBundle<ApiConfiguration> cmsHibernateBundle,
       @XaCmsHibernateBundle FerbHibernateBundle xaCmsHibernateBundle) {
     LOGGER.info("cmsSessionFactory()");
@@ -607,7 +606,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @NsSessionFactory
   @Singleton
-  public SessionFactory nsSessionFactory(
+  public CandaceSessionFactoryImpl nsSessionFactory(
       @NsHibernateBundle HibernateBundle<ApiConfiguration> nsHibernateBundle,
       @XaNsHibernateBundle FerbHibernateBundle xaNsHibernateBundle) {
     LOGGER.info("nsSessionFactory()");
@@ -617,7 +616,7 @@ public class DataAccessModule extends AbstractModule {
   @Provides
   @CwsRsSessionFactory
   @Singleton
-  public SessionFactory rsSessionFactory(
+  public CandaceSessionFactoryImpl rsSessionFactory(
       @CwsRsHibernateBundle HibernateBundle<ApiConfiguration> cmsRsHibernateBundle,
       @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
     LOGGER.info("rsSessionFactory()");
