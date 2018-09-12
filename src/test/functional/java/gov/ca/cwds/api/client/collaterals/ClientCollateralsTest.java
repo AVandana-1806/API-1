@@ -61,7 +61,7 @@ public class ClientCollateralsTest extends FunctionalTest {
     
     httpRequestHandler.postRequest(clientCollateral, resourcePath, token)
     .then()
-    .statusCode(200);
+    .statusCode(201);
   }
 
   @Test
