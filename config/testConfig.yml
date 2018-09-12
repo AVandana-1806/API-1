@@ -1,30 +1,82 @@
 authenticationMode: TEST
+
 testUrl:
    baseUrl: ${BASE_URL:-https://ferbapi.preint.cwds.io}
-   perryLoginUrl: ${PERRY_LOGIN_URL:-https://localhost:8090/perry/login}
-   authLoginUrl: ${AUTH_LOGIN_URL:-https://localhost:8090/perry/authn/login}
-   tokenUrl: ${TOKEN_URL:-https://localhost:8090/perry/authn/token}
-   callBackUrl: ${CALL_BACK_URL:-https://ferbapi.preint.cwds.io/swagger}
+   perryLoginUrl: ${PERRY_LOGIN_URL:-https://web.preint.cwds.io/perry/login}
+   authLoginUrl: ${AUTH_LOGIN_URL:-https://web.preint.cwds.io/perry/authn/login}
+   tokenUrl: ${TOKEN_URL:-https://web.preint.cwds.io/perry/authn/token}
    logOutUrl: ${LOG_OUT_URL:-}
-   validateUrl: ${VALIDATE_URL:-https://localhost:8090/perry/authn/validate}
+   validateUrl: ${VALIDATE_URL:-https://web.preint.cwds.io/perry/authn/validate}
    
 defaultUsers:
     -  userType: socialWorkerOnly
-       username: ${USERNAME:-}
+       username:  '{ "user": "BRADYG", "staffId": "aaw", "roles": [ "SocialWorker" ], "county_code": "17", "county_cws_code": "1084", "county_name": "Lake", "privileges": [ "CWS Case Management System" ] }'
        password: ${PASSWORD:-}
        
     -  userType: countySensitivePrivilegeUser
-       username: ${USERNAME:-}
+       username: '{
+  "user": "BRADYP",
+  "staffId": "aax",
+  "roles": [
+    "SocialWorker"
+  ],
+  "county_code": "17",
+  "county_cws_code": "1084",
+  "county_name": "Lake",
+  "privileges": [
+    "CWS Case Management System",
+    "Sensitive Persons"
+    
+  ]
+}'
        password: ${PASSWORD:-}  
         
     -  userType: countySealedPrivilegeUser
-       username: ${USERNAME:-}
+       username: '{
+  "user": "CLUSTR",
+  "staffId": "0UX",
+  "roles": [
+    "SocialWorker"
+  ],
+  "county_code": "34",
+  "county_cws_code": "1101",
+  "county_name": "Sacramento",
+  "privileges": [
+    "CWS Case Management System",
+    "Sealed"
+  ]
+}'
        password: ${PASSWORD:-} 
        
     -  userType: stateSensitivePrivilegeUser
-       username: ${USERNAME:-}
+       username: '{
+  "user": "TESTIE",
+  "staffId": "0RG",
+  "roles": [
+    "Supervisor"
+  ],
+  "county_code": "99",
+  "county_cws_code": "1126",
+  "county_name": "State of California",
+  "privileges": [
+    "Sensitive Persons"
+  ]
+}'
        password: ${PASSWORD:-}
        
     -  userType: stateSealedPrivilegeUser
-       username: ${USERNAME:-}
+       username: '{
+  "user": "BURNSM",
+  "staffId": "0MJ",
+  "roles": [
+    "SocialWorker"
+  ],
+  "county_code": "99",
+  "county_cws_code": "1126",
+  "county_name": "State of California",
+  "privileges": [
+    "Sealed",
+    "CWS Case Management System"
+  ]
+}'
        password: ${PASSWORD:-}
