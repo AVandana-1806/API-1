@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -62,6 +64,8 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
+  private final Map<Integer, CandaceSessionTracker> outstanding = new ConcurrentHashMap<>();
+
   // Core members.
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
@@ -69,6 +73,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   // Only works for the same datasource, for which this class is a facade.
   private transient ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  private ThreadLocal<CandaceSessionTracker> tracker = new ThreadLocal<>();
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
@@ -104,6 +109,16 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     // Notify this instance when requests start or end.
     RequestExecutionContextRegistry.registerCallback(this);
+  }
+
+  public List<CandaceSessionTracker> getOutstandingSessions() {
+    return outstanding.values().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId()))
+        .collect(Collectors.toList());
+  }
+
+  public void printOutstandingSessions() {
+    outstanding.values().stream().forEach(s -> LOGGER
+        .info("Outstanding sessions: session factory: {}, session: {}", sessionFactoryName, s));
   }
 
   /**
@@ -178,13 +193,24 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
-    LOGGER.debug("startRequest");
+    LOGGER.info("startRequest");
     local.set(null); // clear the current thread
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    LOGGER.debug("endRequest");
+    LOGGER.info("endRequest");
+
+    final CandaceSessionImpl session = local.get();
+    if (session != null && session.isOpen()) {
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.trace("BOOM!", e); // Appease SonarQube.
+        LOGGER.error("ERROR ON SESSION AUTO-CLOSE: data source: {}", sessionFactoryName);
+      }
+    }
+
     local.set(null); // clear the current thread
   }
 
@@ -242,8 +268,12 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     if (session == null) {
       LOGGER.info("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
           isXaTransaction());
-      session = new CandaceSessionImpl(pick().openSession());
+      session = new CandaceSessionImpl(this, pick().openSession());
       local.set(session);
+
+      final CandaceSessionTracker track = new CandaceSessionTracker(session);
+      tracker.set(track);
+      outstanding.put(track.getId(), track);
     }
 
     return session;
@@ -283,7 +313,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSessionBuilder withStatelessOptions() {
-    LOGGER.trace("withStatelessOptions");
+    LOGGER.debug("withStatelessOptions");
     return pick().withStatelessOptions();
   }
 
@@ -301,7 +331,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Statistics getStatistics() {
-    // IDEA: store statistics by request.
+    // IDEA: store statistics by request, not on the global session factory.
     LOGGER.trace("getStatistics");
     return pick().getStatistics();
   }

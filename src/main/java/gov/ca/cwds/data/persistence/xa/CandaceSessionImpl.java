@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManagerFactory;
@@ -49,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.CaresStackUtils;
+import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
@@ -65,28 +64,61 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  private static final Map<Integer, CandaceSessionTracker> outstanding = new ConcurrentHashMap<>();
+  protected final Session session;
 
-  protected Session session;
-
-  protected CandaceSessionTracker tracker;
+  protected final SessionFactory sessionFactory;
 
   protected transient CandaceTransactionImpl txn;
 
-  public CandaceSessionImpl(Session session) {
-    LOGGER.debug("CandaceSessionImpl.ctor");
+  /**
+   * Preferred constructor. Automatically returns sessions/connections back to the pool.
+   * 
+   * @param sessionFactory datasource session factory
+   * @param session Hibernate session
+   */
+  public CandaceSessionImpl(CandaceSessionFactoryImpl sessionFactory, Session session) {
+    LOGGER.debug("ctor");
+    this.sessionFactory = sessionFactory;
     this.session = session;
-    this.tracker = new CandaceSessionTracker(session);
-    outstanding.put(tracker.getId(), tracker);
   }
 
-  public static List<CandaceSessionTracker> getOutstandingSessions() {
-    return outstanding.values().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId()))
-        .collect(Collectors.toList());
+  /**
+   * Secondary constructor.
+   * 
+   * <p>
+   * <strong>WARNING:</strong> By using this alternate constructor, the caller must close the
+   * session when finished or risk a connection leak.
+   * </p>
+   * 
+   * @param dao DAO to grab a session
+   */
+  public CandaceSessionImpl(CrudsDaoImpl<?> dao) {
+    LOGGER.debug("ctor(CrudsDaoImpl<?>)");
+    final SessionFactory sf = dao.getSessionFactory();
+    this.sessionFactory = sf instanceof CandaceSessionFactoryImpl
+        ? (CandaceSessionFactoryImpl) dao.getSessionFactory()
+        : sf;
+    this.session = grabSession();
   }
 
-  public static void printOutstandingSessions() {
-    getOutstandingSessions().stream().forEach(s -> LOGGER.info("outstanding session: {}", s));
+  /**
+   * Grab a session! If a current session is available, return it, else open a new session.
+   * 
+   * <p>
+   * <strong>WARNING:<strong> If you open it, then you close it. You break it, you bought it.
+   * </p>
+   * 
+   * @return usable session
+   */
+  private final Session grabSession() {
+    Session session;
+    try {
+      session = sessionFactory.getCurrentSession();
+    } catch (HibernateException e) {
+      session = sessionFactory.openSession();
+    }
+
+    return session;
   }
 
   /**
@@ -100,10 +132,9 @@ public class CandaceSessionImpl implements Session {
     if (LOGGER.isTraceEnabled()) {
       if (obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
-        LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
-            po.getPrimaryKey());
+        LOGGER.info("{}: class: {}, key: {}", methodMsg, po.getClass(), po.getPrimaryKey());
       } else {
-        LOGGER.info("CandaceSessionImpl.{}", methodMsg);
+        LOGGER.info("{}", methodMsg);
       }
       CaresStackUtils.logStack();
     }
@@ -142,24 +173,22 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void close() throws HibernateException {
     LOGGER.info("close");
-    if (session != null) {
+    if (session != null && session.isOpen()) {
       final Transaction txn = session.getTransaction();
       if (txn.isActive() && !txn.getRollbackOnly()) {
         try {
           txn.rollback();
         } catch (Exception e) {
-          LOGGER.error("FAILED TO ROLLBACK ACTIVE TRANSACTION!", e);
+          LOGGER.warn("FAILED TO ROLLBACK ACTIVE TRANSACTION TO CLOSE SESSION!", e);
         }
       }
 
       try {
         session.close();
       } catch (Exception e) {
-        LOGGER.error("FAILED TO CLOSE SESSION! tracker: {}", tracker, e);
+        LOGGER.error("FAILED TO CLOSE SESSION! session: {}", session, e);
       } finally {
-        outstanding.remove(tracker.getId());
-        tracker = null;
-        session = null; // release session references
+        // session = null; // release session references
       }
     }
   }
@@ -994,10 +1023,6 @@ public class CandaceSessionImpl implements Session {
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
     LOGGER.debug("createNativeQuery: sqlString: {}, resultClass: {}", sqlString, resultClass);
     return session.createNativeQuery(sqlString, resultClass);
-  }
-
-  public static Map<Integer, CandaceSessionTracker> getOutstanding() {
-    return outstanding;
   }
 
 }

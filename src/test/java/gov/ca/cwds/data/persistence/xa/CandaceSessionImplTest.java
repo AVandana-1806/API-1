@@ -55,6 +55,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
@@ -65,7 +66,10 @@ public class CandaceSessionImplTest extends Doofenshmirtz<ClientAddress> {
   @Before
   public void setup() throws Exception {
     super.setup();
-    target = new CandaceSessionImpl(session);
+
+    final CandaceSessionFactoryImpl factory =
+        new CandaceSessionFactoryImpl(Api.DS_CMS, sessionFactory, sessionFactory);
+    target = new CandaceSessionImpl(factory, session);
   }
 
   @Test

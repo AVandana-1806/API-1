@@ -12,7 +12,7 @@ import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * Track when database sessions open or close.
+ * Track when database sessions open or close. Find orphaned or lingering connections.
  * 
  * @author CWDS API Team
  */

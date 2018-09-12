@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
-import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
@@ -63,7 +62,7 @@ public class IntakeLovResource {
     // Default
   }
 
-  @Path("/health")
+  @Path("/db_health")
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
@@ -73,7 +72,7 @@ public class IntakeLovResource {
   public Response showDatabaseConnectionHealth() {
     Response ret;
     try {
-      CandaceSessionImpl.printOutstandingSessions();
+      // CandaceSessionImpl.printOutstandingSessions();
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
     } catch (Exception e) {

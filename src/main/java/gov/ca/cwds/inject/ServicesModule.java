@@ -324,7 +324,7 @@ public class ServicesModule extends AbstractModule {
       secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
     }
 
-    try (final Session session = new CandaceSessionImpl(systemCodeDao.grabSession())) {
+    try (final Session session = new CandaceSessionImpl(systemCodeDao)) {
       LOGGER.info("Load code cache: preLoad: {}, secondsToRefreshCache: {}", preLoad,
           secondsToRefreshCache);
       final Transaction txn = session.beginTransaction();
