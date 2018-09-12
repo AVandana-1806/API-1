@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.resources.hoi;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_REFERRAL_HISTORY_OF_INVOLVEMENT;
 
-import gov.ca.cwds.rest.core.Api;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import gov.ca.cwds.rest.api.domain.hoi.HOIReferral;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.services.hoi.HOIReferralService;
 
 public class HoiReferralResourceIRT extends HOIBaseTest {
@@ -39,7 +39,7 @@ public class HoiReferralResourceIRT extends HOIBaseTest {
     assertHOIReferralsAreSorted(new String[] {"MYsSPHW0DW", "9OQhOAE0DW"}, actualHOIReferrals);
 
     assertQueryExecutionCount(Api.DATASOURCE_CMS, 5);
-    assertDatasourceNotTouched(Api.DS_CMS_REP, Api.DATASOURCE_NS);
+    assertDatasourceNotTouched(Api.DATASOURCE_NS);
   }
 
   private String doGet() throws Exception {

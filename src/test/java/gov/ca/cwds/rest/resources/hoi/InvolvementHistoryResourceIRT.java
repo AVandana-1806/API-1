@@ -5,7 +5,6 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import gov.ca.cwds.rest.core.Api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +20,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 
 public class InvolvementHistoryResourceIRT extends HOIBaseTest {
@@ -40,14 +40,14 @@ public class InvolvementHistoryResourceIRT extends HOIBaseTest {
         actualInvolvementHistory.getScreenings());
 
     assertQueryExecutionCount(Api.DATASOURCE_CMS, 14);
-    assertDatasourceNotTouched(Api.DS_CMS_REP);
+    // assertDatasourceNotTouched(Api.DS_CMS_REP);
     assertQueryExecutionCount(Api.DATASOURCE_NS, 5);
   }
 
   private String doGet(String id) throws IOException {
-    WebTarget target =
+    final WebTarget target =
         clientTestRule.target(RESOURCE_SCREENINGS + "/" + id + "/history_of_involvements");
-    Response response = target.request(MediaType.APPLICATION_JSON).get();
+    final Response response = target.request(MediaType.APPLICATION_JSON).get();
     return IOUtils.toString((InputStream) response.getEntity(), StandardCharsets.UTF_8);
   }
 
