@@ -5,6 +5,7 @@ import static gov.ca.cwds.rest.core.Api.Datasource.NS;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,16 +24,15 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.data.persistence.xa.CandaceDatasourceSlate;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
-import gov.ca.cwds.inject.CmsSessionFactory;
-import gov.ca.cwds.inject.CwsRsSessionFactory;
-import gov.ca.cwds.inject.NsSessionFactory;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
 import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.es.ESPersons;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.caching.CacheControl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -57,23 +57,16 @@ public class IntakeLovResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResource.class);
 
-  @Inject
-  @CmsSessionFactory
-  private SessionFactory cmsSessionFactory;
-
-  @Inject
-  @NsSessionFactory
-  private SessionFactory nsSessionFactory;
-
-  @Inject
-  @CwsRsSessionFactory
-  private SessionFactory cmsRsSessionFactory;
+  private CandaceDatasourceSlate sessionFactories;
 
   /**
    * Constructor
+   * 
+   * @param sessionFactories Ferb session factories
    */
-  public IntakeLovResource() {
-    // Default
+  @Inject
+  public IntakeLovResource(CandaceDatasourceSlate sessionFactories) {
+    this.sessionFactories = sessionFactories;
   }
 
   protected void logDatabaseHealth(SessionFactory sessionFactory) {
@@ -92,9 +85,9 @@ public class IntakeLovResource {
   public Response showDatabaseConnectionHealth() {
     Response ret;
     try {
-      logDatabaseHealth(cmsRsSessionFactory);
-      logDatabaseHealth(nsSessionFactory);
-      logDatabaseHealth(cmsRsSessionFactory);
+      logDatabaseHealth(sessionFactories.getCmsRsSessionFactory());
+      logDatabaseHealth(sessionFactories.getNsSessionFactory());
+      logDatabaseHealth(sessionFactories.getCmsRsSessionFactory());
 
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
           .build();
@@ -111,7 +104,7 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  // @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
+  @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
       readOnly = true, transactional = false)
   @GET
