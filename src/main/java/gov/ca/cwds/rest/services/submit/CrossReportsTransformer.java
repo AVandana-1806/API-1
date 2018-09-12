@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.submit;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,13 +40,24 @@ public class CrossReportsTransformer {
           : null;
       String county = systemCode != null ? systemCode.getLogicalId() : null;
 
-      String informDate = DomainChef
-          .cookISO8601Timestamp(DomainChef.uncookDateString(nsCrossReport.getInformDate()));
+      String informDate = extractDateFromCrossReport(nsCrossReport);
       crossReports.add(new CrossReport(nsCrossReport.getId(), nsCrossReport.getLegacySourceTable(),
           nsCrossReport.getLegacyId(), nsCrossReport.isFiledOutOfState(), method, informDate,
           county, governmentAgency));
     }
     return crossReports;
+  }
+
+  private String extractDateFromCrossReport(CrossReportIntake nsCrossReport) {
+    String informDate = nsCrossReport.getInformDate();
+    if (informDate.length() <= DomainChef.DATE_FORMAT.length()){
+      Date date = DomainChef.uncookDateString(informDate);
+      informDate = DomainChef.cookStrictTimestamp(date);
+    } else {
+      informDate = DomainChef
+          .cookISO8601Timestamp(DomainChef.uncookISO8601Timestamp(informDate));
+    }
+    return informDate;
   }
 
   private Integer setCommuncationMethod(CrossReportIntake nsCrossReport) {
