@@ -5,7 +5,6 @@ import static gov.ca.cwds.rest.core.Api.Datasource.NS;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,7 +31,6 @@ import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
 import gov.ca.cwds.rest.api.domain.IntakeLovResponse;
 import gov.ca.cwds.rest.api.domain.es.ESPersons;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.jersey.caching.CacheControl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -104,7 +102,7 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
-  @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
+  // @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
       readOnly = true, transactional = false)
   @GET
@@ -117,6 +115,8 @@ public class IntakeLovResource {
     Response ret;
     try {
       final List<IntakeLov> lovs = IntakeCodeCache.global().getAll();
+      LOGGER.info("Intake LOV count: {}", lovs.size());
+
       final List<IntakeLovEntry> lovEntries = new ArrayList<>(lovs.size());
       for (IntakeLov lov : lovs) {
         lovEntries.add(new IntakeLovEntry(lov));

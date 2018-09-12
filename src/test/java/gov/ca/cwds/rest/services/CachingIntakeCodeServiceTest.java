@@ -46,7 +46,6 @@ public class CachingIntakeCodeServiceTest extends Doofenshmirtz<IntakeLov> {
 
     intakeLovDao = mock(IntakeLovDao.class);
     target = new CachingIntakeCodeService(intakeLovDao);
-    target.init();
   }
 
   /**
@@ -78,7 +77,7 @@ public class CachingIntakeCodeServiceTest extends Doofenshmirtz<IntakeLov> {
 
     when(intakeLovDao.findAll()).thenReturn(lovList);
     target = new CachingIntakeCodeService(intakeLovDao);
-    target.init();
+
     Short actualLovCode =
         target.getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "Cambodian");
     Assert.assertNotNull(actualLovCode);
@@ -109,7 +108,7 @@ public class CachingIntakeCodeServiceTest extends Doofenshmirtz<IntakeLov> {
 
     when(intakeLovDao.findAll()).thenReturn(lovList);
     target = new CachingIntakeCodeService(intakeLovDao);
-    target.init();
+
     final List<IntakeLov> actualLovCode = target.getAllLegacySystemCodesForMeta(LANGUAGE_CODE);
     Assert.assertNotNull(actualLovCode);
     assertThat(actualLovCode.size(), is(equalTo(2)));

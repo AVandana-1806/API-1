@@ -1,50 +1,40 @@
 package gov.ca.cwds.rest.services;
 
-import static gov.ca.cwds.rest.core.Api.DS_NS;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
-import io.dropwizard.hibernate.UnitOfWork;
 
 /**
- * Intake code cache implementation.
+ * Intake code cache Implementation
  * 
  * @author CWDS API Team
+ *
  */
 @SuppressWarnings("squid:S2160")
 public class CachingIntakeCodeService implements IntakeCodeCache {
-
-  private static final long serialVersionUID = 1L;
 
   private transient List<IntakeLov> intakeLovs = new ArrayList<>();
   private transient Map<Short, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
   private transient Map<String, List<IntakeLov>> mapByMeta = new TreeMap<>();
 
-  private IntakeLovDao intakeLovDao;
+  private static final long serialVersionUID = 1L;
 
   /**
    * Construct the object.
    * 
-   * @param intakeLovDao Intake LOV Dao
+   * @param intakeLovDao Intake Lov Dao
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao) {
-    this.intakeLovDao = intakeLovDao;
-  }
-
-  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
-  protected final void init() {
     this.intakeLovs = intakeLovDao.findAll();
 
     if (this.intakeLovs == null) {
@@ -52,12 +42,12 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
 
     for (IntakeLov intakeLov : this.intakeLovs) {
-      final Long sysCodeId = intakeLov.getLegacySystemCodeId();
-      final String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
+      Long sysCodeId = intakeLov.getLegacySystemCodeId();
+      String meta = StringUtils.lowerCase(intakeLov.getLegacyMeta());
 
       // populate mapBySystemCodeId map
       if (sysCodeId != null) {
-        final Short sysCodeIdShort = sysCodeId.shortValue();
+        Short sysCodeIdShort = sysCodeId.shortValue();
         List<IntakeLov> lovsForSysCode = mapBySystemCodeId.get(sysCodeIdShort);
         if (lovsForSysCode == null) {
           lovsForSysCode = new ArrayList<>();
@@ -95,7 +85,7 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public Short getLegacySystemCodeForIntakeCode(String metaId, String intakeCode) {
     Short sysCodeId = null;
 
-    final List<IntakeLov> intakeLovs = getAllLegacySystemCodesForMeta(metaId);
+    List<IntakeLov> intakeLovs = getAllLegacySystemCodesForMeta(metaId);
     for (IntakeLov lov : intakeLovs) {
       if (StringUtils.equalsIgnoreCase(intakeCode, lov.getIntakeCode())) {
         sysCodeId = lov.getLegacySystemCodeId().shortValue();
@@ -113,9 +103,9 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
       return intakeCodeId;
     }
 
-    final Short systemCodeIdShort = systemCodeId.shortValue();
-    final List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
-    if (intakeLovs != null && !intakeLovs.isEmpty()) {
+    Short systemCodeIdShort = systemCodeId.shortValue();
+    List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
+    if (intakeLovs != null) {
       for (IntakeLov lov : intakeLovs) {
         if (StringUtils.equalsIgnoreCase(intakeType, lov.getIntakeType())) {
           intakeCodeId = lov.getIntakeCode();
@@ -136,5 +126,4 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public long getCacheSize() {
     return this.intakeLovs.size();
   }
-
 }
