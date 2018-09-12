@@ -55,7 +55,7 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
   @Override
   @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   public Response find(String id) {
-    List<RelationshipWrapper> relations = new ArrayList<RelationshipWrapper>();
+    List<RelationshipWrapper> relations = new ArrayList<>();
     if (authorized(id)) {
       relations = getClientRelationships(id);
     }
@@ -74,7 +74,7 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
    */
   @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   public Response findForIds(List<String> clientIds) {
-    final Set<Relationship> relationships = new HashSet<Relationship>();
+    final Set<Relationship> relationships = new HashSet<>();
     if (clientIds != null) {
 
       for (String id : clientIds) {

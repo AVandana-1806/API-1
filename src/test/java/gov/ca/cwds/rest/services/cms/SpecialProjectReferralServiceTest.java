@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services.cms;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
@@ -9,7 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import static org.mockito.Matchers.any;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,11 +20,6 @@ import java.util.List;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SpecialProjectDao;
@@ -77,6 +72,7 @@ public class SpecialProjectReferralServiceTest {
 
   @Test
   public void shouldReturnSpecialProjectReferralObjectWhenCreate() throws Exception {
+    String startDate = "2018-08-20";
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
         new SpecialProjectReferralResourceBuilder().build();
 
@@ -87,7 +83,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -127,7 +123,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -166,7 +162,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -206,7 +202,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -248,7 +244,7 @@ public class SpecialProjectReferralServiceTest {
     sprEntity.setLastUpdateTime(LocalDateTime.now());
     sprEntity.setPartEndDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationEndDate()));
     sprEntity
-        .setPartStartDate(DomainChef.uncookLocalDateString(sprDomain.getParticipationStartDate()));
+        .setPartStartDate(DomainChef.uncookLocalDateString(startDate));
     sprEntity.setReferralId(sprDomain.getReferralId());
     sprEntity.setSpecialProjectId(sprDomain.getSpecialProjectId());
     sprEntity.setSsbIndicator(sprDomain.getSafelySurrenderedBabiesIndicator());
@@ -258,6 +254,7 @@ public class SpecialProjectReferralServiceTest {
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprPosted = specialProjectReferralService
         .saveCsecSpecialProjectReferral(referralId, incidentCounty, startDate, messageBuilder);
     assertThat(sprPosted, is(nullValue()));
+
   }
 
   @Test
