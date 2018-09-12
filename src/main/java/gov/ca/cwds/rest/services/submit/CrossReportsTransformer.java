@@ -55,7 +55,7 @@ public class CrossReportsTransformer {
       informDate = DomainChef.cookStrictTimestamp(date);
     } else {
       informDate = DomainChef
-          .cookISO8601Timestamp(DomainChef.uncookStrictTimestampString(informDate));
+          .cookISO8601Timestamp(DomainChef.uncookISO8601Timestamp(informDate));
     }
     return informDate;
   }
