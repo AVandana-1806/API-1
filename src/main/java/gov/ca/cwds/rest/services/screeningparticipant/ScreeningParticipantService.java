@@ -1,14 +1,8 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import javax.persistence.EntityNotFoundException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.Inject;
-
 import gov.ca.cwds.data.CrudsDao;
+import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -19,10 +13,14 @@ import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import io.dropwizard.hibernate.UnitOfWork;
+import javax.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- * 
+ *
  * @author CWDS API Team
  */
 public class ScreeningParticipantService
@@ -42,6 +40,9 @@ public class ScreeningParticipantService
   @Inject
   private ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl;
 
+  @Inject
+  private ClientDao clientDao;
+
   @Override
   @UnitOfWork(value = "cms")
   public ParticipantIntakeApi create(ParticipantIntakeApi incomingParticipantIntakeApi) {
@@ -59,6 +60,7 @@ public class ScreeningParticipantService
       participantIntakeApi =
           createParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
+      participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
       return participantIntakeApiService.create(participantIntakeApi);
     } else {
       return participantIntakeApiService.create(incomingParticipantIntakeApi);
@@ -89,6 +91,10 @@ public class ScreeningParticipantService
     }
   }
 
+  private Boolean isProbationYouth(String clientId) {
+    return clientDao.findProbationYouth(clientId) != null;
+  }
+
   @Override
   public ParticipantIntakeApi delete(String id) {
     return null;
@@ -117,6 +123,13 @@ public class ScreeningParticipantService
   public void setParticipantIntakeApiService(
       ParticipantIntakeApiService participantIntakeApiService) {
     this.participantIntakeApiService = participantIntakeApiService;
+  }
+
+  /**
+   * @param clientDao - clientDao
+   */
+  public void setClientDao(ClientDao clientDao) {
+    this.clientDao = clientDao;
   }
 
   /**
