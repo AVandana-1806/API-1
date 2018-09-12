@@ -167,6 +167,9 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   @JsonProperty("safely_surrendered_babies")
   private SafelySurrenderedBabiesIntakeApi safelySurenderedBabies;
 
+  @JsonIgnoreProperties
+  private String relatedScreeningId;
+
   /**
    * empty constructor
    */
@@ -605,6 +608,14 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   public void setSafelySurenderedBabies(SafelySurrenderedBabiesIntakeApi safelySurenderedBabies) {
     this.safelySurenderedBabies = safelySurenderedBabies;
+  }
+
+  public String getRelatedScreeningId() {
+    return relatedScreeningId;
+  }
+
+  public void setRelatedScreeningId(String relatedScreeningId) {
+    this.relatedScreeningId = relatedScreeningId;
   }
 
   /**
