@@ -265,6 +265,7 @@ public class ParticipantEntity
     probationYouth = participantIntakeApi.isProbationYouth();
     approximateAge = participantIntakeApi.getApproximateAge();
     approximateAgeUnits = participantIntakeApi.getApproximateAgeUnits();
+    relatedScreeningId = participantIntakeApi.getRelatedScreeningId();
     return this;
   }
 

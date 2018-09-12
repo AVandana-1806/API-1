@@ -439,7 +439,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         if (client == null) {
           continue;
         }
-        participantEntity1 = createParticipant(client);
+        participantEntity1 = createParticipant(client, screeningId);
       } else {
         participantEntity1 = participantDao
             .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
@@ -450,7 +450,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         if (client == null) {
           continue;
         }
-        participantEntity2 = createParticipant(client);
+        participantEntity2 = createParticipant(client, screeningId);
       } else {
         participantEntity2 = participantDao
             .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
@@ -479,8 +479,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return result;
   }
 
-  private ParticipantEntity createParticipant(Client client) {
+  private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    participantIntakeApi.setRelatedScreeningId(screeningId);
     participantIntakeApi = participantIntakeApiService.create(participantIntakeApi);
     participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
