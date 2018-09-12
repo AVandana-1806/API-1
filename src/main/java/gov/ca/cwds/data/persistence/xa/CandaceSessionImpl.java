@@ -52,7 +52,8 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * Hibernate session facade that adds logging and facilitates XA transactions.
+ * Hibernate session facade. Adds method logging, facilitates XA transactions, and tracks orphaned
+ * connections.
  * 
  * @author CWDS API Team
  */
@@ -178,7 +179,7 @@ public class CandaceSessionImpl implements Session {
       final Transaction txn = session.getTransaction();
       if (txn.isActive() && !txn.getRollbackOnly()) {
         try {
-          txn.rollback();
+          txn.rollback(); // Can't close DB2 connections with open transactions.
         } catch (Exception e) {
           LOGGER.warn("FAILED TO ROLLBACK ACTIVE TRANSACTION TO CLOSE SESSION!", e);
         }
@@ -190,8 +191,8 @@ public class CandaceSessionImpl implements Session {
         LOGGER.error("FAILED TO CLOSE SESSION! session: {}", session, e);
       } finally {
         if (sessionFactory instanceof CandaceSessionFactoryImpl) {
-          final CandaceSessionFactoryImpl sf = (CandaceSessionFactoryImpl) sessionFactory;
-          sf.endRequest(RequestExecutionContext.instance());
+          ((CandaceSessionFactoryImpl) sessionFactory)
+              .endRequest(RequestExecutionContext.instance());
         }
       }
     }
