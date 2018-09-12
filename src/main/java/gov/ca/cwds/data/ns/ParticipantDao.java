@@ -127,8 +127,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   public ParticipantEntity findByRelatedScreeningIdAndLegacyId(String screeningId,
       String legacyId) {
     @SuppressWarnings("unchecked") final Query<ParticipantEntity> query = this.grabSession()
-        .getNamedQuery(
-            constructNamedQueryName(FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID))
+        .getNamedQuery(FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID)
         .setParameter(PathParam.RELATED_SCREENING_ID, screeningId)
         .setParameter(PathParam.LEGACY_ID, legacyId);
     readOnlyQuery(query);

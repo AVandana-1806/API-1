@@ -7,6 +7,7 @@ import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
+import gov.ca.cwds.rest.core.Api.PathParam;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +63,9 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 @NamedQuery(name = FIND_PARTICIPANTS_BY_PARTICIPANT_IDS,
     query = "FROM ParticipantEntity WHERE id IN :participantIds")
 @NamedQuery(name = FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID,
-    query = "FROM ParticipantEntity WHERE relatedScreeningId = :relatedScreeningId AND legacyId = :legacyId AND screeningId is null")
+    query = "FROM ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID
+        + " AND legacyId = :" + PathParam.LEGACY_ID
+        + " AND screeningId is null")
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
