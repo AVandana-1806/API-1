@@ -102,6 +102,7 @@ import gov.ca.cwds.data.persistence.cms.ApiSystemCodeDao;
 import gov.ca.cwds.data.persistence.cms.CountyTriggerEmbeddable;
 import gov.ca.cwds.data.persistence.cms.SystemCodeDaoFileImpl;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
+import gov.ca.cwds.data.persistence.xa.CandaceDatasourceSlate;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
@@ -622,6 +623,14 @@ public class DataAccessModule extends AbstractModule {
       @XaCmsRsHibernateBundle FerbHibernateBundle xaCmsRsHibernateBundle) {
     LOGGER.info("rsSessionFactory()");
     return new CandaceSessionFactoryImpl(cmsRsHibernateBundle, xaCmsRsHibernateBundle);
+  }
+
+  @Provides
+  @Singleton
+  public CandaceDatasourceSlate slateSessionFactories(@CmsSessionFactory SessionFactory sfCms,
+      @NsSessionFactory SessionFactory sfNs, @CwsRsSessionFactory SessionFactory sfCmsRs) {
+    LOGGER.info("slateSessionFactories()");
+    return new CandaceDatasourceSlate(sfCms, sfNs, sfCmsRs);
   }
 
   // ==========================

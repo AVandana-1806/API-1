@@ -113,9 +113,9 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
       return intakeCodeId;
     }
 
-    Short systemCodeIdShort = systemCodeId.shortValue();
-    List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
-    if (intakeLovs != null) {
+    final Short systemCodeIdShort = systemCodeId.shortValue();
+    final List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
+    if (intakeLovs != null && !intakeLovs.isEmpty()) {
       for (IntakeLov lov : intakeLovs) {
         if (StringUtils.equalsIgnoreCase(intakeType, lov.getIntakeType())) {
           intakeCodeId = lov.getIntakeCode();
