@@ -153,28 +153,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
       // Notify this instance when requests start or end.
       RequestExecutionContextRegistry.registerCallback(this);
-      enableConnectionPoolJmx();
     }
-  }
-
-  private final void enableConnectionPoolJmx() {
-    // Enable JMX for Tomcat-JDBC connection pool.
-    // try {
-    // final String domain = "tomcat.jdbc";
-    // final Hashtable<String, String> properties = new Hashtable<String, String>();
-    // properties.put("type", "ConnectionPool");
-    // properties.put("class", ConnectionPoolMBean.class.getName());
-    //
-    // final ObjectName oname = new ObjectName(domain, properties);
-    // final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-    // mbean = JMX.newMBeanProxy(mbs, oname, ConnectionPoolMBean.class);
-    // // mbean.checkAbandoned();
-    // // mbean.checkIdle();
-    // // mbean.isPoolSweeperEnabled();
-    // // mbean.isJmxEnabled();
-    // } catch (Exception e) {
-    // LOGGER.warn("ERROR initializing JMX monitoring on JDBC connection pools!", e);
-    // }
   }
 
   // ==================================
@@ -193,7 +172,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.info("startRequest");
-    local.set(null); // clear the current thread
+    resetLocals();
   }
 
   @Override
@@ -205,11 +184,20 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
       try {
         session.close();
       } catch (Exception e) {
-        LOGGER.trace("BOOM!", e); // Appease SonarQube.
-        LOGGER.error("ERROR ON SESSION AUTO-CLOSE: data source: {}", sessionFactoryName);
+        LOGGER.error("ERROR ON SESSION AUTO-CLOSE: data source: {}", sessionFactoryName, e);
       }
     }
 
+    resetLocals();
+  }
+
+  protected void resetLocals() {
+    final CandaceSessionTracker track = tracker.get();
+    if (track != null) {
+      outstanding.remove(track.getId());
+    }
+
+    tracker.set(null);
     local.set(null); // clear the current thread
   }
 
@@ -375,9 +363,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void close() {
     LOGGER.info("close");
-    local.set(null);
     pick().close();
     CaresStackUtils.logStack();
+    resetLocals();
   }
 
   @Override

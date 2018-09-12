@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.data.CaresStackUtils;
 import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
  * Hibernate session facade that adds logging and facilitates XA transactions.
@@ -188,7 +189,10 @@ public class CandaceSessionImpl implements Session {
       } catch (Exception e) {
         LOGGER.error("FAILED TO CLOSE SESSION! session: {}", session, e);
       } finally {
-        // session = null; // release session references
+        if (sessionFactory instanceof CandaceSessionFactoryImpl) {
+          final CandaceSessionFactoryImpl sf = (CandaceSessionFactoryImpl) sessionFactory;
+          sf.endRequest(RequestExecutionContext.instance());
+        }
       }
     }
   }
