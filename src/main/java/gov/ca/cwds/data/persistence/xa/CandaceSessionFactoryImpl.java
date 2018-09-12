@@ -77,7 +77,6 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
-  // private transient ConnectionPoolMBean mbean;
 
   /**
    * Construct from session factories directly.
@@ -118,7 +117,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   public void printOutstandingSessions() {
     outstanding.values().stream().forEach(s -> LOGGER
-        .info("Outstanding sessions: session factory: {}, session: {}", sessionFactoryName, s));
+        .info("Outstanding sessions: data source: {}, session: {}", sessionFactoryName, s));
   }
 
   /**
@@ -271,7 +270,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
       session = new CandaceSessionImpl(this, pick().openSession());
       local.set(session);
 
-      final CandaceSessionTracker track = new CandaceSessionTracker(session);
+      final CandaceSessionTracker track = new CandaceSessionTracker(this, session);
       tracker.set(track);
       outstanding.put(track.getId(), track);
     }

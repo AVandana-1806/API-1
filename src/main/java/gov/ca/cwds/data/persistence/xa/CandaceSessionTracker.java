@@ -23,14 +23,22 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
   private static final AtomicInteger sequence = new AtomicInteger(0);
 
   private final int id = sequence.incrementAndGet(); // unique id
+  private final RequestExecutionContext ctx = RequestExecutionContext.instance();
   private final StackTraceElement[] stack = CaresStackUtils.getStackTrace();
   private final long startTime = System.currentTimeMillis();
   private final long threadId = Thread.currentThread().getId();
-  private final RequestExecutionContext ctx = RequestExecutionContext.instance();
 
+  private final CandaceSessionFactoryImpl sessionFactory;
   private final Session session;
 
-  CandaceSessionTracker(Session session) {
+  /**
+   * Preferred constructor.
+   * 
+   * @param sessionFactory datasource session factory
+   * @param session Hibernate session
+   */
+  CandaceSessionTracker(CandaceSessionFactoryImpl sessionFactory, Session session) {
+    this.sessionFactory = sessionFactory;
     this.session = session;
   }
 
@@ -62,12 +70,9 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
     return threadId;
   }
 
-  public boolean thisThreadIsOwner() {
-    return Thread.currentThread().getId() == getThreadId();
-  }
-
-  public boolean matchContextThreadId() {
-    return ctx == null || ctx.getThreadId() == getThreadId();
+  public boolean isThreadOwner() {
+    return (ctx == null && ctx.getThreadId() == getThreadId())
+        && Thread.currentThread().getId() == getThreadId();
   }
 
   public long getStartTime() {
@@ -75,7 +80,7 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
   }
 
   public StackTraceElement[] getStack() {
-    return stack.clone();
+    return stack.clone(); // Appease SonarQube
   }
 
   public Session getSession() {
@@ -84,6 +89,10 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
 
   public int getId() {
     return id;
+  }
+
+  public CandaceSessionFactoryImpl getSessionFactory() {
+    return sessionFactory;
   }
 
 }
