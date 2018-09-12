@@ -171,13 +171,13 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void startRequest(RequestExecutionContext ctx) {
-    LOGGER.info("startRequest");
+    LOGGER.debug("startRequest");
     resetLocals();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
-    LOGGER.info("endRequest");
+    LOGGER.debug("endRequest");
 
     final CandaceSessionImpl session = local.get();
     if (session != null && session.isOpen()) {
