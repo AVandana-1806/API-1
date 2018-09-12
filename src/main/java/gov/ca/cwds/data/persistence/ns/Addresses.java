@@ -2,22 +2,21 @@ package gov.ca.cwds.data.persistence.ns;
 
 import static gov.ca.cwds.data.persistence.ns.Addresses.FIND_BY_PARTICIPANT_ID;
 import static gov.ca.cwds.data.persistence.ns.Addresses.FIND_BY_PARTICIPANT_ID_QUERY;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
-
 import gov.ca.cwds.Identifiable;
 import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.persistence.ns.papertrail.HasPaperTrail;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 
 /**
  * {@link PersistentObject} representing an Address (Postgres table "addresses").
@@ -112,8 +111,7 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
     this.state = address.getState();
     this.zip = address.getZip();
     this.type = address.getType();
-    this.legacyId = address.getLegacyId();
-    this.legacySourceTable = address.getLegacySourceTable();
+    this.setLegacyInfo(address);    
   }
 
   /**
@@ -129,8 +127,7 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
     this.state = address.getState();
     this.zip = address.getZip();
     this.type = address.getType();
-    this.legacyId = address.getLegacyId();
-    this.legacySourceTable = address.getLegacySourceTable();
+    this.setLegacyInfo(address);
   }
 
   /**
@@ -251,6 +248,20 @@ public class Addresses implements PersistentObject, HasPaperTrail, Identifiable<
 
   public void setLegacySourceTable(String legacySourceTable) {
     this.legacySourceTable = legacySourceTable;
+  }
+  
+  private void setLegacyInfo(gov.ca.cwds.rest.api.domain.AddressIntakeApi address) {
+    this.legacyId = address.getLegacyId();
+    this.legacySourceTable = address.getLegacySourceTable();
+    LegacyDescriptor legacyDesc = address.getLegacyDescriptor();
+    
+    if (StringUtils.isBlank(this.legacyId)) {
+      this.legacyId = legacyDesc != null ? legacyDesc.getId() : null;
+    }
+    
+    if (StringUtils.isBlank(this.legacySourceTable)) {
+      this.legacySourceTable = legacyDesc != null ? legacyDesc.getTableName() : null;
+    }    
   }
 
 }
