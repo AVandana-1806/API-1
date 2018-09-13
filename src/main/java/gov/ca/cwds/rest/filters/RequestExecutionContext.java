@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.filters;
 import java.util.Date;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
+import gov.ca.cwds.data.std.ApiMarker;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 
 /**
@@ -11,7 +12,7 @@ import gov.ca.cwds.rest.messages.MessageBuilder;
  * 
  * @author CWDS API Team
  */
-public interface RequestExecutionContext {
+public interface RequestExecutionContext extends ApiMarker {
 
   /**
    * Registered request execution parameters.

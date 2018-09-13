@@ -97,9 +97,8 @@ public class CandaceSessionImpl implements Session {
   public CandaceSessionImpl(CrudsDaoImpl<?> dao) {
     LOGGER.debug("ctor(CrudsDaoImpl<?>)");
     final SessionFactory sf = dao.getSessionFactory();
-    this.sessionFactory = sf instanceof CandaceSessionFactoryImpl
-        ? (CandaceSessionFactoryImpl) dao.getSessionFactory()
-        : sf;
+    this.sessionFactory =
+        sf instanceof CandaceSessionFactoryImpl ? (CandaceSessionFactoryImpl) sf : sf;
     this.session = grabSession();
   }
 

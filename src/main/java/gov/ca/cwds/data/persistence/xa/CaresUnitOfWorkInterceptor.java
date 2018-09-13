@@ -162,12 +162,16 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
     } catch (Exception e) {
       LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
       barfed = true;
-      aspect.onError();
+      if (aspect != null) {
+        aspect.onError();
+      }
       throw e;
     } finally {
       LOGGER.info("@UnitOfWork interceptor finished");
       if (barfed || firstUnitOfWork) {
-        aspect.onFinish();
+        if (aspect != null) {
+          aspect.onFinish();
+        }
         resetRequest();
       }
     }

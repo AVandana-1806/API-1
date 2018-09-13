@@ -71,7 +71,7 @@ public class CandaceSessionTracker extends ApiObjectIdentity implements Response
   }
 
   public boolean isThreadOwner() {
-    return (ctx == null && ctx.getThreadId() == getThreadId())
+    return (ctx != null && ctx.getThreadId() == getThreadId())
         && Thread.currentThread().getId() == getThreadId();
   }
 
