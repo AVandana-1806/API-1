@@ -1,9 +1,11 @@
 package gov.ca.cwds.health;
 
+import gov.ca.cwds.health.resource.Pingable;
 import gov.ca.cwds.rest.services.ServiceException;
 
 /**
- * Health check exception indicates that the given health check failed to execute.
+ * Health check exception indicates that the given health check failed to execute or method
+ * {@link Pingable#ping()} returned false.
  * 
  * @author CWDS API Team
  */

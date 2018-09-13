@@ -14,14 +14,9 @@ public class IntakeCodeCacheHealthCheck extends HealthCheck {
 
   @Override
   protected Result check() throws Exception {
-    int lovCount = IntakeCodeCache.global().getAll().size();
-
-    String message = "Expected minimum LOVs " + MINIMUM_LOVS + ", found " + lovCount;
-
-    if (lovCount >= MINIMUM_LOVS) {
-      return Result.healthy(message);
-    } else {
-      return Result.unhealthy(message);
-    }
+    final int lovCount = IntakeCodeCache.global().getAll().size();
+    final String message = "Expected minimum LOVs " + MINIMUM_LOVS + ", found " + lovCount;
+    return lovCount >= MINIMUM_LOVS ? Result.healthy(message) : Result.unhealthy(message);
   }
+
 }

@@ -128,8 +128,7 @@ public class ScreeningService implements CrudsService {
     final List<ScreeningWrapper> screenings = screeningDao.findScreeningsByUserId(staffId);
     final List<ScreeningDashboard> screeningDashboard = new ArrayList<>(screenings.size());
     for (ScreeningWrapper screening : screenings) {
-      final ScreeningDashboard thisScreening = new ScreeningDashboard(screening);
-      screeningDashboard.add(thisScreening);
+      screeningDashboard.add(new ScreeningDashboard(screening));
     }
     return new ScreeningDashboardList(screeningDashboard);
   }

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import gov.ca.cwds.rest.api.Response;
-
 import io.dropwizard.jackson.JsonSnakeCase;
 
 /**
@@ -22,12 +21,12 @@ import io.dropwizard.jackson.JsonSnakeCase;
  * 
  * @author CWDS API Team
  */
-
 @JsonSnakeCase
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ScreeningDashboardList extends ReportingDomain implements Response {
 
   private static final long serialVersionUID = 1L;
+
   private List<ScreeningDashboard> screeningDashboard;
 
   public ScreeningDashboardList() {

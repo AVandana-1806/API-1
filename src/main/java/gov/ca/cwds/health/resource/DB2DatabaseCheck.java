@@ -13,23 +13,24 @@ import gov.ca.cwds.inject.CmsSessionFactory;
 /**
  * @author CWDS API Team
  */
-public class DB2Database implements Pingable {
+public class DB2DatabaseCheck implements Pingable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DB2Database.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DB2DatabaseCheck.class);
 
   private SessionFactory sessionFactory;
   private String message;
 
   @Inject
-  DB2Database(@CmsSessionFactory SessionFactory sessionFactory) {
+  DB2DatabaseCheck(@CmsSessionFactory SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 
   @Override
   public boolean ping() {
     boolean connectionOK = true;
-    try (Session session = sessionFactory.openSession()) {
-      final Query<?> query = session.createNativeQuery("SELECT 1 FROM SYSIBM.SYSDUMMY1 WITH UR");
+    try (final Session session = sessionFactory.openSession()) {
+      final Query<?> query = session.createNativeQuery(
+          "SELECT /* DB2Database */ 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR");
       if (query.list().get(0) == null) {
         connectionOK = false;
         message = "Unable to retrieve test query";

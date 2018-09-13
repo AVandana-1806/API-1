@@ -36,13 +36,13 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
     super.setup();
 
     sessionFactories =
-        ImmutableMap.<String, SessionFactory>of(Api.DATASOURCE_XA_CMS, sessionFactory);
+        ImmutableMap.<String, SessionFactory>of(Api.DS_XA_CMS, sessionFactory);
     xaUnitOfWork = mock(XAUnitOfWork.class);
 
     target = new XAUnitOfWorkAspect(sessionFactories);
     target.setXaUnitOfWork(xaUnitOfWork);
 
-    final String[] values = {Api.DATASOURCE_XA_CMS, Api.DATASOURCE_XA_NS};
+    final String[] values = {Api.DS_XA_CMS, Api.DS_XA_NS};
     when(xaUnitOfWork.value()).thenReturn(values);
     when(xaUnitOfWork.cacheMode()).thenReturn(CacheMode.NORMAL);
     when(xaUnitOfWork.flushMode()).thenReturn(FlushMode.MANUAL);
@@ -85,7 +85,7 @@ public class XAUnitOfWorkAspectTest extends Doofenshmirtz<Addresses> {
 
   @Test
   public void grabSession_A$SessionFactory() throws Exception {
-    final Session actual = target.grabSession(Api.DATASOURCE_XA_CMS, sessionFactory);
+    final Session actual = target.grabSession(Api.DS_XA_CMS, sessionFactory);
     final Session expected = session;
     assertThat(actual, is(equalTo(expected)));
   }

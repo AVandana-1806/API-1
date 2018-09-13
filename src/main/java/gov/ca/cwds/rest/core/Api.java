@@ -234,29 +234,29 @@ public final class Api {
   public static final String DS_NS = Datasource.NS;
 
   /**
-   * Identifer for CMS DB2 replicated datasources.
-   */
-  public static final String DATASOURCE_CMS_REP = Datasource.CMS_REP;
-
-  /**
-   * Identifer for CMS DB2 datasources for XA, transactional schema.
-   */
-  public static final String DATASOURCE_XA_CMS = Datasource.XA_CMS;
-
-  /**
-   * Identifer for CMS DB2 datasources for XA, replicated schema.
-   */
-  public static final String DATASOURCE_XA_CMS_RS = Datasource.XA_CMS_RS;
-
-  /**
    * Identifer for NS Postgres datasources.
    */
   public static final String DATASOURCE_NS = Datasource.NS;
 
   /**
+   * Identifer for CMS DB2 replicated datasources.
+   */
+  public static final String DS_CMS_REP = Datasource.CMS_REP;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, transactional schema.
+   */
+  public static final String DS_XA_CMS = Datasource.XA_CMS;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, replicated schema.
+   */
+  public static final String DS_XA_CMS_RS = Datasource.XA_CMS_RS;
+
+  /**
    * Identifer for NS Postgres datasources for XA transactions.
    */
-  public static final String DATASOURCE_XA_NS = Datasource.XA_NS;
+  public static final String DS_XA_NS = Datasource.XA_NS;
 
   /**
    * Default private constructor

@@ -1,5 +1,9 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
+import static gov.ca.cwds.rest.core.Api.DS_NS;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -76,9 +80,11 @@ public class HOIScreeningService
   }
 
   /**
-   * @param hoiRequest HOI Request containing a list of Client Id-s
+   * @param hoiRequest HOI Request containing a list of Client Id's
    * @return list of HOI Screenings
    */
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
   @Override
   public HOIScreeningResponse handleFind(HOIRequest hoiRequest) {
     final HOIScreeningData hoiScreeningData = new HOIScreeningData(hoiRequest.getClientIds());
@@ -87,12 +93,14 @@ public class HOIScreeningService
     return new HOIScreeningResponse(buildHoiScreenings(hoiScreeningData));
   }
 
-  @UnitOfWork(value = "ns", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromNS(HOIScreeningData hoiScreeningData) {
     fetchDataFromNS(hoiScreeningData);
   }
 
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   void fetchDataFromNS(HOIScreeningData hsd) {
     /*
      * NOTE: When we want to enable authorizations for screening history, we can add following line
@@ -139,7 +147,7 @@ public class HOIScreeningService
     hsd.setAssigneeStaffIds(assigneeStaffIds);
   }
 
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
   protected void loadDataFromCMS(HOIScreeningData hoiScreeningData) {
     fetchDataFromCMS(hoiScreeningData);
@@ -149,6 +157,7 @@ public class HOIScreeningService
     hsd.setStaffPersonMap(staffPersonDao.findByIds(hsd.getAssigneeStaffIds()));
   }
 
+  @UnitOfWork(value = DS_NS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   Set<HOIScreening> buildHoiScreenings(HOIScreeningData hsd) {
     final Set<HOIScreening> screenings = new TreeSet<>(screeningsComparator);
     for (ScreeningEntity screeningEntity : hsd.getScreeningEntities()) {

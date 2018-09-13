@@ -14,7 +14,7 @@ import gov.ca.cwds.rest.api.domain.StaffPerson;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
- * Business layer object to work on {@link StaffPerson}
+ * Business layer object to work on {@link StaffPerson}.
  * 
  * @author CWDS API Team
  */

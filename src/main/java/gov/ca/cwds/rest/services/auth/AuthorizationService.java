@@ -54,7 +54,7 @@ public class AuthorizationService
 
   public Collection<String> filterClientIds(
       @Authorize("client:read:clientIds") Collection<String> clientIds) {
-    // Authorizer annotation does the work
+    // Authorizer annotation does the work.
     return clientIds;
   }
 

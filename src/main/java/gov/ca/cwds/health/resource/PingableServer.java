@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
  */
 @SuppressWarnings("fb-contrib:STT_TOSTRING_STORED_IN_FIELD")
 public class PingableServer implements Pingable {
+
   protected Client client;
   protected String url;
   private String message;
@@ -60,4 +61,5 @@ public class PingableServer implements Pingable {
   public String getMessage() {
     return message;
   }
+
 }

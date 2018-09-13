@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.shiro.authz.AuthorizationException;
+import org.hibernate.FlushMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +22,7 @@ import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.investigation.Relationship;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipList;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Business layer object to work on {@link Relationship}.
@@ -48,6 +53,7 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
   }
 
   @Override
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   public Response find(String id) {
     List<RelationshipWrapper> relations = new ArrayList<>();
     if (authorized(id)) {
@@ -66,10 +72,11 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
    * @param clientIds - clientIds
    * @return the relationships
    */
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   public Response findForIds(List<String> clientIds) {
     final Set<Relationship> relationships = new HashSet<>();
     if (clientIds != null) {
-      
+
       for (String id : clientIds) {
         if (authorized(id)) {
           List<RelationshipWrapper> relations = getClientRelationships(id);
@@ -80,7 +87,9 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
     return new RelationshipList(relationships);
   }
 
-  private boolean authorized(String clientId) {
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
+  protected boolean authorized(String clientId) {
     boolean authorized = true;
     try {
       authCheckService.ensureClientAccessAuthorized(clientId);
@@ -106,4 +115,5 @@ public class RelationshipsService implements TypedCrudsService<String, Relations
   public Response update(String id, Relationship relationship) {
     throw new NotImplementedException("Update is not implemented");
   }
+
 }

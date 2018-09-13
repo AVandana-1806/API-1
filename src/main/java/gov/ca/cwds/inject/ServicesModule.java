@@ -1,9 +1,5 @@
 package gov.ca.cwds.inject;
 
-import com.google.inject.Scope;
-import com.google.inject.Singleton;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -80,6 +76,8 @@ import gov.ca.cwds.rest.services.hoi.HOIReferralService;
 import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.investigation.contact.DeliveredToIndividualService;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
@@ -236,7 +234,7 @@ public class ServicesModule extends AbstractModule {
 
     // @Singleton does not work with DropWizard Guice.
     bind(GovernmentOrganizationService.class).toProvider(GovtOrgSvcProvider.class);
-    LOGGER.info("configure: point 3");
+    LOGGER.info("configure: done");
   }
 
   /**
@@ -326,7 +324,7 @@ public class ServicesModule extends AbstractModule {
       secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
     }
 
-    try (final Session session = new CandaceSessionImpl(systemCodeDao.grabSession())) {
+    try (final Session session = new CandaceSessionImpl(systemCodeDao)) {
       LOGGER.info("Load code cache: preLoad: {}, secondsToRefreshCache: {}", preLoad,
           secondsToRefreshCache);
       final Transaction txn = session.beginTransaction();

@@ -8,7 +8,6 @@ import gov.ca.cwds.data.std.ApiMarker;
 
 /**
  * @author CWDS API Team
- *
  */
 public interface IntakeCodeCache extends ApiMarker {
 

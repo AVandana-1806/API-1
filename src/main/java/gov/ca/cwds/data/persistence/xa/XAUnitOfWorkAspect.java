@@ -1,5 +1,8 @@
 package gov.ca.cwds.data.persistence.xa;
 
+import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_XA_CMS_RS;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -139,7 +142,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
     try {
       rollback();
     } catch (Exception e) {
-      LOGGER.error("XaUnitOfWorkAspect.onError(): ROLLBACK FAILED! {} ", e.getMessage(), e);
+      LOGGER.error("onError(): ROLLBACK FAILED! {} ", e.getMessage(), e);
       throw e;
     }
   }
@@ -155,14 +158,12 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       this.sessionFactories.values().stream().filter(ManagedSessionContext::hasBind)
           .forEach(ManagedSessionContext::unbind);
     } catch (Exception e) {
-      LOGGER.warn("XaUnitOfWorkAspect.onFinish(): FAILED TO UNBIND SESSION FACTORY! {} ",
-          e.getMessage(), e);
+      LOGGER.warn("onFinish(): FAILED TO UNBIND SESSION FACTORY! {} ", e.getMessage(), e);
     } finally {
       clearXaFlags();
       sessionFactories.clear();
       units.clear();
     }
-
   }
 
   protected void clearXaFlags() {
@@ -204,9 +205,8 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       sessions.put(key, session);
 
       // Add user info to DB2 connections. Harmless for other connections.
-      session.doWork(
-          new WorkFerbUserInfo(Api.DATASOURCE_CMS.equals(key) || Api.DATASOURCE_CMS_REP.equals(key)
-              || Api.DATASOURCE_XA_CMS.equals(key) || Api.DATASOURCE_XA_CMS_RS.equals(key)));
+      session.doWork(new WorkFerbUserInfo(Api.DATASOURCE_CMS.equals(key)
+          || Api.DS_CMS_REP.equals(key) || DS_XA_CMS.equals(key) || DS_XA_CMS_RS.equals(key)));
     }
 
     return session;
@@ -218,7 +218,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * @return true = any unit is transactional
    */
   protected boolean hasTransactionalFlag() {
-    LOGGER.info("hasTransactionalFlag()");
+    LOGGER.trace("hasTransactionalFlag()");
     return this.units.values().stream().anyMatch(XAUnitOfWork::transactional);
   }
 
@@ -226,7 +226,7 @@ public class XAUnitOfWorkAspect implements ApiMarker {
    * Open sessions for selected datasources.
    */
   protected void openSessions() {
-    LOGGER.info("openSessions()");
+    LOGGER.debug("openSessions()");
     sessionFactories.entrySet().stream().forEach(e -> grabSession(e.getKey(), e.getValue()));
   }
 
@@ -373,6 +373,17 @@ public class XAUnitOfWorkAspect implements ApiMarker {
       }
     } catch (Exception e) {
       LOGGER.error("XA COMMIT FAILED! {}", e.getMessage(), e);
+
+      try {
+        final int status = txn.getStatus();
+        if (status != Status.STATUS_ROLLING_BACK && status != Status.STATUS_MARKED_ROLLBACK) {
+          LOGGER.warn("XA ERROR ROLL BACK!");
+          rollback();
+        }
+      } catch (Exception e2) {
+        LOGGER.error("XA ERROR ROLL BACK FAILED! {}", e.getMessage(), e2);
+      }
+
       throw new CaresXAException("XA COMMIT FAILED!", e);
     }
   }
