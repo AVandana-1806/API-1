@@ -17,9 +17,9 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * {@link PersistentObject} representing paper trail.
+ * {@link PersistentObject} representing a version paper trail in Postgres.
  *
- * @author Intake Team 4
+ * @author CWDS API Team
  */
 @Entity
 @Table(name = "versions")

@@ -218,12 +218,12 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   private Map<String, ParticipantEntity> getMappedParticipantsById(Set<String> participantIds) {
-    Map<String, ParticipantEntity> map = new HashMap<>();
-    List<ParticipantEntity> participantEntities = participantDao.findByIds(participantIds);
+    final List<ParticipantEntity> participantEntities = participantDao.findByIds(participantIds);
     if (CollectionUtils.isEmpty(participantEntities)) {
-      return map;
+      return new HashMap<>();
     }
 
+    final Map<String, ParticipantEntity> map = new HashMap<>(participantEntities.size());
     participantEntities.forEach(e -> map.put(e.getId(), e));
     return map;
   }
@@ -320,6 +320,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
       relatedToBuilder.withReversedRelationship(false);
     }
+
     return relatedToBuilder.build();
   }
 
@@ -337,7 +338,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
       if (!relationshipExist(screeningParticipant, participant,
           relationshipFacadeData.allRelationships)) {
-        CandidateToBuilder builder = new CandidateToBuilder();
+        final CandidateToBuilder builder = new CandidateToBuilder();
 
         LegacyDescriptorEntity legacyDescriptorEntity =
             relationshipFacadeData.participantsLegacyDescriptors.get(participant.getId());
@@ -437,7 +438,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
     for (ClientRelationship clientRelationship : shouldBeCreated) {
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
+        final Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         if (client == null) {
           continue;
         }
@@ -448,7 +449,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       }
 
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
+        final Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
         if (client == null) {
           continue;
         }
@@ -462,7 +463,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         return result;
       }
 
-      Relationship newRelationship = new Relationship();
+      final Relationship newRelationship = new Relationship();
       newRelationship.setClientId(participantEntity1.getId());
       newRelationship.setRelativeId(participantEntity2.getId());
       newRelationship.setRelationshipType(clientRelationship.getClientRelationshipType());
@@ -475,8 +476,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       newRelationship.setStartDate(clientRelationship.getStartDate());
       newRelationship.setEndDate(clientRelationship.getEndDate());
 
-      newRelationship = nsRelationshipDao.create(newRelationship);
-      result.add(mapper.map(newRelationship));
+      result.add(mapper.map(nsRelationshipDao.create(newRelationship)));
     }
     return result;
   }
@@ -493,7 +493,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
     LOGGER.info("lagacyRelationships {}", lagacyRelationships);
     LOGGER.info("nsRelationships {}", nsRelationships);
-    List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
+    final List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
     if (CollectionUtils.isEmpty(lagacyRelationships)) {
       return relationshipsToCreate;
     }
@@ -518,7 +518,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       return new ArrayList<>();
     }
 
-    List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
+    final List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
     legacyRelationships.forEach(e -> {
       boolean update = false;
       for (Relationship relationship : nsRelationships) {

@@ -115,13 +115,12 @@ public class IntakeLovResource {
     Response ret;
     try {
       final List<IntakeLov> lovs = IntakeCodeCache.global().getAll();
-      LOGGER.info("Intake LOV count: {}", lovs.size());
-
       final List<IntakeLovEntry> lovEntries = new ArrayList<>(lovs.size());
       for (IntakeLov lov : lovs) {
         lovEntries.add(new IntakeLovEntry(lov));
       }
 
+      LOGGER.info("Intake LOV domain count: {}, raw count: {}", lovEntries.size(), lovs.size());
       ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(lovEntries)).build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);

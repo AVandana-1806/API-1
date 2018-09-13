@@ -78,7 +78,6 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
   }
 
-
   @SuppressWarnings("unchecked")
   @Override
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {

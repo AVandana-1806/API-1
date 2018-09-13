@@ -234,7 +234,7 @@ public class ServicesModule extends AbstractModule {
 
     // @Singleton does not work with DropWizard Guice.
     bind(GovernmentOrganizationService.class).toProvider(GovtOrgSvcProvider.class);
-    LOGGER.info("configure: point 3");
+    LOGGER.info("configure: done");
   }
 
   /**

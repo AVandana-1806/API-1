@@ -16,6 +16,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"squid:S2160"})
 public class CandaceSessionTracker extends ApiObjectIdentity implements Response {
 
   private static final long serialVersionUID = 1L;

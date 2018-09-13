@@ -112,14 +112,15 @@ public class CandaceSessionImpl implements Session {
    * @return usable session
    */
   private final Session grabSession() {
-    Session session;
+    Session ret;
     try {
-      session = sessionFactory.getCurrentSession();
+      ret = sessionFactory.getCurrentSession();
     } catch (HibernateException e) {
-      session = sessionFactory.openSession();
+      LOGGER.trace("No open session. Open a new one.", e); // Appease SonarQube
+      ret = sessionFactory.openSession();
     }
 
-    return session;
+    return ret;
   }
 
   /**
@@ -175,10 +176,10 @@ public class CandaceSessionImpl implements Session {
   public void close() throws HibernateException {
     LOGGER.info("close");
     if (session != null && session.isOpen()) {
-      final Transaction txn = session.getTransaction();
-      if (txn.isActive() && !txn.getRollbackOnly()) {
+      final Transaction tx = session.getTransaction();
+      if (tx.isActive() && !tx.getRollbackOnly()) {
         try {
-          txn.rollback(); // Can't close DB2 connections with open transactions.
+          tx.rollback(); // Can't close DB2 connections with open transactions.
         } catch (Exception e) {
           LOGGER.warn("FAILED TO ROLLBACK ACTIVE TRANSACTION TO CLOSE SESSION!", e);
         }
