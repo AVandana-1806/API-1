@@ -73,7 +73,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   // Only works for the same datasource, for which this class is a facade.
   private transient ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
-  private ThreadLocal<CandaceSessionTracker> tracker = new ThreadLocal<>();
+  private transient ThreadLocal<CandaceSessionTracker> tracker = new ThreadLocal<>();
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;

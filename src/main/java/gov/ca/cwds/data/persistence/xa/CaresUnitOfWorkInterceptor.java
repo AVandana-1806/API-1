@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,8 +111,9 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         currentSessionFactory = nsSessionFactory;
         break;
       default:
-        LOGGER.error("UNKNOWN DATASOURCE! {}", annotation.value());
-        throw new IllegalStateException("UNKNOWN DATASOURCE! " + annotation.value());
+        final String msg = StringUtils.trimToEmpty(annotation.value());
+        LOGGER.error("UNKNOWN DATASOURCE! {}", msg);
+        throw new IllegalStateException("UNKNOWN DATASOURCE! " + msg);
     }
 
     // Does this request already have an aspect for this session factory?
