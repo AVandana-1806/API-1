@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services;
 
+import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.util.stream.Stream;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
@@ -241,8 +244,10 @@ public class ScreeningService implements CrudsService {
     for (CrossReportIntake crossReport : crossReports) {
       final List<GovernmentAgencyEntity> agencyEntities =
           agencyDao.findByCrossReportId(crossReport.getId());
+      List<GovernmentAgencyEntity> lastAgencyEntities = filterLastUpdatedByCategory(agencyEntities);
+
       final Set<gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake> agencies =
-          agencyMapper.map(agencyEntities);
+          agencyMapper.map(lastAgencyEntities);
       crossReport.getAgencies().addAll(agencies);
     }
 
@@ -268,6 +273,25 @@ public class ScreeningService implements CrudsService {
     }
 
     return screening;
+  }
+
+  List<GovernmentAgencyEntity> filterLastUpdatedByCategory(
+      List<GovernmentAgencyEntity> agencyEntities) {
+
+    String[] agencyTypes = {
+        AgencyType.DISTRICT_ATTORNEY.name(),
+        AgencyType.LAW_ENFORCEMENT.name(),
+        AgencyType.COMMUNITY_CARE_LICENSING.name(),
+        AgencyType.COUNTY_LICENSING.name(),
+    };
+
+    List<GovernmentAgencyEntity> filteredAgencyEntities = new ArrayList<>();
+    for (String agencyType : agencyTypes) {
+      CollectionUtils.addIgnoreNull(filteredAgencyEntities, agencyEntities.stream()
+          .filter(a -> agencyType.equals(a.getCategory()))
+          .max((a1, a2) -> a1.getUpdatedAt().compareTo(a2.getUpdatedAt())).orElse(null));
+    }
+    return filteredAgencyEntities;
   }
 
   @SuppressWarnings("fb-contrib:CFS_CONFUSING_FUNCTION_SEMANTICS")

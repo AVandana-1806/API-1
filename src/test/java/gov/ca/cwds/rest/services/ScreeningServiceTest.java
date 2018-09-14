@@ -4,20 +4,28 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
+import gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity;
+import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.time.DateUtils;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.rest.RestStatus;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -128,6 +136,45 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     target.setParticipantIntakeApiService(participantIntakeApiService);
 
     new TestingRequestExecutionContext("0X5");
+  }
+
+  @Test
+  public void testFilterLastUpdatedByCategory() {
+    List<GovernmentAgencyEntity> agencyEntities = new ArrayList<>();
+
+    Date lastDate = new Date();
+    Date notLastDate = DateUtils.addDays(lastDate, -1);
+
+    agencyEntities.add(createAgencyEntity("1", AgencyType.DISTRICT_ATTORNEY, lastDate));
+    agencyEntities.add(createAgencyEntity("2", AgencyType.DISTRICT_ATTORNEY, notLastDate));
+
+    agencyEntities.add(createAgencyEntity("12", AgencyType.LAW_ENFORCEMENT, lastDate));
+    agencyEntities.add(createAgencyEntity("11", AgencyType.LAW_ENFORCEMENT, notLastDate));
+
+    agencyEntities.add(createAgencyEntity("21", AgencyType.COMMUNITY_CARE_LICENSING, lastDate));
+    agencyEntities.add(createAgencyEntity("22", AgencyType.COMMUNITY_CARE_LICENSING, notLastDate));
+
+    agencyEntities.add(createAgencyEntity("32", AgencyType.COUNTY_LICENSING, lastDate));
+    agencyEntities.add(createAgencyEntity("31", AgencyType.COUNTY_LICENSING, notLastDate));
+
+    ScreeningService screeningService = new ScreeningService();
+    List<GovernmentAgencyEntity> filteredAgencyEntities =
+        screeningService.filterLastUpdatedByCategory(agencyEntities);
+
+    assertEquals(4, filteredAgencyEntities.size());
+
+    assertEquals(1, filteredAgencyEntities.stream().filter(a -> "1".equals(a.getId())).count());
+    assertEquals(1, filteredAgencyEntities.stream().filter(a -> "12".equals(a.getId())).count());
+    assertEquals(1, filteredAgencyEntities.stream().filter(a -> "21".equals(a.getId())).count());
+    assertEquals(1, filteredAgencyEntities.stream().filter(a -> "32".equals(a.getId())).count());
+  }
+
+  private GovernmentAgencyEntity createAgencyEntity(String id, AgencyType type, Date updateDate) {
+    GovernmentAgencyEntity agencyEntity = new GovernmentAgencyEntity();
+    agencyEntity.setId(id);
+    agencyEntity.setCategory(type.name());
+    agencyEntity.setUpdatedAt(updateDate);
+    return agencyEntity;
   }
 
   @Test(expected = Exception.class)
