@@ -14,9 +14,9 @@ public class CWSDateTime {
   private ZonedDateTime utcDateTime;
 
   public static final String DATE_FORMAT = "yyyy-MM-dd";
+  public static final String TIME_FORMAT = "HH:mm:ss";
   public static final String TIMESTAMP_ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   public static final String TIMESTAMP_ISO8601_FORMAT_TO_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-
 
   public CWSDateTime(ZonedDateTime dateTime) {
     this.utcDateTime = dateTime;
@@ -36,11 +36,27 @@ public class CWSDateTime {
     return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringFormatter());
   }
 
+  public String toLocalDate(){
+    return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringDateFormatter());
+  }
+
+  public String toLocalTime(){
+    return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringTimeFormatter());
+  }
+
   private ZoneId localTimeZone() {
     return ZoneId.of(LOCAL_TIME_ZONE);
   }
 
   private DateTimeFormatter toStringFormatter(){
     return DateTimeFormatter.ofPattern(TIMESTAMP_ISO8601_FORMAT_TO_STRING);
+  }
+
+  private DateTimeFormatter toStringDateFormatter(){
+    return DateTimeFormatter.ofPattern(DATE_FORMAT);
+  }
+
+  private DateTimeFormatter toStringTimeFormatter(){
+    return DateTimeFormatter.ofPattern(TIME_FORMAT);
   }
 }

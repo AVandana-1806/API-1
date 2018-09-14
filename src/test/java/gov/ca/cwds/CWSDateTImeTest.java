@@ -18,4 +18,16 @@ public class CWSDateTImeTest {
     CWSDateTime dateTime = new CWSDateTime("2018-09-11");
     assertEquals("2018-09-11T01:00:00.000", dateTime.toLocalTimeStamp());
   }
+
+  @Test
+  public void shouldConvertUTCTimestampStringToLocalDate(){
+    CWSDateTime dateTime = new CWSDateTime("2018-09-11");
+    assertEquals("2018-09-11", dateTime.toLocalDate());
+  }
+
+  @Test
+  public void shouldConvertUTCTimestampStringToLocalTime(){
+    CWSDateTime dateTime = new CWSDateTime("2018-09-11");
+    assertEquals("01:00:00", dateTime.toLocalTime());
+  }
 }
