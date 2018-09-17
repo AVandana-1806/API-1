@@ -47,7 +47,6 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.services.AddressIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.junit.template.ServiceTestTemplate;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
