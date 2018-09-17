@@ -52,6 +52,7 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {

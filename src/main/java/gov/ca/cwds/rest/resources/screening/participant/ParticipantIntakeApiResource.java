@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.resources;
+package gov.ca.cwds.rest.resources.screening.participant;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_PARTICIPANTS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
@@ -25,8 +25,9 @@ import com.google.inject.Inject;
 import gov.ca.cwds.inject.ParticipantServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.core.Api.ResponseMessage;
+import gov.ca.cwds.rest.resources.TypedResourceDelegate;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

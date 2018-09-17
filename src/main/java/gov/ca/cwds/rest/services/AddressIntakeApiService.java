@@ -95,7 +95,8 @@ public class AddressIntakeApiService
     throw new NotImplementedException("Update is not implemented");
   }
 
-  LegacyDescriptor saveLegacyDescriptor(LegacyDescriptor legacyDescriptor, String describableId) {
+  public LegacyDescriptor saveLegacyDescriptor(LegacyDescriptor legacyDescriptor,
+      String describableId) {
     if (legacyDescriptor == null || describableId == null) {
       return null;
     }

@@ -42,9 +42,9 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 
 /**
