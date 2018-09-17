@@ -46,7 +46,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
   public ParticipantIntakeApi tranform(Client client) {
     // Ensure Client are authorized
     String clientId = client.getId();
-   // authorizationService.ensureClientAccessAuthorized(clientId);
+    authorizationService.ensureClientAccessAuthorized(clientId);
     IntakeRaceAndEthnicityConverter intakeRaceAndEthnicityConverter =
         new IntakeRaceAndEthnicityConverter();
 
