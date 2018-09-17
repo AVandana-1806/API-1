@@ -204,25 +204,35 @@ public class ClientAddressService implements
 
       Address domainAddress = Address.createWithDefaults(address);
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
+      
       if (StringUtils.isBlank(getAddressLegacyId(address))) {
+        /*
+         * Since legacy address id is not provided, we consider this is a new address.
+         */
         addressId = createNewAddress(address, domainAddress);
+        
+        /*
+         * Create client address entry for given referral.
+         */
+        if (hasAddress(messageBuilder, addressId) && hasClient(clientId, messageBuilder)) {
+          Short addressType = address.getType() != null ? address.getType().shortValue()
+              : LegacyDefaultValues.DEFAULT_ADDRESS_TYPE;
+          gov.ca.cwds.rest.api.domain.cms.ClientAddress clientAddress =
+              new gov.ca.cwds.rest.api.domain.cms.ClientAddress(addressType, "", "", "", addressId,
+                  clientId, "", referralId);
+
+          messageBuilder.addDomainValidationError(validator.validate(clientAddress));
+          create(clientAddress);
+          messageBuilder.addDomainValidationError(validator.validate(clientAddress));
+          address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
+          address.setLegacyId(addressId);
+        }        
       } else {
-        addressId = updateExistingAddress(messageBuilder, addressId, address, domainAddress);
-      }
-
-      if (hasAddress(messageBuilder, addressId) && hasClient(clientId, messageBuilder)) {
-        Short addressType = address.getType() != null ? address.getType().shortValue()
-            : LegacyDefaultValues.DEFAULT_ADDRESS_TYPE;
-        gov.ca.cwds.rest.api.domain.cms.ClientAddress clientAddress =
-            new gov.ca.cwds.rest.api.domain.cms.ClientAddress(addressType, "", "", "", addressId,
-                clientId, "", referralId);
-
-        messageBuilder.addDomainValidationError(validator.validate(clientAddress));
-        create(clientAddress);
-        messageBuilder.addDomainValidationError(validator.validate(clientAddress));
-        address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
-        address.setLegacyId(addressId);
-      }
+        //
+        // At this time, we don't update addresses (September 17, 2018)
+        //
+        //addressId = updateExistingAddress(messageBuilder, addressId, address, domainAddress);              
+      }      
     }
 
     return clientParticipant;
