@@ -1,17 +1,13 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
-import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,6 +34,7 @@ import gov.ca.cwds.data.ns.ParticipantPhoneNumbersDao;
 import gov.ca.cwds.data.ns.PhoneNumbersDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.ns.Addresses;
+import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantAddresses;
 import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ParticipantPhoneNumbers;
@@ -46,9 +43,11 @@ import gov.ca.cwds.fixture.AddressesEntityBuilder;
 import gov.ca.cwds.fixture.ParticipantEntityBuilder;
 import gov.ca.cwds.fixture.PhoneNumbersEntityBuilder;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
+import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.junit.template.ServiceTestTemplate;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
@@ -130,7 +129,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     when(participantDao.find(participantId)).thenReturn(null);
     when(participantDao.create(any())).thenReturn(participantEntity);
 
-    legacyDescriptor = new LegacyDescriptor("JhHq86Iaaf", "1118-8618-0978-2140657", new DateTime(),"tableName", "a table to store data");
+    legacyDescriptor = new LegacyDescriptor("JhHq86Iaaf", "1118-8618-0978-2140657", new DateTime(),
+        "tableName", "a table to store data");
     legacyDescriptorEntity = new LegacyDescriptorEntity(legacyDescriptor, "", 219L);
     when(legacyDescriptorDao.create(any())).thenReturn(legacyDescriptorEntity);
   }
@@ -175,7 +175,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     String pN2 = "22";
 
 
-    ParticipantEntity participantEntity = new ParticipantEntityBuilder().setId(participantId).build();
+    ParticipantEntity participantEntity =
+        new ParticipantEntityBuilder().setId(participantId).build();
     Addresses addresses1 = new AddressesEntityBuilder().setId(aId1).build();
     Addresses addresses2 = new AddressesEntityBuilder().setId(aId2).build();
     PhoneNumbers phoneNumbers1 =
@@ -184,10 +185,12 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
         new PhoneNumbersEntityBuilder().setId(pN2).setNumber("222222222").setType("Work").build();
 
     when(csecDao.findByParticipantId(participantId)).thenReturn(new ArrayList<>());
-    when(addressesDao.findByParticipant(participantId)).thenReturn(Arrays.asList(addresses1, addresses2));
+    when(addressesDao.findByParticipant(participantId))
+        .thenReturn(Arrays.asList(addresses1, addresses2));
     when(phoneNumbersDao.findByParticipant(participantId))
         .thenReturn(Arrays.asList(phoneNumbers1, phoneNumbers2));
-    when(participantDao.findByScreeningIdAndParticipantId("-1", participantId)).thenReturn(participantEntity);
+    when(participantDao.findByScreeningIdAndParticipantId("-1", participantId))
+        .thenReturn(participantEntity);
 
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
 
@@ -265,13 +268,13 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   }
 
   @Test
-  public void shouldContainALegacyDescriptorWhenCreated(){
+  public void shouldContainALegacyDescriptorWhenCreated() {
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
     expected.setLegacyDescriptor(legacyDescriptor);
-    ParticipantIntakeApi found = participantIntakeApiService.create(expected);
+    ParticipantIntakeApi found = participantIntakeApiService.persistParticipantObjectInNS(expected);
     LegacyDescriptor legacyDescriptor = found.getLegacyDescriptor();
-    assertEquals(legacyDescriptor.getId(),found.getLegacyDescriptor().getId());
-    assertEquals(legacyDescriptor.getUiId(),found.getLegacyDescriptor().getUiId());
+    assertEquals(legacyDescriptor.getId(), found.getLegacyDescriptor().getId());
+    assertEquals(legacyDescriptor.getUiId(), found.getLegacyDescriptor().getUiId());
   }
 
   @Override
@@ -351,7 +354,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     String pN2 = "22";
 
 
-    ParticipantEntity participantEntity = new ParticipantEntityBuilder().setId(participantId).build();
+    ParticipantEntity participantEntity =
+        new ParticipantEntityBuilder().setId(participantId).build();
 
     Addresses addresses1 = new AddressesEntityBuilder().setId(aId1).build();
     Addresses addresses2delete = new AddressesEntityBuilder().setId(aId2).build();
@@ -376,7 +380,8 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
         .thenReturn(new HashSet<>(Arrays.asList(participantAddresses1, participantAddresses2)));
     when(participantPhoneNumbersDao.findByParticipantId(participantId)).thenReturn(
         new HashSet<>(Arrays.asList(participantPhoneNumbers1, participantPhoneNumbers2)));
-    when(participantDao.findByScreeningIdAndParticipantId("-1", participantId)).thenReturn(participantEntity);
+    when(participantDao.findByScreeningIdAndParticipantId("-1", participantId))
+        .thenReturn(participantEntity);
 
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
 

@@ -63,7 +63,7 @@ public class GovernmentOrganizationService
       // @Named("something") String test,
       GovernmentOrganizationDao governmentOrganizationDao, LawEnforcementDao lawEnforcementDao) {
     super();
-    GovernmentOrganizationCacheLoader cacheLoader =
+    final GovernmentOrganizationCacheLoader cacheLoader =
         new GovernmentOrganizationCacheLoader(governmentOrganizationDao, lawEnforcementDao);
     governmentOrganizationResponseCache =
         CacheBuilder.newBuilder().refreshAfterWrite(15, TimeUnit.DAYS).build(cacheLoader);
@@ -79,7 +79,7 @@ public class GovernmentOrganizationService
 
   @Override
   protected GovernmentOrganizationResponse handleFind(String countyId) {
-    String key = StringUtils.isBlank(countyId) ? ALL_COUNTY_CACHE_KEY : countyId;
+    final String key = StringUtils.isBlank(countyId) ? ALL_COUNTY_CACHE_KEY : countyId;
     GovernmentOrganizationResponse governmentOrganizationResponse = null;
     try {
       governmentOrganizationResponse = governmentOrganizationResponseCache.get(key);

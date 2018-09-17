@@ -41,10 +41,10 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   }
 
   /**
-   * Find Legacy Id-s by screeningId
+   * Find Legacy Id's by screeningId
    *
    * @param screeningId screeningId
-   * @return Set of Legacy Id-s
+   * @return Set of Legacy Id's
    */
   public Set<String> findLegacyIdListByScreeningId(String screeningId) {
     @SuppressWarnings("unchecked") final Query<String> query =
@@ -55,7 +55,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   }
 
   /**
-   * @param screeningIds Set of Screening ID-s
+   * @param screeningIds Set of Screening ID's
    * @return map where key is a Screening ID and value is a Set of Participant Entities bound to the
    * screening
    */

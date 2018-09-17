@@ -1,6 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_NS;
+import static gov.ca.cwds.rest.core.Api.DS_NS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 
 import javax.validation.Valid;
@@ -32,9 +32,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * A resource providing a RESTful interface for {@link Screening}. It delegates functions to {@link
- * ServiceBackedResourceDelegate}. It decorates the {@link ServiceBackedResourceDelegate} not in
- * functionality but with @see
+ * A resource providing a RESTful interface for {@link Screening}. It delegates functions to
+ * {@link ServiceBackedResourceDelegate}. It decorates the {@link ServiceBackedResourceDelegate} not
+ * in functionality but with @see
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -70,7 +70,7 @@ public class ScreeningResource {
    * @param screening - screening
    * @return The {@link Response}
    */
-  @UnitOfWork(DATASOURCE_NS)
+  @UnitOfWork(DS_NS)
   @POST
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
       @ApiResponse(code = 401, message = "Not Authorized"),
@@ -92,7 +92,7 @@ public class ScreeningResource {
    * @param screening the screening
    * @return The {@link Response}
    */
-  @UnitOfWork(DATASOURCE_NS)
+  @UnitOfWork(DS_NS)
   @PUT
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
@@ -116,7 +116,7 @@ public class ScreeningResource {
    * @param screeningId The id
    * @return The {@link Response}
    */
-  @UnitOfWork(DATASOURCE_NS)
+  @UnitOfWork(DS_NS)
   @GET
   @Path("/{screeningId}/relationships")
   @ApiResponses(
@@ -140,7 +140,7 @@ public class ScreeningResource {
    */
   @GET
   @Path("/{screeningId}/relationships_with_candidates")
-  @UnitOfWork(DATASOURCE_NS)
+  @UnitOfWork(DS_NS)
   @ApiResponses(
       value = {@ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = "Unable to process JSON"),
           @ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
@@ -148,11 +148,9 @@ public class ScreeningResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Relationship not found")})
   @ApiOperation(value = "Find Relationships by screening id with candidates",
       response = ScreeningRelationshipsWithCandidates.class)
-  public Response getRelationshipsWithCandidatesByScreeningId(
-      @PathParam("screeningId") @ApiParam(required = true,
-          value = "The id of the Screening to find") String screeningId) {
-    return new ResponseConverter()
-        .withDataResponse(
-            relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
+  public Response getRelationshipsWithCandidatesByScreeningId(@PathParam("screeningId") @ApiParam(
+      required = true, value = "The id of the Screening to find") String screeningId) {
+    return new ResponseConverter().withDataResponse(
+        relationshipFacade.getRelationshipsWithCandidatesByScreeningId(screeningId));
   }
 }

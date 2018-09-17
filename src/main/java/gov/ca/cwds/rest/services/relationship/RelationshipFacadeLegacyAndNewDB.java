@@ -1,6 +1,25 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.ns.LegacyDescriptorDao;
@@ -23,44 +42,34 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedT
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.ScreeningRelationshipsWithCandidatesBuilder;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author CWDS TPT-3 Team
  */
 public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(RelationshipFacadeLegacyAndNewDB.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(RelationshipFacadeLegacyAndNewDB.class);
+
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
-  private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription = new HashMap<>();
-  private final Map<Short, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedById = new HashMap<>();
-  private final static String DB_ERROR_MESSAGE = "Relationship couldn't be created"; // For now I don't know how it would be shown on the UI I am waiting for this information
+
+  // For now I don't know how it would be shown on the UI I am waiting for this information
+  private final static String DB_ERROR_MESSAGE = "Relationship couldn't be created";
+
+  private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription =
+      new HashMap<>();
+  private final Map<Short, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedById =
+      new HashMap<>();
 
   private final ParticipantDao participantDao;
   private final ClientRelationshipDao cmsRelationshipDao;
   private final RelationshipDao nsRelationshipDao;
   private final ClientDao cmsClientDao;
-  private final SystemCodeCache systemCodeDao;
+
   private final ScreeningRelationshipService screeningRelationshipService;
   private final LegacyDescriptorDao legacyDescriptorDao;
   private final ParticipantIntakeApiService participantIntakeApiService;
@@ -68,9 +77,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   @Inject
   public RelationshipFacadeLegacyAndNewDB(ParticipantDao participantDao,
-      ClientRelationshipDao cmsRelationshipDao,
-      RelationshipDao nsRelationshipDao, ClientDao cmsClientDao,
-      ScreeningRelationshipService screeningRelationshipService,
+      ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao,
+      ClientDao cmsClientDao, ScreeningRelationshipService screeningRelationshipService,
       LegacyDescriptorDao legacyDescriptorDao,
       ParticipantIntakeApiService participantIntakeApiService,
       ClientTransformer clientTransformer) {
@@ -78,8 +86,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     this.cmsRelationshipDao = cmsRelationshipDao;
     this.nsRelationshipDao = nsRelationshipDao;
     this.cmsClientDao = cmsClientDao;
+
     this.screeningRelationshipService = screeningRelationshipService;
-    this.systemCodeDao = SystemCodeCache.global();
     this.legacyDescriptorDao = legacyDescriptorDao;
     this.participantIntakeApiService = participantIntakeApiService;
     this.clientTransformer = clientTransformer;
@@ -108,8 +116,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         responses.add(createRelationship(relationship));
       } catch (Exception e) {
         ScreeningRelationship faildRelationship = new ScreeningRelationship(relationship);
-        faildRelationship.setError(
-            DB_ERROR_MESSAGE);  // it the future it would be manege by drools and business rules
+        faildRelationship.setError(DB_ERROR_MESSAGE); // in the future, Drools will manage this
       }
     });
     return responses;
@@ -123,11 +130,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       return response;
     }
 
-    RelationshipFacadeData relationshipFacadeData = getRelationshipFacadeData(screeningId);
-
-    relationshipFacadeData.screeningParticipants.forEach(screeningParticipant ->
-        response.add(
-            getRelationshipWithCandidates(screeningParticipant, relationshipFacadeData)));
+    final RelationshipFacadeData relationshipFacadeData = getRelationshipFacadeData(screeningId);
+    relationshipFacadeData.screeningParticipants.forEach(screeningParticipant -> response
+        .add(getRelationshipWithCandidates(screeningParticipant, relationshipFacadeData)));
     return response;
   }
 
@@ -139,8 +144,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
     // get participants by screeningId
     Set<String> legacyClientIds = getLegacyClientIdsByScreeningId(screeningId);
+
     // get relationships from legacy
     Set<ClientRelationship> lagacyRelationships = getCmsRelationships(legacyClientIds);
+
     // get relationships from pgsql
     List<Relationship> nsRelationships = getNsRelationships(screeningId);
 
@@ -156,16 +163,15 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
     // select and return
-    if (participantDao.getSessionFactory().getCurrentSession().getTransaction().getStatus()
-        == TransactionStatus.ACTIVE) {
+    if (participantDao.getSessionFactory().getCurrentSession().getTransaction()
+        .getStatus() == TransactionStatus.ACTIVE) {
       participantDao.getSessionFactory().getCurrentSession().flush();
     }
     return result;
   }
 
-  private ScreeningRelationship enrichReversedRelationship(
-      ScreeningRelationship relationship) {
-    String clientId = relationship.getClientId();
+  private ScreeningRelationship enrichReversedRelationship(ScreeningRelationship relationship) {
+    final String clientId = relationship.getClientId();
     relationship.setClientId(relationship.getRelativeId());
     relationship.setRelativeId(clientId);
     relationship.setRelationshipType(getOppositeSystemCode(relationship.getRelationshipType()));
@@ -177,8 +183,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       return;
     }
 
-    Set<gov.ca.cwds.rest.api.domain.cms.SystemCode> systemCodes = this.systemCodeDao
-        .getSystemCodesForMeta("CLNTRELC");
+    // Call the system code cache instead of the raw DAO.
+    final Set<gov.ca.cwds.rest.api.domain.cms.SystemCode> systemCodes =
+        SystemCodeCache.global().getSystemCodesForMeta("CLNTRELC");
 
     if (MapUtils.isEmpty(codesMappedByDescription)) {
       systemCodes.forEach(e -> codesMappedByDescription.put(e.getShortDescription(), e));
@@ -191,16 +198,17 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   private RelationshipFacadeData getRelationshipFacadeData(String screeningId) {
-    Set<ScreeningRelationship> allRelationships = fromResponse(
-        getRelationshipsByScreeningId(screeningId));
-    List<ParticipantEntity> screeningParticipants = participantDao.getByScreeningId(screeningId);
-    Set<String> participantIds = getParticipantIds(allRelationships);
-    Map<String, ParticipantEntity> allMappedParticipants = getMappedParticipantsById(
-        participantIds);
-    Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors = legacyDescriptorDao
-        .findParticipantLegacyDescriptors(participantIds);
+    final Set<ScreeningRelationship> allRelationships =
+        fromResponse(getRelationshipsByScreeningId(screeningId));
+    final List<ParticipantEntity> screeningParticipants =
+        participantDao.getByScreeningId(screeningId);
+    final Set<String> participantIds = getParticipantIds(allRelationships);
+    final Map<String, ParticipantEntity> allMappedParticipants =
+        getMappedParticipantsById(participantIds);
+    final Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors =
+        legacyDescriptorDao.findParticipantLegacyDescriptors(participantIds);
 
-    RelationshipFacadeData relationshipFacadeData = new RelationshipFacadeData();
+    final RelationshipFacadeData relationshipFacadeData = new RelationshipFacadeData();
     relationshipFacadeData.allMappedParticipants = allMappedParticipants;
     relationshipFacadeData.allRelationships = allRelationships;
     relationshipFacadeData.participantsLegacyDescriptors = participantsLegacyDescriptors;
@@ -210,12 +218,12 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   private Map<String, ParticipantEntity> getMappedParticipantsById(Set<String> participantIds) {
-    Map<String, ParticipantEntity> map = new HashMap<>();
-    List<ParticipantEntity> participantEntities = participantDao.findByIds(participantIds);
+    final List<ParticipantEntity> participantEntities = participantDao.findByIds(participantIds);
     if (CollectionUtils.isEmpty(participantEntities)) {
-      return map;
+      return new HashMap<>();
     }
 
+    final Map<String, ParticipantEntity> map = new HashMap<>(participantEntities.size());
     participantEntities.forEach(e -> map.put(e.getId(), e));
     return map;
   }
@@ -223,13 +231,12 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private Response getRelationshipWithCandidates(ParticipantEntity screeningParticipant,
       RelationshipFacadeData relationshipFacadeData) {
 
-    Set<CandidateTo> candidateTos = getCandidatesTo(screeningParticipant, relationshipFacadeData);
-    Set<RelatedTo> relatedTos = getRelatedTo(screeningParticipant, relationshipFacadeData);
+    final Set<CandidateTo> candidateTos =
+        getCandidatesTo(screeningParticipant, relationshipFacadeData);
+    final Set<RelatedTo> relatedTos = getRelatedTo(screeningParticipant, relationshipFacadeData);
 
-    return new ScreeningRelationshipsWithCandidatesBuilder()
-        .withRelatedTo(relatedTos)
-        .witCandidatesTo(candidateTos)
-        .withId(screeningParticipant.getId())
+    return new ScreeningRelationshipsWithCandidatesBuilder().withRelatedTo(relatedTos)
+        .witCandidatesTo(candidateTos).withId(screeningParticipant.getId())
         .withDateOfBirth(screeningParticipant.getDateOfBirth())
         .withFirstName(screeningParticipant.getFirstName())
         .withMiddleName(screeningParticipant.getMiddleName())
@@ -252,10 +259,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     }
 
     relationshipFacadeData.allRelationships.forEach(relationship -> {
-      ParticipantEntity participantPrimary = relationshipFacadeData.allMappedParticipants
-          .get(relationship.getClientId());
-      ParticipantEntity participantSecondary = relationshipFacadeData.allMappedParticipants
-          .get(relationship.getRelativeId());
+      final ParticipantEntity participantPrimary =
+          relationshipFacadeData.allMappedParticipants.get(relationship.getClientId());
+      final ParticipantEntity participantSecondary =
+          relationshipFacadeData.allMappedParticipants.get(relationship.getRelativeId());
 
       if (participantPrimary == null || participantSecondary == null) {
         return;
@@ -263,15 +270,11 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
       if (screeningParticipant.getScreeningId().equals(relationshipFacadeData.screeningId)) {
         if (relationship.getClientId().equals(screeningParticipant.getId())) {
-          relatedTos.add(
-              getPrimaryRelatedTo(relationship, participantSecondary,
-                  relationshipFacadeData.participantsLegacyDescriptors,
-                  true));
+          relatedTos.add(getPrimaryRelatedTo(relationship, participantSecondary,
+              relationshipFacadeData.participantsLegacyDescriptors, true));
         } else if (relationship.getRelativeId().equals(screeningParticipant.getId())) {
-          relatedTos.add(
-              getPrimaryRelatedTo(relationship, participantPrimary,
-                  relationshipFacadeData.participantsLegacyDescriptors,
-                  false));
+          relatedTos.add(getPrimaryRelatedTo(relationship, participantPrimary,
+              relationshipFacadeData.participantsLegacyDescriptors, false));
         }
       }
     });
@@ -282,7 +285,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       ParticipantEntity participantEntity,
       Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors, boolean isPrimary) {
 
-    RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
+    final RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
     relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
     relatedToBuilder.withRelatedAge(participantEntity.getApproximateAge());
     relatedToBuilder.withRelatedAgeUnit(participantEntity.getApproximateAgeUnits());
@@ -298,8 +301,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     relatedToBuilder.withRelationshipStartDate(relationship.getStartDate());
     relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
 
-    LegacyDescriptorEntity legacyDescriptorEntity = participantsLegacyDescriptors
-        .get(participantEntity.getId());
+    final LegacyDescriptorEntity legacyDescriptorEntity =
+        participantsLegacyDescriptors.get(participantEntity.getId());
     if (legacyDescriptorEntity != null) {
       LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
       relatedToBuilder.withLegacyDescriptor(legacyDescriptor);
@@ -312,12 +315,12 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
       relatedToBuilder.withReversedRelationship(true);
     } else {
-      relatedToBuilder
-          .withRelationshipToPerson(String.valueOf(relationship.getRelationshipType()))
+      relatedToBuilder.withRelationshipToPerson(String.valueOf(relationship.getRelationshipType()))
           .withRelatedPersonRelationship(
               String.valueOf(getOppositeSystemCode((short) relationship.getRelationshipType())));
       relatedToBuilder.withReversedRelationship(false);
     }
+
     return relatedToBuilder.build();
   }
 
@@ -335,10 +338,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
       if (!relationshipExist(screeningParticipant, participant,
           relationshipFacadeData.allRelationships)) {
-        CandidateToBuilder builder = new CandidateToBuilder();
+        final CandidateToBuilder builder = new CandidateToBuilder();
 
-        LegacyDescriptorEntity legacyDescriptorEntity = relationshipFacadeData.participantsLegacyDescriptors
-            .get(participant.getId());
+        LegacyDescriptorEntity legacyDescriptorEntity =
+            relationshipFacadeData.participantsLegacyDescriptors.get(participant.getId());
         if (legacyDescriptorEntity != null) {
           LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
           builder.withLegacyDescriptor(legacyDescriptor);
@@ -350,8 +353,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
             .withCandidateFirstName(participant.getFirstName())
             .withCandidateLastName(participant.getLastName())
             .withCandidateMiddleName(participant.getMiddleName())
-            .withCandidateSuffixtName(participant.getNameSuffix())
-            .withId(participant.getId());
+            .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId());
         candidates.add(builder.build());
       }
     });
@@ -365,12 +367,12 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       return false;
     }
 
-    Optional<ScreeningRelationship> existingRelationshiop = allScreeningRelationships.stream()
-        .filter(
-            e -> e.getClientId().equals(participant.getId()) && e.getRelativeId()
-                .equals(relatedCandidate.getId())
-                || e.getClientId().equals(relatedCandidate.getId()) && e.getRelativeId()
-                .equals(participant.getId())).findFirst();
+    final Optional<ScreeningRelationship> existingRelationshiop = allScreeningRelationships.stream()
+        .filter(e -> e.getClientId().equals(participant.getId())
+            && e.getRelativeId().equals(relatedCandidate.getId())
+            || e.getClientId().equals(relatedCandidate.getId())
+                && e.getRelativeId().equals(participant.getId()))
+        .findFirst();
     return existingRelationshiop.isPresent();
   }
 
@@ -379,7 +381,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       return Collections.emptySet();
     }
 
-    Set<String> participantIds = new HashSet<>();
+    final Set<String> participantIds = new HashSet<>();
     screeningRelationships.forEach(e -> {
       participantIds.add(e.getClientId());
       participantIds.add(e.getRelativeId());
@@ -397,10 +399,11 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   private List<ScreeningRelationship> updateRelationships(
       List<ClientRelationship> shouldBeUpdated) {
-    Date updatedAt = RequestExecutionContext.instance().getRequestStartTime();
+    final Date updatedAt = RequestExecutionContext.instance().getRequestStartTime();
     if (CollectionUtils.isEmpty(shouldBeUpdated)) {
       return new ArrayList<>();
     }
+
     LOGGER.info("shouldBeUpdated {}", shouldBeUpdated);
     List<ScreeningRelationship> result = new ArrayList<>();
     for (ClientRelationship clientRelationship : shouldBeUpdated) {
@@ -426,7 +429,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     }
     LOGGER.info("shouldBeCreated {}", shouldBeCreated);
 
-    Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
+    final Date createdAt = RequestExecutionContext.instance().getRequestStartTime();
     List<ScreeningRelationship> result = new ArrayList<>();
     Set<String> clientIdSet = participantDao.findLegacyIdListByScreeningId(screeningId);
 
@@ -435,32 +438,32 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
     for (ClientRelationship clientRelationship : shouldBeCreated) {
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
+        final Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         if (client == null) {
           continue;
         }
         participantEntity1 = createParticipant(client, screeningId);
       } else {
-        participantEntity1 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getPrimaryClientId());
+        participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,
+            clientRelationship.getPrimaryClientId());
       }
 
       if (!clientIdSet.contains(clientRelationship.getSecondaryClientId())) {
-        Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
+        final Client client = cmsClientDao.find(clientRelationship.getSecondaryClientId());
         if (client == null) {
           continue;
         }
         participantEntity2 = createParticipant(client, screeningId);
       } else {
-        participantEntity2 = participantDao
-            .findByScreeningIdAndLegacyId(screeningId, clientRelationship.getSecondaryClientId());
+        participantEntity2 = participantDao.findByScreeningIdAndLegacyId(screeningId,
+            clientRelationship.getSecondaryClientId());
       }
 
       if (participantEntity1 == null || participantEntity2 == null) {
         return result;
       }
 
-      Relationship newRelationship = new Relationship();
+      final Relationship newRelationship = new Relationship();
       newRelationship.setClientId(participantEntity1.getId());
       newRelationship.setRelativeId(participantEntity2.getId());
       newRelationship.setRelationshipType(clientRelationship.getClientRelationshipType());
@@ -473,8 +476,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       newRelationship.setStartDate(clientRelationship.getStartDate());
       newRelationship.setEndDate(clientRelationship.getEndDate());
 
-      newRelationship = nsRelationshipDao.create(newRelationship);
-      result.add(mapper.map(newRelationship));
+      result.add(mapper.map(nsRelationshipDao.create(newRelationship)));
     }
     return result;
   }
@@ -491,7 +493,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
     LOGGER.info("lagacyRelationships {}", lagacyRelationships);
     LOGGER.info("nsRelationships {}", nsRelationships);
-    List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
+    final List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
     if (CollectionUtils.isEmpty(lagacyRelationships)) {
       return relationshipsToCreate;
     }
@@ -500,8 +502,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       if (CollectionUtils.isEmpty(nsRelationships)) {
         relationshipsToCreate.add(e);
       } else {
-        Optional<Relationship> clientRelationship = nsRelationships.stream()
-            .filter(b -> e.getId().equals(b.getLegacyId())).findFirst();
+        Optional<Relationship> clientRelationship =
+            nsRelationships.stream().filter(b -> e.getId().equals(b.getLegacyId())).findFirst();
         if (!clientRelationship.isPresent()) {
           relationshipsToCreate.add(e);
         }
@@ -511,18 +513,17 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   private List<ClientRelationship> getRelationshipsThatShouldBeUpdated(
-      final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
-    if (CollectionUtils.isEmpty(nsRelationships) || CollectionUtils.isEmpty(lagacyRelationships)) {
+      final Set<ClientRelationship> legacyRelationships, List<Relationship> nsRelationships) {
+    if (CollectionUtils.isEmpty(nsRelationships) || CollectionUtils.isEmpty(legacyRelationships)) {
       return new ArrayList<>();
     }
 
-    List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
-    lagacyRelationships.forEach(e -> {
+    final List<ClientRelationship> relationshipsToUpdate = new ArrayList<>();
+    legacyRelationships.forEach(e -> {
       boolean update = false;
       for (Relationship relationship : nsRelationships) {
         if (e.getId().equals(relationship.getLegacyId())) {
-          if (e.getLastUpdatedTime().getTime() > relationship.getUpdatedAt()
-              .getTime()) {
+          if (e.getLastUpdatedTime().getTime() > relationship.getUpdatedAt().getTime()) {
             update = true;
           }
           break;
@@ -545,20 +546,20 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   private Set<ClientRelationship> getCmsRelationships(Set<String> legacyClientIds) {
     LOGGER.info("legacyClientIds {}", legacyClientIds);
-    Set<ClientRelationship> relationshipListcms = new HashSet<>();
+    Set<ClientRelationship> relationshipListCms = new HashSet<>();
     Map<String, Collection<ClientRelationship>> primaryRelationshipMap =
         cmsRelationshipDao.findByPrimaryClientIds(legacyClientIds);
     for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : primaryRelationshipMap
         .entrySet()) {
-      relationshipListcms.addAll(relationshipMapEntry.getValue());
+      relationshipListCms.addAll(relationshipMapEntry.getValue());
     }
     Map<String, Collection<ClientRelationship>> secondaryRelationshipMap =
         cmsRelationshipDao.findBySecondaryClientIds(legacyClientIds);
     for (Map.Entry<String, Collection<ClientRelationship>> relationshipMapEntry : secondaryRelationshipMap
         .entrySet()) {
-      relationshipListcms.addAll(relationshipMapEntry.getValue());
+      relationshipListCms.addAll(relationshipMapEntry.getValue());
     }
-    return relationshipListcms;
+    return relationshipListCms;
   }
 
   private List<gov.ca.cwds.rest.api.Response> getRelationshipsThatShouldNotBeUpdated(
@@ -583,8 +584,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private short getOppositeSystemCode(int systemCodeId) {
     short oppositeCode = -1;
 
-    gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode = codesMappedById
-        .get((short) systemCodeId);
+    gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode =
+        codesMappedById.get((short) systemCodeId);
     if (systemCode != null) {
       String str = systemCode.getShortDescription();
       if (StringUtils.isNoneEmpty(str)) {
@@ -594,8 +595,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
           if (descriptionArray[1].contains("(")) {
             int indexStart = descriptionArray[1].indexOf('(');
             int indexEnd = descriptionArray[1].indexOf(')');
-            part3 = descriptionArray[1]
-                .substring(indexStart, ++indexEnd);
+            part3 = descriptionArray[1].substring(indexStart, ++indexEnd);
             descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
             part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
           }
@@ -608,6 +608,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return oppositeCode;
   }
 }
+
 
 class RelationshipFacadeData {
 

@@ -17,7 +17,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContextCallback;
 /**
  * AOP interceptor tracks usage of any injected class.
  *
- * <h3>Sample Usage</h3>
+ * <h3>Sample Usage:</h3>
  *
  * <blockquote>
  *
@@ -100,11 +100,10 @@ public class CaresMethodInterceptor
       CaresStackUtils.logStack();
 
       final long start = System.currentTimeMillis();
-      LOGGER.trace("before method: {}", m);
       final Object result = mi.proceed();
       final long totalCalls = incrementTotalCount(m);
       final long totalRequestCalls = incrementRequestCount(m);
-      LOGGER.info("after  method: {}, total: {}, request: {}, millis: {}", m, totalCalls,
+      LOGGER.debug("after  method: {}, total: {}, request: {}, millis: {}", m, totalCalls,
           totalRequestCalls, (System.currentTimeMillis() - start));
       return result;
     } catch (Exception e) {

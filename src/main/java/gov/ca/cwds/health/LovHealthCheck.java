@@ -9,4 +9,5 @@ public class LovHealthCheck extends PingableResourceHealthCheck {
   public LovHealthCheck(Pingable resource) {
     super(resource, ERROR_MESSAGE);
   }
+
 }

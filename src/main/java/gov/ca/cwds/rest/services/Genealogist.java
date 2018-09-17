@@ -15,6 +15,7 @@ import gov.ca.cwds.rest.api.domain.investigation.Relationship;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipTo;
 
 public class Genealogist {
+
   ClientDao clientDao;
 
   /**
@@ -51,7 +52,6 @@ public class Genealogist {
   private RelationshipTo createBar(RelationshipWrapper relationship, boolean clientIsPrimary) {
     RelationshipTo relationshipTo;
 
-
     if (clientIsPrimary) {
       boolean relatedPersonSensitive =
           StringUtils.equalsAnyIgnoreCase(relationship.getSecondarySensitiveIndicator(), "S")
@@ -82,7 +82,7 @@ public class Genealogist {
           relationship.getSecondaryRelationshipCode(), relationship.getPrimaryRelationshipCode(),
           relationship.getPrimaryFirstName(), relationship.getPrimaryMiddleName(),
           relationship.getPrimaryLastName(), relationship.getPrimaryNameSuffix(),
-          relationship.getPrimaryGenderCode(), relationship.getPrimaryDateOfBirth(), 
+          relationship.getPrimaryGenderCode(), relationship.getPrimaryDateOfBirth(),
           relationship.getPrimaryDateOfDeath(), relationship.getRelationshipStartDate(),
           relationship.getRelationshipEndDate(), relationship.getAbsentParentCode(),
           relationship.getSameHomeCode(), "", relatedPersonSensitive, relatedPersonSealed);
@@ -93,19 +93,18 @@ public class Genealogist {
   private RelationshipTo createRelationShipTo(String relationId, String primaryRelationCode,
       String secondaryRelation, String secondaryFirstname, String secondaryMiddleName,
       String secodnaryLastName, String nameSuffix, String relatedGender, String relatedDateOfBirth,
-      String relatedDateOfDeath,
-      String relationshipStartDate, String relationshipEndDate, String absentParentCode,
-      String sameHomeCode, String relationContext, Boolean relatedPersonSensitive,
-      Boolean relatedPersonSealed) {
+      String relatedDateOfDeath, String relationshipStartDate, String relationshipEndDate,
+      String absentParentCode, String sameHomeCode, String relationContext,
+      Boolean relatedPersonSensitive, Boolean relatedPersonSealed) {
     return new RelationshipTo(secondaryFirstname, secondaryMiddleName, secodnaryLastName,
-        nameSuffix, relatedGender, relatedDateOfBirth,
-        relatedDateOfDeath, relationshipStartDate, relationshipEndDate, absentParentCode,
-        sameHomeCode, secondaryRelation, relationContext, primaryRelationCode, relationId,
-        relatedPersonSensitive, relatedPersonSealed);
+        nameSuffix, relatedGender, relatedDateOfBirth, relatedDateOfDeath, relationshipStartDate,
+        relationshipEndDate, absentParentCode, sameHomeCode, secondaryRelation, relationContext,
+        primaryRelationCode, relationId, relatedPersonSensitive, relatedPersonSealed);
 
   }
 
   private Client findClient(String id) {
     return this.clientDao.find(id);
   }
+
 }

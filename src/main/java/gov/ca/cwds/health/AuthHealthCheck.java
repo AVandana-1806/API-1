@@ -9,4 +9,5 @@ public class AuthHealthCheck extends PingableResourceHealthCheck {
   public AuthHealthCheck(Pingable resource) {
     super(resource, ERROR_MESSAGE);
   }
+
 }

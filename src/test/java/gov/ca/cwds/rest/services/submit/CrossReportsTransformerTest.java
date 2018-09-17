@@ -1,12 +1,21 @@
 package gov.ca.cwds.rest.services.submit;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+import gov.ca.cwds.rest.api.domain.DomainChef;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +38,8 @@ import gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake;
 public class CrossReportsTransformerTest {
 
   private CrossReportIntake crossReportIntake;
-
+  private final static String INFORM_DATE_GMT_TIME = "2017-03-15T00:00:00.000Z";
+  private final static String INFORM_DATE_PST_TIME = "2017-03-14T17:00:00.000";
   /**
    * Initialize intake code cache
    */
@@ -50,7 +60,7 @@ public class CrossReportsTransformerTest {
     crossReportIntake.setLegacySourceTable("");
     crossReportIntake.setMethod("Electronic Report");
     crossReportIntake.setFiledOutOfState(false);
-    crossReportIntake.setInformDate("2017-03-15T00:00:00.000Z");
+    crossReportIntake.setInformDate(INFORM_DATE_GMT_TIME);
     crossReportIntake.setAgencies(agencies);
     crossReportIntake.setCountyId("1101");
 
@@ -59,52 +69,52 @@ public class CrossReportsTransformerTest {
 
     crossReportResourceBuilder = new CrossReportResourceBuilder()
         .setCountyId("34")
-        .setInformDate("2017-03-15T00:00:00.000Z");
+        .setInformDate(INFORM_DATE_PST_TIME);
   }
 
   @Test
   public void transformConvertsCrossReportsIntakeToCrossReports() {
-    CrossReport crossReport = crossReportResourceBuilder.createCrossReport();
-    Set<CrossReport> expected = Stream.of(crossReport).collect(Collectors.toSet());
+    CrossReport expectedCrossReport = crossReportResourceBuilder.createCrossReport();
     Set<CrossReport> actual = new CrossReportsTransformer().transform(nsCrossReports);
 
-    assertEquals(actual, expected);
+    Iterator<CrossReport> crossReportsIterator = actual.iterator();
+    assertEquivalent(expectedCrossReport, crossReportsIterator.next());
   }
 
   @Test
   public void transformConvertsCrossReportsIntakeToCrossReportsWhenMethodEmpty() {
-    CrossReport crossReport = crossReportResourceBuilder.setMethod(null).createCrossReport();
-    Set<CrossReport> expected = Stream.of(crossReport).collect(Collectors.toSet());
+    CrossReport expectedCrossReport = crossReportResourceBuilder.setMethod(null).createCrossReport();
 
     crossReportIntake.setMethod("");
     nsCrossReports =
         Stream.of(crossReportIntake).collect(Collectors.toSet());
     Set<CrossReport> actual = new CrossReportsTransformer().transform(nsCrossReports);
 
-    assertEquals(actual, expected);
+    Iterator<CrossReport> crossReportsIterator = actual.iterator();
+    assertEquivalent(expectedCrossReport, crossReportsIterator.next());
   }
 
   @Test
   public void transformConvertsCrossReportsIntakeToCrossReportsWhenCountyEmpty() {
-    CrossReport crossReport = crossReportResourceBuilder.setCountyId(null).createCrossReport();
-    Set<CrossReport> expected = Stream.of(crossReport).collect(Collectors.toSet());
+    CrossReport expectedCrossReport = crossReportResourceBuilder.setCountyId(null).createCrossReport();
 
     crossReportIntake.setCountyId(null);
     nsCrossReports =
         Stream.of(crossReportIntake).collect(Collectors.toSet());
     Set<CrossReport> actual = new CrossReportsTransformer().transform(nsCrossReports);
 
-    assertEquals(actual, expected);
+    Iterator<CrossReport> crossReportsIterator = actual.iterator();
+    assertEquivalent(expectedCrossReport, crossReportsIterator.next() );
   }
 
   @Test
   public void shouldTransformDate() {
-    crossReportIntake.setInformDate("2017-03-15T10:20:30.000Z");
+    crossReportIntake.setInformDate(INFORM_DATE_GMT_TIME);
     Set<CrossReport> transformedSetOfCrossReports = new CrossReportsTransformer().transform(nsCrossReports);
 
     Iterator<CrossReport>  iter = transformedSetOfCrossReports.iterator();
     CrossReport transformedCrossReport = iter.next();
-    assertEquals("2017-03-15T10:20:30.000Z", transformedCrossReport.getInformDate());
+    assertEquals(INFORM_DATE_PST_TIME, transformedCrossReport.getInformDate());
   }
 
   @Test
@@ -114,6 +124,18 @@ public class CrossReportsTransformerTest {
 
     Iterator<CrossReport>  iter = transformedSetOfCrossReports.iterator();
     CrossReport transformedCrossReport = iter.next();
-    assertEquals("2017-03-15T00:00:00.000-0700",transformedCrossReport.getInformDate());
+    assertEquals("2017-03-15T01:00:00.000",transformedCrossReport.getInformDate());
+  }
+
+  private void assertEquivalent(CrossReport crossReport1, CrossReport crossReport2){
+    assertEquals(crossReport1.getId(), crossReport2.getId());
+    assertEquals(crossReport1.getLegacyId(), crossReport2.getLegacyId());
+    assertEquals(crossReport1.getLegacySourceTable(), crossReport2.getLegacySourceTable());
+    assertEquals(crossReport1.getMethod(), crossReport2.getMethod());
+    assertEquals(crossReport1.getCountyId(), crossReport2.getCountyId());
+    assertEquals(crossReport1.getAgencies(), crossReport2.getAgencies());
+    assertEquals(crossReport1.isFiledOutOfState(), crossReport2.isFiledOutOfState());
+
+    assertEquals(crossReport1.getInformDate(), crossReport2.getInformDate());
   }
 }

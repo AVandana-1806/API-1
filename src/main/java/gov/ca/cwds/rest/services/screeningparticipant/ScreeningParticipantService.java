@@ -11,9 +11,9 @@ import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 import io.dropwizard.hibernate.UnitOfWork;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
@@ -78,9 +78,9 @@ public class ScreeningParticipantService
           createParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
-      return participantIntakeApiService.create(participantIntakeApi);
+      return participantIntakeApiService.persistParticipantObjectInNS(participantIntakeApi);
     } else {
-      return participantIntakeApiService.create(incomingParticipantIntakeApi);
+      return participantIntakeApiService.persistParticipantObjectInNS(incomingParticipantIntakeApi);
     }
   }
 

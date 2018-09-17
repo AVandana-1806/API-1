@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -10,6 +10,7 @@ import gov.ca.cwds.data.ns.LegacyDescriptorDao;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
+import gov.ca.cwds.rest.services.TypedCrudsService;
 
 /**
  * Business layer object to work on {@link AddressIntakeApi}

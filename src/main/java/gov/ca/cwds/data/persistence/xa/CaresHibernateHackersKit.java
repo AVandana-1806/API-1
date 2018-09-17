@@ -55,7 +55,6 @@ public class CaresHibernateHackersKit {
   public static void clearSession(final Session session) {
     LOGGER.debug("clear()");
     try {
-      // grabTransaction(session);
       final Transaction txn = session.getTransaction();
       if (txn != null && txn.isActive()) {
         session.clear(); // Hibernate "duplicate object" bug

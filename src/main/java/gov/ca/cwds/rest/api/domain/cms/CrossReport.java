@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.api.domain.cms;
 
 import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
 
+import gov.ca.cwds.CWSDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -36,6 +37,8 @@ import java.util.Date;
 public class CrossReport extends ReportingDomain implements Request, Response {
   private static final int DEFAULT_INT = 0;
   private static final Long DEFAULT_LONG = 0L;
+  private static final int DATE_INDEX = 0;
+  private static final int TIME_INDEX = 1;
 
   /**
    * Serialization version
@@ -272,10 +275,10 @@ public class CrossReport extends ReportingDomain implements Request, Response {
       gov.ca.cwds.rest.api.domain.CrossReport crossReport, String referralId, String staffId,
       String outStateLawEnforcementAddr, String lawEnforcementId, String countyId,
       Boolean outStateLawEnforcementIndicator, Boolean governmentOrgCrossRptIndicatorVar) {
-    Date informDateTime = DomainChef.uncookISO8601Timestamp(crossReport.getInformDate());
+      String[] dateTime = crossReport.getInformDate().split("T");
     return new CrossReport(id, crossReport.getMethod().shortValue(),
-        crossReport.isFiledOutOfState(), governmentOrgCrossRptIndicatorVar, DomainChef.cookTime(informDateTime), "", DEFAULT_INT,
-        DEFAULT_LONG, DomainChef.cookDate(informDateTime), "", "", referralId, lawEnforcementId, staffId,
+        crossReport.isFiledOutOfState(), governmentOrgCrossRptIndicatorVar, dateTime[TIME_INDEX], "", DEFAULT_INT,
+        DEFAULT_LONG, dateTime[DATE_INDEX], "", "", referralId, lawEnforcementId, staffId,
         "", "", outStateLawEnforcementAddr, countyId,
         StringUtils.isBlank(lawEnforcementId) ? Boolean.FALSE : Boolean.TRUE,
         outStateLawEnforcementIndicator, Boolean.FALSE);

@@ -1,10 +1,13 @@
 package gov.ca.cwds.rest.services.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+
 import java.io.Serializable;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+import org.hibernate.FlushMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +22,7 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.CrudsService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.util.IdGenerator;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Business layer object to work on {@link StaffPerson}.
@@ -47,6 +51,7 @@ public class StaffPersonService implements CrudsService {
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#find(java.io.Serializable)
    */
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @Override
   public gov.ca.cwds.rest.api.domain.cms.StaffPerson find(Serializable primaryKey) {
     assert primaryKey instanceof String;
@@ -63,6 +68,7 @@ public class StaffPersonService implements CrudsService {
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#delete(java.io.Serializable)
    */
+  @UnitOfWork(DS_CMS)
   @Override
   public gov.ca.cwds.rest.api.domain.cms.StaffPerson delete(Serializable primaryKey) {
     assert primaryKey instanceof String;
@@ -79,6 +85,7 @@ public class StaffPersonService implements CrudsService {
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#create(gov.ca.cwds.rest.api.Request)
    */
+  @UnitOfWork(DS_CMS)
   @Override
   public PostedStaffPerson create(Request request) {
     assert request instanceof gov.ca.cwds.rest.api.domain.cms.StaffPerson;
@@ -104,6 +111,7 @@ public class StaffPersonService implements CrudsService {
    * @see gov.ca.cwds.rest.services.CrudsService#update(java.io.Serializable,
    *      gov.ca.cwds.rest.api.Request)
    */
+  @UnitOfWork(DS_CMS)
   @Override
   public StaffPerson update(Serializable primaryKey, Request request) {
     assert primaryKey instanceof String;

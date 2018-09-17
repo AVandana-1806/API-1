@@ -69,16 +69,14 @@
 // DIAGNOSTICS:
 //===============================
 
-//
-// List exported functions in shared library: nm libKeyJNI.so | grep Java
-//
+// List exported functions in shared library: 
+// nm libKeyJNI.so | grep Java
 
 //===============================
 // JNI REFERENCE:
 //===============================
 
 // https://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html
-
 
 //==============================
 // CODE STARTS HERE:
@@ -98,7 +96,7 @@
                                    /      .               /
     X                             /                      /            X
                                  /                     ###
-                                /                     # % #
+                                /                     # * #
                                /                       ###
                       .       /
      .                       /      .            *           .
@@ -111,7 +109,7 @@
 ####    /    \ /    \ /    \      ###########     /    \ /    \ /    \      ####
 ################################################################################
 ################################################################################
-# WAVE 16 ######## SCORE 431182 ################################ HIGH FFFFFFFF #
+# WAVE 420 ######## SCORE 362436 ############################### HIGH FFFFFFFF #
 ################################################################################
 */
 
@@ -208,7 +206,7 @@ constexpr const std::size_t BASE_62_SIZE {62};
 //==============================
 
 //
-// DRS: I ported over all this **Windows gooberness**.
+// DRS: I ported over all this **WINDOWS GOOBERNESS**.
 // I deserve a medal. 
 //
 
@@ -266,7 +264,7 @@ typedef wchar_t WCHAR;
 #define CONST const
 #endif
 
-typedef CONST WCHAR *LPCWSTR, *PCWSTR ; // "Hungarian" for far pointer to constant, unicode, null-terminated character string.
+typedef CONST WCHAR *LPCWSTR, *PCWSTR ; // Hungarian for "far pointer to constant, unicode, null-terminated character string." OMG! That hurt my brain!
 
 
 // AFXAPI is used on global public functions
@@ -562,7 +560,7 @@ std::string timePointToString(T&& tp) {
 
 // 
 // Stream Clock and Duration implementations to out stream.
-// RedHat and Amazon Linux installs may lack a C++14 compliant compiler. Just suffer.
+// RedHat and Amazon Linux installations may lack a C++14 compliant compiler. Just suffer.
 // 
 template<typename Clock, typename Duration>
 std::ostream & operator << ( std::ostream &stream, const std::chrono::time_point<Clock, Duration> &time_point ) {

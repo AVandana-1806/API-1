@@ -191,7 +191,7 @@ public class CrossReportTest {
     Boolean outStateLawEnforcementIndicator = true;
     String countyId = "34";
 
-    String informDateTime = "1992-03-05T05:45:34.987Z";
+    String informDateTime = "1992-03-05T05:45:34";
     String informDate = "1992-03-05";
     String informTime = "05:45:34";
     gov.ca.cwds.rest.api.domain.CrossReport nsCrossReport =
@@ -231,7 +231,7 @@ public class CrossReportTest {
     Boolean outStateLawEnforcementIndicator = true;
     String countyId = "1068";
 
-    String informDateTime = "1992-03-05T05:45:34.987Z";
+    String informDateTime = "1992-03-05T05:45:34";
     String informTime = "05:45:34";
     gov.ca.cwds.rest.api.domain.CrossReport nsCrossReport =
         new gov.ca.cwds.rest.api.domain.CrossReport(id, "legacy_source_table", "legacy_id",

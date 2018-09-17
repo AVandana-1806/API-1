@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,20 +80,20 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
   @Override
   public Object invoke(org.aopalliance.intercept.MethodInvocation mi) throws Throwable {
     final Method m = mi.getMethod();
-    final RequestExecutionContext ctx = RequestExecutionContext.instance();
-    LOGGER.info("Unit of work interceptor: class: {}, method: {}", m.getDeclaringClass(),
+    LOGGER.info("@UnitOfWork interceptor: class: {}, method: {}", m.getDeclaringClass(),
         m.getName());
 
     // If already in an XA transaction, skip this @UnitOfWork.
-    if (ctx != null && RequestExecutionContext.instance().isXaTransaction()) {
-      LOGGER.warn("******* XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}******* ",
-          m.getDeclaringClass(), m.getName());
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    if (ctx != null && ctx.isXaTransaction()) {
+      LOGGER.debug("XA TRANSACTION: SKIP @UnitOfWork! class: {}, method: {}", m.getDeclaringClass(),
+          m.getName());
       return mi.proceed();
     }
 
     // Use CARES wrapped (Candace) session factories and related wrappers.
     final UnitOfWork annotation = mi.getMethod().getAnnotation(UnitOfWork.class);
-    final String name = annotation.value().trim();
+    final String name = annotation.value().trim().toLowerCase();
     SessionFactory currentSessionFactory;
     boolean isDb2 = false;
 
@@ -102,7 +103,7 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         currentSessionFactory = cmsSessionFactory;
         isDb2 = true;
         break;
-      case Api.DATASOURCE_CMS_REP:
+      case Api.DS_CMS_REP:
         currentSessionFactory = rsSessionFactory;
         isDb2 = true;
         break;
@@ -110,61 +111,69 @@ public class CaresUnitOfWorkInterceptor extends CaresMethodInterceptor {
         currentSessionFactory = nsSessionFactory;
         break;
       default:
-        LOGGER.error("UNKNOWN DATASOURCE! {}", annotation.value());
-        throw new IllegalStateException("UNKNOWN DATASOURCE! " + annotation.value());
+        final String msg = StringUtils.trimToEmpty(annotation.value());
+        LOGGER.error("UNKNOWN DATASOURCE! {}", msg);
+        throw new IllegalStateException("UNKNOWN DATASOURCE! " + msg);
     }
-
-    LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
-
-    // Not XA, so clear XA flags.
-    BaseAuthorizationDao.clearXaMode();
-    RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
 
     // Does this request already have an aspect for this session factory?
-    UnitOfWorkAspect aspect;
+    LOGGER.debug("@UnitOfWork datasource: {}, db2: {}", name, isDb2);
+    UnitOfWorkAspect aspect = null;
     boolean firstUnitOfWork = false;
-
-    if (requestAspects.get().containsKey(name)) {
-      LOGGER.info("RE-USE @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
-          m.getDeclaringClass(), m.getName(), name);
-      aspect = requestAspects.get().get(name);
-    } else {
-      LOGGER.info("NEW @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
-          m.getDeclaringClass(), m.getName(), name);
-      firstUnitOfWork = true;
-      aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
-          .newAspect(ImmutableMap.of(name, currentSessionFactory));
-      requestAspects.get().put(name, aspect);
-      aspect.beforeStart(annotation);
-
-      // Set client information on the JDBC connection.
-      currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo(isDb2));
-      prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
-    }
-
     boolean barfed = false;
+
     try {
-      final Object result = mi.proceed();
+      if (requestAspects.get().containsKey(name)) {
+        LOGGER.debug("Re-use @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+            m.getDeclaringClass(), m.getName(), name);
+        aspect = requestAspects.get().get(name);
+      } else {
+        LOGGER.info("NEW @UnitOfWork aspect: class: {}, method: {}, session factory: {}",
+            m.getDeclaringClass(), m.getName(), name);
+        firstUnitOfWork = true;
+
+        // Not XA, so clear XA flags.
+        BaseAuthorizationDao.setXaMode(true); // Don't mess with session management!
+        RequestExecutionContext.instance().put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+
+        aspect = UnitOfWorkModule.getUnitOfWorkProxyFactory(name, currentSessionFactory)
+            .newAspect(ImmutableMap.of(name, currentSessionFactory));
+        requestAspects.get().put(name, aspect);
+        aspect.beforeStart(annotation);
+
+        // Set client information on the JDBC connection.
+        currentSessionFactory.getCurrentSession().doWork(new WorkFerbUserInfo(isDb2));
+        prepareHibernateStatisticsConsumer(name, currentSessionFactory.getStatistics());
+      }
+
+      final Object result = mi.proceed(); // Call the annotated method!
       final long totalCalls = incrementTotalCount(m);
       final long requestCalls = incrementRequestCount(m);
       LOGGER.info("@UnitOfWork interceptor: after  method: {}, total: {}, request: {}", m,
           totalCalls, requestCalls);
 
       if (firstUnitOfWork) {
+        LOGGER.info("@UnitOfWork interceptor: first annotation. Clean up.");
         provideHibernateStatistics(name, currentSessionFactory.getStatistics());
         aspect.afterEnd(); // commit
+      } else {
+        LOGGER.debug("@UnitOfWork interceptor: NOT first annotation. Move along.");
       }
 
       return result;
     } catch (Exception e) {
       LOGGER.error("UNIT OF WORK FAILED! {}", e.getMessage(), e);
       barfed = true;
-      aspect.onError();
+      if (aspect != null) {
+        aspect.onError();
+      }
       throw e;
     } finally {
-      LOGGER.debug("Unit of work finished");
+      LOGGER.info("@UnitOfWork interceptor finished");
       if (barfed || firstUnitOfWork) {
-        aspect.onFinish();
+        if (aspect != null) {
+          aspect.onFinish();
+        }
         resetRequest();
       }
     }

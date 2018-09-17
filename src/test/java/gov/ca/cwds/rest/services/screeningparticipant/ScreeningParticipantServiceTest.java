@@ -9,6 +9,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.AdditionalAnswers;
+
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
@@ -26,13 +33,8 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.ServiceException;
-import javax.persistence.EntityNotFoundException;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.AdditionalAnswers;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 
 /**
  * @author CWDS API Team
@@ -132,8 +134,9 @@ public class ScreeningParticipantServiceTest {
     when(participantDao.findByRelatedScreeningIdAndLegacyId(any(String.class), any(String.class)))
         .thenReturn(null);
     when(participantDaoFactory.create(any(String.class))).thenReturn(crudsDaoObject);
-    //Return same object as passed to the method
-    when(participantIntakeApiService.create(any())).then(AdditionalAnswers.returnsFirstArg());
+    // Return same object as passed to the method
+    when(participantIntakeApiService.persistParticipantObjectInNS(any()))
+        .then(AdditionalAnswers.returnsFirstArg());
     ParticipantIntakeApi expected = screeningParticipantService.create(participantIntakeApi);
     assertThat(expected, is(notNullValue()));
     assertThat(expected.isProbationYouth(), is(Boolean.TRUE));
@@ -147,7 +150,8 @@ public class ScreeningParticipantServiceTest {
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
         .setScreeningId("18").setLegacyDescriptor(null).build();
     when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
-    when(participantIntakeApiService.create(any())).thenReturn(participantIntakeApi);
+    when(participantIntakeApiService.persistParticipantObjectInNS(any()))
+        .thenReturn(participantIntakeApi);
     ParticipantIntakeApi expected = screeningParticipantService.create(participantIntakeApi);
     assertThat(expected, is(notNullValue()));
   }

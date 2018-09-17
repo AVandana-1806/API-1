@@ -19,7 +19,7 @@ import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class DB2DatabaseTest extends Doofenshmirtz<ClientAddress> {
 
-  DB2Database db2;
+  DB2DatabaseCheck db2;
   NativeQuery query;
 
   @Override
@@ -34,7 +34,7 @@ public class DB2DatabaseTest extends Doofenshmirtz<ClientAddress> {
     when(query.list()).thenReturn(results);
     when(session.createNativeQuery(any(String.class))).thenReturn(query);
 
-    db2 = new DB2Database(sessionFactory);
+    db2 = new DB2DatabaseCheck(sessionFactory);
   }
 
   @Test

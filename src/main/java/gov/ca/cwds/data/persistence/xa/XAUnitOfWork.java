@@ -1,8 +1,8 @@
 package gov.ca.cwds.data.persistence.xa;
 
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS_REP;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_CMS;
-import static gov.ca.cwds.rest.core.Api.DATASOURCE_XA_NS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
+import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_XA_NS;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -74,6 +74,6 @@ public @interface XAUnitOfWork {
    * 
    * @return array of Hibernate bundle names
    */
-  String[] value() default {DATASOURCE_CMS_REP, DATASOURCE_XA_CMS, DATASOURCE_XA_NS};
+  String[] value() default {DS_CMS_REP, DS_XA_CMS, DS_XA_NS};
 
 }
