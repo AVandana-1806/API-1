@@ -58,7 +58,8 @@ public class ScreeningParticipantService
     }
 
     ParticipantEntity existing = getExistingParticipant(
-        incomingParticipantIntakeApi.getScreeningId(), incomingParticipantIntakeApi.getLegacyId());
+        incomingParticipantIntakeApi.getScreeningId(),
+        incomingParticipantIntakeApi.getLegacyDescriptor());
     if (existing != null) {
       existing = enrichExistingParticipantWithScreeningId(
           incomingParticipantIntakeApi.getScreeningId(),
@@ -83,7 +84,12 @@ public class ScreeningParticipantService
     }
   }
 
-  private ParticipantEntity getExistingParticipant(String screeningId, String legacyId) {
+  private ParticipantEntity getExistingParticipant(String screeningId,
+      LegacyDescriptor legacyDescriptor) {
+    String legacyId = "";
+    if (legacyDescriptor != null && StringUtils.isNoneEmpty(legacyDescriptor.getId())) {
+      legacyId += legacyDescriptor.getId();
+    }
     return participantDao
         .findByRelatedScreeningIdAndLegacyId(screeningId,
             legacyId);
@@ -161,7 +167,6 @@ public class ScreeningParticipantService
   }
 
   /**
-   *
    * @param participantDao - participantDao
    */
   public void setParticipantDao(ParticipantDao participantDao) {
