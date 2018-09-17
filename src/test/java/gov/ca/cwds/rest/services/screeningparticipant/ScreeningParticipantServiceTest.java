@@ -33,7 +33,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ServiceException;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 
 /**
  * @author CWDS API Team
@@ -49,14 +49,14 @@ public class ScreeningParticipantServiceTest {
       new ScreeningParticipantService();
   private ScreeningDao screeningDao;
   private ClientDao clientDao;
-  private ParticipantIntakeApiService participantIntakeApiService;
+  private ParticipantService participantService;
   private ParticipantDaoFactoryImpl participantDaoFactory;
   private ParticipantMapperFactoryImpl participantMapperFactoryImpl;
 
   @Before
   public void setup() {
     screeningDao = mock(ScreeningDao.class);
-    participantIntakeApiService = mock(ParticipantIntakeApiService.class);
+    participantService = mock(ParticipantService.class);
     participantDaoFactory = mock(ParticipantDaoFactoryImpl.class);
     participantMapperFactoryImpl = mock(ParticipantMapperFactoryImpl.class);
     clientDao = mock(ClientDao.class);
@@ -65,7 +65,7 @@ public class ScreeningParticipantServiceTest {
     screeningParticipantService.setClientDao(clientDao);
     screeningParticipantService.setParticipantDaoFactory(participantDaoFactory);
     screeningParticipantService.setParticipantMapperFactoryImpl(participantMapperFactoryImpl);
-    screeningParticipantService.setParticipantIntakeApiService(participantIntakeApiService);
+    screeningParticipantService.setParticipantIntakeApiService(participantService);
   }
 
   /**
@@ -129,7 +129,7 @@ public class ScreeningParticipantServiceTest {
     when(clientDao.findProbationYouth(any(String.class))).thenReturn(probationYouthClient);
     when(participantDaoFactory.create(any(String.class))).thenReturn(crudsDaoObject);
     // Return same object as passed to the method
-    when(participantIntakeApiService.persistParticipantObjectInNS(any()))
+    when(participantService.persistParticipantObjectInNS(any()))
         .then(AdditionalAnswers.returnsFirstArg());
     ParticipantIntakeApi expected = screeningParticipantService.create(participantIntakeApi);
     assertThat(expected, is(notNullValue()));
@@ -144,7 +144,7 @@ public class ScreeningParticipantServiceTest {
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
         .setScreeningId("18").setLegacyDescriptor(null).build();
     when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
-    when(participantIntakeApiService.persistParticipantObjectInNS(any()))
+    when(participantService.persistParticipantObjectInNS(any()))
         .thenReturn(participantIntakeApi);
     ParticipantIntakeApi expected = screeningParticipantService.create(participantIntakeApi);
     assertThat(expected, is(notNullValue()));

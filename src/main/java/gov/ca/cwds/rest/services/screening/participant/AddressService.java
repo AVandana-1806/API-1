@@ -17,7 +17,7 @@ import gov.ca.cwds.rest.services.TypedCrudsService;
  *
  * @author CWDS API team
  */
-public class AddressIntakeApiService
+public class AddressService
     implements TypedCrudsService<String, AddressIntakeApi, AddressIntakeApi> {
 
   private AddressesDao addressesDao;
@@ -31,7 +31,7 @@ public class AddressIntakeApiService
    * @param legacyDescriptorDao - {@link Dao} for {@link LegacyDescriptorDao}
    */
   @Inject
-  public AddressIntakeApiService(AddressesDao addressesDao,
+  public AddressService(AddressesDao addressesDao,
       LegacyDescriptorDao legacyDescriptorDao) {
     this.addressesDao = addressesDao;
     this.legacyDescriptorDao = legacyDescriptorDao;

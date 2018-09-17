@@ -5,15 +5,11 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-import gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity;
-import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +21,6 @@ import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.rest.RestStatus;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +34,7 @@ import gov.ca.cwds.data.ns.CrossReportDao;
 import gov.ca.cwds.data.ns.ScreeningAddressDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.ns.CrossReportEntity;
+import gov.ca.cwds.data.persistence.ns.GovernmentAgencyEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningWrapper;
 import gov.ca.cwds.fixture.ScreeningWrapperEntityBuilder;
@@ -48,11 +44,12 @@ import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboard;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboardList;
+import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
@@ -98,7 +95,7 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
   private ScreeningAddressDao screeningAddressDao;
 
   @Mock
-  private ParticipantIntakeApiService participantIntakeApiService;
+  private ParticipantService participantService;
 
   @Override
   @Before
@@ -134,7 +131,7 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     target.setCrossReportDao(crossReportDao);
     target.setCrossReportMapper(crossReportMapper);
     target.setScreeningAddressDao(screeningAddressDao);
-    target.setParticipantIntakeApiService(participantIntakeApiService);
+    target.setParticipantService(participantService);
 
     new TestingRequestExecutionContext("0X5");
   }

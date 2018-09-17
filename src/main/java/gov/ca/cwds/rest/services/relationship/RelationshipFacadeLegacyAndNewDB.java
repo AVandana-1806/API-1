@@ -44,7 +44,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.mapper.RelationshipMapper;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 
 /**
@@ -72,7 +72,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   private final ScreeningRelationshipService screeningRelationshipService;
   private final LegacyDescriptorDao legacyDescriptorDao;
-  private final ParticipantIntakeApiService participantIntakeApiService;
+  private final ParticipantService participantService;
   private final ClientTransformer clientTransformer;
 
   @Inject
@@ -80,7 +80,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao,
       ClientDao cmsClientDao, ScreeningRelationshipService screeningRelationshipService,
       LegacyDescriptorDao legacyDescriptorDao,
-      ParticipantIntakeApiService participantIntakeApiService,
+      ParticipantService participantService,
       ClientTransformer clientTransformer) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
@@ -89,7 +89,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
     this.screeningRelationshipService = screeningRelationshipService;
     this.legacyDescriptorDao = legacyDescriptorDao;
-    this.participantIntakeApiService = participantIntakeApiService;
+    this.participantService = participantService;
     this.clientTransformer = clientTransformer;
     initSystemCodes();
   }
@@ -484,7 +484,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
-    participantIntakeApi = participantIntakeApiService.create(participantIntakeApi);
+    participantIntakeApi = participantService.create(participantIntakeApi);
     participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
   }
