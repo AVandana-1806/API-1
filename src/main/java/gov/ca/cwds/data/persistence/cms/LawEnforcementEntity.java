@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NamedQueries({@NamedQuery(name = "gov.ca.cwds.data.persistence.cms.LawEnforcementEntity.findAll",
-    query = "FROM LawEnforcementEntity ORDER BY governmentEntityType")})
+    query = "FROM LawEnforcementEntity ORDER BY governmentEntityType, lawEnforcementName")})
 public class LawEnforcementEntity extends CmsPersistentObject {
   private static final long serialVersionUID = 1L;
 
