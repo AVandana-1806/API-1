@@ -75,7 +75,7 @@ import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
-import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -127,7 +127,7 @@ public class R00797SensitiveReferralAssignmentTest {
   private DrmsDocumentService drmsDocumentService;
   private DrmsDocumentTemplateService drmsDocumentTemplateService;
   private AssignmentService assignmentService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
@@ -256,9 +256,9 @@ public class R00797SensitiveReferralAssignmentTest {
     reminders = mock(Reminders.class);
     riReferral = mock(RIReferral.class);
 
-    participantService = mock(ParticipantService.class);
+    participantToLegacyClient = mock(ParticipantToLegacyClient.class);
     ClientParticipants referralParticipants = new ClientParticipants();
-    when(participantService.saveParticipants(any(), any(), any(), any(), any()))
+    when(participantToLegacyClient.saveParticipants(any(), any(), any(), any(), any()))
         .thenReturn(referralParticipants);
 
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
@@ -282,7 +282,7 @@ public class R00797SensitiveReferralAssignmentTest {
     referralService.setRiReferral(riReferral);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantService, clientRelationshipService, validator, referralDao,
+        crossReportService, participantToLegacyClient, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
         governmentOrganizationCrossReportService, clientRelationshipDao);
   }
@@ -421,7 +421,7 @@ public class R00797SensitiveReferralAssignmentTest {
       participant.setLegacyDescriptor(legacyDescriptor);
     }
     clientParticipants.addParticipants(participants);
-    when(participantService.saveParticipants(any(), any(), any(), any(), any()))
+    when(participantToLegacyClient.saveParticipants(any(), any(), any(), any(), any()))
         .thenReturn(clientParticipants);
 
     screeningToReferralService.create(screeningToReferral);

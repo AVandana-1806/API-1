@@ -69,7 +69,7 @@ public class ScreeningToReferralService implements CrudsService {
   private AllegationService allegationService;
   private AllegationPerpetratorHistoryService allegationPerpetratorHistoryService;
   private CrossReportService crossReportService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private Reminders reminders;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
@@ -83,7 +83,7 @@ public class ScreeningToReferralService implements CrudsService {
    * @param referralService referralService
    * @param allegationService allegationService
    * @param crossReportService crossReportService
-   * @param participantService participantService
+   * @param participantToLegacyClient participantToLegacyClient
    * @param clientRelationshipService clientRelationshipService
    * @param validator validator
    * @param referralDao referralDao
@@ -96,7 +96,7 @@ public class ScreeningToReferralService implements CrudsService {
   @Inject
   public ScreeningToReferralService(ReferralService referralService,
       AllegationService allegationService, CrossReportService crossReportService,
-      ParticipantService participantService,
+      ParticipantToLegacyClient participantToLegacyClient,
       ClientRelationshipCoreService clientRelationshipService, Validator validator,
       ReferralDao referralDao, MessageBuilder messageBuilder,
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
@@ -108,7 +108,7 @@ public class ScreeningToReferralService implements CrudsService {
     this.referralService = referralService;
     this.allegationService = allegationService;
     this.crossReportService = crossReportService;
-    this.participantService = participantService;
+    this.participantToLegacyClient = participantToLegacyClient;
     this.clientRelationshipService = clientRelationshipService;
     this.validator = validator;
     this.referralDao = referralDao;
@@ -202,7 +202,7 @@ public class ScreeningToReferralService implements CrudsService {
 
   private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-    return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
+    return participantToLegacyClient.saveParticipants(screeningToReferral, dateStarted, timeStarted,
         referralId, messageBuilder);
   }
 

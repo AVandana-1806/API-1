@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +43,9 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
+import gov.ca.cwds.rest.services.AddressIntakeApiService;
+import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.services.TypedCrudsService;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 
@@ -91,6 +94,9 @@ public class ParticipantIntakeApiService implements
 
   @Inject
   private SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper;
+
+  @Inject
+  private ParticipantTransformer participantIntakeApiHelper;
 
   /**
    * {@inheritDoc}
@@ -194,6 +200,7 @@ public class ParticipantIntakeApiService implements
     return new ParticipantIntakeApi(participantEntity);
   }
 
+
   /**
    * {@inheritDoc}
    *
@@ -204,6 +211,11 @@ public class ParticipantIntakeApiService implements
     if (participant == null) {
       throw new ServiceException("NULL argument for CREATE participant");
     }
+    return persistParticipantObjectInNS(
+        participantIntakeApiHelper.prepareParticipantObject(participant));
+  }
+
+  public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
 
     setLegacyIdAndTable(participant);
     ParticipantEntity participantEntityManaged =
@@ -284,8 +296,10 @@ public class ParticipantIntakeApiService implements
     Set<PhoneNumber> phoneSet =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
-    LegacyDescriptorEntity foundDescriptor = legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
-    LegacyDescriptor discriptor = foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
+    LegacyDescriptorEntity foundDescriptor =
+        legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
+    LegacyDescriptor discriptor =
+        foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
@@ -380,7 +394,7 @@ public class ParticipantIntakeApiService implements
     List<CsecEntity> csecEntities = new ArrayList<>();
     for (CsecEntity csecEntity : toUpdateList) {
       csecEntity.setParticipantId(participantId);
-      //"update" is not working here due to XA transaction implementation
+      // "update" is not working here due to XA transaction implementation
       csecEntities.add(csecDao.merge(csecEntity));
     }
     for (CsecEntity csecEntity : toCreateList) {
@@ -536,4 +550,5 @@ public class ParticipantIntakeApiService implements
       SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper) {
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
+
 }
