@@ -54,7 +54,7 @@ import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 
 /**
  */
-public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
+public class ParticipantServiceTest implements ServiceTestTemplate {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -72,7 +72,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   @Mock
   private ParticipantAddressesDao participantAddressesDao;
   @Mock
-  private AddressIntakeApiService addressIntakeApiService;
+  private AddressService addressService;
   @Mock
   private PhoneNumbersDao phoneNumbersDao;
   @Mock
@@ -89,14 +89,14 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   LegacyDescriptor legacyDescriptor;
 
   @InjectMocks
-  private ParticipantIntakeApiService participantIntakeApiService =
-      new ParticipantIntakeApiService();
+  private ParticipantService participantService =
+      new ParticipantService();
 
   @Before
   @Override
   public void setup() throws Exception {
-    participantIntakeApiService.setCsecMapper(CsecMapper.INSTANCE);
-    participantIntakeApiService
+    participantService.setCsecMapper(CsecMapper.INSTANCE);
+    participantService
         .setSafelySurrenderedBabiesMapper(SafelySurrenderedBabiesMapper.INSTANCE);
 
     MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -140,7 +140,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   @Test
   public void testFindThrowsAssertionError() throws Exception {
     try {
-      participantIntakeApiService.find(null);
+      participantService.find(null);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL argument for FIND participant", e.getMessage());
@@ -149,7 +149,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullScreeningIdParameters =
         new ParticipantResourceParameters(null, "-1");
     try {
-      participantIntakeApiService.find(nullScreeningIdParameters);
+      participantService.find(nullScreeningIdParameters);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for FIND participant", e.getMessage());
@@ -158,7 +158,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullParticipantIdParameters =
         new ParticipantResourceParameters("-1", null);
     try {
-      participantIntakeApiService.find(nullParticipantIdParameters);
+      participantService.find(nullParticipantIdParameters);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for FIND participant", e.getMessage());
@@ -204,7 +204,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     expected.setSafelySurenderedBabies(null);
 
     ParticipantIntakeApi found =
-        participantIntakeApiService.find(new ParticipantResourceParameters("-1", participantId));
+        participantService.find(new ParticipantResourceParameters("-1", participantId));
     assertThat(found, is(expected));
 
   }
@@ -214,7 +214,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   public void testFindReturnsNullWhenNotFound() throws Exception {
     when(participantDao.findByScreeningIdAndParticipantId("-1", "000")).thenReturn(null);
     ParticipantIntakeApi found =
-        participantIntakeApiService.find(new ParticipantResourceParameters("-1", "000"));
+        participantService.find(new ParticipantResourceParameters("-1", "000"));
 
     assertThat(found, is(nullValue()));
 
@@ -229,7 +229,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   @Test
   public void testCreateThrowsAssertionError() throws Exception {
     try {
-      participantIntakeApiService.create(null);
+      participantService.create(null);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL argument for CREATE participant", e.getMessage());
@@ -263,7 +263,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     expected.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber1, phoneNumber2)));
     expected00.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber11, phoneNumber22)));
 
-    ParticipantIntakeApi found = participantIntakeApiService.create(expected);
+    ParticipantIntakeApi found = participantService.create(expected);
     assertThat(found, is(expected00));
   }
 
@@ -271,7 +271,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   public void shouldContainALegacyDescriptorWhenCreated() {
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
     expected.setLegacyDescriptor(legacyDescriptor);
-    ParticipantIntakeApi found = participantIntakeApiService.persistParticipantObjectInNS(expected);
+    ParticipantIntakeApi found = participantService.persistParticipantObjectInNS(expected);
     LegacyDescriptor legacyDescriptor = found.getLegacyDescriptor();
     assertEquals(legacyDescriptor.getId(), found.getLegacyDescriptor().getId());
     assertEquals(legacyDescriptor.getUiId(), found.getLegacyDescriptor().getUiId());
@@ -299,7 +299,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   @Test
   public void testDeleteThrowsAssertionError() throws Exception {
     try {
-      participantIntakeApiService.delete(null);
+      participantService.delete(null);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL argument for DELETE participant", e.getMessage());
@@ -308,7 +308,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullScreeningIdParameters =
         new ParticipantResourceParameters(null, "-1");
     try {
-      participantIntakeApiService.delete(nullScreeningIdParameters);
+      participantService.delete(nullScreeningIdParameters);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for DELETE participant", e.getMessage());
@@ -317,7 +317,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullParticipantIdParameters =
         new ParticipantResourceParameters("-1", null);
     try {
-      participantIntakeApiService.delete(nullParticipantIdParameters);
+      participantService.delete(nullParticipantIdParameters);
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for DELETE participant", e.getMessage());
@@ -326,7 +326,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
 
   @Test
   public void testDeleteNullParticipant() {
-    participantIntakeApiService.delete(new ParticipantResourceParameters("1", "2"));
+    participantService.delete(new ParticipantResourceParameters("1", "2"));
   }
 
   @Override
@@ -386,7 +386,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
 
     ParticipantIntakeApi found =
-        participantIntakeApiService.delete(new ParticipantResourceParameters("-1", participantId));
+        participantService.delete(new ParticipantResourceParameters("-1", participantId));
 
     assertThat(found, is(expected));
   }
@@ -395,14 +395,14 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
   @Test
   public void testUpdateThrowsAssertionError() throws Exception {
     try {
-      participantIntakeApiService.update(null, new ParticipantIntakeApi());
+      participantService.update(null, new ParticipantIntakeApi());
       fail();
     } catch (Exception e) {
       assertEquals("NULL argument for UPDATE participant", e.getMessage());
     }
 
     try {
-      participantIntakeApiService.update(new ParticipantResourceParameters(null, null), null);
+      participantService.update(new ParticipantResourceParameters(null, null), null);
       fail();
     } catch (Exception e) {
       assertEquals("NULL argument for UPDATE participant", e.getMessage());
@@ -411,7 +411,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullScreeningIdParameters =
         new ParticipantResourceParameters(null, "-1");
     try {
-      participantIntakeApiService.update(nullScreeningIdParameters, new ParticipantIntakeApi());
+      participantService.update(nullScreeningIdParameters, new ParticipantIntakeApi());
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for UPDATE participant", e.getMessage());
@@ -420,7 +420,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     ParticipantResourceParameters nullParticipantIdParameters =
         new ParticipantResourceParameters("-1", null);
     try {
-      participantIntakeApiService.update(nullParticipantIdParameters, new ParticipantIntakeApi());
+      participantService.update(nullParticipantIdParameters, new ParticipantIntakeApi());
       fail();
     } catch (ServiceException e) {
       assertEquals("NULL screening/participant id for UPDATE participant", e.getMessage());
@@ -517,7 +517,7 @@ public class ParticipantIntakeApiServiceTest implements ServiceTestTemplate {
     expected00.setScreeningId("-1");
 
     ParticipantIntakeApi found =
-        participantIntakeApiService.update(new ParticipantResourceParameters("-1", pId), expected);
+        participantService.update(new ParticipantResourceParameters("-1", pId), expected);
     assertThat(found, is(expected00));
 
   }

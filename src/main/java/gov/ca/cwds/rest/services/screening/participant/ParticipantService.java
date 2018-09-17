@@ -53,10 +53,10 @@ import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
  *
  * @author CWDS API Team
  */
-public class ParticipantIntakeApiService implements
+public class ParticipantService implements
     TypedCrudsService<ParticipantResourceParameters, ParticipantIntakeApi, ParticipantIntakeApi> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantIntakeApiService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantService.class);
 
   @Inject
   private ParticipantDao participantDao;
@@ -74,7 +74,7 @@ public class ParticipantIntakeApiService implements
   private ParticipantAddressesDao participantAddressesDao;
 
   @Inject
-  private AddressIntakeApiService addressIntakeApiService;
+  private AddressService addressService;
 
   @Inject
   private PhoneNumbersDao phoneNumbersDao;
@@ -463,7 +463,7 @@ public class ParticipantIntakeApiService implements
       addressesEntityManaged = addressesDao.create(new Addresses(addressIntakeApi));
       LegacyDescriptor legacyDescriptor = addressIntakeApi.getLegacyDescriptor();
       addressIntakeApi = new AddressIntakeApi(addressesEntityManaged);
-      addressIntakeApi.setLegacyDescriptor(addressIntakeApiService
+      addressIntakeApi.setLegacyDescriptor(addressService
           .saveLegacyDescriptor(legacyDescriptor, addressesEntityManaged.getId()));
     }
     return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
