@@ -29,7 +29,7 @@ import gov.ca.cwds.rest.api.domain.cms.ReferralClient;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.messages.MessageBuilder;
-import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -59,7 +59,7 @@ public class MockedScreeningToReferralServiceBuilder {
   private ClientAddressService clientAddressService;
   private ChildClientService childClientService;
   private AssignmentService assignmentService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private AllegationPerpetratorHistoryService allegationPerpetratorHistoryService;
   private Reminders reminders;
@@ -427,13 +427,13 @@ public class MockedScreeningToReferralServiceBuilder {
     return this;
   }
 
-  public ParticipantService getParticipantService() {
-    return participantService;
+  public ParticipantToLegacyClient getParticipantToLegacyClient() {
+    return participantToLegacyClient;
   }
 
-  public MockedScreeningToReferralServiceBuilder addParticipantService(
-      ParticipantService participantService) {
-    this.participantService = participantService;
+  public MockedScreeningToReferralServiceBuilder addParticipantToLegacyClient(
+      ParticipantToLegacyClient participantToLegacyClient) {
+    this.participantToLegacyClient = participantToLegacyClient;
     return this;
   }
 
@@ -466,7 +466,7 @@ public class MockedScreeningToReferralServiceBuilder {
    */
   public ScreeningToReferralService createScreeningToReferralService() {
     return new ScreeningToReferralService(getReferralService(), getAllegationService(),
-        getCrossReportService(), getParticipantService(), clientRelationshipService,
+        getCrossReportService(), getParticipantToLegacyClient(), clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), getReferralDao(),
         getMessageBuilder(), getAllegationPerpetratorHistoryService(), getReminders(),
         getGovernmentOrganizationCrossReportService(), getClientRelationshipDao());

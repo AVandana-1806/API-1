@@ -54,6 +54,7 @@ import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
 
 /**
  * Business layer object to work on {@link Screening}.
@@ -446,7 +447,7 @@ public class ScreeningService implements CrudsService {
       if (participantIntakeApiId == null) {
         participantIntakeApi.setScreeningId(screening.getId());
         final ParticipantIntakeApi createdParticipantIntakeApi =
-            participantIntakeApiService.create(participantIntakeApi);
+            participantIntakeApiService.persistParticipantObjectInNS(participantIntakeApi);
         participantIntakeApis.add(createdParticipantIntakeApi);
       } else {
         final ParticipantIntakeApi updatedParticipantIntakeApi = participantIntakeApiService.update(

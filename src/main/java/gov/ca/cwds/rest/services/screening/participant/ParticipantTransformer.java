@@ -1,8 +1,14 @@
-package gov.ca.cwds.rest.services.screeningparticipant;
+package gov.ca.cwds.rest.services.screening.participant;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.CrudsDao;
-import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -10,29 +16,21 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ServiceException;
-import gov.ca.cwds.rest.services.TypedCrudsService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
-import io.dropwizard.hibernate.UnitOfWork;
-import javax.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
+import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapper;
+import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- *
+ * 
  * @author CWDS API Team
  */
-public class ScreeningParticipantService
-    implements TypedCrudsService<String, ParticipantIntakeApi, ParticipantIntakeApi> {
+public class ParticipantTransformer {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningParticipantService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantTransformer.class);
 
   @Inject
   private ScreeningDao screeningDao;
-
-  @Inject
-  private ParticipantIntakeApiService participantIntakeApiService;
 
   @Inject
   private ParticipantDaoFactoryImpl participantDaoFactory;
@@ -40,12 +38,8 @@ public class ScreeningParticipantService
   @Inject
   private ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl;
 
-  @Inject
-  private ClientDao clientDao;
-
-  @Override
-  @UnitOfWork(value = "cms")
-  public ParticipantIntakeApi create(ParticipantIntakeApi incomingParticipantIntakeApi) {
+  public ParticipantIntakeApi prepareParticipantObject(
+      ParticipantIntakeApi incomingParticipantIntakeApi) {
     if (StringUtils.isBlank(incomingParticipantIntakeApi.getScreeningId())) {
       LOGGER.error("Screening is required to create the particpant {}",
           incomingParticipantIntakeApi.getScreeningId());
@@ -58,16 +52,15 @@ public class ScreeningParticipantService
     if (legacyDescriptor != null && StringUtils.isNotBlank(legacyDescriptor.getId())
         && StringUtils.isNotBlank(legacyDescriptor.getTableName())) {
       participantIntakeApi =
-          createParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
+          transformParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
-      participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
-      return participantIntakeApiService.persistParticipantObjectInNS(participantIntakeApi);
+      return participantIntakeApi;
     } else {
-      return participantIntakeApiService.persistParticipantObjectInNS(incomingParticipantIntakeApi);
+      return incomingParticipantIntakeApi;
     }
   }
 
-  private ParticipantIntakeApi createParticipant(String id, String tableName) {
+  private ParticipantIntakeApi transformParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
     ParticipantMapper<CmsPersistentObject> participantMapper;
     CrudsDao<CmsPersistentObject> crudsDaoObject = participantDaoFactory.create(tableName);
@@ -91,45 +84,11 @@ public class ScreeningParticipantService
     }
   }
 
-  private Boolean isProbationYouth(String clientId) {
-    return clientDao.findProbationYouth(clientId) != null;
-  }
-
-  @Override
-  public ParticipantIntakeApi delete(String id) {
-    return null;
-  }
-
-  @Override
-  public ParticipantIntakeApi find(String id) {
-    return null;
-  }
-
-  @Override
-  public ParticipantIntakeApi update(String id, ParticipantIntakeApi request) {
-    return null;
-  }
-
   /**
    * @param screeningDao - screeningDao
    */
   public void setScreeningDao(ScreeningDao screeningDao) {
     this.screeningDao = screeningDao;
-  }
-
-  /**
-   * @param participantIntakeApiService - participantIntakeApiService
-   */
-  public void setParticipantIntakeApiService(
-      ParticipantIntakeApiService participantIntakeApiService) {
-    this.participantIntakeApiService = participantIntakeApiService;
-  }
-
-  /**
-   * @param clientDao - clientDao
-   */
-  public void setClientDao(ClientDao clientDao) {
-    this.clientDao = clientDao;
   }
 
   /**
