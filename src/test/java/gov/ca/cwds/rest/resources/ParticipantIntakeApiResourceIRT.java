@@ -88,6 +88,7 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
+  @Ignore
   public void testPostUpdateDeleteCycle() throws Exception {
     ParticipantIntakeApi participant = objectMapper.readValue(
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json")
