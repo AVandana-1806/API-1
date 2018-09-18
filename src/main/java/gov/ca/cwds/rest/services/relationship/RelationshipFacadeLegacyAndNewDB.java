@@ -79,8 +79,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   public RelationshipFacadeLegacyAndNewDB(ParticipantDao participantDao,
       ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao,
       ClientDao cmsClientDao, ScreeningRelationshipService screeningRelationshipService,
-      LegacyDescriptorDao legacyDescriptorDao,
-      ParticipantService participantService,
+      LegacyDescriptorDao legacyDescriptorDao, ParticipantService participantService,
       ClientTransformer clientTransformer) {
     this.participantDao = participantDao;
     this.cmsRelationshipDao = cmsRelationshipDao;
@@ -484,7 +483,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
-    participantIntakeApi = participantService.create(participantIntakeApi);
+    participantIntakeApi = participantService.persistParticipantObjectInNS(participantIntakeApi);
     participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
   }
