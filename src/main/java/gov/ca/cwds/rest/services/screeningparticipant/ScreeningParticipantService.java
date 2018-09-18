@@ -10,8 +10,10 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
+import gov.ca.cwds.data.persistence.ns.ParticipantEntity;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
@@ -46,6 +48,9 @@ public class ScreeningParticipantService
   @Inject
   private ClientDao clientDao;
 
+  @Inject
+  private ParticipantDao participantDao;
+
   @Override
   @UnitOfWork(value = "cms")
   public ParticipantIntakeApi create(ParticipantIntakeApi incomingParticipantIntakeApi) {
@@ -54,6 +59,18 @@ public class ScreeningParticipantService
           incomingParticipantIntakeApi.getScreeningId());
       throw new ServiceException("Screening is required to create the particpant");
     }
+
+    ParticipantEntity existing = getExistingParticipant(
+        incomingParticipantIntakeApi.getScreeningId(),
+        incomingParticipantIntakeApi.getLegacyDescriptor());
+    if (existing != null) {
+      existing = enrichExistingParticipantWithScreeningId(
+          incomingParticipantIntakeApi.getScreeningId(),
+          existing);
+      participantDao.update(existing);
+      return new ParticipantIntakeApi(existing);
+    }
+
     ensureScreeningExistsAndOpen(incomingParticipantIntakeApi);
     ParticipantIntakeApi participantIntakeApi = null;
     LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
@@ -70,6 +87,17 @@ public class ScreeningParticipantService
     }
   }
 
+  private ParticipantEntity getExistingParticipant(String screeningId,
+      LegacyDescriptor legacyDescriptor) {
+    String legacyId = "";
+    if (legacyDescriptor != null && StringUtils.isNoneEmpty(legacyDescriptor.getId())) {
+      legacyId += legacyDescriptor.getId();
+    }
+    return participantDao
+        .findByRelatedScreeningIdAndLegacyId(screeningId,
+            legacyId);
+  }
+
   private ParticipantIntakeApi createParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
     ParticipantMapper<CmsPersistentObject> participantMapper;
@@ -81,6 +109,12 @@ public class ScreeningParticipantService
       LOGGER.error("Object is not found with the given identifier {}", id);
       throw new ServiceException("");
     }
+  }
+
+  private ParticipantEntity enrichExistingParticipantWithScreeningId(String screeningId,
+      ParticipantEntity existingParticipant) {
+    existingParticipant.setScreeningId(screeningId);
+    return existingParticipant;
   }
 
   private void ensureScreeningExistsAndOpen(ParticipantIntakeApi participantIntakeApi) {
@@ -132,6 +166,13 @@ public class ScreeningParticipantService
    */
   public void setClientDao(ClientDao clientDao) {
     this.clientDao = clientDao;
+  }
+
+  /**
+   * @param participantDao - participantDao
+   */
+  public void setParticipantDao(ParticipantDao participantDao) {
+    this.participantDao = participantDao;
   }
 
   /**

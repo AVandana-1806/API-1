@@ -19,6 +19,7 @@ import org.mockito.AdditionalAnswers;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
+import gov.ca.cwds.data.ns.ParticipantDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
@@ -52,6 +53,7 @@ public class ScreeningParticipantServiceTest {
   private ParticipantService participantService;
   private ParticipantDaoFactoryImpl participantDaoFactory;
   private ParticipantMapperFactoryImpl participantMapperFactoryImpl;
+  private ParticipantDao participantDao;
 
   @Before
   public void setup() {
@@ -60,12 +62,14 @@ public class ScreeningParticipantServiceTest {
     participantDaoFactory = mock(ParticipantDaoFactoryImpl.class);
     participantMapperFactoryImpl = mock(ParticipantMapperFactoryImpl.class);
     clientDao = mock(ClientDao.class);
+    participantDao = mock(ParticipantDao.class);
 
     screeningParticipantService.setScreeningDao(screeningDao);
     screeningParticipantService.setClientDao(clientDao);
     screeningParticipantService.setParticipantDaoFactory(participantDaoFactory);
     screeningParticipantService.setParticipantMapperFactoryImpl(participantMapperFactoryImpl);
     screeningParticipantService.setParticipantIntakeApiService(participantService);
+    screeningParticipantService.setParticipantDao(participantDao);
   }
 
   /**
@@ -127,6 +131,8 @@ public class ScreeningParticipantServiceTest {
         .setScreeningId("18").setLegacyDescriptor(legacyDescriptor).build();
     when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
     when(clientDao.findProbationYouth(any(String.class))).thenReturn(probationYouthClient);
+    when(participantDao.findByRelatedScreeningIdAndLegacyId(any(String.class), any(String.class)))
+        .thenReturn(null);
     when(participantDaoFactory.create(any(String.class))).thenReturn(crudsDaoObject);
     // Return same object as passed to the method
     when(participantService.persistParticipantObjectInNS(any()))
