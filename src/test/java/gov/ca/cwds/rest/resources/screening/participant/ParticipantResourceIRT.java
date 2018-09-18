@@ -6,13 +6,7 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import java.io.IOException;
-import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -195,6 +189,5 @@ public class ParticipantResourceIRT extends IntakeBaseTest {
     assertEquals("Participant", existingParticipant.getLastName());
     assertEquals("Existing", existingParticipant.getFirstName());
     assertEquals("0000jjj000", existingParticipant.getLegacyId());
-
   }
 }
