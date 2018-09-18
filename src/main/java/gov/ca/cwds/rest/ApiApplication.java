@@ -1,22 +1,10 @@
 package gov.ca.cwds.rest;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Map;
-
-import javax.servlet.DispatcherType;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codahale.metrics.servlets.AdminServlet;
 import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
 import gov.ca.cwds.health.IntakeCodeCacheHealthCheck;
@@ -40,6 +28,14 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jetty.NonblockingServletHolder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.io.File;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Map;
+import javax.servlet.DispatcherType;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Core execution class of CWDS REST API server application.
@@ -178,11 +174,13 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     LOGGER.info("Upgrading INTAKE_NS DB...");
 
     final DataSourceFactory nsDataSourceFactory = configuration.getNsDataSourceFactory();
-    final DatabaseHelper databaseHelper = new DatabaseHelper(nsDataSourceFactory.getUrl(),
+    final String currentSchema = nsDataSourceFactory.getProperties()
+        .get(HIBERNATE_DEFAULT_SCHEMA_PROPERTY_NAME);
+    final DatabaseHelper databaseHelper = new DatabaseHelper(
+        nsDataSourceFactory.getUrl() + "?currentSchema=" + currentSchema,
         nsDataSourceFactory.getUser(), nsDataSourceFactory.getPassword());
     try {
-      databaseHelper.runScript(LIQUIBASE_INTAKE_NS_DATABASE_MASTER_XML,
-          nsDataSourceFactory.getProperties().get(HIBERNATE_DEFAULT_SCHEMA_PROPERTY_NAME));
+      databaseHelper.runScript(LIQUIBASE_INTAKE_NS_DATABASE_MASTER_XML, currentSchema);
     } catch (Exception e) {
       LOGGER.error("INTAKE_NS DB UPGRADE FAILED!", e);
       throw new ApiException("INTAKE_NS DB UPGRADE FAILED", e);
