@@ -95,7 +95,7 @@ public class ParticipantService implements
   private SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper;
 
   @Inject
-  private ParticipantTransformer participantIntakeApiHelper;
+  private ParticipantTransformer participantTransformer;
 
   /**
    * {@inheritDoc}
@@ -211,7 +211,7 @@ public class ParticipantService implements
       throw new ServiceException("NULL argument for CREATE participant");
     }
     return persistParticipantObjectInNS(
-        participantIntakeApiHelper.prepareParticipantObject(participant));
+        participantTransformer.prepareParticipantObject(participant));
   }
 
   public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
