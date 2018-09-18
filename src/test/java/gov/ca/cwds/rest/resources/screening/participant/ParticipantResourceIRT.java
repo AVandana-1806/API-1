@@ -6,7 +6,12 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -174,9 +179,8 @@ public class ParticipantResourceIRT extends IntakeBaseTest {
 
     assertEquals("", existingPartisipantsJson);
 
-    String request =
-        fixture(
-            "fixtures/gov/ca/cwds/rest/resources/existing-participant-intake-api-post-request.json");
+    String request = objectMapper.writeValueAsString(
+        getDefaultParticipant(getLegacyDescriptor("CLIENT_T", "0000jjj000", "Client")));
     String actualJson = getStringResponse(
         doPostCall(RESOURCE_SCREENINGS + "/" + screeningId + "/participant", request));
 
@@ -189,5 +193,29 @@ public class ParticipantResourceIRT extends IntakeBaseTest {
     assertEquals("Participant", existingParticipant.getLastName());
     assertEquals("Existing", existingParticipant.getFirstName());
     assertEquals("0000jjj000", existingParticipant.getLegacyId());
+  }
+
+  private ParticipantIntakeApi getDefaultParticipant(LegacyDescriptor legacyDescriptor) {
+    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApi();
+    participantIntakeApi.setLegacyDescriptor(legacyDescriptor);
+    participantIntakeApi.setFirstName("Existing");
+    participantIntakeApi.setLastName("Participant");
+    participantIntakeApi.setGender("male");
+    participantIntakeApi.setSsn("123-45-6789");
+    participantIntakeApi.setDateOfBirth(new Date(LocalDate.parse("1999-11-15").toEpochDay()));
+    participantIntakeApi.setScreeningId("2114");
+    participantIntakeApi.setProbationYouth(Boolean.TRUE);
+    return participantIntakeApi;
+  }
+
+  private LegacyDescriptor getLegacyDescriptor(String tableName, String legacyId,
+      String tableDescription) {
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
+    legacyDescriptor.setId(legacyId);
+    legacyDescriptor.setUiId("0522-3101-9120-2000767");
+    legacyDescriptor.setLastUpdated(DateTime.now());
+    legacyDescriptor.setTableName(tableName);
+    legacyDescriptor.setTableDescription("");
+    return legacyDescriptor;
   }
 }
