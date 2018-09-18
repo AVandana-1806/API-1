@@ -22,7 +22,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryIm
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- * 
+ *
  * @author CWDS API Team
  */
 public class ParticipantTransformer {

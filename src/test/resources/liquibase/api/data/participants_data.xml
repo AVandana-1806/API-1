@@ -1057,5 +1057,24 @@
       <column name="sealed" valueBoolean="false"/>
       <column name="probation_youth" valueBoolean="true"/>
     </insert>
+    <insert tableName="participants">
+      <column name="id" value="2035"/>
+      <column name="date_of_birth" valueDate="1999-11-15"/>
+      <column name="first_name" value="Existing"/>
+      <column name="gender" value="male"/>
+      <column name="last_name" value="Participant"/>
+      <column name="ssn" value="123-45-6789"/>
+      <column name="related_screening_id" value="2114"/>
+      <column name="languages" value="{&quot;English&quot;}"/>
+      <column name="legacy_id" value="0000jjj000"/>
+      <column name="middle_name" value="T"/>
+      <column name="name_suffix" value="Jr."/>
+      <column name="races" value="[{&quot;race&quot;:&quot;White&quot;}]"/>
+      <column name="ethnicity"
+        value="{&quot;hispanic_latino_origin&quot;:&quot;Unknown&quot;,&quot;ethnicity_detail&quot;:[]}"/>
+      <column name="sensitive" valueBoolean="false"/>
+      <column name="sealed" valueBoolean="false"/>
+      <column name="probation_youth" valueBoolean="true"/>
+    </insert>
   </changeSet>
 </databaseChangeLog>

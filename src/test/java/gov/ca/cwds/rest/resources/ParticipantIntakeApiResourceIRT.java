@@ -5,7 +5,13 @@ import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
+import java.io.IOException;
+import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -162,5 +168,35 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
     String getResponse = getStringResponse(doGetCall(
         RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + postedParticipant.getId()));
     assertEquals("", getResponse);
+  }
+
+  @Test
+  public void testCreateExistingParticipant_sameLegacyId_sameRelatedScreeningId_scriningIdIsNull()
+      throws IOException {
+    final String participantId = "2035";
+    final String screeningId = "2114";
+
+    String existingPartisipantsJson = getStringResponse(
+        doGetCall(RESOURCE_SCREENINGS + "/" + screeningId + "/" + RESOURCE_PARTICIPANTS + "/"
+            + participantId));
+
+    assertEquals("", existingPartisipantsJson);
+
+    String request =
+        fixture(
+            "fixtures/gov/ca/cwds/rest/resources/existing-participant-intake-api-post-request.json");
+    String actualJson = getStringResponse(
+        doPostCall(RESOURCE_SCREENINGS + "/" + screeningId + "/participant", request));
+
+    ParticipantIntakeApi existingParticipant = objectMapper
+        .readValue(actualJson, ParticipantIntakeApi.class);
+
+    assertNotNull(existingParticipant);
+    assertEquals(participantId, existingParticipant.getId());
+    assertEquals(screeningId, existingParticipant.getScreeningId());
+    assertEquals("Participant", existingParticipant.getLastName());
+    assertEquals("Existing", existingParticipant.getFirstName());
+    assertEquals("0000jjj000", existingParticipant.getLegacyId());
+
   }
 }
