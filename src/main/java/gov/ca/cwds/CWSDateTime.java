@@ -24,23 +24,22 @@ public class CWSDateTime {
 
   public CWSDateTime(String utcDateTime) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIMESTAMP_ISO8601_FORMAT);
-    if(utcDateTime.length() == DATE_FORMAT.length()){
+    if (utcDateTime.length() == DATE_FORMAT.length()) {
       utcDateTime += "T08:00:00.000Z";
-//      formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
     }
     LocalDateTime localDateTime = LocalDateTime.parse(utcDateTime, formatter);
-    this.utcDateTime = localDateTime.atZone( ZoneId.of("UTC"));
+    this.utcDateTime = localDateTime.atZone(ZoneId.of("UTC"));
   }
 
-  public String toLocalTimeStamp(){
+  public String toLocalTimeStamp() {
     return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringFormatter());
   }
 
-  public String toLocalDate(){
+  public String toLocalDate() {
     return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringDateFormatter());
   }
 
-  public String toLocalTime(){
+  public String toLocalTime() {
     return utcDateTime.withZoneSameInstant(localTimeZone()).format(toStringTimeFormatter());
   }
 
@@ -48,15 +47,15 @@ public class CWSDateTime {
     return ZoneId.of(LOCAL_TIME_ZONE);
   }
 
-  private DateTimeFormatter toStringFormatter(){
+  private DateTimeFormatter toStringFormatter() {
     return DateTimeFormatter.ofPattern(TIMESTAMP_ISO8601_FORMAT_TO_STRING);
   }
 
-  private DateTimeFormatter toStringDateFormatter(){
+  private DateTimeFormatter toStringDateFormatter() {
     return DateTimeFormatter.ofPattern(DATE_FORMAT);
   }
 
-  private DateTimeFormatter toStringTimeFormatter(){
+  private DateTimeFormatter toStringTimeFormatter() {
     return DateTimeFormatter.ofPattern(TIME_FORMAT);
   }
 }
