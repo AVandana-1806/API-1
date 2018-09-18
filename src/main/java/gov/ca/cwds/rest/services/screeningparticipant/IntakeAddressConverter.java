@@ -6,14 +6,13 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
+
 import gov.ca.cwds.data.legacy.cms.entity.OutOfHomePlacement;
 import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import gov.ca.cwds.data.legacy.cms.entity.PlacementHome;
@@ -124,5 +123,5 @@ public class IntakeAddressConverter {
      * if (address.getZip4() != null) { return address.getZip() + "-" + address.getZip4(); } return
      * zip;
      */
-  }  
+  }
 }
