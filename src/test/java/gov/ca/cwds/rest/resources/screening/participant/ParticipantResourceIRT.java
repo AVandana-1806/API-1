@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.resources;
+package gov.ca.cwds.rest.resources.screening.participant;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_PARTICIPANTS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
@@ -26,7 +26,7 @@ import gov.ca.cwds.rest.api.domain.PhoneNumber;
 /**
  * CWDS API Team
  */
-public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
+public class ParticipantResourceIRT extends IntakeBaseTest {
 
   @Test
   public void testGet() throws Exception {
@@ -38,7 +38,6 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  @Ignore
   public void testPost() throws Exception {
     String request =
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json");
@@ -94,7 +93,6 @@ public class ParticipantIntakeApiResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  @Ignore
   public void testPostUpdateDeleteCycle() throws Exception {
     ParticipantIntakeApi participant = objectMapper.readValue(
         fixture("fixtures/gov/ca/cwds/rest/resources/participant-intake-api-post-request.json")

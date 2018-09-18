@@ -1,6 +1,13 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.ns.ParticipantDao;
@@ -13,12 +20,8 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.TypedCrudsService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import io.dropwizard.hibernate.UnitOfWork;
-import javax.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Business layer object to work on ParticipantIntakeApi
@@ -34,7 +37,7 @@ public class ScreeningParticipantService
   private ScreeningDao screeningDao;
 
   @Inject
-  private ParticipantIntakeApiService participantIntakeApiService;
+  private ParticipantService participantService;
 
   @Inject
   private ParticipantDaoFactoryImpl participantDaoFactory;
@@ -78,9 +81,9 @@ public class ScreeningParticipantService
           createParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
-      return participantIntakeApiService.persistParticipantObjectInNS(participantIntakeApi);
+      return participantService.persistParticipantObjectInNS(participantIntakeApi);
     } else {
-      return participantIntakeApiService.persistParticipantObjectInNS(incomingParticipantIntakeApi);
+      return participantService.persistParticipantObjectInNS(incomingParticipantIntakeApi);
     }
   }
 
@@ -154,9 +157,8 @@ public class ScreeningParticipantService
   /**
    * @param participantIntakeApiService - participantIntakeApiService
    */
-  public void setParticipantIntakeApiService(
-      ParticipantIntakeApiService participantIntakeApiService) {
-    this.participantIntakeApiService = participantIntakeApiService;
+  public void setParticipantIntakeApiService(ParticipantService participantIntakeApiService) {
+    this.participantService = participantIntakeApiService;
   }
 
   /**

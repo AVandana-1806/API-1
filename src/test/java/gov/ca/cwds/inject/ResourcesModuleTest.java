@@ -43,7 +43,7 @@ import gov.ca.cwds.rest.services.investigation.CrossReportListService;
 import gov.ca.cwds.rest.services.investigation.HistoryOfInvolvementService;
 import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 
 public class ResourcesModuleTest {
   ResourcesModule resourceModule;
@@ -191,7 +191,7 @@ public class ResourcesModuleTest {
   @Test
   public void participantServiceBackedResourceShouldRetrieveServiceFromInjector() {
     resourceModule.participantServiceBackedResource(injector);
-    verify(injector).getInstance(ParticipantIntakeApiService.class);
+    verify(injector).getInstance(ParticipantService.class);
   }
 
   @Test

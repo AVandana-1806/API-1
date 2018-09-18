@@ -82,7 +82,7 @@ import gov.ca.cwds.rest.resources.investigation.PeopleResource;
 import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.resources.screening.participant.ParticipantIntakeApiResource;
+import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
 import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
@@ -125,7 +125,7 @@ import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
@@ -152,7 +152,7 @@ public class ResourcesModule extends AbstractModule {
     bind(ApplicationResource.class);
     bind(SwaggerResource.class);
     bind(AddressResource.class);
-    bind(ParticipantIntakeApiResource.class);
+    bind(ParticipantResource.class);
     bind(PersonResource.class);
     bind(ScreeningResource.class);
     bind(ScreeningSubmitResource.class);
@@ -404,7 +404,7 @@ public class ResourcesModule extends AbstractModule {
   public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ParticipantIntakeApiService.class));
+        injector.getInstance(ParticipantService.class));
   }
 
   @Provides
