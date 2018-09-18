@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Set;
 import javax.persistence.PersistenceException;
 import javax.validation.Validator;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +21,6 @@ import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
-import gov.ca.cwds.rest.api.Request;
-import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
@@ -67,11 +63,11 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
  *
  * @author CWDS API Team
  */
-public class ParticipantService implements CrudsService {
+public class ParticipantToLegacyClient {
 
   private static final String ASSESMENT = "A";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantToLegacyClient.class);
 
   private Validator validator;
 
@@ -108,7 +104,7 @@ public class ParticipantService implements CrudsService {
    * @param referralClientDao referralClientDao
    */
   @Inject
-  public ParticipantService(ClientService clientService,
+  public ParticipantToLegacyClient(ClientService clientService,
       ReferralClientService referralClientService, ReporterService reporterService,
       ChildClientService childClientService, ClientAddressService clientAddressService,
       Validator validator, ClientScpEthnicityService clientScpEthnicityService, CaseDao caseDao,
@@ -122,31 +118,6 @@ public class ParticipantService implements CrudsService {
     this.clientScpEthnicityService = clientScpEthnicityService;
     this.caseDao = caseDao;
     this.referralClientDao = referralClientDao;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see gov.ca.cwds.rest.services.CrudsService#create(gov.ca.cwds.rest.api.Request)
-   */
-  @Override
-  public Response create(Request request) {
-    throw new NotImplementedException("create is not implemented");
-  }
-
-  @Override
-  public Response delete(Serializable id) {
-    throw new NotImplementedException("delete is not implemented");
-  }
-
-  @Override
-  public Response find(Serializable id) {
-    throw new NotImplementedException("find is not implemented");
-  }
-
-  @Override
-  public Response update(Serializable id, Request participant) {
-    throw new NotImplementedException("update is not implemented");
   }
 
   /**

@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -10,13 +10,14 @@ import gov.ca.cwds.data.ns.LegacyDescriptorDao;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
+import gov.ca.cwds.rest.services.TypedCrudsService;
 
 /**
  * Business layer object to work on {@link AddressIntakeApi}
  *
  * @author CWDS API team
  */
-public class AddressIntakeApiService
+public class AddressService
     implements TypedCrudsService<String, AddressIntakeApi, AddressIntakeApi> {
 
   private AddressesDao addressesDao;
@@ -30,7 +31,7 @@ public class AddressIntakeApiService
    * @param legacyDescriptorDao - {@link Dao} for {@link LegacyDescriptorDao}
    */
   @Inject
-  public AddressIntakeApiService(AddressesDao addressesDao,
+  public AddressService(AddressesDao addressesDao,
       LegacyDescriptorDao legacyDescriptorDao) {
     this.addressesDao = addressesDao;
     this.legacyDescriptorDao = legacyDescriptorDao;

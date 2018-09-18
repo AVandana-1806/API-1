@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,9 +27,9 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
  * @author CWDS API Team
  *
  */
-public class AddressIntakeApiServiceTest {
+public class AddressServiceTest {
 
-  private AddressIntakeApiService addressIntakeApiService;
+  private AddressService addressIntakeApiService;
   private AddressesDao addressesDao;
   private LegacyDescriptorDao legacyDescriptorDao;
 
@@ -40,7 +40,7 @@ public class AddressIntakeApiServiceTest {
   public void setup() throws Exception {
     addressesDao = mock(AddressesDao.class);
     legacyDescriptorDao = mock(LegacyDescriptorDao.class);
-    addressIntakeApiService = new AddressIntakeApiService(addressesDao, legacyDescriptorDao);
+    addressIntakeApiService = new AddressService(addressesDao, legacyDescriptorDao);
   }
 
   /**

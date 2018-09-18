@@ -52,7 +52,7 @@ import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
-import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -101,7 +101,7 @@ public class R05914DoNotUpdateApprovalStatusTypeTest {
   private ChildClientService childClientService;
   private LongTextService longTextService;
   private AssignmentService assignmentService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
@@ -255,11 +255,11 @@ public class R05914DoNotUpdateApprovalStatusTypeTest {
 
     reminders = mock(Reminders.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
-    participantService = mock(ParticipantService.class);
+    participantToLegacyClient = mock(ParticipantToLegacyClient.class);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantService, clientRelationshipService,
+        crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);

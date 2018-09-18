@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
@@ -46,6 +47,7 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboard;
 import gov.ca.cwds.rest.api.domain.ScreeningDashboardList;
+import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
@@ -54,6 +56,7 @@ import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
 import gov.ca.cwds.rest.services.mapper.CrossReportMapper;
 import gov.ca.cwds.rest.services.mapper.ScreeningMapper;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 
 /**
  * Business layer object to work on {@link Screening}.
@@ -87,7 +90,7 @@ public class ScreeningService implements CrudsService {
   private ScreeningDao screeningDao;
 
   @Inject
-  private ParticipantIntakeApiService participantIntakeApiService;
+  private ParticipantService participantService;
 
   @Inject
   private ScreeningMapper screeningMapper;
@@ -241,8 +244,10 @@ public class ScreeningService implements CrudsService {
     for (CrossReportIntake crossReport : crossReports) {
       final List<GovernmentAgencyEntity> agencyEntities =
           agencyDao.findByCrossReportId(crossReport.getId());
+      List<GovernmentAgencyEntity> lastAgencyEntities = filterLastUpdatedByCategory(agencyEntities);
+
       final Set<gov.ca.cwds.rest.api.domain.GovernmentAgencyIntake> agencies =
-          agencyMapper.map(agencyEntities);
+          agencyMapper.map(lastAgencyEntities);
       crossReport.getAgencies().addAll(agencies);
     }
 
@@ -259,15 +264,30 @@ public class ScreeningService implements CrudsService {
     }
 
     final List<ParticipantEntity> participantEntities =
-        participantIntakeApiService.getByScreeningId(screeningId);
+        participantService.getByScreeningId(screeningId);
 
     for (ParticipantEntity participantEntity : participantEntities) {
-      final ParticipantIntakeApi participantIntakeApi = participantIntakeApiService
+      final ParticipantIntakeApi participantIntakeApi = participantService
           .find(new ParticipantResourceParameters(id, participantEntity.getId()));
       screening.getParticipantIntakeApis().add(participantIntakeApi);
     }
 
     return screening;
+  }
+
+  List<GovernmentAgencyEntity> filterLastUpdatedByCategory(
+      List<GovernmentAgencyEntity> agencyEntities) {
+
+    String[] agencyTypes = {AgencyType.DISTRICT_ATTORNEY.name(), AgencyType.LAW_ENFORCEMENT.name(),
+        AgencyType.COMMUNITY_CARE_LICENSING.name(), AgencyType.COUNTY_LICENSING.name(),};
+
+    List<GovernmentAgencyEntity> filteredAgencyEntities = new ArrayList<>();
+    for (String agencyType : agencyTypes) {
+      CollectionUtils.addIgnoreNull(filteredAgencyEntities,
+          agencyEntities.stream().filter(a -> agencyType.equals(a.getCategory()))
+              .max((a1, a2) -> a1.getUpdatedAt().compareTo(a2.getUpdatedAt())).orElse(null));
+    }
+    return filteredAgencyEntities;
   }
 
   @SuppressWarnings("fb-contrib:CFS_CONFUSING_FUNCTION_SEMANTICS")
@@ -438,7 +458,7 @@ public class ScreeningService implements CrudsService {
   private void createUpdateDeleteParticipants(Screening screening) {
     final Set<ParticipantIntakeApi> participantIntakeApis = new HashSet<>();
     final Set<String> participantIdsOld =
-        participantIntakeApiService.getByScreeningId(screening.getId()).stream()
+        participantService.getByScreeningId(screening.getId()).stream()
             .map(ParticipantEntity::getId).collect(Collectors.toSet());
 
     for (ParticipantIntakeApi participantIntakeApi : screening.getParticipantIntakeApis()) {
@@ -446,10 +466,10 @@ public class ScreeningService implements CrudsService {
       if (participantIntakeApiId == null) {
         participantIntakeApi.setScreeningId(screening.getId());
         final ParticipantIntakeApi createdParticipantIntakeApi =
-            participantIntakeApiService.create(participantIntakeApi);
+            participantService.persistParticipantObjectInNS(participantIntakeApi);
         participantIntakeApis.add(createdParticipantIntakeApi);
       } else {
-        final ParticipantIntakeApi updatedParticipantIntakeApi = participantIntakeApiService.update(
+        final ParticipantIntakeApi updatedParticipantIntakeApi = participantService.update(
             new ParticipantResourceParameters(screening.getId(), participantIntakeApiId),
             participantIntakeApi);
         participantIntakeApis.add(updatedParticipantIntakeApi);
@@ -458,7 +478,7 @@ public class ScreeningService implements CrudsService {
     }
 
     // Delete old ones that are not in the new.
-    participantIdsOld.forEach(participantId -> participantIntakeApiService
+    participantIdsOld.forEach(participantId -> participantService
         .delete(new ParticipantResourceParameters(screening.getId(), participantId)));
 
     screening.setParticipantIntakeApis(participantIntakeApis);
@@ -512,13 +532,12 @@ public class ScreeningService implements CrudsService {
     this.crossReportDao = crossReportDao;
   }
 
-  public ParticipantIntakeApiService getParticipantIntakeApiService() {
-    return participantIntakeApiService;
+  public ParticipantService getParticipantService() {
+    return participantService;
   }
 
-  public void setParticipantIntakeApiService(
-      ParticipantIntakeApiService participantIntakeApiService) {
-    this.participantIntakeApiService = participantIntakeApiService;
+  public void setParticipantService(ParticipantService participantService) {
+    this.participantService = participantService;
   }
 
   public ScreeningMapper getScreeningMapper() {
