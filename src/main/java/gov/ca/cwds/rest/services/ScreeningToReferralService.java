@@ -124,38 +124,40 @@ public class ScreeningToReferralService implements CrudsService {
     final ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     verifyReferralHasValidParticipants(screeningToReferral);
 
-    /**
-     * <blockquote>
-     * 
-     * <pre>
-     * BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
-     * 
-     * Referral received date and received time need to set when referral was created 
-     * </blockquote>
-     * </pre>
-     */
+    //BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
+    //Referral received date and received time need to set when referral was created
     String referralToBeCreatedAt =
         DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
     final String dateStarted =
         StartDateTimeValidator.extractStartDate(referralToBeCreatedAt, messageBuilder);
     final String timeStarted =
         StartDateTimeValidator.extractStartTime(referralToBeCreatedAt, messageBuilder);
+
     final String referralId = createCmsReferral(screeningToReferral, dateStarted, timeStarted);
-    final ClientParticipants clientParticipants = processParticipants(screeningToReferral,
-        dateStarted, timeStarted, referralId, messageBuilder);
-
+    final ClientParticipants clientParticipants = participantToLegacyClient.saveParticipants(screeningToReferral, dateStarted, timeStarted,
+        referralId, messageBuilder);
     saveRelationships(screeningToReferral, clientParticipants);
+    final PostedScreeningToReferral pstr = createPostedScreeningToReferral(screeningToReferral,
+        referralId, clientParticipants);
+    reminders.createTickle(pstr);
 
+    handleErrors();
+
+    return pstr;
+  }
+
+  private PostedScreeningToReferral createPostedScreeningToReferral(
+      ScreeningToReferral screeningToReferral, String referralId,
+      ClientParticipants clientParticipants) {
     final Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
     final Set<Allegation> resultAllegations = createAllegations(screeningToReferral, referralId,
         clientParticipants.getVictimIds(), clientParticipants.getPerpetratorIds());
 
-    final PostedScreeningToReferral pstr =
-        PostedScreeningToReferral.createWithDefaults(referralId, screeningToReferral,
-            clientParticipants.getParticipants(), resultCrossReports, resultAllegations);
+    return PostedScreeningToReferral.createWithDefaults(referralId, screeningToReferral,
+        clientParticipants.getParticipants(), resultCrossReports, resultAllegations);
+  }
 
-    reminders.createTickle(pstr);
-
+  private void handleErrors() {
     boolean foundError = false;
     for (ErrorMessage message : messageBuilder.getMessages()) {
       if (StringUtils.isNotBlank(message.getMessage())) {
@@ -172,8 +174,6 @@ public class ScreeningToReferralService implements CrudsService {
     if (foundError) {
       throw new BusinessValidationException(messageBuilder.getIssues());
     }
-
-    return pstr;
   }
 
   private Set<Allegation> createAllegations(ScreeningToReferral screeningToReferral,
@@ -198,12 +198,6 @@ public class ScreeningToReferralService implements CrudsService {
       logError(e.getMessage(), e);
     }
     return resultCrossReports;
-  }
-
-  private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
-      String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-    return participantToLegacyClient.saveParticipants(screeningToReferral, dateStarted, timeStarted,
-        referralId, messageBuilder);
   }
 
   private void saveRelationships(ScreeningToReferral screeningToReferral,

@@ -145,14 +145,14 @@ public class ParticipantToLegacyClient {
         sexAtBirth = incomingParticipant.getGender().toUpperCase().substring(0, 1);
       }
       Set<String> roles = new HashSet<>(incomingParticipant.getRoles());
-      processReporterRole(screeningToReferral, dateStarted, timeStarted, referralId, messageBuilder,
+      processClients(screeningToReferral, dateStarted, timeStarted, referralId, messageBuilder,
           clientParticipants, incomingParticipant, sexAtBirth, roles);
     } // next participant
 
     return clientParticipants;
   }
 
-  private void processReporterRole(ScreeningToReferral screeningToReferral, String dateStarted,
+  private void processClients(ScreeningToReferral screeningToReferral, String dateStarted,
       String timeStarted, String referralId, MessageBuilder messageBuilder,
       ClientParticipants clientParticipants, Participant incomingParticipant, String sexAtBirth,
       Set<String> roles) {
@@ -160,19 +160,26 @@ public class ParticipantToLegacyClient {
      * process the roles of this participant
      */
     for (String role : roles) {
-      final boolean isRegularReporter = ParticipantValidator.roleIsReporterType(role)
-          && (!ParticipantValidator.roleIsAnonymousReporter(role)
-              && !ParticipantValidator.selfReported(incomingParticipant));
-      if (isRegularReporter) {
+      if (isReporter(role, incomingParticipant)) {
         saveRegularReporter(screeningToReferral, referralId, messageBuilder, incomingParticipant,
             role);
 
-      } else if (!ParticipantValidator.roleIsAnyReporter(role)) {
+      } else if (isClient(role)) {
         saveClient(screeningToReferral, dateStarted, timeStarted, referralId, messageBuilder,
             clientParticipants, incomingParticipant, sexAtBirth, role);
       }
       clientParticipants.addParticipant(incomingParticipant);
     } // next role
+  }
+
+  private boolean isReporter(String role, Participant incomingParticipant) {
+    return ParticipantValidator.roleIsReporterType(role)
+        && (!ParticipantValidator.roleIsAnonymousReporter(role)
+        && !ParticipantValidator.selfReported(incomingParticipant));
+  }
+
+  private boolean isClient(String role) {
+    return !ParticipantValidator.roleIsAnyReporter(role);
   }
 
   private void saveRegularReporter(ScreeningToReferral screeningToReferral, String referralId,
@@ -189,7 +196,7 @@ public class ParticipantToLegacyClient {
     LegacyDescriptor clientLegacyDesc = incomingParticipant.getLegacyDescriptor();
 
     // true if descriptor null or descriptor Id is blank or descriptor is not for the client table
-    boolean newClient = clientLegacyDesc == null || StringUtils.isBlank(clientLegacyDesc.getId())
+    boolean newClient = StringUtils.isBlank(clientLegacyDesc.getId())
         || !StringUtils.equals(clientLegacyDesc.getTableName(), LegacyTable.CLIENT.getName());
 
     clientId = incomingParticipant.getLegacyDescriptor().getId();

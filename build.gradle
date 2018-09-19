@@ -15,6 +15,7 @@ plugins {
     id "java"
     id 'application'
     id "org.sonarqube" version "2.2.1"
+    id 'net.ltgt.apt' version '0.15'
 }
 
 apply plugin: 'com.github.jk1.dependency-license-report'
@@ -23,6 +24,9 @@ apply plugin: 'docker'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'jacoco'
 apply from: "$rootDir/gradle/functionalTest.gradle"
+apply plugin: 'net.ltgt.apt-idea'
+apply plugin: 'net.ltgt.apt-eclipse'
+
 
 sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
@@ -226,6 +230,8 @@ dependencies {
 	testCompile group: 'com.google.errorprone', name: 'error_prone_annotations', version: '2.0.19'
 
     compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 task printProps doLast {
