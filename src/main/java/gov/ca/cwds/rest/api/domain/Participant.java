@@ -175,7 +175,9 @@ public class Participant extends ReportingDomain implements Request, Response {
   @JsonProperty("safely_surrendered_babies")
   private SafelySurrenderedBabies safelySurrenderedBabies;
 
-  @JsonIgnore
+  @Valid
+  @ApiModelProperty(dataType = "gov.ca.cwds.rest.api.domain.Csec")
+  @JsonProperty("commercially_sexually_exploited_children")
   private List<Csec> csecs = new ArrayList<>();
 
   @JsonIgnore
