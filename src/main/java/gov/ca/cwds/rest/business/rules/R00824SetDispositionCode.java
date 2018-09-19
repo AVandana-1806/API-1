@@ -8,9 +8,11 @@ import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.business.RuleValidator;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
  * <p>
@@ -71,7 +73,9 @@ public class R00824SetDispositionCode implements RuleValidator {
   }
 
   private int clientAge() {
-    String date = screeningToReferral.getStartedAt().split("T")[0];
+    String date =
+        DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime())
+            .split("T")[0];
     String dob = incomingParticipant.getDateOfBirth();
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
     DateTime receivedDate = formatter.parseDateTime(date);

@@ -6,5 +6,6 @@
   "same_home_status": "U",
   "absent_parent_indicator": true,
   "start_date" : "2018-07-19",
-  "end_date" : "2019-07-19"
+  "end_date" : "2019-07-19",
+  "reversed": false
 }

@@ -51,7 +51,6 @@ import gov.ca.cwds.rest.api.domain.investigation.contact.ContactReferralRequest;
 import gov.ca.cwds.rest.resources.AddressResource;
 import gov.ca.cwds.rest.resources.ApplicationResource;
 import gov.ca.cwds.rest.resources.IntakeLovResource;
-import gov.ca.cwds.rest.resources.ParticipantIntakeApiResource;
 import gov.ca.cwds.rest.resources.PersonResource;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
 import gov.ca.cwds.rest.resources.ScreeningDashboardResource;
@@ -83,11 +82,11 @@ import gov.ca.cwds.rest.resources.investigation.PeopleResource;
 import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
+import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
 import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.ScreeningService;
@@ -126,13 +125,14 @@ import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
 /**
- * Identifies all CWDS API domain resource classes available for dependency injection by Guice.
- * 
+ * Identifies all CWDS API domain resource classes (REST endpoints) and supporting service classes
+ * available for dependency injection by Guice.
+ *
  * @author CWDS API Team
  */
 public class ResourcesModule extends AbstractModule {
@@ -152,7 +152,7 @@ public class ResourcesModule extends AbstractModule {
     bind(ApplicationResource.class);
     bind(SwaggerResource.class);
     bind(AddressResource.class);
-    bind(ParticipantIntakeApiResource.class);
+    bind(ParticipantResource.class);
     bind(PersonResource.class);
     bind(ScreeningResource.class);
     bind(ScreeningSubmitResource.class);
@@ -186,7 +186,6 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
-    bind(RelationshipFacade.class);
     bind(IntakeLovResource.class);
     LOGGER.info("configure: done");
   }
@@ -405,7 +404,7 @@ public class ResourcesModule extends AbstractModule {
   public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ParticipantIntakeApiService.class));
+        injector.getInstance(ParticipantService.class));
   }
 
   @Provides

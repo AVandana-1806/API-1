@@ -23,6 +23,7 @@ import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.data.persistence.cms.StaffPerson;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
@@ -107,7 +108,7 @@ public class ClientAddressService implements
   public List<Response> findByAddressAndClient(gov.ca.cwds.rest.api.domain.Address address,
       Participant clientParticipant) {
     List<gov.ca.cwds.data.persistence.cms.ClientAddress> persistedClientAddresses = clientAddressDao
-        .findByAddressAndClient(address.getLegacyId(), clientParticipant.getLegacyId());
+        .findByAddressAndClient(getAddressLegacyId(address), clientParticipant.getLegacyId());
     if (persistedClientAddresses != null && !persistedClientAddresses.isEmpty()) {
       ArrayList<Response> foundClientAddresses = new ArrayList<>();
       for (ClientAddress clientAddress : persistedClientAddresses) {
@@ -203,32 +204,42 @@ public class ClientAddressService implements
 
       Address domainAddress = Address.createWithDefaults(address);
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-      if (StringUtils.isBlank(address.getLegacyId())) {
+      
+      if (StringUtils.isBlank(getAddressLegacyId(address))) {
+        /*
+         * Since legacy address id is not provided, we consider this is a new address.
+         */
         addressId = createNewAddress(address, domainAddress);
+        
+        /*
+         * Create client address entry for given referral.
+         */
+        if (hasAddress(messageBuilder, addressId) && hasClient(clientId, messageBuilder)) {
+          Short addressType = address.getType() != null ? address.getType().shortValue()
+              : LegacyDefaultValues.DEFAULT_ADDRESS_TYPE;
+          gov.ca.cwds.rest.api.domain.cms.ClientAddress clientAddress =
+              new gov.ca.cwds.rest.api.domain.cms.ClientAddress(addressType, "", "", "", addressId,
+                  clientId, "", referralId);
+
+          messageBuilder.addDomainValidationError(validator.validate(clientAddress));
+          create(clientAddress);
+          messageBuilder.addDomainValidationError(validator.validate(clientAddress));
+          address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
+          address.setLegacyId(addressId);
+        }        
       } else {
-        addressId = updateExistingAddress(messageBuilder, addressId, address, domainAddress);
-      }
-
-      if (hasAddress(messageBuilder, addressId) && hasClient(clientId, messageBuilder)) {
-        Short addressType = address.getType() != null ? address.getType().shortValue()
-            : LegacyDefaultValues.DEFAULT_ADDRESS_TYPE;
-        gov.ca.cwds.rest.api.domain.cms.ClientAddress clientAddress =
-            new gov.ca.cwds.rest.api.domain.cms.ClientAddress(addressType, "", "", "", addressId,
-                clientId, "", referralId);
-
-        messageBuilder.addDomainValidationError(validator.validate(clientAddress));
-        create(clientAddress);
-        messageBuilder.addDomainValidationError(validator.validate(clientAddress));
-        address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
-        address.setLegacyId(addressId);
-      }
+        //
+        // At this time, we don't update addresses (September 17, 2018)
+        //
+        //addressId = updateExistingAddress(messageBuilder, addressId, address, domainAddress);              
+      }      
     }
 
     return clientParticipant;
   }
 
   private boolean hasClient(String clientId, MessageBuilder messageBuilder) {
-    if (clientId.isEmpty()) {
+    if (StringUtils.isBlank(clientId)) {
       String message = " CLIENT/IDENTIFIER is required for CLIENT_ADDRESS ";
       ServiceException se = new ServiceException(message);
       messageBuilder.addMessageAndLog(message, se, LOGGER);
@@ -238,7 +249,7 @@ public class ClientAddressService implements
   }
 
   private boolean hasAddress(MessageBuilder messageBuilder, String addressId) {
-    if (addressId.isEmpty()) {
+    if (StringUtils.isBlank(addressId)) {
       String message = " ADDRESS/IDENTIFIER is required for CLIENT_ADDRESS table ";
       ServiceException se = new ServiceException(message);
       messageBuilder.addMessageAndLog(message, se, LOGGER);
@@ -249,7 +260,7 @@ public class ClientAddressService implements
 
   private String updateExistingAddress(MessageBuilder messageBuilder, String addressId,
       gov.ca.cwds.rest.api.domain.Address address, Address domainAddress) {
-    Address foundAddress = this.addressService.find(address.getLegacyId());
+    Address foundAddress = this.addressService.find(getAddressLegacyId(address));
     if (foundAddress != null) {
       addressId = updateAddress(messageBuilder, addressId, address, domainAddress, foundAddress);
     } else {
@@ -292,9 +303,8 @@ public class ClientAddressService implements
 
   private String updateAddress(MessageBuilder messageBuilder,
       gov.ca.cwds.rest.api.domain.Address address, Address domainAddress) {
-    String addressId;
-    addressId = address.getLegacyId();
-    Address savedAddress = this.addressService.update(address.getLegacyId(), domainAddress);
+    String addressId = getAddressLegacyId(address);
+    Address savedAddress = this.addressService.update(addressId, domainAddress);
     if (savedAddress != null) {
       address.getLegacyDescriptor().setLastUpdated(savedAddress.getLastUpdatedTime());
     } else {
@@ -306,6 +316,16 @@ public class ClientAddressService implements
 
   public RIClientAddress getRiClientAddress() {
     return riClientAddress;
+  }
+
+  private String getAddressLegacyId(gov.ca.cwds.rest.api.domain.Address address) {
+    String addressLegacyId = address.getLegacyId();
+
+    if (StringUtils.isBlank(addressLegacyId)) {
+      LegacyDescriptor addressLegacyDescriptor = address.getLegacyDescriptor();
+      addressLegacyId = addressLegacyDescriptor != null ? addressLegacyDescriptor.getId() : null;
+    }
+    return addressLegacyId;
   }
 
 }

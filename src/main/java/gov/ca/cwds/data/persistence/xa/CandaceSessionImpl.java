@@ -47,10 +47,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.CaresStackUtils;
+import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * Hibernate session facade that adds logging and facilitates XA transactions.
+ * Hibernate session facade. Adds method logging, facilitates XA transactions, and tracks orphaned
+ * connections.
  * 
  * @author CWDS API Team
  */
@@ -63,23 +66,77 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  protected Session session;
+  protected final Session session;
+
+  protected final SessionFactory sessionFactory;
 
   protected transient CandaceTransactionImpl txn;
 
-  public CandaceSessionImpl(Session session) {
-    LOGGER.debug("CandaceSessionImpl.ctor");
+  /**
+   * Preferred constructor. Automatically returns sessions/connections back to the pool.
+   * 
+   * @param sessionFactory datasource session factory
+   * @param session Hibernate session
+   */
+  public CandaceSessionImpl(CandaceSessionFactoryImpl sessionFactory, Session session) {
+    LOGGER.debug("ctor");
+    this.sessionFactory = sessionFactory;
     this.session = session;
   }
 
+  /**
+   * Secondary constructor.
+   * 
+   * <p>
+   * <strong>WARNING:</strong> By using this alternate constructor, the caller must close the
+   * session when finished or risk a connection leak.
+   * </p>
+   * 
+   * @param dao DAO to grab a session
+   */
+  public CandaceSessionImpl(CrudsDaoImpl<?> dao) {
+    LOGGER.debug("ctor(CrudsDaoImpl<?>)");
+    final SessionFactory sf = dao.getSessionFactory();
+    this.sessionFactory =
+        sf instanceof CandaceSessionFactoryImpl ? (CandaceSessionFactoryImpl) sf : sf;
+    this.session = grabSession();
+  }
+
+  /**
+   * Grab a session! If a current session is available, return it, else open a new session.
+   * 
+   * <p>
+   * <strong>WARNING:<strong> If you open it, then you close it. You break it, you bought it.
+   * </p>
+   * 
+   * @return usable session
+   */
+  private final Session grabSession() {
+    Session ret;
+    try {
+      ret = sessionFactory.getCurrentSession();
+    } catch (HibernateException e) {
+      LOGGER.trace("No open session. Open a new one.", e); // Appease SonarQube
+      ret = sessionFactory.openSession();
+    }
+
+    return ret;
+  }
+
+  /**
+   * Log the stack of method calls that brought us to this point. Shows who called what and in what
+   * order.
+   * 
+   * @param obj persistent object
+   * @param methodMsg calling method
+   */
   protected void logStack(Object obj, String methodMsg) {
     if (LOGGER.isTraceEnabled()) {
       if (obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
-        LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
-            po.getPrimaryKey());
+        LOGGER.info("{}: class: {}, key: {}", methodMsg, po.getClass(), po.getPrimaryKey());
       } else {
-        LOGGER.info("CandaceSessionImpl.{}", methodMsg);
+        LOGGER.info("{}", methodMsg);
       }
       CaresStackUtils.logStack();
     }
@@ -89,6 +146,11 @@ public class CandaceSessionImpl implements Session {
     logStack(null, methodMsg);
   }
 
+  /**
+   * Is this session currently participating in an XA distributed transaction?
+   * 
+   * @return true = in XA transaction
+   */
   public boolean isXaTransaction() {
     return CandaceSessionFactoryImpl.isXaTransaction();
   }
@@ -101,6 +163,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public String getTenantIdentifier() {
+    LOGGER.trace("getTenantIdentifier");
     return session.getTenantIdentifier();
   }
 
@@ -111,10 +174,27 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.info("CandaceSessionImpl.close");
-    if (session != null) {
-      session.close();
-      session = null; // release session references
+    LOGGER.info("close");
+    if (session != null && session.isOpen()) {
+      final Transaction tx = session.getTransaction();
+      if (tx.isActive() && !tx.getRollbackOnly()) {
+        try {
+          tx.rollback(); // Can't close DB2 connections with open transactions.
+        } catch (Exception e) {
+          LOGGER.warn("FAILED TO ROLLBACK ACTIVE TRANSACTION TO CLOSE SESSION!", e);
+        }
+      }
+
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.error("FAILED TO CLOSE SESSION! session: {}", session, e);
+      } finally {
+        if (sessionFactory instanceof CandaceSessionFactoryImpl) {
+          ((CandaceSessionFactoryImpl) sessionFactory)
+              .endRequest(RequestExecutionContext.instance());
+        }
+      }
     }
   }
 
@@ -192,6 +272,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Criteria createCriteria(Class persistentClass) {
+    LOGGER.debug("createCriteria: persistentClass: {}", persistentClass);
     return session.createCriteria(persistentClass);
   }
 
@@ -213,6 +294,11 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public Criteria createCriteria(String entityName) {
+    return session.createCriteria(entityName);
+  }
+
+  @Override
   public <T> T find(Class<T> entityClass, Object primaryKey) {
     LOGGER.trace("find(Class<T>,Object): entityClass: {}, primaryKey: {}", entityClass, primaryKey);
     return session.find(entityClass, primaryKey);
@@ -220,14 +306,9 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.warn("***** CandaceSessionImpl.flush *****");
+    LOGGER.debug("flush()");
     logStack("flush");
     session.flush();
-  }
-
-  @Override
-  public Criteria createCriteria(String entityName) {
-    return session.createCriteria(entityName);
   }
 
   @Override
@@ -309,11 +390,13 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public SessionFactory getSessionFactory() {
+    LOGGER.debug("getSessionFactory()");
     return session.getSessionFactory();
   }
 
   @Override
   public void cancelQuery() throws HibernateException {
+    LOGGER.debug("cancelQuery()");
     session.cancelQuery();
   }
 
@@ -388,11 +471,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void lock(Object entity, LockModeType lockMode) {
-    session.lock(entity, lockMode);
-  }
-
-  @Override
   public <T> T load(Class<T> theClass, Serializable id) {
     return session.load(theClass, id);
   }
@@ -405,11 +483,6 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void load(Object object, Serializable id) {
     session.load(object, id);
-  }
-
-  @Override
-  public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-    session.lock(entity, lockMode, properties);
   }
 
   @Override
@@ -451,11 +524,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object entity, Map<String, Object> properties) {
-    session.refresh(entity, properties);
-  }
-
-  @Override
   public void update(Object object) {
     LOGGER.debug("update(Object)");
     logStack(object, "update(Object)");
@@ -470,8 +538,25 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public void refresh(Object entity, Map<String, Object> properties) {
+    session.refresh(entity, properties);
+  }
+
+  @Override
   public void refresh(Object entity, LockModeType lockMode) {
     session.refresh(entity, lockMode);
+  }
+
+  @Override
+  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+    session.refresh(entity, lockMode, properties);
+  }
+
+  @Override
+  public void refresh(Object object) {
+    LOGGER.trace("refresh(Object)");
+    logStack("refresh(Object)");
+    session.refresh(object);
   }
 
   @Override
@@ -499,11 +584,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-    session.refresh(entity, lockMode, properties);
-  }
-
-  @Override
   public void delete(Object object) {
     LOGGER.info("delete");
     session.delete(object);
@@ -514,6 +594,16 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("delete(String,Object): entityName: {}", entityName);
     logStack(object, "delete(String,Object)");
     session.delete(entityName, object);
+  }
+
+  @Override
+  public void lock(Object entity, LockModeType lockMode) {
+    session.lock(entity, lockMode);
+  }
+
+  @Override
+  public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+    session.lock(entity, lockMode, properties);
   }
 
   @Override
@@ -551,13 +641,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void refresh(Object object) {
-    LOGGER.debug("refresh(Object)");
-    logStack("refresh(Object)");
-    session.refresh(object);
-  }
-
-  @Override
   public void setProperty(String propertyName, Object value) {
     session.setProperty(propertyName, value);
   }
@@ -569,31 +652,37 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void refresh(String entityName, Object object) {
+    LOGGER.trace("refresh(String,Object)");
     session.refresh(entityName, object);
   }
 
   @Override
   public void refresh(Object object, LockMode lockMode) {
+    LOGGER.trace("refresh(Object,LockMode)");
     session.refresh(object, lockMode);
   }
 
   @Override
   public void refresh(Object object, LockOptions lockOptions) {
+    LOGGER.trace("refresh(Object,LockOptions)");
     session.refresh(object, lockOptions);
   }
 
   @Override
   public void refresh(String entityName, Object object, LockOptions lockOptions) {
+    LOGGER.trace("refresh(String,Object,LockOptions)");
     session.refresh(entityName, object, lockOptions);
   }
 
   @Override
   public LockMode getCurrentLockMode(Object object) {
+    LOGGER.trace("getCurrentLockMode()");
     return session.getCurrentLockMode(object);
   }
 
   @Override
   public Query createFilter(Object collection, String queryString) {
+    LOGGER.trace("createFilter()");
     return session.createFilter(collection, queryString);
   }
 
@@ -601,7 +690,12 @@ public class CandaceSessionImpl implements Session {
   public void clear() {
     LOGGER.debug("clear()");
     logStack("clear()");
-    session.clear();
+    if (session != null) {
+      final Transaction txn = session.getTransaction();
+      if (txn != null && txn.isActive()) {
+        session.clear();
+      }
+    }
   }
 
   @Override
@@ -659,12 +753,14 @@ public class CandaceSessionImpl implements Session {
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       Class... resultClasses) {
+    LOGGER.debug("createStoredProcedureQuery(String,Class...): procedureName: {}", procedureName);
     return session.createStoredProcedureQuery(procedureName, resultClasses);
   }
 
   @Override
   public StoredProcedureQuery createStoredProcedureQuery(String procedureName,
       String... resultSetMappings) {
+    LOGGER.debug("createStoredProcedureQuery(String,String...): procedureName: {}", procedureName);
     return session.createStoredProcedureQuery(procedureName, resultSetMappings);
   }
 
@@ -807,11 +903,6 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
-  public void setReadOnly(Object entityOrProxy, boolean readOnly) {
-    session.setReadOnly(entityOrProxy, readOnly);
-  }
-
-  @Override
   public EntityGraph<?> getEntityGraph(String graphName) {
     LOGGER.trace("getEntityGraph(String): graphName: {}", graphName);
     return session.getEntityGraph(graphName);
@@ -824,116 +915,118 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public void setReadOnly(Object entityOrProxy, boolean readOnly) {
+    LOGGER.trace("setReadOnly(Object,boolean): readOnly: {}", readOnly);
+    session.setReadOnly(entityOrProxy, readOnly);
+  }
+
+  @Override
   public void doWork(Work work) throws HibernateException {
-    LOGGER.debug("CandanceSessionImpl.doWork: work class: {}", work.getClass());
+    LOGGER.debug("doWork: work class: {}", work.getClass());
     session.doWork(work);
   }
 
   @Override
   public <T> T doReturningWork(ReturningWork<T> work) throws HibernateException {
-    LOGGER.debug("CandanceSessionImpl.doReturningWork: work class: {}", work.getClass());
+    LOGGER.debug("doReturningWork: work class: {}", work.getClass());
     return session.doReturningWork(work);
   }
 
   @Override
   public Connection disconnect() {
-    LOGGER.warn("CandanceSessionImpl.disconnect");
+    LOGGER.warn("disconnect");
     return session.disconnect();
   }
 
   @Override
   public void reconnect(Connection connection) {
-    LOGGER.warn("CandanceSessionImpl.reconnect: connection: {}", connection);
+    LOGGER.warn("reconnect: connection: {}", connection);
     session.reconnect(connection);
   }
 
   @Override
   public boolean isFetchProfileEnabled(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.isFetchProfileEnabled: name: {}", name);
+    LOGGER.trace("isFetchProfileEnabled: name: {}", name);
     return session.isFetchProfileEnabled(name);
   }
 
   @Override
   public void enableFetchProfile(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.enableFetchProfile: name: {}", name);
+    LOGGER.trace("enableFetchProfile: name: {}", name);
     session.enableFetchProfile(name);
   }
 
   @Override
   public void disableFetchProfile(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.disableFetchProfile: name: {}", name);
+    LOGGER.trace("disableFetchProfile: name: {}", name);
     session.disableFetchProfile(name);
   }
 
   @Override
   public TypeHelper getTypeHelper() {
-    LOGGER.trace("CandanceSessionImpl.getTypeHelper");
+    LOGGER.trace("getTypeHelper");
     return session.getTypeHelper();
   }
 
   @Override
   public LobHelper getLobHelper() {
-    LOGGER.trace("CandanceSessionImpl.getLobHelper");
+    LOGGER.trace("getLobHelper");
     return session.getLobHelper();
   }
 
   @Override
   public void addEventListeners(SessionEventListener... listeners) {
-    LOGGER.trace("CandanceSessionImpl.addEventListeners: listeners: {}", (Object[]) listeners);
+    LOGGER.trace("addEventListeners: listeners: {}", (Object[]) listeners);
     session.addEventListeners(listeners);
   }
 
   @Override
   public Query createQuery(String queryString) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(String): queryString: {}", queryString);
+    LOGGER.debug("createQuery(String): queryString: {}", queryString);
     return session.createQuery(queryString);
   }
 
   @Override
   public <T> Query<T> createQuery(String queryString, Class<T> resultType) {
-    LOGGER.debug(
-        "CandanceSessionImpl.createQuery(String, Class<T>): queryString: {}, resultType: {}",
-        queryString, resultType);
+    LOGGER.debug("createQuery(String, Class<T>): queryString: {}, resultType: {}", queryString,
+        resultType);
     return session.createQuery(queryString, resultType);
   }
 
   @Override
   public <T> Query<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery<T>): criteriaQuery: {}",
-        criteriaQuery);
+    LOGGER.debug("createQuery(CriteriaQuery<T>): criteriaQuery: {}", criteriaQuery);
     return session.createQuery(criteriaQuery);
   }
 
   @Override
   public Query createQuery(CriteriaUpdate updateQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): updateQuery: {}", updateQuery);
+    LOGGER.debug("createQuery(CriteriaQuery): updateQuery: {}", updateQuery);
     return session.createQuery(updateQuery);
   }
 
   @Override
   public Query createQuery(CriteriaDelete deleteQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): deleteQuery: {}", deleteQuery);
+    LOGGER.debug("createQuery(CriteriaQuery): deleteQuery: {}", deleteQuery);
     return session.createQuery(deleteQuery);
   }
 
   @Override
   public <T> Query<T> createNamedQuery(String name, Class<T> resultType) {
-    LOGGER.debug("CandanceSessionImpl.createNamedQuery: name: {}, resultType: {}", name,
-        resultType);
+    LOGGER.debug("createNamedQuery: name: {}, resultType: {}", name, resultType);
     return session.createNamedQuery(name, resultType);
   }
 
   /*
-   * DRS: confusing and contradictory method signatures. After stripping types, method signature is
-   * the same as {@link EntityManager.createNativeQuery(String, Class)};
+   * DRS: confusing and contradictory method signatures. After stripping types, this method
+   * signature is the same as {@link EntityManager.createNativeQuery(String, Class)};
    * 
    * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.Class)
    */
   @SuppressWarnings("unchecked")
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
-    LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
-        resultClass);
+    LOGGER.debug("createNativeQuery: sqlString: {}, resultClass: {}", sqlString, resultClass);
     return session.createNativeQuery(sqlString, resultClass);
   }
 

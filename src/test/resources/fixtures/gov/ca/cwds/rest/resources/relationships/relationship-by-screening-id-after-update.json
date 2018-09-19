@@ -6,6 +6,7 @@
     "relationship_type": 182,
     "absent_parent_indicator": true,
     "same_home_status": "N",
-    "legacy_id": "0btlf7s003"
+    "legacy_id": "0btlf7s003",
+    "reversed": false
   }
 ]

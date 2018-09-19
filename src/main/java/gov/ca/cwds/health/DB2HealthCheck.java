@@ -9,4 +9,5 @@ public class DB2HealthCheck extends PingableResourceHealthCheck {
   public DB2HealthCheck(Pingable resource) {
     super(resource, ERROR_MESSAGE);
   }
+
 }

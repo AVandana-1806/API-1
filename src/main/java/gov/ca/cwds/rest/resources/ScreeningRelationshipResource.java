@@ -1,10 +1,10 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DS_NS;
 import static gov.ca.cwds.rest.core.Api.SCREENING_RELATIONSHIPS;
 
-import gov.ca.cwds.rest.resources.converter.ResponseConverter;
-import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.util.Arrays;
+
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,6 +23,8 @@ import com.google.inject.Inject;
 import gov.ca.cwds.inject.ScreeningRelationshipServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipBase;
+import gov.ca.cwds.rest.resources.converter.ResponseConverter;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,8 +34,8 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * A resource providing a RESTful interface for {@link ScreeningRelationshipResource}. It delegates
- * functions to {@link ServiceBackedResourceDelegate}. It decorates the {@link
- * ServiceBackedResourceDelegate} not in functionality but with @see
+ * functions to {@link ServiceBackedResourceDelegate}. It decorates the
+ * {@link ServiceBackedResourceDelegate} not in functionality but with @see
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -70,7 +72,7 @@ public class ScreeningRelationshipResource {
    * @param screeningRelationship The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DS_NS)
   @POST
   @Consumes(value = MediaType.APPLICATION_JSON)
   @ApiResponses(
@@ -94,7 +96,7 @@ public class ScreeningRelationshipResource {
    * @param id - id
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DS_NS)
   @PUT
   @Path("/{id}")
   @Consumes(value = MediaType.APPLICATION_JSON)
@@ -105,13 +107,14 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_UNPROCESSABLE_ENTITY,
               message = "Unable to validate ScreeningRelationship"),
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
-  @ApiOperation(value = "Create Screening Relationship", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Update Screening Relationship", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationship.class)
   public Response update(
       @Valid @ApiParam(required = true) ScreeningRelationship screeningRelationship,
       @PathParam("id") @ApiParam(required = true,
           value = "The id of the Relationship to find") String id) {
-    return resourceDelegate.update(id, screeningRelationship);
+    return new ResponseConverter()
+        .withUpdatedResponse(relationshipFacade.updateRelationship(id, screeningRelationship));
   }
 
   /**
@@ -120,7 +123,7 @@ public class ScreeningRelationshipResource {
    * @param id - id
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DS_NS)
   @GET
   @Path("/{id}")
   @ApiResponses(
@@ -140,7 +143,7 @@ public class ScreeningRelationshipResource {
    * @param screeningRelationships The {@link ScreeningRelationshipBase}
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "ns")
+  @UnitOfWork(DS_NS)
   @POST
   @Path("/batch")
   @Consumes(value = MediaType.APPLICATION_JSON)
@@ -153,11 +156,10 @@ public class ScreeningRelationshipResource {
           @ApiResponse(code = HttpStatus.SC_NOT_FOUND, message = "Not found")})
   @ApiOperation(value = "Create Screening Relationships", code = HttpStatus.SC_CREATED,
       response = ScreeningRelationshipBase[].class)
-  public Response batchCreate(@Valid @ApiParam(
-      required = true) ScreeningRelationshipBase[] screeningRelationships) {
-    return new ResponseConverter()
-        .withCreatedResponse(
-            relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
+  public Response batchCreate(
+      @Valid @ApiParam(required = true) ScreeningRelationshipBase[] screeningRelationships) {
+    return new ResponseConverter().withCreatedResponse(
+        relationshipFacade.createRelationships(Arrays.asList(screeningRelationships)));
   }
 
 }

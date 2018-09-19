@@ -35,7 +35,6 @@ public class WorkFerbUserInfo implements Work {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorkFerbUserInfo.class);
 
   public static final String PROGRAM_NAME = "Ferb";
-
   public static final String IP_ADDRESS;
   public static final String WORKSTATION;
 
@@ -68,7 +67,7 @@ public class WorkFerbUserInfo implements Work {
 
   @Override
   public void execute(Connection con) throws SQLException {
-    LOGGER.warn("execute: Connection class: {}", con.getClass().getName());
+    LOGGER.info("execute: Connection class: {}", con.getClass().getName());
     final RequestExecutionContext ctx = RequestExecutionContext.instance();
     final String staffId = ctx.getStaffId();
     final String userId = ctx.getUserId();
@@ -76,7 +75,7 @@ public class WorkFerbUserInfo implements Work {
     if (isDb2 || con instanceof DB2Connection || (con instanceof PooledConnection
         && ((PooledConnection) con).getConnection() instanceof DB2Connection)) {
       try {
-        LOGGER.warn("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
+        LOGGER.info("DB2 connection, set user info: user id: {}, staff id: {}", userId, staffId);
         con.setClientInfo("ApplicationName", PROGRAM_NAME);
 
         // Unwrap pooled connections.
@@ -88,7 +87,8 @@ public class WorkFerbUserInfo implements Work {
         }
 
         // Yes, the DB2 methods are deprecated, but underlying properties *differ* by platform.
-        // At least these setters consistently change the target property regardless of platform.
+        // These deprecated methods consistently set the right target property, regardless of
+        // platform.
         db2con.setDB2ClientUser(userId);
         db2con.setDB2ClientAccountingInformation(staffId);
         db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
@@ -127,7 +127,8 @@ public class WorkFerbUserInfo implements Work {
             final String resultWorkstation =
                 StringUtils.trimToEmpty(rs.getString("CUR_WORKSTATION"));
 
-            LOGGER.warn("client user: {}, application: {}, accounting: {}, workstation: {}",
+            LOGGER.info(
+                "client user: \"{}\", application: \"{}\", accounting: \"{}\", workstation: \"{}\"",
                 resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
           }
         } finally {

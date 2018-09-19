@@ -6,14 +6,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.cms.Referral;
 import gov.ca.cwds.inject.CmsSessionFactory;
-import org.hibernate.query.Query;
 
 /**
  * DAO for {@link Referral}.
@@ -35,7 +36,7 @@ public class ReferralDao extends CrudsDaoImpl<Referral> {
   /**
    * Find Referrals by id-s with Reporters pre-loaded
    *
-   * @param ids Set of Referral id-s
+   * @param ids Set of Referral id's
    * @return map where key is a Referral id and value is a Referral itself
    */
   public Map<String, Referral> findReferralsWithReportersByIds(Collection<String> ids) {

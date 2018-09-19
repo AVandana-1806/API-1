@@ -44,7 +44,7 @@ public class ParticipantBirthValidator
     }
     if (CollectionUtils.isNotEmpty(paricipants)) {
       for (Participant participant : paricipants) {
-        if (!hasParticipantValidDOB(screening, participant, context)) {
+        if (!hasParticipantValidDOB(participant, context)) {
           valid = false;
           break;
         }
@@ -80,17 +80,15 @@ public class ParticipantBirthValidator
   /**
    * Validates the participant date of birth should not be in the future.
    */
-  private boolean hasParticipantValidDOB(ScreeningToReferral screening, Participant participant,
+  private boolean hasParticipantValidDOB(Participant participant,
       ConstraintValidatorContext context) {
     ImmutableList.Builder<String> messages = new ImmutableList.Builder<>();
-    if (StringUtils.isNotBlank(screening.getStartedAt())
-        && StringUtils.isNotBlank(participant.getDateOfBirth())) {
-      String date = StartDateTimeValidator.extractStartDate(screening.getStartedAt(), null);
-      LocalDate startDate = LocalDate.parse(date);
+    if (StringUtils.isNotBlank(participant.getDateOfBirth())) {
+      LocalDate todaysDate = LocalDate.now();
       LocalDate participantDob = LocalDate.parse(participant.getDateOfBirth());
-      if (participantDob.isAfter(startDate)) {
+      if (participantDob.isAfter(todaysDate)) {
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate("date of Birth can not be in future")
+        context.buildConstraintViolationWithTemplate("Date of Birth cannot be in the future")
             .addPropertyNode(participant.getFirstName()).addConstraintViolation();
         messages.add();
         return false;

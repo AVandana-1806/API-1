@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +34,10 @@ import gov.ca.cwds.rest.api.domain.hoi.HOIReferralResponse;
 import gov.ca.cwds.rest.api.domain.hoi.HOIRequest;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
- * <p>
  * This service handles user requests to fetch all the clients' referrals.
- * </p>
  *
  * @author CWDS API Team
  */
@@ -44,6 +47,7 @@ public class HOIReferralService extends
   private static final Logger LOGGER = LoggerFactory.getLogger(HOIReferralService.class);
 
   private AuthorizationService authorizationService;
+
   private ReferralClientDao referralClientDao;
   private ReferralDao referralDao;
   private StaffPersonDao staffPersonDao;
@@ -70,8 +74,15 @@ public class HOIReferralService extends
   }
 
   @Override
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
   public HOIReferralResponse handleFind(HOIRequest hoiRequest) {
-    LOGGER.debug("HOIReferralService.handleFind: hoiRequest: {}", hoiRequest);
+    return handleFindInternal(hoiRequest);
+  }
+
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  protected HOIReferralResponse handleFindInternal(HOIRequest hoiRequest) {
+    LOGGER.debug("handleFind(): hoiRequest: {}", hoiRequest);
     final Collection<String> authorizedClientIds = authorizationService.filterClientIds(
         hoiRequest.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
@@ -100,6 +111,7 @@ public class HOIReferralService extends
     hoiReferrals.sort((r1, r2) -> r2.getStartDate().compareTo(r1.getStartDate()));
     return new HOIReferralResponse(hoiReferrals);
   }
+
 
   private HOIReferralsData createHOIReferralsData(ReferralClient[] referralClients) {
     final Collection<String> referralIds = new HashSet<>();

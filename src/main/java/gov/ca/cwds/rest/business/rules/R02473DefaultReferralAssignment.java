@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.data.cms.AssignmentDao;
 import gov.ca.cwds.data.persistence.cms.Assignment;
 import gov.ca.cwds.data.persistence.cms.CaseLoad;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.Referral;
 import gov.ca.cwds.rest.business.RuleAction;
@@ -91,7 +92,9 @@ public class R02473DefaultReferralAssignment implements RuleAction {
 
       gov.ca.cwds.rest.api.domain.cms.Assignment defaultAssignment =
           createDefaultAssignmentToCaseLoad(countyCode, referralId,
-              screeningToReferral.getStartedAt(), caseLoadId, strsMessageBuilder);
+              DomainChef
+                  .cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime()),
+              caseLoadId, strsMessageBuilder);
       strsMessageBuilder.addDomainValidationError(validator.validate(defaultAssignment));
 
       setStartTime(defaultAssignment);

@@ -36,4 +36,8 @@ public class CsecDao extends BaseDaoImpl<CsecEntity> {
             .setParameter("participantId", participantId);
     return query.getResultList();
   }
+
+  public CsecEntity merge(CsecEntity csecEntity) {
+    return (CsecEntity) grabSession().merge(csecEntity);
+  }
 }

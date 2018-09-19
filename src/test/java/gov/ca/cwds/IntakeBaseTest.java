@@ -108,8 +108,8 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
   public static void registerHibernateStatisticsConsumers() {
     registerHibernateStatisticsConsumer(Api.DATASOURCE_CMS,
         createTestHibernateStatisticsConsumer(Api.DATASOURCE_CMS));
-    registerHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP,
-        createTestHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP));
+    registerHibernateStatisticsConsumer(Api.DS_CMS_REP,
+        createTestHibernateStatisticsConsumer(Api.DS_CMS_REP));
     registerHibernateStatisticsConsumer(Api.DATASOURCE_NS,
         createTestHibernateStatisticsConsumer(Api.DATASOURCE_NS));
   }
@@ -117,7 +117,7 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
   @AfterClass
   public static void unRegisterHibernateStatisticsConsumers() {
     unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_CMS);
-    unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_CMS_REP);
+    unRegisterHibernateStatisticsConsumer(Api.DS_CMS_REP);
     unRegisterHibernateStatisticsConsumer(Api.DATASOURCE_NS);
   }
 

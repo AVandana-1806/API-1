@@ -35,6 +35,8 @@ public class IntakeLovCheck implements Pingable {
     this.sessionFactory = sessionFactory;
   }
 
+  // NEXT: handle non-HTTP "requests" and use @UnitOfWork like other resources/services.
+  // @UnitOfWork(DATASOURCE_NS)
   @Override
   public boolean ping() {
     LOGGER.info("Postgres LOV health check: ping start");
@@ -50,8 +52,9 @@ public class IntakeLovCheck implements Pingable {
       LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk,
           tableName);
       ok = ok && tableCountOk;
-      txn.commit();
-    } // Session and connection go out of scope.
+    } finally {
+      // Session and connection go out of scope.
+    }
 
     LOGGER.info("Postgres LOV health check: ping done");
     return ok;

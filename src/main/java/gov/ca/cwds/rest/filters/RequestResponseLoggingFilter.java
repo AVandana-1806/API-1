@@ -3,7 +3,6 @@ package gov.ca.cwds.rest.filters;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -76,7 +75,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
       setLoggingContextParameters(uniqueId, httpServletRequest, httpServletResponse);
 
-      RequestResponseLoggingHttpServletRequest wrappedRequest =
+      final RequestResponseLoggingHttpServletRequest wrappedRequest =
           new RequestResponseLoggingHttpServletRequest(httpServletRequest);
 
       auditLogger.audit(httpServletRequest.toString());
@@ -86,7 +85,7 @@ public class RequestResponseLoggingFilter implements Filter {
           new RequestResponseLoggingHttpServletResponseWrapper(httpServletResponse);
       try {
         chain.doFilter(wrappedRequest, wrappedResponse);
-        StringBuilder reponseStringBuilder = new StringBuilder();
+        final StringBuilder reponseStringBuilder = new StringBuilder();
         reponseStringBuilder.append(wrappedResponse).append(wrappedResponse.getContent());
         auditLogger
             .audit(reponseStringBuilder.toString().replaceAll("\n", " ").replaceAll("\r", ""));
@@ -94,7 +93,7 @@ public class RequestResponseLoggingFilter implements Filter {
         LOGGER.error("Unable to handle request: {}", uniqueId, e);
         throw e;
       } finally {
-        loggingContext.close();
+        loggingContext.close(); // clears MDC mappings
       }
     }
   }
@@ -142,9 +141,9 @@ public class RequestResponseLoggingFilter implements Filter {
         sb.append(headerName).append(": ").append(request.getHeader(headerName));
       }
     }
-    final InputStream bodyInputStream = request.getInputStream();
-    sb.append(new String(IOUtils.toByteArray(bodyInputStream), StandardCharsets.UTF_8.name()));
 
+    sb.append(
+        new String(IOUtils.toByteArray(request.getInputStream()), StandardCharsets.UTF_8.name()));
     return sb.toString().replace('\n', ' ');
   }
 

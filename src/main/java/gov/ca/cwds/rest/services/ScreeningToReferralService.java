@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services;
 
+import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +69,7 @@ public class ScreeningToReferralService implements CrudsService {
   private AllegationService allegationService;
   private AllegationPerpetratorHistoryService allegationPerpetratorHistoryService;
   private CrossReportService crossReportService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private Reminders reminders;
   private GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService;
@@ -81,7 +83,7 @@ public class ScreeningToReferralService implements CrudsService {
    * @param referralService referralService
    * @param allegationService allegationService
    * @param crossReportService crossReportService
-   * @param participantService participantService
+   * @param participantToLegacyClient participantToLegacyClient
    * @param clientRelationshipService clientRelationshipService
    * @param validator validator
    * @param referralDao referralDao
@@ -94,7 +96,7 @@ public class ScreeningToReferralService implements CrudsService {
   @Inject
   public ScreeningToReferralService(ReferralService referralService,
       AllegationService allegationService, CrossReportService crossReportService,
-      ParticipantService participantService,
+      ParticipantToLegacyClient participantToLegacyClient,
       ClientRelationshipCoreService clientRelationshipService, Validator validator,
       ReferralDao referralDao, MessageBuilder messageBuilder,
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
@@ -106,7 +108,7 @@ public class ScreeningToReferralService implements CrudsService {
     this.referralService = referralService;
     this.allegationService = allegationService;
     this.crossReportService = crossReportService;
-    this.participantService = participantService;
+    this.participantToLegacyClient = participantToLegacyClient;
     this.clientRelationshipService = clientRelationshipService;
     this.validator = validator;
     this.referralDao = referralDao;
@@ -116,44 +118,46 @@ public class ScreeningToReferralService implements CrudsService {
     this.governmentOrganizationCrossReportService = governmentOrganizationCrossReportService;
   }
 
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DATASOURCE_CMS)
   @Override
   public Response create(@Valid Request request) {
-    ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
+    final ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     verifyReferralHasValidParticipants(screeningToReferral);
 
-    /**
-     * <blockquote>
-     * 
-     * <pre>
-     * BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
-     * 
-     * Referral received date and received time need to set when referral was created 
-     * </blockquote>
-     * </pre>
-     */
-    String dateStarted =
-        StartDateTimeValidator.extractStartDate(screeningToReferral.getStartedAt(), messageBuilder);
-    String timeStarted =
-        StartDateTimeValidator.extractStartTime(screeningToReferral.getStartedAt(), messageBuilder);
+    //BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
+    //Referral received date and received time need to set when referral was created
+    String referralToBeCreatedAt =
+        DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
+    final String dateStarted =
+        StartDateTimeValidator.extractStartDate(referralToBeCreatedAt, messageBuilder);
+    final String timeStarted =
+        StartDateTimeValidator.extractStartTime(referralToBeCreatedAt, messageBuilder);
 
-    String referralId = createCmsReferral(screeningToReferral, dateStarted, timeStarted);
-
-    ClientParticipants clientParticipants = processParticipants(screeningToReferral, dateStarted,
-        timeStarted, referralId, messageBuilder);
-
+    final String referralId = createCmsReferral(screeningToReferral, dateStarted, timeStarted);
+    final ClientParticipants clientParticipants = participantToLegacyClient.saveParticipants(screeningToReferral, dateStarted, timeStarted,
+        referralId, messageBuilder);
     saveRelationships(screeningToReferral, clientParticipants);
-
-    Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
-    Set<Allegation> resultAllegations = createAllegations(screeningToReferral, referralId,
-        clientParticipants.getVictimIds(), clientParticipants.getPerpetratorIds());
-
-    PostedScreeningToReferral pstr =
-        PostedScreeningToReferral.createWithDefaults(referralId, screeningToReferral,
-            clientParticipants.getParticipants(), resultCrossReports, resultAllegations);
-
+    final PostedScreeningToReferral pstr = createPostedScreeningToReferral(screeningToReferral,
+        referralId, clientParticipants);
     reminders.createTickle(pstr);
 
+    handleErrors();
+
+    return pstr;
+  }
+
+  private PostedScreeningToReferral createPostedScreeningToReferral(
+      ScreeningToReferral screeningToReferral, String referralId,
+      ClientParticipants clientParticipants) {
+    final Set<CrossReport> resultCrossReports = createCrossReports(screeningToReferral, referralId);
+    final Set<Allegation> resultAllegations = createAllegations(screeningToReferral, referralId,
+        clientParticipants.getVictimIds(), clientParticipants.getPerpetratorIds());
+
+    return PostedScreeningToReferral.createWithDefaults(referralId, screeningToReferral,
+        clientParticipants.getParticipants(), resultCrossReports, resultAllegations);
+  }
+
+  private void handleErrors() {
     boolean foundError = false;
     for (ErrorMessage message : messageBuilder.getMessages()) {
       if (StringUtils.isNotBlank(message.getMessage())) {
@@ -170,8 +174,6 @@ public class ScreeningToReferralService implements CrudsService {
     if (foundError) {
       throw new BusinessValidationException(messageBuilder.getIssues());
     }
-
-    return pstr;
   }
 
   private Set<Allegation> createAllegations(ScreeningToReferral screeningToReferral,
@@ -198,13 +200,8 @@ public class ScreeningToReferralService implements CrudsService {
     return resultCrossReports;
   }
 
-  private ClientParticipants processParticipants(ScreeningToReferral screeningToReferral,
-      String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
-    return participantService.saveParticipants(screeningToReferral, dateStarted, timeStarted,
-        referralId, messageBuilder);
-  }
-
-  private void saveRelationships(ScreeningToReferral screeningToReferral, ClientParticipants clientParticipants ) {
+  private void saveRelationships(ScreeningToReferral screeningToReferral,
+      ClientParticipants clientParticipants) {
     if (screeningToReferral.getRelationships() == null) {
       return;
     }
@@ -213,8 +210,9 @@ public class ScreeningToReferralService implements CrudsService {
         continue;
       if (relationship.getId() == null || relationship.getId().isEmpty()) {
         try {
-          ClientRelationshipDtoBuilder builder = new ClientRelationshipDtoBuilder(relationship, clientParticipants);
-          gov.ca.cwds.data.legacy.cms.entity.ClientRelationship savedRelationship =
+          final ClientRelationshipDtoBuilder builder =
+              new ClientRelationshipDtoBuilder(relationship, clientParticipants);
+          final gov.ca.cwds.data.legacy.cms.entity.ClientRelationship savedRelationship =
               clientRelationshipService.createRelationship(builder.build());
           relationship.setId(savedRelationship.getIdentifier());
         } catch (DataAccessServicesException e) {
@@ -286,7 +284,8 @@ public class ScreeningToReferralService implements CrudsService {
   @Override
   public gov.ca.cwds.rest.api.domain.cms.PostedReferral find(Serializable primaryKey) {
     assert primaryKey instanceof String;
-    gov.ca.cwds.data.persistence.cms.Referral persistedReferral = referralDao.find(primaryKey);
+    final gov.ca.cwds.data.persistence.cms.Referral persistedReferral =
+        referralDao.find(primaryKey);
     if (persistedReferral != null) {
       return new gov.ca.cwds.rest.api.domain.cms.PostedReferral(persistedReferral);
     }
@@ -310,16 +309,12 @@ public class ScreeningToReferralService implements CrudsService {
    */
   private Set<gov.ca.cwds.rest.api.domain.CrossReport> processCrossReports(ScreeningToReferral scr,
       String referralId) {
-
     String crossReportId = "";
-    Set<gov.ca.cwds.rest.api.domain.CrossReport> resultCrossReports = new HashSet<>();
-    Set<CrossReport> crossReports;
-    crossReports = scr.getCrossReports();
+    final Set<gov.ca.cwds.rest.api.domain.CrossReport> resultCrossReports = new HashSet<>();
+    final Set<CrossReport> crossReports = scr.getCrossReports();
 
     if (crossReports != null) {
-
       for (CrossReport crossReport : crossReports) {
-
         Boolean outStateLawEnforcementIndicator = Boolean.FALSE;
         String outStateLawEnforcementAddr = "";
 
@@ -343,14 +338,13 @@ public class ScreeningToReferralService implements CrudsService {
       persistCrossReport(screeningToReferral, referralId, crossReportId, resultCrossReports,
           crossReport, outStateLawEnforcementIndicator, outStateLawEnforcementAddr);
     } else {
-      gov.ca.cwds.rest.api.domain.cms.CrossReport foundCrossReport =
+      final gov.ca.cwds.rest.api.domain.cms.CrossReport foundCrossReport =
           this.crossReportService.find(crossReport.getLegacyId());
       if (foundCrossReport == null) {
-        String message =
+        final String message =
             " Legacy Id on Cross Report does not correspond to an existing CMS/CWS Cross Report ";
-        ServiceException se = new ServiceException(message);
+        final ServiceException se = new ServiceException(message);
         logError(message, se);
-
       }
     }
   }
@@ -369,9 +363,9 @@ public class ScreeningToReferralService implements CrudsService {
   private void outStateLawEnforcementIndicator(Boolean outStateLawEnforcementIndicator,
       String outStateLawEnforcementAddr) {
     if (outStateLawEnforcementIndicator && StringUtils.isBlank(outStateLawEnforcementAddr)) {
-      String message =
+      final String message =
           "outStateLawEnforcementIndicator is set true, then outStateLawEnforcementAddr can't be blank";
-      ServiceException se = new ServiceException(message);
+      final ServiceException se = new ServiceException(message);
       logError(message, se);
     }
   }
@@ -381,11 +375,12 @@ public class ScreeningToReferralService implements CrudsService {
       CrossReport crossReport, Boolean outStateLawEnforcementIndicator,
       String outStateLawEnforcementAddr) {
 
-    Map<String, String> agencyMap = getLawEnforcement(crossReport.getAgencies());
-    String lawEnforcementId = agencyMap.get(AgencyType.LAW_ENFORCEMENT.name());
-    Boolean governmentOrgCrossRptIndicatorVar = StringUtils.isNotBlank(agencyMap.get("OTHER"));
+    final Map<String, String> agencyMap = getLawEnforcement(crossReport.getAgencies());
+    final String lawEnforcementId = agencyMap.get(AgencyType.LAW_ENFORCEMENT.name());
+    final Boolean governmentOrgCrossRptIndicatorVar =
+        StringUtils.isNotBlank(agencyMap.get("OTHER"));
 
-    gov.ca.cwds.rest.api.domain.cms.CrossReport cmsCrossReport =
+    final gov.ca.cwds.rest.api.domain.cms.CrossReport cmsCrossReport =
         gov.ca.cwds.rest.api.domain.cms.CrossReport.createWithDefaults(crossReportId, crossReport,
             referralId, getStaffIdCreatedCrossreport(), outStateLawEnforcementAddr,
             lawEnforcementId, screeningToReferral.getIncidentCounty(),
@@ -393,7 +388,7 @@ public class ScreeningToReferralService implements CrudsService {
 
     messageBuilder.addDomainValidationError(validator.validate(cmsCrossReport));
 
-    gov.ca.cwds.rest.api.domain.cms.CrossReport postedCrossReport =
+    final gov.ca.cwds.rest.api.domain.cms.CrossReport postedCrossReport =
         this.crossReportService.create(cmsCrossReport);
     governmentOrganizationCrossReportService.createDomainConstructor(postedCrossReport,
         crossReport.getAgencies());
@@ -407,7 +402,8 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private Map<String, String> getLawEnforcement(Set<GovernmentAgency> agencies) {
-    Map<String, String> agencyMap = new HashMap<>();
+    final Map<String, String> agencyMap = new HashMap<>();
+
     if (agencies != null && !agencies.isEmpty()) {
       for (GovernmentAgency agency : agencies) {
         if (AgencyType.LAW_ENFORCEMENT.name().equals(agency.getType())) {
@@ -426,7 +422,7 @@ public class ScreeningToReferralService implements CrudsService {
   private Set<Allegation> processAllegations(ScreeningToReferral scr, String referralId,
       Map<Long, String> perpatratorClient, Map<Long, String> victimClient) {
 
-    Set<Allegation> processedAllegations = new HashSet<>();
+    final Set<Allegation> processedAllegations = new HashSet<>();
     Set<Allegation> allegations;
     String victimClientId = "";
     String perpatratorClientId = "";
@@ -448,20 +444,19 @@ public class ScreeningToReferralService implements CrudsService {
     final Short allegationDispositionType = LegacyDefaultValues.DEFAULT_CODE;
 
     if (allegations == null || allegations.isEmpty()) {
-      String message = " Referral must have at least one Allegation ";
-      ServiceException exception = new ServiceException(message);
+      final String message = " Referral must have at least one Allegation ";
+      final ServiceException exception = new ServiceException(message);
       logError(message, exception);
       return processedAllegations;
     }
 
     for (Allegation allegation : allegations) {
-
       if (!validateAllegationHasVictim(scr, allegation)) {
         victimClientId =
             getClientLegacyId(victimClient, victimClientId, allegation.getVictimPersonId());
 
-        boolean allegationHasPerpPersonId = allegation.getPerpetratorPersonId() != 0;
-        boolean isNotPerpetrator = !ParticipantValidator.isPerpetratorParticipant(scr,
+        final boolean allegationHasPerpPersonId = allegation.getPerpetratorPersonId() != 0;
+        final boolean isNotPerpetrator = !ParticipantValidator.isPerpetratorParticipant(scr,
             allegation.getPerpetratorPersonId());
         validateAllegationHasPerpetrator(allegationHasPerpPersonId, isNotPerpetrator);
 
@@ -483,12 +478,12 @@ public class ScreeningToReferralService implements CrudsService {
       persistAllegation(scr, referralId, processedAllegations, victimClientId, perpatratorClientId,
           allegationDispositionType, allegation);
     } else {
-      gov.ca.cwds.rest.api.domain.cms.Allegation foundAllegation =
+      final gov.ca.cwds.rest.api.domain.cms.Allegation foundAllegation =
           this.allegationService.find(allegation.getLegacyId());
       if (foundAllegation == null) {
-        String message =
+        final String message =
             "Legacy Id on Allegation does not correspond to an existing CMS/CWS Allegation";
-        ServiceException se = new ServiceException(message);
+        final ServiceException se = new ServiceException(message);
         logError(message, se);
         return;
       }
@@ -497,7 +492,7 @@ public class ScreeningToReferralService implements CrudsService {
 
   private boolean validateAllegationVictimExists(String victimClientId) {
     if (StringUtils.isBlank(victimClientId)) {
-      String message = "Victim could not be determined for an allegation";
+      final String message = "Victim could not be determined for an allegation";
       logError(message, new ServiceException(message));
       return false;
     }
@@ -507,9 +502,9 @@ public class ScreeningToReferralService implements CrudsService {
   private void validateAllegationHasPerpetrator(boolean allegationHasPerpPersonId,
       boolean isNotPerpetrator) {
     if (allegationHasPerpPersonId && isNotPerpetrator) {
-      String message =
+      final String message =
           "Allegation/Perpetrator Person Id does not contain a Participant with a role of Perpetrator";
-      ServiceException exception = new ServiceException(message);
+      final ServiceException exception = new ServiceException(message);
       logError(message, exception);
     }
   }
@@ -524,7 +519,7 @@ public class ScreeningToReferralService implements CrudsService {
   private boolean validateAllegationHasVictim(ScreeningToReferral scr, Allegation allegation) {
     try {
       if (!ParticipantValidator.isVictimParticipant(scr, allegation.getVictimPersonId())) {
-        String message =
+        final String message =
             " Allegation/Victim Person Id does not contain a Participant with a role of Victim ";
         logError(message);
       }
@@ -539,7 +534,7 @@ public class ScreeningToReferralService implements CrudsService {
       Set<Allegation> processedAllegations, String victimClientId, String perpatratorClientId,
       final Short allegationDispositionType, Allegation allegation) {
 
-    gov.ca.cwds.rest.api.domain.cms.Allegation cmsAllegation =
+    final gov.ca.cwds.rest.api.domain.cms.Allegation cmsAllegation =
         new gov.ca.cwds.rest.api.domain.cms.Allegation("", LegacyDefaultValues.DEFAULT_CODE, "",
             scr.getLocationType(), "", allegationDispositionType, allegation.getType(), "", "",
             Boolean.FALSE, LegacyDefaultValues.DEFAULT_NON_PROTECTING_PARENT_CODE, Boolean.FALSE,
@@ -548,7 +543,7 @@ public class ScreeningToReferralService implements CrudsService {
     executeR08740(cmsAllegation, victimClientId, perpatratorClientId);
     messageBuilder.addDomainValidationError(validator.validate(cmsAllegation));
 
-    PostedAllegation postedAllegation = this.allegationService.create(cmsAllegation);
+    final PostedAllegation postedAllegation = this.allegationService.create(cmsAllegation);
     allegation.setLegacyId(postedAllegation.getId());
     allegation.setLegacySourceTable(LegacyTable.ALLEGATION.getName());
     allegation.setNonProtectingParent(postedAllegation.getNonProtectingParentCode());
@@ -560,14 +555,14 @@ public class ScreeningToReferralService implements CrudsService {
 
   private void executeR08740(gov.ca.cwds.rest.api.domain.cms.Allegation cmsAllegation,
       String victimClientId, String perpetratorClientId) {
-    R08740SetNonProtectingParentCode r08740 = new R08740SetNonProtectingParentCode(cmsAllegation,
-        clientRelationshipDao, victimClientId, perpetratorClientId);
+    final R08740SetNonProtectingParentCode r08740 = new R08740SetNonProtectingParentCode(
+        cmsAllegation, clientRelationshipDao, victimClientId, perpetratorClientId);
     r08740.execute();
   }
 
   private void processAllegationPerpetratorHistory(ScreeningToReferral scr,
       PostedAllegation postedAllegation) {
-    gov.ca.cwds.rest.api.domain.cms.AllegationPerpetratorHistory cmsPerpHistory =
+    final gov.ca.cwds.rest.api.domain.cms.AllegationPerpetratorHistory cmsPerpHistory =
         new gov.ca.cwds.rest.api.domain.cms.AllegationPerpetratorHistory(scr.getIncidentCounty(),
             postedAllegation.getPerpetratorClientId(), postedAllegation.getId(),
             DomainChef.cookDate(RequestExecutionContext.instance().getRequestStartTime()));

@@ -1,40 +1,50 @@
 package gov.ca.cwds.rest.services;
 
+import static gov.ca.cwds.rest.core.Api.Datasource.NS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
- * Intake code cache Implementation
+ * Intake code cache implementation.
  * 
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("squid:S2160")
 public class CachingIntakeCodeService implements IntakeCodeCache {
+
+  private static final long serialVersionUID = 1L;
 
   private transient List<IntakeLov> intakeLovs = new ArrayList<>();
   private transient Map<Short, List<IntakeLov>> mapBySystemCodeId = new TreeMap<>();
   private transient Map<String, List<IntakeLov>> mapByMeta = new TreeMap<>();
 
-  private static final long serialVersionUID = 1L;
-
   /**
    * Construct the object.
    * 
-   * @param intakeLovDao Intake Lov Dao
+   * @param intakeLovDao Intake LOV Dao
    */
   @Inject
   public CachingIntakeCodeService(IntakeLovDao intakeLovDao) {
+    init(intakeLovDao);
+  }
+
+  @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
+      readOnly = true, transactional = false)
+  protected final void init(IntakeLovDao intakeLovDao) {
     this.intakeLovs = intakeLovDao.findAll();
 
     if (this.intakeLovs == null) {
@@ -126,4 +136,5 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public long getCacheSize() {
     return this.intakeLovs.size();
   }
+
 }

@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.relationship;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     String request = fixture(JSON_REQUEST_FOR_FAILURE_UPDATE);
     Response response =
         doPutCall(SCREENING_RELATIONSHIPS + "/" + ID_NOT_EXISTING_RELATIONSHIP_FOR_UPDATE, request);
-    assertEquals(HttpStatus.SC_OK, response.getStatus());
+    assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatus());
   }
 
   @Test
@@ -130,6 +131,45 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
         getOneRelationshipForCreate("856", "855", 185, "Y"),
         getOneRelationshipForCreate("856", "755", 211, "U")};
     validateCreateRelationships(relationshipBases);
+  }
+
+  @Test
+  public void testUpdateRelationship_revertedTrue() throws IOException {
+
+    ScreeningRelationship relationshipBase = getOneRelationshipForUpdate("755", "756", 184, "Y", true);
+
+    String requestJson = objectMapper
+        .writeValueAsString(relationshipBase);
+    Response response = doPutCall(
+        SCREENING_RELATIONSHIPS + "/" + ID_EXISTING_RELATIONSHIP_FOR_UPDATE,
+        requestJson);
+
+    assertEquals(HttpStatus.SC_OK, response.getStatus());
+
+    ScreeningRelationship actualResponse = objectMapper
+        .readValue((InputStream) response.getEntity(), ScreeningRelationship.class);
+    assertNotNull(actualResponse);
+
+    assertNotNull(relationshipBase);
+    assertNotNull(actualResponse);
+
+    assertEquals(relationshipBase.getLegacyId(),
+        actualResponse.getLegacyId());
+    assertEquals(relationshipBase.getEndDate(),
+        actualResponse.getEndDate());
+    assertEquals(relationshipBase.getStartDate(),
+        actualResponse.getStartDate());
+    assertEquals(relationshipBase.getSameHomeStatus(),
+        actualResponse.getSameHomeStatus());
+    assertEquals(relationshipBase.getClientId(),
+        actualResponse.getRelativeId());
+    assertEquals(relationshipBase.getRelativeId(),
+        actualResponse.getClientId());
+    assertEquals(278,
+        actualResponse.getRelationshipType());
+    assertNotNull(actualResponse.getId());
+    assertNotEquals("", actualResponse.getId());
+
   }
 
   private void validateCreateRelationships(ScreeningRelationshipBase[] relationshipBases)
@@ -205,6 +245,14 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
     screeningRelationship.setRelationshipType(relationshipType);
     screeningRelationship.setAbsentParentIndicator(false);
     screeningRelationship.setSameHomeStatus(sameHomeStatus);
+    return screeningRelationship;
+  }
+
+  private ScreeningRelationship getOneRelationshipForUpdate(String clientId,
+      String relatedClientId, int relationshipType, String sameHomeStatus, boolean reversed) {
+    ScreeningRelationship screeningRelationship = new ScreeningRelationship(
+        getOneRelationshipForCreate(clientId, relatedClientId, relationshipType, sameHomeStatus));
+    screeningRelationship.setReversed(reversed);
     return screeningRelationship;
   }
 }

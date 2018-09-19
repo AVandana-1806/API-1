@@ -4,8 +4,10 @@ import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENIN
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_PARTICIPANT_IDS;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
+import gov.ca.cwds.rest.core.Api.PathParam;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +62,10 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE screeningId = :screeningId AND legacyId = :legacyId")
 @NamedQuery(name = FIND_PARTICIPANTS_BY_PARTICIPANT_IDS,
     query = "FROM ParticipantEntity WHERE id IN :participantIds")
+@NamedQuery(name = FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID,
+    query = "FROM ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID
+        + " AND legacyId = :" + PathParam.LEGACY_ID
+        + " AND screeningId is null")
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
@@ -76,6 +82,8 @@ public class ParticipantEntity
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByScreeningIdAndLegacyId";
   public static final String FIND_PARTICIPANTS_BY_PARTICIPANT_IDS =
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByParticipantsId";
+  public static final String FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID =
+      "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findParticipantByRelatedScreeningIdAndLegacyId";
 
   @Id
   @Column(name = "id")
@@ -156,6 +164,9 @@ public class ParticipantEntity
 
   @Column(name = "approximate_age_units")
   private String approximateAgeUnits;
+
+  @Column(name = "related_screening_id")
+  private String relatedScreeningId;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "participant_id", insertable = false, updatable = false)
@@ -257,6 +268,7 @@ public class ParticipantEntity
     probationYouth = participantIntakeApi.isProbationYouth();
     approximateAge = participantIntakeApi.getApproximateAge();
     approximateAgeUnits = participantIntakeApi.getApproximateAgeUnits();
+    relatedScreeningId = participantIntakeApi.getRelatedScreeningId();
     return this;
   }
 
@@ -413,6 +425,14 @@ public class ParticipantEntity
 
   public void setSafelySurrenderedBabies(SafelySurrenderedBabiesEntity safelySurrenderedBabies) {
     this.safelySurrenderedBabies = safelySurrenderedBabies;
+  }
+
+  public String getRelatedScreeningId() {
+    return relatedScreeningId;
+  }
+
+  public void setRelatedScreeningId(String relatedScreeningId) {
+    this.relatedScreeningId = relatedScreeningId;
   }
 
   public void setRoles(String[] roles) {

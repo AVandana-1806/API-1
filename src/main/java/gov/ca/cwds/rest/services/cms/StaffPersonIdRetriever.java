@@ -40,7 +40,7 @@ public class StaffPersonIdRetriever {
    */
   public String getStaffPersonId() {
     String staffId = null;
-    PerryUserIdentity perryUserIdentity = getPerryUserIdentity();
+    final PerryUserIdentity perryUserIdentity = getPerryUserIdentity();
     if (perryUserIdentity != null) {
       staffId = perryUserIdentity.getStaffId();
     }
@@ -53,14 +53,14 @@ public class StaffPersonIdRetriever {
   public static PerryUserIdentity getPerryUserIdentity() {
     PerryUserIdentity perryUserIdentity = null;
 
-    Subject currentUser = SecurityUtils.getSubject();
-    PrincipalCollection principalCollection = currentUser.getPrincipals();
+    final Subject currentUser = SecurityUtils.getSubject();
+    final PrincipalCollection principalCollection = currentUser.getPrincipals();
 
     if (principalCollection != null) {
       @SuppressWarnings("rawtypes")
-      List principals = currentUser.getPrincipals().asList();
-      int principalCount = principals.size();
-      Object currentPrincipal = principalCount > 1 ? principals.get(1) : null;
+      final List principals = currentUser.getPrincipals().asList();
+      final int principalCount = principals.size();
+      final Object currentPrincipal = principalCount > 1 ? principals.get(1) : null;
 
       perryUserIdentity = getCurrentPrincipal(currentPrincipal);
     } else {
@@ -68,7 +68,7 @@ public class StaffPersonIdRetriever {
     }
 
     if (perryUserIdentity == null) {
-      String localDevProp = System.getenv("LOCAL_DEV");
+      final String localDevProp = System.getenv("LOCAL_DEV");
       if (StringUtils.isNotBlank(localDevProp) && "true".equals(localDevProp)) {
         perryUserIdentity = new PerryUserIdentity();
         perryUserIdentity.setStaffId(DEFAULT_STAFF_ID);
@@ -89,11 +89,11 @@ public class StaffPersonIdRetriever {
     if (currentPrincipal != null
         && PerryAccount.class.isAssignableFrom(currentPrincipal.getClass())) {
       try {
-        ObjectMapper objectMapper = ObjectMapperUtils.createObjectMapper();
-        String valueAsString = objectMapper.writeValueAsString(currentPrincipal);
-        PerryUserIdentity currentUserInfo =
+        final ObjectMapper objectMapper = ObjectMapperUtils.createObjectMapper();
+        final String valueAsString = objectMapper.writeValueAsString(currentPrincipal);
+        final PerryUserIdentity currentUserInfo =
             objectMapper.readValue(valueAsString, PerryUserIdentity.class);
-        String staffPersonId = currentUserInfo.getStaffId();
+        final String staffPersonId = currentUserInfo.getStaffId();
 
         if (StringUtils.isBlank(staffPersonId)) {
           handleMissingStaffId(currentUserInfo);
@@ -112,7 +112,7 @@ public class StaffPersonIdRetriever {
   }
 
   private static void handleMissingStaffId(PerryUserIdentity currentUserInfo) {
-    ObjectMapper objectMapper = ObjectMapperUtils.createObjectMapper();
+    final ObjectMapper objectMapper = ObjectMapperUtils.createObjectMapper();
     String json = null;
     try {
       json = objectMapper.writeValueAsString(currentUserInfo);

@@ -25,7 +25,7 @@ task functionalQATest(type: Test) {
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath = sourceSets.functionalTest.runtimeClasspath
 
-    println "The following Functonal Test Conf File will override the default if not null" + System.getenv("TEST_FILE_PATH")
+    println "The following Functonal Test Conf File will override the default if not null:" + System.getenv("TEST_FILE_PATH")
     println "Your shell path is:" + System.env.PATH
     environment 'TEST_FILE_PATH', System.getenv('TEST_FILE_PATH')
     systemProperties = [
@@ -52,7 +52,7 @@ task smokeTest(type: Test) {
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath = sourceSets.functionalTest.runtimeClasspath
 
-    println "The following Functonal Test Conf File will override the default if not null" + System.getenv("TEST_FILE_PATH")
+    println "The following Functonal Test Conf File will override the default if not null: " + System.getenv("TEST_FILE_PATH")
     println "Your shell path is:" + System.env.PATH
     environment 'TEST_FILE_PATH', System.getenv('TEST_FILE_PATH')
     systemProperties = [

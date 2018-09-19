@@ -8,7 +8,8 @@
     "same_home_status": "U",
     "start_date": "2018-07-19",
     "end_date": "2019-07-19",
-    "legacy_id": "0btlf7s004"
+    "legacy_id": "0btlf7s004",
+    "reversed": false
   },
   {
     "id": "9",
@@ -19,6 +20,7 @@
     "same_home_status": "U",
     "start_date": "2018-07-19",
     "end_date": "2019-07-19",
-    "legacy_id": "0btlf7s005"
+    "legacy_id": "0btlf7s005",
+    "reversed": false
   }
 ]

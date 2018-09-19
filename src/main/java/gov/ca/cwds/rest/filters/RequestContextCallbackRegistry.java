@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.ca.cwds.data.std.ApiMarker;
 
 /**
@@ -20,6 +23,9 @@ final class RequestContextCallbackRegistry implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
 
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(RequestContextCallbackRegistry.class);
+
   private final Map<Serializable, RequestExecutionContextCallback> callbacks =
       new ConcurrentHashMap<>();
 
@@ -32,12 +38,38 @@ final class RequestContextCallbackRegistry implements ApiMarker {
     callbacks.putIfAbsent(callback.key(), callback);
   }
 
-  public void startRequest(RequestExecutionContext ctx) {
-    callbacks.values().stream().sequential().forEach(c -> c.startRequest(ctx));
+  protected void safeStart(RequestExecutionContextCallback callback, RequestExecutionContext ctx) {
+    try {
+      callback.startRequest(ctx);
+    } catch (Exception e) {
+      LOGGER.error("START REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName());
+    }
   }
 
+  protected void safeStop(RequestExecutionContextCallback callback, RequestExecutionContext ctx) {
+    try {
+      callback.endRequest(ctx);
+    } catch (Exception e) {
+      LOGGER.error("STOP REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName());
+    }
+  }
+
+  /**
+   * Start a request. Notify all registered callbacks.
+   * 
+   * @param ctx request context
+   */
+  public void startRequest(RequestExecutionContext ctx) {
+    callbacks.values().stream().sequential().forEach(c -> safeStart(c, ctx));
+  }
+
+  /**
+   * End a request. Notify all registered callbacks.
+   * 
+   * @param ctx request context
+   */
   public void endRequest(RequestExecutionContext ctx) {
-    callbacks.values().stream().sequential().forEach(c -> c.endRequest(ctx));
+    callbacks.values().stream().sequential().forEach(c -> safeStop(c, ctx));
   }
 
 }

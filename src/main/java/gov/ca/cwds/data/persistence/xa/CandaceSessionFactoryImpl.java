@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -55,19 +57,23 @@ import io.dropwizard.hibernate.HibernateBundle;
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S2095"})
 public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
+  private final Map<Integer, CandaceSessionTracker> outstanding = new ConcurrentHashMap<>();
+
+  // Core members.
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
   private SessionFactory xaSessionFactory;
 
   // Only works for the same datasource, for which this class is a facade.
   private transient ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  private transient ThreadLocal<CandaceSessionTracker> tracker = new ThreadLocal<>();
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
@@ -82,23 +88,40 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   public CandaceSessionFactoryImpl(String sessionFactoryName, SessionFactory normSessionFactory,
       SessionFactory xaSessionFactory) {
     super();
-    LOGGER.info("ctor(String,SessionFactory,SessionFactory)");
+    LOGGER.debug("ctor(String,SessionFactory,SessionFactory)");
     this.sessionFactoryName = makeSessionFactoryName(sessionFactoryName);
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
   }
 
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
       FerbHibernateBundle xaHibernateBundle) {
     super();
-    LOGGER.info("ctor(HibernateBundle,FerbHibernateBundle)");
+    LOGGER.debug("ctor(HibernateBundle,FerbHibernateBundle)");
     this.sessionFactoryName = makeSessionFactoryName(xaHibernateBundle.name());
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
+    init();
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
+  }
+
+  public List<CandaceSessionTracker> getOutstandingSessions() {
+    return outstanding.values().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId()))
+        .collect(Collectors.toList());
+  }
+
+  public void printOutstandingSessions() {
+    outstanding.values().stream().forEach(s -> LOGGER
+        .info("Outstanding sessions: data source: {}, session: {}", sessionFactoryName, s));
   }
 
   /**
-   * Is this request currently in an XA transaction?
+   * Is this request participating in an XA transaction?
    * 
    * @return true = request is using XA
    */
@@ -123,12 +146,12 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   /**
    * Initialize once.
    */
-  protected synchronized void init() {
+  protected final synchronized void init() {
     if (normSessionFactory == null || xaSessionFactory == null) {
       this.normSessionFactory = hibernateBundle.getSessionFactory();
       this.xaSessionFactory = xaHibernateBundle.getSessionFactory();
 
-      // Notify this instance upon request start and end.
+      // Notify this instance when requests start or end.
       RequestExecutionContextRegistry.registerCallback(this);
     }
   }
@@ -149,12 +172,32 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.debug("startRequest");
-    local.set(null); // clear the current thread
+    resetLocals();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
     LOGGER.debug("endRequest");
+
+    final CandaceSessionImpl session = local.get();
+    if (session != null && session.isOpen()) {
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.error("ERROR ON SESSION AUTO-CLOSE: data source: {}", sessionFactoryName, e);
+      }
+    }
+
+    resetLocals();
+  }
+
+  protected void resetLocals() {
+    final CandaceSessionTracker track = tracker.get();
+    if (track != null) {
+      outstanding.remove(track.getId());
+    }
+
+    tracker.set(null);
     local.set(null); // clear the current thread
   }
 
@@ -188,19 +231,19 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public SessionFactoryOptions getSessionFactoryOptions() {
-    LOGGER.info("getSessionFactoryOptions");
+    LOGGER.trace("getSessionFactoryOptions");
     return pick().getSessionFactoryOptions();
   }
 
   @Override
   public EntityManager createEntityManager(Map map) {
-    LOGGER.info("createEntityManager(Map)");
+    LOGGER.trace("createEntityManager(Map)");
     return pick().createEntityManager(map);
   }
 
   @Override
   public SessionBuilder withOptions() {
-    LOGGER.info("withOptions");
+    LOGGER.trace("withOptions");
     return pick().withOptions();
   }
 
@@ -210,11 +253,14 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource: {}, is XA: {}",
-          sessionFactoryName, isXaTransaction());
-      session = new CandaceSessionImpl(pick().openSession());
+      LOGGER.info("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
+          isXaTransaction());
+      session = new CandaceSessionImpl(this, pick().openSession());
       local.set(session);
+
+      final CandaceSessionTracker track = new CandaceSessionTracker(this, session);
+      tracker.set(track);
+      outstanding.put(track.getId(), track);
     }
 
     return session;
@@ -222,7 +268,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public EntityType getEntityTypeByName(String entityName) {
-    LOGGER.info("getEntityTypeByName");
+    LOGGER.debug("getEntityTypeByName");
     return pick().getEntityTypeByName(entityName);
   }
 
@@ -238,8 +284,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource: {}, is XA: {}",
+      LOGGER.info("getCurrentSession(): call session.openSession(): datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = openSession();
     }
@@ -255,26 +300,26 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public StatelessSessionBuilder withStatelessOptions() {
-    LOGGER.info("withStatelessOptions");
+    LOGGER.debug("withStatelessOptions");
     return pick().withStatelessOptions();
   }
 
   @Override
   public StatelessSession openStatelessSession() {
-    LOGGER.info("openStatelessSession");
+    LOGGER.debug("openStatelessSession");
     return pick().openStatelessSession();
   }
 
   @Override
   public StatelessSession openStatelessSession(Connection connection) {
-    LOGGER.info("openStatelessSession(con)");
+    LOGGER.debug("openStatelessSession(con)");
     return pick().openStatelessSession(connection);
   }
 
   @Override
   public Statistics getStatistics() {
-    // IDEA: store statistics by request.
-    LOGGER.debug("getStatistics");
+    // IDEA: store statistics by request, not on the global session factory.
+    LOGGER.trace("getStatistics");
     return pick().getStatistics();
   }
 
@@ -317,10 +362,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.warn("******** CandaceSessionFactoryImpl.close ********");
-    local.set(null);
+    LOGGER.info("close");
     pick().close();
     CaresStackUtils.logStack();
+    resetLocals();
   }
 
   @Override

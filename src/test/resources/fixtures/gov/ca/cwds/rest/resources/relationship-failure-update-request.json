@@ -4,5 +4,6 @@
   "relative_id": "2222222222",
   "relationship_type": 191,
   "same_home_status": "Y",
-  "absent_parent_indicator": true
+  "absent_parent_indicator": true,
+  "reversed": false
 }

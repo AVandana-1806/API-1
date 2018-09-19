@@ -5,12 +5,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
 
@@ -20,10 +17,14 @@ import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
  * 
  * @author CWDS API Team
  */
-class RequestExecutionContextImpl implements RequestExecutionContext {
+@SuppressWarnings({"squid:S1948"})
+class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestExecutionContext {
+
+  private static final long serialVersionUID = 1L;
 
   private static final PerryUserIdentity DEFAULT_IDENTITY;
 
+  // Build default user identity.
   static {
     PerryUserIdentity pui = null;
     final String staffId = System.getProperty("DEFAULT_FERB_STAFF_ID");
@@ -35,9 +36,28 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
   }
 
   /**
-   * Context parameters
+   * Context parameters. Not thread-safe, because it runs on a single thread.
    */
   private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
+
+  /**
+   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
+   * the filters package.
+   */
+  static void startRequest() {
+    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
+    if (userIdentity == null) {
+      userIdentity = DEFAULT_IDENTITY;
+    }
+    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
+  }
+
+  /**
+   * Perform cleanup after request completion.
+   */
+  static void stopRequest() {
+    RequestExecutionContextRegistry.remove();
+  }
 
   /**
    * Private constructor
@@ -51,6 +71,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
     put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
     put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
     put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    put(Parameter.NON_HTTP_REQUEST, Boolean.FALSE);
+    put(Parameter.THREAD_ID, Thread.currentThread().getId());
   }
 
   /**
@@ -101,13 +123,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
    */
   @Override
   public String getStaffId() {
-    String staffId = null;
-    PerryUserIdentity userIdentity = getUserIdentity();
-
-    if (userIdentity != null) {
-      staffId = userIdentity.getStaffId();
-    }
-    return staffId;
+    final PerryUserIdentity userIdentity = getUserIdentity();
+    return userIdentity != null ? userIdentity.getStaffId() : null;
   }
 
   @Override
@@ -137,8 +154,8 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
 
   @Override
   public boolean isResourceReadOnly() {
-    final Boolean readOnly = (Boolean) get(Parameter.RESOURCE_READ_ONLY);
-    return readOnly != null && readOnly.booleanValue();
+    final Boolean ret = (Boolean) get(Parameter.RESOURCE_READ_ONLY);
+    return ret != null && ret.booleanValue();
   }
 
   @Override
@@ -147,38 +164,15 @@ class RequestExecutionContextImpl implements RequestExecutionContext {
     return ret != null && ret.booleanValue();
   }
 
-  /**
-   * Servlet filter marks the start of a web request. This method is only accessible by the filters
-   * package.
-   */
-  static void startRequest() {
-    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
-    if (userIdentity == null) {
-      userIdentity = DEFAULT_IDENTITY;
-    }
-    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
-  }
-
-  /**
-   * Perform cleanup after request completion.
-   */
-  static void stopRequest() {
-    RequestExecutionContextRegistry.remove();
+  @Override
+  public long getThreadId() {
+    final Long ret = (Long) get(Parameter.THREAD_ID);
+    return ret != null ? ret.longValue() : 0;
   }
 
   @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true);
-  }
-
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, false);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, false);
+  public String getRequestId() {
+    return null;
   }
 
 }

@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.api.domain;
 
+import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
@@ -69,6 +71,9 @@ public class LegacyDescriptor extends DomainObject {
       String tableDescription) {
     this.id = id;
     this.uiId = uiId;
+    if (StringUtils.isBlank(uiId) && StringUtils.isNotBlank(id)) {
+      this.uiId = CmsKeyIdGenerator.getUIIdentifierFromKey(id);
+    }
     this.lastUpdated = lastUpdated;
     this.tableName = tableName;
     this.tableDescription = tableDescription;
@@ -80,16 +85,22 @@ public class LegacyDescriptor extends DomainObject {
    * @param legacyDescriptorEntity persistence level LegacyDescriptorEntity object
    */
   public LegacyDescriptor(LegacyDescriptorEntity legacyDescriptorEntity) {
-    this.id = legacyDescriptorEntity.getLegacyId();
-    this.uiId = legacyDescriptorEntity.getLegacyUiId();
-    if (legacyDescriptorEntity.getLegacyLastUpdated() != null) {
-      this.lastUpdated = DateTimeFormat.forPattern(DATETIME_FORMAT)
-          .parseDateTime(legacyDescriptorEntity.getLegacyLastUpdated());
-    }
-    this.tableName = legacyDescriptorEntity.getLegacyTableName();
-    this.tableDescription = legacyDescriptorEntity.getLegacyTableDescription();
+    this(legacyDescriptorEntity.getLegacyId(),
+        legacyDescriptorEntity.getLegacyUiId(),
+        convertDateTime(legacyDescriptorEntity),
+        legacyDescriptorEntity.getLegacyTableName(),
+        legacyDescriptorEntity.getLegacyTableDescription()
+    );
   }
 
+  private static DateTime convertDateTime(LegacyDescriptorEntity legacyDescriptorEntity){
+    DateTime lastUpdated = null;
+    if (legacyDescriptorEntity.getLegacyLastUpdated() != null) {
+      lastUpdated = DateTimeFormat.forPattern(DATETIME_FORMAT)
+          .parseDateTime(legacyDescriptorEntity.getLegacyLastUpdated());
+    }
+    return lastUpdated;
+  }
   /**
    * @return the Legacy Id
    */

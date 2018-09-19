@@ -27,6 +27,7 @@ import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
+import gov.ca.cwds.data.persistence.xa.CaresUnitOfWorkInterceptor;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
@@ -75,6 +76,8 @@ import gov.ca.cwds.rest.services.hoi.HOIReferralService;
 import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.investigation.contact.DeliveredToIndividualService;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
@@ -205,6 +208,7 @@ public class ServicesModule extends AbstractModule {
     bind(StaffPersonService.class);
     bind(TickleService.class);
     bind(DroolsService.class);
+    bind(RelationshipFacade.class).to(RelationshipFacadeLegacyAndNewDB.class);
 
     LOGGER.info("configure: point 2");
 
@@ -230,7 +234,7 @@ public class ServicesModule extends AbstractModule {
 
     // @Singleton does not work with DropWizard Guice.
     bind(GovernmentOrganizationService.class).toProvider(GovtOrgSvcProvider.class);
-    LOGGER.info("configure: point 3");
+    LOGGER.info("configure: done");
   }
 
   /**
@@ -320,7 +324,7 @@ public class ServicesModule extends AbstractModule {
       secondsToRefreshCache = systemCodeCacheConfig.getRefreshAfter(secondsToRefreshCache);
     }
 
-    try (final Session session = new CandaceSessionImpl(systemCodeDao.grabSession())) {
+    try (final Session session = new CandaceSessionImpl(systemCodeDao)) {
       LOGGER.info("Load code cache: preLoad: {}, secondsToRefreshCache: {}", preLoad,
           secondsToRefreshCache);
       final Transaction txn = session.beginTransaction();

@@ -43,7 +43,7 @@ public class IntakeLOVCodeDao extends BaseDaoImpl<IntakeLOVCodeEntity> {
     }
     final Query<IntakeLOVCodeEntity> query =
         this.grabSession().getNamedQuery(constructNamedQueryName("findIntakeLOVCodesByIntakeCodes"))
-            .setReadOnly(true).setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL)
+            .setReadOnly(true).setCacheable(true).setHibernateFlushMode(FlushMode.MANUAL)
             .setParameter("intakeCodes", intakeCodes);
     return query.list().stream()
         .collect(Collectors.toMap(IntakeLOVCodeEntity::getIntakeCode, c -> c));

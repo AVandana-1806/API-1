@@ -495,7 +495,7 @@ public class ClientAddressServiceTest {
     Set<Address> savedAddresses = particpant.getAddresses();
     Iterator<Address> it = savedAddresses.iterator();
     Address updatedAddress = it.next();
-    verify(addressService, times(1)).update(any(), any());
+    verify(addressService, times(0)).update(any(), any());
     assertThat(updatedAddress.getLegacyId(), is(equalTo("ABC0987654")));
     assertThat(updatedAddress.getCity(), is(equalTo("fremont")));
   }
@@ -574,10 +574,10 @@ public class ClientAddressServiceTest {
     Set<Address> savedAddresses = particpant.getAddresses();
     Iterator<Address> it = savedAddresses.iterator();
     Address updatedAddress = it.next();
-    verify(addressService, times(1)).update(any(), any());
+    verify(addressService, times(0)).update(any(), any());
     assertThat(updatedAddress.getLegacyId(), is(equalTo("ABC0987654")));
     assertThat(updatedAddress.getCity(), is(equalTo("fremont")));
-    verify(clientAddressDao, times(1)).create(any());
+    verify(clientAddressDao, times(0)).create(any());
   }
 
 }

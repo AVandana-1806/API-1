@@ -64,6 +64,11 @@ public class ScreeningRelationshipBase extends ReportingDomain
   @ApiModelProperty(value = "This indicates the legacy ID of relationship", example = "A1b2x")
   private String legacyId;
 
+  @JsonProperty("reversed")
+  @ApiModelProperty(value = "If is reversed - related participant ID is Primary client ",
+      example = "true")
+  private boolean reversed;
+
   public String getLegacyId() {
     return legacyId;
   }
@@ -128,6 +133,14 @@ public class ScreeningRelationshipBase extends ReportingDomain
     this.startDate = Optional.ofNullable(startDate).map(Date::getTime).map(Date::new).orElse(null);
   }
 
+  public boolean isReversed() {
+    return reversed;
+  }
+
+  public void setReversed(boolean reversed) {
+    this.reversed = reversed;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -149,6 +162,7 @@ public class ScreeningRelationshipBase extends ReportingDomain
         .append(startDate, that.startDate)
         .append(endDate, that.endDate)
         .append(legacyId, that.legacyId)
+        .append(reversed, that.reversed)
         .isEquals();
   }
 
@@ -163,6 +177,7 @@ public class ScreeningRelationshipBase extends ReportingDomain
         .append(startDate)
         .append(endDate)
         .append(legacyId)
+        .append(reversed)
         .toHashCode();
   }
 }

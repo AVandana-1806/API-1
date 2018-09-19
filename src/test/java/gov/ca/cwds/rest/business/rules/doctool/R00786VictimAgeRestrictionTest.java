@@ -22,6 +22,8 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.business.rules.R00786VictimAgeRestriction;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
+import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 
 /**
  * Unit tests for R00786VictimAgeRestriction rule.
@@ -42,6 +44,7 @@ public class R00786VictimAgeRestrictionTest {
    */
   @Before
   public void setup() {
+    new TestingRequestExecutionContext("0X5");
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
   }
@@ -226,14 +229,15 @@ public class R00786VictimAgeRestrictionTest {
    */
   private void validateVictimAge(int victimAgeYears, int overAgeDays, int underAgeDays,
       int expectedViolations) {
-    String screeningStartedAt = "2017-01-01T00:00:00.000Z";
-    DateTime screeningStartedAtDateTime =
-        new DateTime(DomainChef.uncookDateString(screeningStartedAt));
+    String requestStartTime =
+        DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
+    DateTime referralToBeCreatedAtDateTime =
+        new DateTime(DomainChef.uncookDateString(requestStartTime));
 
     ScreeningToReferralResourceBuilder builder = new ScreeningToReferralResourceBuilder();
-    builder.setStartedAt(screeningStartedAt);
+    builder.setStartedAt(requestStartTime);
 
-    String victimDob = DomainChef.cookDate(screeningStartedAtDateTime.minusYears(victimAgeYears)
+    String victimDob = DomainChef.cookDate(referralToBeCreatedAtDateTime.minusYears(victimAgeYears)
         .minusDays(overAgeDays).plusDays(underAgeDays).toDate());
     Participant victim = new ParticipantResourceBuilder().setGender("M").setDateOfBirth(victimDob)
         .createVictimParticipant();
