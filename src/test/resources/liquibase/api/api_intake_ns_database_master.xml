@@ -54,6 +54,7 @@
   <include file="data/safely_surr_babies_data.xml" relativeToChangelogFile="true"/>
   <include file="data/relationships_data.xml" relativeToChangelogFile="true"/>
   <include file="data/contact_data.xml" relativeToChangelogFile="true"/>
+  <include file="data/h2_sort_order.xml" relativeToChangelogFile="true"/>
   <include file="data/intake_lov_code_data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
