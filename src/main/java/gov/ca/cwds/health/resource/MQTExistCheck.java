@@ -52,7 +52,10 @@ public class MQTExistCheck implements Pingable {
       stmt.setQueryTimeout(60);
 
       try (final ResultSet rs = stmt.executeQuery()) {
-        count = rs.getInt(1);
+        while (rs.next()) {
+          count = rs.getInt(1);
+        }
+        
         if (count < 1) {
           ok = false;
           message = "MQT_CLIENT_ADDRESS does not exists in schema " + schema;
