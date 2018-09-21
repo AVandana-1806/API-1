@@ -13,15 +13,15 @@ import gov.ca.cwds.inject.CmsSessionFactory;
 /**
  * @author CWDS API Team
  */
-public class DbNsPermissionCheck implements Pingable {
+public class DbCmsPermissionCheck implements Pingable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DbNsPermissionCheck.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DbCmsPermissionCheck.class);
 
   private SessionFactory sessionFactory;
   private String message;
 
   @Inject
-  DbNsPermissionCheck(@CmsSessionFactory SessionFactory sessionFactory) {
+  DbCmsPermissionCheck(@CmsSessionFactory SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 
@@ -33,7 +33,7 @@ public class DbNsPermissionCheck implements Pingable {
           session.createNativeQuery("SELECT 1 FROM CLIENT_T FETCH FIRST ROW ONLY WITH UR");
       if (query.list().get(0) == null) {
         permissionOk = false;
-        message = "Unable to retrieve test query";
+        message = "Unable to retrieve from CLIENT_T";
       }
     } catch (Exception e) {
       permissionOk = false;

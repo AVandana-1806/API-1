@@ -79,6 +79,7 @@ public final class Api {
     public static final String TRIGGER_STATUS = "triggers";
     public static final String SP_GENCLNCNTY_STATUS = "client_county";
     public static final String SP_SPSSANAME3_STATUS = "spssaname3";
+    public static final String DB_CMS_PERMISSION_STATUS = "db_cms_permissions";
 
     private HealthCheck() {}
   }

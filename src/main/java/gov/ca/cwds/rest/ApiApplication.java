@@ -4,21 +4,18 @@ import java.io.File;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
-
 import javax.servlet.DispatcherType;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.codahale.metrics.servlets.AdminServlet;
 import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
+import gov.ca.cwds.health.DbCmsPermissionHealthCheck;
 import gov.ca.cwds.health.IntakeCodeCacheHealthCheck;
 import gov.ca.cwds.health.LovHealthCheck;
 import gov.ca.cwds.health.MQTHealthCheck;
@@ -30,6 +27,7 @@ import gov.ca.cwds.health.SystemCodeHealthCheck;
 import gov.ca.cwds.health.TriggerHealthCheck;
 import gov.ca.cwds.health.ViewsHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
+import gov.ca.cwds.health.resource.DbCmsPermissionCheck;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
 import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
@@ -174,6 +172,11 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
     environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
         spSpssaname3HealthCheck);
+    
+//    final DbCmsPermissionHealthCheck dbCmsPermissionHealthCheck =
+//        new DbCmsPermissionHealthCheck(injector.getInstance(DbCmsPermissionCheck.class));
+//    environment.healthChecks().register(Api.HealthCheck.DB_CMS_PERMISSION_STATUS,
+//        dbCmsPermissionHealthCheck);
 
     final SwaggerHealthCheck swaggerHealthCheck =
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
