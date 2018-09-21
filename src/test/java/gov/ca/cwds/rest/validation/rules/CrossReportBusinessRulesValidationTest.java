@@ -108,10 +108,6 @@ public class CrossReportBusinessRulesValidationTest {
         droolsService.performBusinessRules(CrossReportDroolsConfiguration.INSTANCE,
             crossReport, screeningToReferral);
 
-    assertEquals(1, issueDetailsList.size());
-    IssueDetails issueDetails = issueDetailsList.iterator().next();
-    assertEquals("cross-report-rules", issueDetails.getCode());
-    assertEquals("Cross Report reported on date cannot be null",
-        issueDetails.getUserMessage());
+    assertEquals(0, issueDetailsList.size());
   }
 }

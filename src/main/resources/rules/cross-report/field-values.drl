@@ -7,18 +7,6 @@ import gov.ca.cwds.CWSDateTime
 
 global java.util.Set validationDetailsList
 
-rule "inform date cannot be null"
-  dialect "mvel"
-  agenda-group "cross-report-agenda"
-  when
-      CrossReport(informDate == null)
-  then
-    IssueDetails details = new IssueDetails();
-    details.setCode("cross-report-rules");
-    details.setUserMessage("Cross Report reported on date cannot be null");
-    validationDetailsList.add(details);
-end
-
 rule "inform date cannot be in future"
   dialect "mvel"
   agenda-group "cross-report-agenda"
