@@ -57,10 +57,11 @@ public class TriggerExistCheck implements Pingable {
   private boolean checkIfTriggerExist(Connection con, String schema, String triggerName) {
     boolean ok = true;
     int count = 0;
-    final String sql = "SELECT count(*) FROM SYSIBM.SYSTRIGGERS WHERE SCHEMA = '" + schema + "'"
-        + "AND NAME = '" + triggerName + "' WITH UR";
+    final String sql = "SELECT count(*) FROM SYSIBM.SYSTRIGGERS WHERE SCHEMA = ? AND NAME = ? WITH UR";
 
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setString(1, schema);
+      stmt.setString(2, triggerName);
       stmt.setMaxRows(1);
       stmt.setQueryTimeout(60);
 

@@ -43,10 +43,10 @@ public class SpGenclncntyExistCheck implements Pingable {
   private boolean checkIfProcedureExists(Connection con, String schema) {
     boolean ok = true;
     int count = 0;
-    final String sql =
-        "SELECT COUNT(*) FROM SYSIBM.SYSROUTINES WHERE ROUTINENAME = 'GENCLNCNTY' AND ROUTINESCHEMA = '"
-            + schema + "' WITH UR";
+    final String sql = 
+        "SELECT COUNT(*) FROM SYSIBM.SYSROUTINES WHERE NAME = 'GENCLNCNTY' AND SCHEMA = ? WITH UR";
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setString(1, schema);
       stmt.setMaxRows(1);
       stmt.setQueryTimeout(60);
 

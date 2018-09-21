@@ -46,9 +46,9 @@ public class ViewExistCheck implements Pingable {
     boolean ok = true;
     int count = 0;
     final String sql =
-        "SELECT COUNT(*) FROM SYSIBM.SYSTABLES WHERE NAME = 'VW_LST_CLIENT_ADDRESS' AND TYPE = 'V' AND CREATOR = "
-            + schema;
+        "SELECT COUNT(*) FROM SYSIBM.SYSTABLES WHERE NAME = 'VW_LST_CLIENT_ADDRESS' AND TYPE = 'V' AND CREATOR = ? WITH UR";
     try (final PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setString(1, schema);
       stmt.setMaxRows(10);
       stmt.setQueryTimeout(60);
 
