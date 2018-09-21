@@ -691,8 +691,8 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("clear()");
     logStack("clear()");
     if (session != null) {
-      final Transaction txn = session.getTransaction();
-      if (txn != null && txn.isActive()) {
+      final Transaction transaction = session.getTransaction();
+      if (transaction != null && transaction.isActive()) {
         session.clear();
       }
     }
