@@ -56,7 +56,7 @@ public class SpGenclncntyExistCheck implements Pingable {
         }
         if (count < 1) {
           ok = false;
-          message = "Procedure GENCLNCNTY does not exists in the schema";
+          message = "Procedure GENCLNCNTY does not exists in schema " + schema;
         }
       }
     } catch (Exception e) {

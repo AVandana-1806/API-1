@@ -55,7 +55,7 @@ public class MQTExistCheck implements Pingable {
         count = rs.getInt(1);
         if (count < 1) {
           ok = false;
-          message = "MQT_CLIENT_ADDRESS does not exists in replicated schema";
+          message = "MQT_CLIENT_ADDRESS does not exists in schema " + schema;
         }
       }
       con.commit();

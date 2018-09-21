@@ -4,7 +4,7 @@ import gov.ca.cwds.health.resource.Pingable;
 
 public class TriggerHealthCheck extends PingableResourceHealthCheck {
 
-  private static final String ERROR_MESSAGE = "Trigger does not exists in the replicated schema";
+  private static final String ERROR_MESSAGE = "Trigger check error";
 
   public TriggerHealthCheck(Pingable resource) {
     super(resource, ERROR_MESSAGE);

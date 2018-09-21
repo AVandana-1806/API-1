@@ -74,11 +74,11 @@ public final class Api {
     public static final String SYSTEM_CODES_STATUS = "system_code";
     public static final String INTAKE_LOV_CODE_CACHE_STATUS = "lov_code_cache";
     public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
-    public static final String MQT_STATUS = "mqt_stat";
-    public static final String VIEW_STATUS = "view_stat";
-    public static final String TRIGGER_STATUS = "trigger_stat";
-    public static final String SP_GENCLNCNTY_STATUS = "genclncnty_stat";
-    public static final String SP_SPSSANAME3_STATUS = "spssaname3_stat";
+    public static final String MQT_STATUS = "mqts";
+    public static final String VIEW_STATUS = "views";
+    public static final String TRIGGER_STATUS = "triggers";
+    public static final String SP_GENCLNCNTY_STATUS = "client_county";
+    public static final String SP_SPSSANAME3_STATUS = "spssaname3";
 
     private HealthCheck() {}
   }

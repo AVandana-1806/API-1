@@ -56,7 +56,7 @@ public class ViewExistCheck implements Pingable {
         count = rs.getInt(1);
         if (count < 1) {
           ok = false;
-          message = "VW_LST_CLIENT_ADDRESS does not exists in replicated schema";
+          message = "VW_LST_CLIENT_ADDRESS does not exists in schema " + schema;
         }
       }
       con.commit();

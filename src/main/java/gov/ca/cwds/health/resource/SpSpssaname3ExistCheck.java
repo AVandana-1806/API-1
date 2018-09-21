@@ -59,7 +59,7 @@ public class SpSpssaname3ExistCheck implements Pingable {
         }
         if (count < 1) {
           ok = false;
-          message = "SPSSANAME3 does not exists in source schema";
+          message = "SPSSANAME3 does not exists in schema " + schema;
         }
       }
     } catch (Exception e) {

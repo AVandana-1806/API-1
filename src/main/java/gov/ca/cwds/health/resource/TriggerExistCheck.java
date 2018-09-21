@@ -70,7 +70,7 @@ public class TriggerExistCheck implements Pingable {
         }
         if (count < 1) {
           ok = false;
-          addMessage("[Database Trigger" + triggerName + "does not exist]");
+          addMessage("[Database trigger " + triggerName + " does not exist in schema " + schema + "]");
         }
       }
     } catch (Exception e) {
