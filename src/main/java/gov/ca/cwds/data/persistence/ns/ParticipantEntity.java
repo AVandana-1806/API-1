@@ -1,8 +1,10 @@
 package gov.ca.cwds.data.persistence.ns;
 
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_PARTICIPANT_IDS;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
@@ -66,6 +68,10 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
     query = "FROM ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID
         + " AND legacyId = :" + PathParam.LEGACY_ID
         + " AND screeningId is null")
+@NamedQuery(name = FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID,
+    query = "FROM ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID)
+@NamedQuery(name = DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID,
+    query = "delete ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID + " and " + PathParam.SCREENING_ID + " is null")
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
@@ -84,6 +90,10 @@ public class ParticipantEntity
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByParticipantsId";
   public static final String FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID =
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findParticipantByRelatedScreeningIdAndLegacyId";
+  public static final String FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID =
+      "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findParticipantsByRelatedScreeningId";
+  public static final String DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID =
+      "gov.ca.cwds.data.persistence.ns.ParticipantEntity.deleteParticipantsByRelatedScreeningId";
 
   @Id
   @Column(name = "id")

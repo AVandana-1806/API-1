@@ -43,7 +43,6 @@ public class ScreeningParticipantResourceIRT extends IntakeBaseTest {
 
     System.out.println(actualJson);
     JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
-
     doDeleteCall(RESOURCE_SCREENINGS + "/36/" + RESOURCE_PARTICIPANTS + "/" + participant.getId());
   }
 

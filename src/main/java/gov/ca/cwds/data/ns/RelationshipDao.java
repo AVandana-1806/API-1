@@ -1,9 +1,14 @@
 package gov.ca.cwds.data.ns;
 
+import static gov.ca.cwds.data.persistence.ns.Relationship.DELETE_RELATIONSHIPS_BY_SCREENING_ID;
+import static gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator.readOnlyQuery;
+
+import gov.ca.cwds.rest.core.Api.PathParam;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -44,4 +49,17 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
     }
     return result;
   }
+
+  public void deleteRelationshipsByScreeningId(String screeningId) {
+    if (StringUtils.isEmpty(screeningId)) {
+      return;
+    }
+
+    @SuppressWarnings("unchecked") final Query<Relationship> query =
+        grabSession().getNamedQuery(DELETE_RELATIONSHIPS_BY_SCREENING_ID)
+            .setParameter(PathParam.SCREENING_ID, screeningId);
+    readOnlyQuery(query);
+    query.executeUpdate();
+  }
+
 }

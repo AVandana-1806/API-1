@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import gov.ca.cwds.data.ns.RelationshipDao;
+import gov.ca.cwds.data.persistence.ns.Relationship;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,6 +100,9 @@ public class ParticipantService implements
   @Inject
   private ParticipantTransformer participantTransformer;
 
+  @Inject
+  private RelationshipFacade relationshipFacade;
+
   /**
    * {@inheritDoc}
    *
@@ -175,6 +181,8 @@ public class ParticipantService implements
       return null;
     }
 
+//    relationshipFacade.deleteParticipantsAndRelationships(participantId, screeningId);
+
     // Delete all allegations for this participant
     allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
         .map(AllegationEntity::getId).collect(Collectors.toList()));
@@ -198,7 +206,6 @@ public class ParticipantService implements
 
     return new ParticipantIntakeApi(participantEntity);
   }
-
 
   /**
    * {@inheritDoc}

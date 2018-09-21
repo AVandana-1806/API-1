@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import gov.ca.cwds.rest.util.ConcurrencyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -167,6 +173,31 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       participantDao.getSessionFactory().getCurrentSession().flush();
     }
     return result;
+  }
+
+  @Override
+  public void deleteParticipantsAndRelationships(String participantId, String screeningId)
+      throws ExecutionException, InterruptedException {
+    ExecutorService executor = Executors.newFixedThreadPool(2);
+    Future<Set<ParticipantEntity>> task1 = executor.submit(() -> participantDao
+        .findByRelatedScreeningId(screeningId));
+    Future<List<Relationship>> task2 = executor
+        .submit(() -> nsRelationshipDao.getRelationshipsByScreeningId(screeningId));
+    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
+
+    Set<ParticipantEntity> deletedParticipants = task1.get();
+    List<Relationship> deletedRelationships = task2.get();
+
+    executor.execute(() -> participantDao
+        .deleteParticipantsByRelatedScreningIdWithNullableScreeningId(screeningId));
+    executor.execute(() -> nsRelationshipDao.deleteRelationshipsByScreeningId(screeningId));
+    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
+
+    // достаем новые релейшены
+    Future<Set<ScreeningRelationship>> allRelationships = executor
+        .submit(() -> fromResponse(getRelationshipsByScreeningId(screeningId)));
+
+    // обновляем их по легаси ID и добавляем те у кого нет легаси id
   }
 
   private ScreeningRelationship enrichReversedRelationship(ScreeningRelationship relationship) {
@@ -370,7 +401,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .filter(e -> e.getClientId().equals(participant.getId())
             && e.getRelativeId().equals(relatedCandidate.getId())
             || e.getClientId().equals(relatedCandidate.getId())
-                && e.getRelativeId().equals(participant.getId()))
+            && e.getRelativeId().equals(participant.getId()))
         .findFirst();
     return existingRelationshiop.isPresent();
   }

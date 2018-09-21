@@ -1,11 +1,14 @@
 package gov.ca.cwds.data.ns;
 
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANT_BY_RELATED_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator.readOnlyQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
@@ -121,7 +125,7 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
   /**
    * @param screeningId screening id
    * @param legacyId client legacy identifier
-   * @return Participant that has been create in scope of screening (related_screening_id) but has
+   * @return Participant that has been created in scope of screening (related_screening_id) but has
    * not been attached
    */
   public ParticipantEntity findByRelatedScreeningIdAndLegacyId(String screeningId,
@@ -132,6 +136,39 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
         .setParameter(PathParam.LEGACY_ID, legacyId);
     readOnlyQuery(query);
     return query.uniqueResult();
+  }
+
+  /**
+   *
+   * @param relatedScreeningId screening id where Participant has been added
+   * @return Participant that has been created in scope of screening (related_screening_id)
+   */
+  public Set<ParticipantEntity> findByRelatedScreeningId(String relatedScreeningId) {
+    if (StringUtils.isEmpty(relatedScreeningId)) {
+      return new HashSet<>();
+    }
+
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
+        grabSession().getNamedQuery(FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID)
+            .setParameter(PathParam.RELATED_SCREENING_ID, relatedScreeningId);
+    readOnlyQuery(query);
+    return Collections.unmodifiableSet(new HashSet<>(query.list()));
+  }
+
+  /**
+   * Delete all participants where screening_id is null
+   * @param relatedScreeningId relatedScreeningId
+   */
+  public void deleteParticipantsByRelatedScreningIdWithNullableScreeningId(String relatedScreeningId) {
+    if (StringUtils.isEmpty(relatedScreeningId)) {
+      return;
+    }
+
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
+        grabSession().getNamedQuery(DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID)
+            .setParameter(PathParam.RELATED_SCREENING_ID, relatedScreeningId);
+    readOnlyQuery(query);
+    query.executeUpdate();
   }
 
 }
