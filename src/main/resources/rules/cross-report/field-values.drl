@@ -1,0 +1,48 @@
+import gov.ca.cwds.rest.api.domain.CrossReport
+import gov.ca.cwds.rest.api.domain.ScreeningToReferral
+import gov.ca.cwds.rest.exception.IssueDetails
+import org.apache.commons.lang3.time.DateUtils
+import java.util.Date
+import gov.ca.cwds.CWSDateTime
+
+global java.util.Set validationDetailsList
+
+rule "inform date cannot be null"
+  dialect "mvel"
+  agenda-group "cross-report-agenda"
+  when
+      CrossReport(informDate == null)
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("cross-report-rules");
+    details.setUserMessage("Cross Report reported on date cannot be null");
+    validationDetailsList.add(details);
+end
+
+rule "inform date cannot be in future"
+  dialect "mvel"
+  agenda-group "cross-report-agenda"
+  when
+      $crossReport: CrossReport(informDate != null)
+      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT) > new Date())
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("cross-report-rules");
+    details.setUserMessage("Cross Report reported on date cannot be in future");
+    validationDetailsList.add(details);
+end
+
+rule "inform date cannot be before screening start date"
+  dialect "mvel"
+  agenda-group "cross-report-agenda"
+  when
+      $crossReport: CrossReport(informDate != null)
+      $screeningToReferral: ScreeningToReferral(startedAt != null)
+      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT) <
+        DateUtils.parseDate($screeningToReferral.startedAt, CWSDateTime.TIMESTAMP_ISO8601_FORMAT))
+  then
+    IssueDetails details = new IssueDetails();
+    details.setCode("cross-report-rules");
+    details.setUserMessage("Cross Report reported on date cannot be before Screening start date");
+    validationDetailsList.add(details);
+end

@@ -2,6 +2,9 @@ package gov.ca.cwds.rest.services;
 
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
 
+import gov.ca.cwds.drools.DroolsService;
+import gov.ca.cwds.rest.business.rules.CrossReportDroolsConfiguration;
+import gov.ca.cwds.rest.exception.IssueDetails;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +67,9 @@ public class ScreeningToReferralService implements CrudsService {
 
   private Validator validator;
   private MessageBuilder messageBuilder;
+
+  @Inject
+  private DroolsService droolsService;
 
   private ReferralService referralService;
   private AllegationService allegationService;
@@ -334,6 +340,12 @@ public class ScreeningToReferralService implements CrudsService {
       CrossReport crossReport, Boolean outStateLawEnforcementIndicator,
       String outStateLawEnforcementAddr) {
 
+    Set<IssueDetails> detailsList = droolsService.performBusinessRules(
+        CrossReportDroolsConfiguration.INSTANCE, crossReport, screeningToReferral);
+    if (!detailsList.isEmpty()) {
+      throw new BusinessValidationException(detailsList);
+    }
+
     if (StringUtils.isBlank(crossReport.getLegacyId())) {
       persistCrossReport(screeningToReferral, referralId, crossReportId, resultCrossReports,
           crossReport, outStateLawEnforcementIndicator, outStateLawEnforcementAddr);
@@ -571,4 +583,7 @@ public class ScreeningToReferralService implements CrudsService {
     this.allegationPerpetratorHistoryService.create(cmsPerpHistory);
   }
 
+  public void setDroolsService(DroolsService droolsService) {
+    this.droolsService = droolsService;
+  }
 }

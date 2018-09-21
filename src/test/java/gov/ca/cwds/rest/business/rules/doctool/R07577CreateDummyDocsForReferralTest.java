@@ -304,6 +304,7 @@ public class R07577CreateDummyDocsForReferralTest {
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   /**
