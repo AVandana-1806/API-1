@@ -1,0 +1,61 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="201809191045_h2_sort_order.xml"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="Intake API" id="h2_intake_lov_codes" dbms="h2">
+        <addColumn tableName="intake_lov_codes">
+            <column name="sort_order" type="INT"/>
+        </addColumn>
+        <addColumn tableName="intake_only_lov_codes">
+            <column name="sort_order" type="INT"/>
+        </addColumn>
+        <dropView viewName="vw_intake_lov" />
+        <createView fullDefinition="false" viewName="vw_intake_lov">
+            SELECT lower((ct.lg_meta)::text) AS lg_meta,
+            lower((ct.intake_type)::text) AS intake_type,
+            par_ct.id AS parent_cat_id,
+            lower((par_ct.intake_type)::text) AS parent_intake_type,
+            cd.lg_sys_id,
+            cd.parent_lg_sys_id AS parent_sys_id,
+            sc.logical_id AS lg_log_id,
+            ct.use_log_id,
+            sc.category_id AS lg_cat_id,
+            trim((sc.description)::text) AS lg_shrt_dsc,
+            trim((sc.sub_category_description)::text) AS lg_lng_dsc,
+            sc.other_code AS lg_oth_cd,
+            cd.intake_code,
+            trim((cd.intake_display)::text) AS intake_display,
+            cd.sort_order
+            FROM ((((intake_lov_categories ct
+            JOIN intake_lov_codes cd ON ((ct.id = cd.cat_id)))
+            JOIN system_codes sc ON ((sc.id = cd.lg_sys_id)))
+            LEFT JOIN intake_lov_codes par_cd ON ((par_cd.lg_sys_id = cd.parent_lg_sys_id)))
+            LEFT JOIN intake_lov_categories par_ct ON ((par_ct.id = ct.parent_cat_id)))
+            WHERE (cd.omit_ind = false)
+            UNION ALL
+            SELECT NULL::text AS lg_meta,
+            ict.intake_type,
+            NULL::bigint AS parent_cat_id,
+            NULL::text AS parent_intake_type,
+            NULL::integer AS lg_sys_id,
+            NULL::integer AS parent_sys_id,
+            icd.intake_code AS lg_log_id,
+            true AS use_log_id,
+            NULL::character varying AS lg_cat_id,
+            NULL::text AS lg_shrt_dsc,
+            NULL::text AS lg_lng_dsc,
+            NULL::character varying AS lg_oth_cd,
+            icd.intake_code,
+            icd.intake_display,
+            icd.sort_order
+            FROM (intake_only_lov_categories ict
+            JOIN intake_only_lov_codes icd ON ((ict.id = icd.cat_id)))
+            WHERE (icd.omit_ind = false);
+        </createView>
+    </changeSet>
+
+
+</databaseChangeLog>

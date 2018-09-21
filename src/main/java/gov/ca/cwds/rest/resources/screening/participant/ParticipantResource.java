@@ -165,4 +165,11 @@ public class ParticipantResource {
         participant);
   }
 
+  public void setResourceDelegate(
+      TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate) {
+    this.resourceDelegate = resourceDelegate;
+  }
+
+
+
 }

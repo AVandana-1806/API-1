@@ -18,7 +18,7 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
  * @author CWDS API Team
  */
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.IntakeLov.findAll",
-    query = "FROM IntakeLov ORDER BY intakeType, intakeCode")
+    query = "FROM IntakeLov ORDER BY intakeType, sortOrder, intakeCode")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.IntakeLov.findByLegacyCategoryId",
     query = "FROM IntakeLov WHERE legacyCategoryId = :legacyCategoryId ORDER BY intakeType, intakeCode")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.ns.IntakeLov.findByLegacySystemId",
@@ -56,6 +56,9 @@ public class IntakeLov extends ApiObjectIdentity implements PersistentObject {
 
   @Column(name = "LG_OTH_CD")
   private String legacyOtherCode;
+
+  @Column(name = "sort_order")
+  private String sortOrder;
 
   @Column(name = "LG_LNG_DSC")
   @ColumnTransformer(read = "trim(LG_LNG_DSC)")
@@ -243,4 +246,11 @@ public class IntakeLov extends ApiObjectIdentity implements PersistentObject {
     this.parentIntakeType = parentIntakeType;
   }
 
+  public String getSortOrder() {
+    return sortOrder;
+  }
+
+  public void setSortOrder(String sortOrder) {
+    this.sortOrder = sortOrder;
+  }
 }

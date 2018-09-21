@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.CrudsDao;
+import gov.ca.cwds.data.cms.ClientDao;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -22,7 +23,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryIm
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- *
+ * 
  * @author CWDS API Team
  */
 public class ParticipantTransformer {
@@ -37,6 +38,9 @@ public class ParticipantTransformer {
 
   @Inject
   private ParticipantMapperFactoryImpl<CmsPersistentObject> participantMapperFactoryImpl;
+
+  @Inject
+  private ClientDao clientDao;
 
   public ParticipantIntakeApi prepareParticipantObject(
       ParticipantIntakeApi incomingParticipantIntakeApi) {
@@ -54,6 +58,7 @@ public class ParticipantTransformer {
       participantIntakeApi =
           transformParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
+      participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
       return participantIntakeApi;
     } else {
       return incomingParticipantIntakeApi;
@@ -84,11 +89,25 @@ public class ParticipantTransformer {
     }
   }
 
+
+  private Boolean isProbationYouth(String clientId) {
+    return clientDao.findProbationYouth(clientId) != null;
+  }
+
+
   /**
    * @param screeningDao - screeningDao
    */
   public void setScreeningDao(ScreeningDao screeningDao) {
     this.screeningDao = screeningDao;
+  }
+
+
+  /**
+   * @param clientDao - clientDao
+   */
+  public void setClientDao(ClientDao clientDao) {
+    this.clientDao = clientDao;
   }
 
   /**
