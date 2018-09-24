@@ -15,6 +15,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.drools.DroolsService;
+import gov.ca.cwds.rest.business.rules.CrossReportDroolsConfiguration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -310,6 +312,7 @@ public class ScreeningToReferralServiceTest {
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);
 
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   @SuppressWarnings("javadoc")
@@ -324,15 +327,20 @@ public class ScreeningToReferralServiceTest {
     screeningToReferralService.delete(new Long(1));
   }
 
-  @SuppressWarnings("javadoc")
-  @Test
-  public void shouldReturnPostedCmsReferralWhenSaveIsSuccessfull() throws Exception {
+  @Test(expected = BusinessValidationException.class)
+  public void shouldThrowBusinessValidationExceptionInCaseOfIssueDetails() throws Exception {
     ScreeningToReferral screeningToReferral = defaultReferralBuilder.createScreeningToReferral();
     mockParticipantToLegacyClient(screeningToReferral);
 
-    Response response = screeningToReferralService.create(screeningToReferral);
+    DroolsService droolsService = mock(DroolsService.class);
+    Set<IssueDetails> issueDetailsList = new HashSet<>();
+    issueDetailsList.add(new IssueDetails());
+    when(droolsService.performBusinessRules(any(CrossReportDroolsConfiguration.class),
+        any(gov.ca.cwds.rest.api.domain.CrossReport.class), any(ScreeningToReferral.class))).
+        thenReturn(issueDetailsList);
 
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    screeningToReferralService.setDroolsService(droolsService);
+    screeningToReferralService.create(screeningToReferral);
   }
 
 
@@ -357,6 +365,7 @@ public class ScreeningToReferralServiceTest {
     screeningToReferralService =
         new MockedScreeningToReferralServiceBuilder().addParticipantToLegacyClient(participantToLegacyClient)
             .addClientService(clientService).createScreeningToReferralService();
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
 
     Participant victim =
         new ParticipantResourceBuilder().setLegacyId(victimClientLegacyId).createParticipant();
@@ -607,6 +616,7 @@ public class ScreeningToReferralServiceTest {
 
     screeningToReferralService = new MockedScreeningToReferralServiceBuilder()
         .addParticipantToLegacyClient(participantToLegacyClient).createScreeningToReferralService();
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
 
     mockParticipantToLegacyClient(referral);
 
@@ -619,6 +629,7 @@ public class ScreeningToReferralServiceTest {
   public void testMultipleAddressPerParticipantSuccess() throws Exception {
     screeningToReferralService = new MockedScreeningToReferralServiceBuilder()
         .addParticipantToLegacyClient(participantToLegacyClient).createScreeningToReferralService();
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
 
     gov.ca.cwds.rest.api.domain.Address address1 =
         new AddressResourceBuilder().setStreetAddress("123 First St").createAddress();
@@ -696,6 +707,7 @@ public class ScreeningToReferralServiceTest {
 
     screeningToReferralService = new MockedScreeningToReferralServiceBuilder()
         .addParticipantToLegacyClient(participantToLegacyClient).createScreeningToReferralService();
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
 
     mockParticipantToLegacyClient(referral);
 
@@ -1301,6 +1313,7 @@ public class ScreeningToReferralServiceTest {
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
 
     mockParticipantToLegacyClient(screeningToReferral);
 

@@ -285,6 +285,7 @@ public class R00797SensitiveReferralAssignmentTest {
         crossReportService, participantToLegacyClient, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
         governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   /**

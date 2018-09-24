@@ -11,7 +11,7 @@ public class ReferralAddressDroolsConfiguration extends DroolsConfiguration<Addr
 
   public static final ReferralAddressDroolsConfiguration DATA_PROCESSING_INSTANCE =
       new ReferralAddressDroolsConfiguration("referrals-address-session",
-          "referrals-address-data-processing-agenda", "referral-address-rules");
+          "referrals-address-data-processing-agenda", "rules/referral-address");
 
   private ReferralAddressDroolsConfiguration(String rulesSession, String rulesAgenda,
       String kieContainerId) {
