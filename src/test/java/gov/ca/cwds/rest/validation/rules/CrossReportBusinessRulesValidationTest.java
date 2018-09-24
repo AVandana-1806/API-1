@@ -28,9 +28,19 @@ public class CrossReportBusinessRulesValidationTest {
   }
 
   @Test
+  public void testThatActualDateStringIsParsedSuccessfully() {
+    String date = "2018-09-28T11:09:27.000";
+
+    CrossReport crossReport = new CrossReport();
+    crossReport.setInformDate(date);
+    droolsService.performBusinessRules(CrossReportDroolsConfiguration.INSTANCE,
+            crossReport, new ScreeningToReferral());
+  }
+
+  @Test
   public void crossReportReportedOnDate() {
     Date now = new Date();
-    String nowString = DateFormatUtils.format(now, CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+    String nowString = DateFormatUtils.format(now, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
     CrossReport crossReport = new CrossReport();
     crossReport.setInformDate(nowString);
 
@@ -48,12 +58,12 @@ public class CrossReportBusinessRulesValidationTest {
   public void crossReportReportedOnDate_inFuture() {
     Date now = new Date();
     String nowString = DateFormatUtils.format(now.getTime(),
-        CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
 
     Calendar instance = Calendar.getInstance();
     instance.add(Calendar.DATE, 1);
     String futureString = DateFormatUtils.format(instance.getTime(),
-        CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
 
     CrossReport crossReport = new CrossReport();
     crossReport.setInformDate(futureString);
@@ -75,7 +85,8 @@ public class CrossReportBusinessRulesValidationTest {
   @Test
   public void crossReportReportedOnDate_beforeScreeningStartDate() {
     Date now = new Date();
-    String nowString = DateFormatUtils.format(now.getTime(), CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+    String nowString = DateFormatUtils.format(now.getTime(),
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
 
     CrossReport crossReport = new CrossReport();
     crossReport.setInformDate(nowString);
@@ -83,7 +94,7 @@ public class CrossReportBusinessRulesValidationTest {
     Calendar instance = Calendar.getInstance();
     instance.add(Calendar.DATE, 1);
     String futureString = DateFormatUtils.format(instance.getTime(),
-        CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
 
     ScreeningToReferral screeningToReferral = new ScreeningToReferral();
     screeningToReferral.setStartedAt(futureString);

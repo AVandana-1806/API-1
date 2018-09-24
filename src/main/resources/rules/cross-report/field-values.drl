@@ -12,7 +12,7 @@ rule "inform date cannot be in future"
   agenda-group "cross-report-agenda"
   when
       $crossReport: CrossReport(informDate != null)
-      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT) > new Date())
+      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING) > new Date())
   then
     IssueDetails details = new IssueDetails();
     details.setCode("cross-report-rules");
@@ -26,8 +26,8 @@ rule "inform date cannot be before screening start date"
   when
       $crossReport: CrossReport(informDate != null)
       $screeningToReferral: ScreeningToReferral(startedAt != null)
-      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT) <
-        DateUtils.parseDate($screeningToReferral.startedAt, CWSDateTime.TIMESTAMP_ISO8601_FORMAT))
+      eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING) <
+        DateUtils.parseDate($screeningToReferral.startedAt, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING))
   then
     IssueDetails details = new IssueDetails();
     details.setCode("cross-report-rules");
