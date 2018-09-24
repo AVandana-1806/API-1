@@ -227,12 +227,7 @@ public class ClientAddressService implements
           address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
           address.setLegacyId(addressId);
         }        
-      } else {
-        //
-        // At this time, we don't update addresses (September 17, 2018)
-        //
-        //addressId = updateExistingAddress(messageBuilder, addressId, address, domainAddress);              
-      }      
+      }
     }
 
     return clientParticipant;

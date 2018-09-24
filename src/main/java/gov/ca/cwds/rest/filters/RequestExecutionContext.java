@@ -136,14 +136,6 @@ public interface RequestExecutionContext extends ApiMarker {
   String getRequestId();
 
   /**
-   * Refresh if created for another thread or user, which could happen for non-HTTP requests, such
-   * as health checks.
-   * 
-   * @param nonWebUser user id for health checks or batch operations
-   */
-  // void remakeIfNotOwner(String nonWebUser, String staffId);
-
-  /**
    * Get the message builder for warnings and errors for this request.
    * 
    * @return message builder for warnings and errors
