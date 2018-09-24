@@ -28,7 +28,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  */
 public class VictimBirthTest extends FunctionalTest {
   String referralPath;
-  private HttpRequestHandler functionalTestingBuilder;
+  private HttpRequestHandler functionalTestBuilder;
 
   /**
    * 
@@ -36,7 +36,7 @@ public class VictimBirthTest extends FunctionalTest {
   @Before
   public void setup() {
     referralPath = getResourceUrlFor(ResourceEndPoint.REFERRALS.getResourcePath());
-    functionalTestingBuilder = new HttpRequestHandler();
+    functionalTestBuilder = new HttpRequestHandler();
   }
 
   /**
@@ -50,7 +50,7 @@ public class VictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    functionalTestBuilder.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
             equalTo("Victim's should have either of the value DOB or approximateAge"))
         .and().statusCode(422);
@@ -67,12 +67,26 @@ public class VictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    functionalTestBuilder.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
             equalTo("Victim's approximateAgeUnits must be set if approximateAge is set"))
         .and().statusCode(422);
   }
 
+  @Test
+  public void shouldReturn422WhenVictimTooOld() {
+    String approximateAge = null;
+    String approximateAgeUnits = null;
+    String dateOfBith = "1994-06-18";
+    ScreeningToReferral referral =
+        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
+    
+    functionalTestBuilder.postRequest(referral, referralPath, token).then()
+    .body("issue_details.user_message[0]",
+        equalTo("Victim's approximateAgeUnits must be set if approximateAge is set"))
+    .and().statusCode(422);    
+    
+  }
   @Test
   public void shouldReturn422WhenDateOfBirthInFuture() {
     LocalDate today = LocalDate.now();
@@ -82,7 +96,7 @@ public class VictimBirthTest extends FunctionalTest {
     String approximateAgeUnits = null;
     ScreeningToReferral referral =
         buildScreeningToReferral(tomrrowString, approximateAge, approximateAgeUnits);
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then()
+    functionalTestBuilder.postRequest(referral, referralPath, token).then()
     .body("issue_details.user_message[0]",
         equalTo("Date of Birth cannot be in the future"))
     .and().statusCode(422);
@@ -101,7 +115,7 @@ public class VictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
+    functionalTestBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
   }
 
@@ -117,7 +131,7 @@ public class VictimBirthTest extends FunctionalTest {
     ScreeningToReferral referral =
         buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
 
-    functionalTestingBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
+    functionalTestBuilder.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
   }
 
