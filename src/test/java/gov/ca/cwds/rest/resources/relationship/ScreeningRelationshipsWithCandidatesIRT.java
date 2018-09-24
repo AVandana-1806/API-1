@@ -175,6 +175,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
           }
 
           assertEquals(optionalRelatedTo.get().getRelationshipId(), relatedTo.getRelationshipId());
+          assertEquals(optionalRelatedTo.get().getEstimatedDob(), relatedTo.getEstimatedDob());
           assertEquals(optionalRelatedTo.get().getRelatedPersonId(),
               relatedTo.getRelatedPersonId());
 
@@ -191,6 +192,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
 
           assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
           assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
+          assertEquals(optionalCandidateTo.get().getEstimatedDob(), candidateTo.getEstimatedDob());
         });
         assertEquals(e.getId(), optional.get().getId());
       }

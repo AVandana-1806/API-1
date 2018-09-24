@@ -168,6 +168,9 @@ public class ParticipantEntity
   @Column(name = "related_screening_id")
   private String relatedScreeningId;
 
+  @Column(name = "estimated_dob")
+  private Boolean estimatedDob;
+
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "participant_id", insertable = false, updatable = false)
   @OrderBy("id")
@@ -218,7 +221,7 @@ public class ParticipantEntity
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
       String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
-      Boolean probationYouth, String approximateAge, String approximateAgeUnits) {
+      Boolean probationYouth, String approximateAge, String approximateAgeUnits, Boolean estimatedDob) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
     this.dateOfDeath = freshDate(dateOfDeath);
@@ -240,6 +243,7 @@ public class ParticipantEntity
     this.sealed = sealed;
     this.approximateAge = approximateAge;
     this.approximateAgeUnits = approximateAgeUnits;
+    this.estimatedDob = estimatedDob;
   }
 
   /**
@@ -493,6 +497,14 @@ public class ParticipantEntity
 
   public void setApproximateAgeUnits(String approximateAgeUnits) {
     this.approximateAgeUnits = approximateAgeUnits;
+  }
+
+  public Boolean getEstimatedDob() {
+    return estimatedDob;
+  }
+
+  public void setEstimatedDob(Boolean estimatedDob) {
+    this.estimatedDob = estimatedDob;
   }
 
   @Override

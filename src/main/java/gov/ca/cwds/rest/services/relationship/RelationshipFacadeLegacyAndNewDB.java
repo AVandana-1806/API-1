@@ -246,7 +246,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .withSealed(screeningParticipant.getSealed())
         .withSensitive(screeningParticipant.getSensitive())
         .withAge(screeningParticipant.getApproximateAge())
-        .withAgeUnit(screeningParticipant.getApproximateAgeUnits()).build();
+        .withAgeUnit(screeningParticipant.getApproximateAgeUnits())
+        .withEstimatedDob(screeningParticipant.getEstimatedDob()).build();
   }
 
   private Set<RelatedTo> getRelatedTo(ParticipantEntity screeningParticipant,
@@ -299,6 +300,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     relatedToBuilder.withRelationshipId(relationship.getId());
     relatedToBuilder.withRelationshipStartDate(relationship.getStartDate());
     relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
+    relatedToBuilder.withEstimatedDob(participantEntity.getEstimatedDob());
 
     final LegacyDescriptorEntity legacyDescriptorEntity =
         participantsLegacyDescriptors.get(participantEntity.getId());
@@ -352,7 +354,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
             .withCandidateFirstName(participant.getFirstName())
             .withCandidateLastName(participant.getLastName())
             .withCandidateMiddleName(participant.getMiddleName())
-            .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId());
+            .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId())
+            .withEstimatedDob(participant.getEstimatedDob());
         candidates.add(builder.build());
       }
     });
@@ -370,7 +373,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .filter(e -> e.getClientId().equals(participant.getId())
             && e.getRelativeId().equals(relatedCandidate.getId())
             || e.getClientId().equals(relatedCandidate.getId())
-                && e.getRelativeId().equals(participant.getId()))
+            && e.getRelativeId().equals(participant.getId()))
         .findFirst();
     return existingRelationshiop.isPresent();
   }
