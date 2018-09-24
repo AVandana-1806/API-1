@@ -71,7 +71,8 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 @NamedQuery(name = FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID,
     query = "FROM ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID)
 @NamedQuery(name = DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID,
-    query = "delete ParticipantEntity WHERE relatedScreeningId = :" + PathParam.RELATED_SCREENING_ID + " and " + PathParam.SCREENING_ID + " is null")
+    query = "delete FROM ParticipantEntity WHERE relatedScreeningId = :"
+        + PathParam.RELATED_SCREENING_ID + " and " + PathParam.SCREENING_ID + " is null")
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
@@ -528,9 +529,5 @@ public class ParticipantEntity
   @Override
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 }

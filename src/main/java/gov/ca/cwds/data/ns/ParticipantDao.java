@@ -167,7 +167,6 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
     @SuppressWarnings("unchecked") final Query<ParticipantEntity> query =
         grabSession().getNamedQuery(DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID)
             .setParameter(PathParam.RELATED_SCREENING_ID, relatedScreeningId);
-    readOnlyQuery(query);
     query.executeUpdate();
   }
 

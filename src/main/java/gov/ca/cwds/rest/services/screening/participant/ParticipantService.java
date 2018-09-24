@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -181,7 +182,13 @@ public class ParticipantService implements
       return null;
     }
 
-//    relationshipFacade.deleteParticipantsAndRelationships(participantId, screeningId);
+    try {
+      relationshipFacade.deleteParticipantsAndRelationships(participantId, screeningId);
+    } catch (ExecutionException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      throw new ServiceException(e.getMessage());
+    }
 
     // Delete all allegations for this participant
     allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()

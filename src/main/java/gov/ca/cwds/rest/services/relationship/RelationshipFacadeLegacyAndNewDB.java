@@ -188,14 +188,19 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     Set<ParticipantEntity> deletedParticipants = task1.get();
     List<Relationship> deletedRelationships = task2.get();
 
-    executor.execute(() -> participantDao
-        .deleteParticipantsByRelatedScreningIdWithNullableScreeningId(screeningId));
-    executor.execute(() -> nsRelationshipDao.deleteRelationshipsByScreeningId(screeningId));
-    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
+    deletedParticipants.forEach(e -> participantDao.delete(e.getId()));
+    deletedRelationships.forEach(e -> nsRelationshipDao.delete(e.getId()));
+
+
+//    executor = Executors.newFixedThreadPool(2);
+//    executor.execute(() -> participantDao
+//        .deleteParticipantsByRelatedScreningIdWithNullableScreeningId(screeningId));
+//    executor.execute(() -> nsRelationshipDao.deleteRelationshipsByRelatedScreeningId(screeningId));
+//    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
 
     // достаем новые релейшены
-    Future<Set<ScreeningRelationship>> allRelationships = executor
-        .submit(() -> fromResponse(getRelationshipsByScreeningId(screeningId)));
+//    Set<ScreeningRelationship> allRelationships = fromResponse(
+//        getRelationshipsByScreeningId(screeningId));
 
     // обновляем их по легаси ID и добавляем те у кого нет легаси id
   }

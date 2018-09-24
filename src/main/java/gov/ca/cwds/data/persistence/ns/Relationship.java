@@ -1,6 +1,6 @@
 package gov.ca.cwds.data.persistence.ns;
 
-import static gov.ca.cwds.data.persistence.ns.Relationship.DELETE_RELATIONSHIPS_BY_SCREENING_ID;
+import static gov.ca.cwds.data.persistence.ns.Relationship.DELETE_RELATIONSHIPS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.Relationship.FIND_RELATIONSHIPS_BY_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.Relationship.FIND_RELATIONSHIPS_BY_SCREENING_ID;
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
@@ -31,10 +31,10 @@ import gov.ca.cwds.data.persistence.PersistentObject;
             + "OR r.participantTo.screeningId = :screeningId")
 @NamedQuery(name = FIND_RELATIONSHIPS_BY_LEGACY_ID,
     query = "FROM gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.legacyId = :legacyId")
-@NamedQuery(name = DELETE_RELATIONSHIPS_BY_SCREENING_ID,
+@NamedQuery(name = DELETE_RELATIONSHIPS_BY_RELATED_SCREENING_ID,
     query =
-        "delete gov.ca.cwds.data.persistence.ns.Relationship r WHERE r.participantFrom.screeningId = :"
-            + PathParam.SCREENING_ID + " or r.participantTo.screeningId = :"
+        "delete from gov.ca.cwds.data.persistence.ns.Relationship WHERE participantFrom.relatedScreeningId = :"
+            + PathParam.SCREENING_ID + " or participantTo.relatedScreeningId = :"
             + PathParam.SCREENING_ID)
 @Entity
 @Table(name = "relationships")
@@ -45,7 +45,7 @@ public class Relationship implements PersistentObject {
       "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByScreeningId";
   public static final String FIND_RELATIONSHIPS_BY_LEGACY_ID =
       "gov.ca.cwds.data.persistence.ns.Relationship.findRelationshipsByLegacyId";
-  public static final String DELETE_RELATIONSHIPS_BY_SCREENING_ID =
+  public static final String DELETE_RELATIONSHIPS_BY_RELATED_SCREENING_ID =
       "gov.ca.cwds.data.persistence.ns.Relationship.deleteRelationshipsByLegacyId";
 
   @Id
