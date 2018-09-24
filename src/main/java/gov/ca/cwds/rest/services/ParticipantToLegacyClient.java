@@ -267,7 +267,17 @@ public class ParticipantToLegacyClient {
     }
     return false;
   }
-
+  
+  /**
+   * <blockquote>
+   * 
+   * <pre>
+   * BUSINESS RULE: R - 06195 Do Not Update Approval Status Type
+   * 
+   *  When creating the REFERRAL_CLIENT entity, set the Approval Status Type = 'Request Not Submitted'. 
+   * </blockquote>
+   * </pre>
+   */
   private ReferralClient processReferralClient(ScreeningToReferral screeningToReferral,
       String referralId, MessageBuilder messageBuilder, Participant incomingParticipant,
       String clientId, String dateStarted) {
