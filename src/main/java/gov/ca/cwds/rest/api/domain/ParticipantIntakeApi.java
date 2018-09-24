@@ -113,7 +113,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   @JsonProperty("estimated_dob")
   @OneOf(value = {"Y", "N", "U"})
-  @ApiModelProperty(required = true, value = "Estimated Date of birth", example = "Y")
+  @ApiModelProperty(value = "Estimated Date of birth", example = "Y")
   private String estimatedDob;
 
   /*
