@@ -13,7 +13,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,12 +28,17 @@ public class CrossReportBusinessRulesValidationTest {
 
   @Test
   public void testThatActualDateStringIsParsedSuccessfully() {
-    String date = "2018-09-28T11:09:27.000";
+    String crossReportDate = "2018-09-24T00:00:00.000";
+    String screeningDate = "2018-09-23T00:00:00.000Z";
 
     CrossReport crossReport = new CrossReport();
-    crossReport.setInformDate(date);
+    crossReport.setInformDate(crossReportDate);
+
+    ScreeningToReferral screeningToReferral = new ScreeningToReferral();
+    screeningToReferral.setStartedAt(screeningDate);
+
     droolsService.performBusinessRules(CrossReportDroolsConfiguration.INSTANCE,
-            crossReport, new ScreeningToReferral());
+            crossReport, screeningToReferral);
   }
 
   @Test
