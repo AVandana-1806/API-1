@@ -11,6 +11,7 @@ import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
+import gov.ca.cwds.rest.api.domain.CrossReport;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import io.restassured.response.Response;
@@ -20,8 +21,19 @@ import io.restassured.response.ResponseBody;
  * @author CWDS API Team
  *
  */
+/**
+ * <blockquote>
+ * 
+ * <pre>
+ * BUSINESS RULE: R - 00797 Sensitive Case Assignment
+ * 
+ *  A Sealed or Sensitive CASE or REFERRAL may be assigned to any Staff Person, whether they 
+ *  have sealed or sensitive authority or not.
+ *  
+ * </blockquote>
+ * </pre>
+ */
 public class SensitveAndSealedReferralAssignment extends FunctionalTest {
-  // R - 00797 
   String referralPath;
   private HttpRequestHandler functionalTestBuilder;
 
@@ -38,7 +50,7 @@ public class SensitveAndSealedReferralAssignment extends FunctionalTest {
   @Test
   public void shouldReturn201WhenPostingSensitiveReferral() {
     ScreeningToReferral referral = buildScreeningToReferral("S");
-    
+
     functionalTestBuilder.postRequest(referral, referralPath, token)
       .then()
       .statusCode(201)
@@ -58,6 +70,7 @@ public class SensitveAndSealedReferralAssignment extends FunctionalTest {
   }
   
   protected ScreeningToReferral buildScreeningToReferral(String limitedAccessCode) {
+    Set<CrossReport> emptyCrossReports = new HashSet();
     Participant victim = new ParticipantResourceBuilder()
         .setLegacyDescriptor(null)
         .createVictimParticipant();
@@ -73,6 +86,7 @@ public class SensitveAndSealedReferralAssignment extends FunctionalTest {
         .setassigneeStaffId(userInfo.getStaffId())
         .setIncidentCounty(userInfo.getIncidentCounty())
         .setParticipants(participants)
+        .setCrossReports(emptyCrossReports)
         .createScreeningToReferral();
     return referral;
   }
