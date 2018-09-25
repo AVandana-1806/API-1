@@ -27,7 +27,7 @@ rule "inform date cannot be before screening start date"
       $crossReport: CrossReport(informDate != null)
       $screeningToReferral: ScreeningToReferral(startedAt != null)
       eval (DateUtils.parseDate($crossReport.informDate, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING) <
-        DateUtils.parseDate($screeningToReferral.startedAt, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING))
+        DateUtils.parseDate($screeningToReferral.startedAt, CWSDateTime.TIMESTAMP_ISO8601_FORMAT))
   then
     IssueDetails details = new IssueDetails();
     details.setCode("cross-report-rules");

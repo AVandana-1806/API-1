@@ -8,6 +8,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 
 @SuppressWarnings("javadoc")
 public class ParticipantEntityBuilder {
+
   public static final String DEFAULT_PERSON_ID = "jhdgfkhaj";
   public static final String DEFAULT_REPORTER_ID = "reporterabc";
 
@@ -32,6 +33,7 @@ public class ParticipantEntityBuilder {
   private Boolean probationYouth;
   private String approximateAge;
   private String approximateAgeUnits;
+  private Boolean estimatedDob;
 
   {
     this.setDateOfBirth("1995-05-12");
@@ -40,7 +42,8 @@ public class ParticipantEntityBuilder {
   public ParticipantEntity build() {
     return new ParticipantEntity(id, dateOfBirth, dateOfDeath, firstName, gender, lastName, ssn,
         screeningEntity, legacyId, roles, languages, middleName, nameSuffix, races, ethnicity,
-        legacySourceTable, sensitive, sealed, probationYouth, approximateAge, approximateAgeUnits);
+        legacySourceTable, sensitive, sealed, probationYouth, approximateAge, approximateAgeUnits,
+        estimatedDob);
   }
 
   public ParticipantEntityBuilder setId(String id) {
@@ -141,6 +144,11 @@ public class ParticipantEntityBuilder {
 
   public ParticipantEntityBuilder setApproximateAgeUnits(String approximateAgeUnits) {
     this.approximateAgeUnits = approximateAgeUnits;
+    return this;
+  }
+
+  public ParticipantEntityBuilder setDateOfBirth(Date dateOfBirth) {
+    this.dateOfBirth = dateOfBirth;
     return this;
   }
 }
