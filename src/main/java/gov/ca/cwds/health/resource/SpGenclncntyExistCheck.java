@@ -31,7 +31,7 @@ public class SpGenclncntyExistCheck implements Pingable {
     boolean ok = true;
 
     try (final Session session = sessionFactory.openSession()) {
-      final String schema = (String) session.getProperties().get("hibernate.default_schema");
+      final String schema = (String) session.getSessionFactory().getProperties().get("hibernate.default_schema");
       final Connection con = CaresHibernateHackersKit.stealConnection(session);
       ok = checkIfProcedureExists(con, schema);
     }
