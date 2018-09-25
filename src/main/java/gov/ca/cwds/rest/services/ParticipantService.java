@@ -295,6 +295,7 @@ public class ParticipantService implements CrudsService {
    * BUSINESS RULE: R - 06195 Do Not Update Approval Status Type
    * 
    *  When creating the REFERRAL_CLIENT entity, set the Approval Status Type = 'Request Not Submitted'. 
+   *  
    * </blockquote>
    * </pre>
    */
