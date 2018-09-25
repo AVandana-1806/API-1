@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
  * Annotations</a>
- * 
+ *
  * @author CWDS API Team
  */
 @Api(value = RESOURCE_SCREENINGS, tags = {RESOURCE_SCREENINGS})
@@ -47,6 +47,7 @@ public class ScreeningParticipantResource {
 
   /**
    * @param typedResourceDelegate - typedResourceDelegate
+   *
    */
   @Inject
   public ScreeningParticipantResource(
@@ -56,10 +57,11 @@ public class ScreeningParticipantResource {
 
   /**
    * Create an {@link ParticipantIntakeApi}.
-   * 
+   *
    * @param id - screening id
    * @param participant - The participant to create
    * @return - The {@link Response}
+   *
    */
   @XAUnitOfWork
   @POST

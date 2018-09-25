@@ -182,7 +182,7 @@ public class ParticipantResourceIRT extends IntakeBaseTest {
     String request = objectMapper.writeValueAsString(
         getDefaultParticipant(getLegacyDescriptor("CLIENT_T", "0000jjj000", "Client")));
     String actualJson = getStringResponse(
-        doPostCall(RESOURCE_SCREENINGS + "/" + screeningId + "/participant", request));
+        doPostCall(RESOURCE_SCREENINGS + "/" + screeningId + "/participants", request));
 
     ParticipantIntakeApi existingParticipant = objectMapper
         .readValue(actualJson, ParticipantIntakeApi.class);
