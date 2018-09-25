@@ -60,17 +60,6 @@ public class ScreeningParticipantService
       throw new ServiceException("Screening is required to create the particpant");
     }
 
-    ParticipantEntity existing = getExistingParticipant(
-        incomingParticipantIntakeApi.getScreeningId(),
-        incomingParticipantIntakeApi.getLegacyDescriptor());
-    if (existing != null) {
-      existing = enrichExistingParticipantWithScreeningId(
-          incomingParticipantIntakeApi.getScreeningId(),
-          existing);
-      participantDao.update(existing);
-      return new ParticipantIntakeApi(existing);
-    }
-
     ensureScreeningExistsAndOpen(incomingParticipantIntakeApi);
     ParticipantIntakeApi participantIntakeApi = null;
     LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
@@ -87,16 +76,6 @@ public class ScreeningParticipantService
     }
   }
 
-  private ParticipantEntity getExistingParticipant(String screeningId,
-      LegacyDescriptor legacyDescriptor) {
-    String legacyId = "";
-    if (legacyDescriptor != null && StringUtils.isNoneEmpty(legacyDescriptor.getId())) {
-      legacyId += legacyDescriptor.getId();
-    }
-    return participantDao
-        .findByRelatedScreeningIdAndLegacyId(screeningId,
-            legacyId);
-  }
 
   private ParticipantIntakeApi createParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
@@ -109,12 +88,6 @@ public class ScreeningParticipantService
       LOGGER.error("Object is not found with the given identifier {}", id);
       throw new ServiceException("");
     }
-  }
-
-  private ParticipantEntity enrichExistingParticipantWithScreeningId(String screeningId,
-      ParticipantEntity existingParticipant) {
-    existingParticipant.setScreeningId(screeningId);
-    return existingParticipant;
   }
 
   private void ensureScreeningExistsAndOpen(ParticipantIntakeApi participantIntakeApi) {
