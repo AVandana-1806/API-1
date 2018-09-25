@@ -597,4 +597,7 @@ public class ParticipantService implements
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
 
+  void setParticipantDao(ParticipantDao participantDao) {
+    this.participantDao = participantDao;
+  }
 }

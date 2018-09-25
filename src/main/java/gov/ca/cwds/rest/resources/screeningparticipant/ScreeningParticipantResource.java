@@ -47,6 +47,7 @@ public class ScreeningParticipantResource {
 
   /**
    * @param typedResourceDelegate - typedResourceDelegate
+   *
    */
   @Inject
   public ScreeningParticipantResource(
@@ -60,6 +61,7 @@ public class ScreeningParticipantResource {
    * @param id - screening id
    * @param participant - The participant to create
    * @return - The {@link Response}
+   *
    */
   @XAUnitOfWork
   @POST
