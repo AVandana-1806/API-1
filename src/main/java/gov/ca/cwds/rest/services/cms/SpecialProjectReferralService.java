@@ -30,7 +30,6 @@ import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.drools.DroolsConfiguration;
 import gov.ca.cwds.drools.DroolsService;
-import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
@@ -302,10 +301,10 @@ public class SpecialProjectReferralService implements
     braceltInfo.setOtherId(ssb.getBraceletId());
     braceltInfo.setOtherIdCode(MEDICAL_RECORD_SYSTEM_CODE_ID);
 
-    Set<IssueDetails> detailsList =
+    Set<IssueDetails> detailsSet =
         droolsService.performBusinessRules(createConfiguration(), ssbEntity, braceltInfo);
-    if (!detailsList.isEmpty()) {
-      throw new BusinessValidationException(detailsList);
+    if (!detailsSet.isEmpty()) {
+      throw new BusinessValidationException(detailsSet);
     }
 
     safelySurrenderedBabiesDao.create(ssbEntity);
