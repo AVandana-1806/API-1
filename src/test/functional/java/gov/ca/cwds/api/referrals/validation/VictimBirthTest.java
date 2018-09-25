@@ -73,6 +73,9 @@ public class VictimBirthTest extends FunctionalTest {
         .and().statusCode(422);
   }
 
+  /**
+   * R - 05609 Victim must be < 19
+   */
   @Test
   public void shouldReturn422WhenVictimTooOld() {
     String approximateAge = null;
@@ -83,10 +86,11 @@ public class VictimBirthTest extends FunctionalTest {
     
     functionalTestBuilder.postRequest(referral, referralPath, token).then()
     .body("issue_details.user_message[0]",
-        equalTo("Victim's approximateAgeUnits must be set if approximateAge is set"))
+        equalTo("Victim's age must be less than 18 years"))
     .and().statusCode(422);    
     
   }
+  
   @Test
   public void shouldReturn422WhenDateOfBirthInFuture() {
     LocalDate today = LocalDate.now();

@@ -31,19 +31,18 @@ import gov.ca.cwds.security.realm.PerryAccount;
 
 /**
  * @author CWDS API Team
- */
-
-/**
+ *
  * <blockquote>
- * 
  * <pre>
+ * 
  * BUSINESS RULE: R - 06398 Maintain Address Phonetic Entity
  * 
  *  When a Client or Placement Home street number or street name field is added, modified, 
  *  or deleted, make the appropriate update to the corresponding Address Phonetic row. 
  *  The LIS Interface needs to update the corresponding Address Phonetic row as well.  
- * </blockquote>
+ *  
  * </pre>
+ * </blockquote>
  */
 public class AddressService implements
     TypedCrudsService<String, gov.ca.cwds.rest.api.domain.cms.Address, gov.ca.cwds.rest.api.domain.cms.Address> {

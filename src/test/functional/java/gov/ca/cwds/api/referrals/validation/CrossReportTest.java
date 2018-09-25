@@ -9,6 +9,7 @@ import org.junit.Test;
 import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
+import gov.ca.cwds.fixture.CrossReportResourceBuilder;
 import gov.ca.cwds.fixture.ParticipantResourceBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.CrossReport;
@@ -32,16 +33,26 @@ public class CrossReportTest extends FunctionalTest {
     Set<CrossReport> emptyCrossReports = new HashSet();
     ScreeningToReferral referral = buildScreeningToReferral(emptyCrossReports);
 
-//    Response response = functionalTestBuilder.postRequest(referral, referralPath, token);
-//    ResponseBody body = response.getBody();
-//    String bodyString = body.asString();
-//    System.out.println(bodyString);
-    
     functionalTestBuilder
       .postRequest(referral, referralPath, token).then()
       .statusCode(201)
       .and()
       .body("legacy_id", notNullValue());    
+  }
+  
+  @Test
+  public void shouldReturn201WhenInformDateTimeNull() {
+    Set<CrossReport> crossReports = new HashSet();
+    CrossReport crossReport = new CrossReportResourceBuilder().setInformDate(null).createCrossReport();
+    crossReports.add(crossReport);
+    ScreeningToReferral referral = buildScreeningToReferral(crossReports);
+
+    functionalTestBuilder
+      .postRequest(referral, referralPath, token).then()
+      .statusCode(201)
+      .and()
+      .body("legacy_id", notNullValue());    
+    
   }
   
   protected ScreeningToReferral buildScreeningToReferral(Set<CrossReport> crossReports) {
