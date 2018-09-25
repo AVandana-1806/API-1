@@ -13,7 +13,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,23 +28,30 @@ public class CrossReportBusinessRulesValidationTest {
 
   @Test
   public void testThatActualDateStringIsParsedSuccessfully() {
-    String date = "2018-09-28T11:09:27.000";
+    String crossReportDate = "2018-09-24T00:00:00.000";
+    String screeningDate = "2018-09-23T00:00:00.000Z";
 
     CrossReport crossReport = new CrossReport();
-    crossReport.setInformDate(date);
+    crossReport.setInformDate(crossReportDate);
+
+    ScreeningToReferral screeningToReferral = new ScreeningToReferral();
+    screeningToReferral.setStartedAt(screeningDate);
+
     droolsService.performBusinessRules(CrossReportDroolsConfiguration.INSTANCE,
-            crossReport, new ScreeningToReferral());
+            crossReport, screeningToReferral);
   }
 
   @Test
   public void crossReportReportedOnDate() {
     Date now = new Date();
-    String nowString = DateFormatUtils.format(now, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
+    String crossReportString = DateFormatUtils.format(now, CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
+    String screeningString = DateFormatUtils.format(now, CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+
     CrossReport crossReport = new CrossReport();
-    crossReport.setInformDate(nowString);
+    crossReport.setInformDate(crossReportString);
 
     ScreeningToReferral screeningToReferral = new ScreeningToReferral();
-    screeningToReferral.setStartedAt(nowString);
+    screeningToReferral.setStartedAt(screeningString);
 
     Set<IssueDetails> issueDetailsList =
         droolsService.performBusinessRules(CrossReportDroolsConfiguration.INSTANCE,
@@ -58,7 +64,7 @@ public class CrossReportBusinessRulesValidationTest {
   public void crossReportReportedOnDate_inFuture() {
     Date now = new Date();
     String nowString = DateFormatUtils.format(now.getTime(),
-        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
 
     Calendar instance = Calendar.getInstance();
     instance.add(Calendar.DATE, 1);
@@ -94,7 +100,7 @@ public class CrossReportBusinessRulesValidationTest {
     Calendar instance = Calendar.getInstance();
     instance.add(Calendar.DATE, 1);
     String futureString = DateFormatUtils.format(instance.getTime(),
-        CWSDateTime.TIMESTAMP_ISO8601_FORMAT_TO_STRING);
+        CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
 
     ScreeningToReferral screeningToReferral = new ScreeningToReferral();
     screeningToReferral.setStartedAt(futureString);
