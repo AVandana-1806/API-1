@@ -175,9 +175,16 @@ public class ParticipantService implements
       return null;
     }
 
-    // Delete all allegations for this participant
-    allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
+    // Delete allegations for this participant where he is a Victim
+    allegationDao.deleteByIdList(allegationDao.findByVictimId(participantId).stream()
         .map(AllegationEntity::getId).collect(Collectors.toList()));
+
+    // Update allegations -  clear reference to this participant where he is a Perpetrator
+    allegationDao.findByPerpetratorId(participantId).stream()
+        .forEach(allegation -> {
+          allegation.setPerpetratorId(null);
+          allegationDao.update(allegation);
+        });
 
     // Delete Participant Addresses & PhoneNumbers
     participantAddressesDao.findByParticipantId(participantId).forEach(
