@@ -46,7 +46,7 @@ public class ScreeningParticipantResource {
   private TypedResourceDelegate<String, ParticipantIntakeApi> typedResourceDelegate;
 
   /**
-   * @param typedResourceDelegate - typedResourceDelegate gov.ca.cwds.rest.services.screening.participant
+   * @param typedResourceDelegate - typedResourceDelegate
    */
   @Inject
   public ScreeningParticipantResource(
