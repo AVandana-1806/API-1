@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services;
 
+
+import static gov.ca.cwds.rest.api.domain.SystemCodeCategoryId.LANGUAGE_CODE;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -12,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
@@ -20,13 +22,13 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
+import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 /***
  * 
  * @author CWDS API Team
- *
  */
-public class CachingIntakeCodeServiceTest {
+public class CachingIntakeCodeServiceTest extends Doofenshmirtz<IntakeLov> {
 
   /**
    * Initialize intake code cache
@@ -34,15 +36,16 @@ public class CachingIntakeCodeServiceTest {
   private TestIntakeCodeCache testIntakeCodeCache = new TestIntakeCodeCache();
   private TestSystemCodeCache testSystemCodeCache = new TestSystemCodeCache();
 
-  private CachingIntakeCodeService cachingIntakeCodeService;
-  private static IntakeLovDao intakeLovDao;
+  private IntakeLovDao intakeLovDao;
+  private CachingIntakeCodeService target;
 
-  /**
-  *
-  */
-  @BeforeClass
-  public static void setupClass() {
+  @Override
+  @Before
+  public void setup() throws Exception {
+    super.setup();
+
     intakeLovDao = mock(IntakeLovDao.class);
+    target = new CachingIntakeCodeService(intakeLovDao);
   }
 
   /**
@@ -58,7 +61,6 @@ public class CachingIntakeCodeServiceTest {
   */
   @Test
   public void instantiation() {
-    CachingIntakeCodeService target = new CachingIntakeCodeService(intakeLovDao);
     assertThat(target, notNullValue());
   }
 
@@ -67,16 +69,17 @@ public class CachingIntakeCodeServiceTest {
   */
   @Test
   public void testToGetValidLegacyId() {
-    IntakeLov intakeLov = new IntakeLov(1251L, "lang_tpc", "Cambodian", "19", false, "LANG_TPC", "",
-        null, "language", "Cambodian", "Cambodian");
-    IntakeLov intakeLov1 = new IntakeLov(1253L, "lang_tpc", "English", "07", false, "LANG_TPC", "",
-        null, "language", "English", "English");
-    List<IntakeLov> lovList = Arrays.asList(intakeLov, intakeLov1);
+    final IntakeLov intakeLov = new IntakeLov(1251L, LANGUAGE_CODE, "Cambodian", "19", false,
+        LANGUAGE_CODE, "", null, "language", "Cambodian", "Cambodian");
+    final IntakeLov intakeLov1 = new IntakeLov(1253L, LANGUAGE_CODE, "English", "07", false,
+        LANGUAGE_CODE, "", null, "language", "English", "English");
+    final List<IntakeLov> lovList = Arrays.asList(intakeLov, intakeLov1);
 
     when(intakeLovDao.findAll()).thenReturn(lovList);
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
-    Short actualLovCode = cachingIntakeCodeService
-        .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "Cambodian");
+    target = new CachingIntakeCodeService(intakeLovDao);
+
+    Short actualLovCode =
+        target.getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "Cambodian");
     Assert.assertNotNull(actualLovCode);
     assertThat(actualLovCode, is(equalTo((short) 1251)));
   }
@@ -87,9 +90,8 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testToWhenCacheNull() {
     when(intakeLovDao.findByLegacyMetaId(null)).thenReturn(new ArrayList<>());
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
-    Short actualLovCode = cachingIntakeCodeService
-        .getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "112kfjn");
+    final Short actualLovCode =
+        target.getLegacySystemCodeForIntakeCode(SystemCodeCategoryId.LANGUAGE_CODE, "112kfjn");
     Assert.assertNull(actualLovCode);
   }
 
@@ -98,16 +100,16 @@ public class CachingIntakeCodeServiceTest {
   */
   @Test
   public void testToGetAllLegacySystemCodesForMeta() {
-    IntakeLov intakeLov = new IntakeLov(1251L, "lang_tpc", "Cambodian", "19", false, "LANG_TPC", "",
-        null, "language", "Cambodian", "Cambodian");
-    IntakeLov intakeLov1 = new IntakeLov(1253L, "lang_tpc", "English", "07", false, "LANG_TPC", "",
-        null, "language", "English", "English");
-    List<IntakeLov> lovList = new ArrayList<>(Arrays.asList(intakeLov, intakeLov1));
+    final IntakeLov intakeLov = new IntakeLov(1251L, LANGUAGE_CODE, "Cambodian", "19", false,
+        LANGUAGE_CODE, "", null, "language", "Cambodian", "Cambodian");
+    final IntakeLov intakeLov1 = new IntakeLov(1253L, LANGUAGE_CODE, "English", "07", false,
+        LANGUAGE_CODE, "", null, "language", "English", "English");
+    final List<IntakeLov> lovList = new ArrayList<>(Arrays.asList(intakeLov, intakeLov1));
 
     when(intakeLovDao.findAll()).thenReturn(lovList);
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
-    List<IntakeLov> actualLovCode =
-        cachingIntakeCodeService.getAllLegacySystemCodesForMeta(SystemCodeCategoryId.LANGUAGE_CODE);
+    target = new CachingIntakeCodeService(intakeLovDao);
+
+    final List<IntakeLov> actualLovCode = target.getAllLegacySystemCodesForMeta(LANGUAGE_CODE);
     Assert.assertNotNull(actualLovCode);
     assertThat(actualLovCode.size(), is(equalTo(2)));
   }
@@ -118,8 +120,7 @@ public class CachingIntakeCodeServiceTest {
   @Test
   public void testToGetAllLegacySystemCodesForMetaEmpty() {
     when(intakeLovDao.findAll()).thenReturn(new ArrayList<>());
-    cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
-    List<IntakeLov> actualLovCode = cachingIntakeCodeService.getAllLegacySystemCodesForMeta("");
+    final List<IntakeLov> actualLovCode = target.getAllLegacySystemCodesForMeta("");
     Assert.assertNotNull(actualLovCode);
     assertThat(actualLovCode.size(), is(equalTo(0)));
   }
@@ -129,9 +130,9 @@ public class CachingIntakeCodeServiceTest {
   // */
   // @Test
   // public void testToGetLegacySystemIdForRaceCode() {
-  // cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
+  // target = new CachingIntakeCodeService(intakeLovDao);
   // IntakeRace intakeRace = new IntakeRace("White", "Central American");
-  // Short sysId = cachingIntakeCodeService
+  // Short sysId = target
   // .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
   // assertThat(sysId, is(equalTo((short) 841)));
   // }
@@ -141,9 +142,9 @@ public class CachingIntakeCodeServiceTest {
   // */
   // @Test
   // public void testWhenIntakeCodeConverterNull() {
-  // cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao);
+  // target = new CachingIntakeCodeService(intakeLovDao);
   // IntakeRace intakeRace = new IntakeRace("Asian", "Central Indian");
-  // Short sysId = cachingIntakeCodeService
+  // Short sysId = target
   // .getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace);
   // Assert.assertNull(sysId);
   // }
@@ -153,9 +154,9 @@ public class CachingIntakeCodeServiceTest {
   // */
   // @Test
   // public void testWhenIntakeCodeNull() {
-  // cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
+  // target = new CachingIntakeCodeService(intakeLovDao, 1500, true);
   // Short sysId =
-  // cachingIntakeCodeService.getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, null);
+  // target.getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, null);
   // Assert.assertNull(sysId);
   // }
 
@@ -164,9 +165,9 @@ public class CachingIntakeCodeServiceTest {
   // */
   // @Test
   // public void testWhenMetaNullAndReturnNull() {
-  // cachingIntakeCodeService = new CachingIntakeCodeService(intakeLovDao, 1500, true);
+  // target = new CachingIntakeCodeService(intakeLovDao, 1500, true);
   // IntakeRace intakeRace = new IntakeRace("Asian", "Central American");
-  // Short sysId = cachingIntakeCodeService.getLegacySystemCodeForRace(null, intakeRace);
+  // Short sysId = target.getLegacySystemCodeForRace(null, intakeRace);
   // Assert.assertNull(sysId);
   // }
 

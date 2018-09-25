@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.submit;
 
+import gov.ca.cwds.CWSDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,15 +50,7 @@ public class CrossReportsTransformer {
   }
 
   private String extractDateFromCrossReport(CrossReportIntake nsCrossReport) {
-    String informDate = nsCrossReport.getInformDate();
-    if (informDate.length() <= DomainChef.DATE_FORMAT.length()){
-      Date date = DomainChef.uncookDateString(informDate);
-      informDate = DomainChef.cookStrictTimestamp(date);
-    } else {
-      informDate = DomainChef
-          .cookISO8601Timestamp(DomainChef.uncookISO8601Timestamp(informDate));
-    }
-    return informDate;
+    return new CWSDateTime(nsCrossReport.getInformDate()).toLocalTimeStamp();
   }
 
   private Integer setCommuncationMethod(CrossReportIntake nsCrossReport) {

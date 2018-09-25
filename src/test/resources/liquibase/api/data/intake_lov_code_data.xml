@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Intake Team" id="intake_lov_codes">
+        <insert tableName="intake_lov_categories">
+            <column name="id" valueNumeric="121"/>
+            <column name="lg_meta" value="SRT_TEST"/>
+            <column name="intake_type" value="sort_order_test"/>
+            <column name="parent_cat_id"/>
+            <column name="use_log_id" value="false"/>
+            <column name="cat_descr" value="sort_order_test"/>
+        </insert>
+        <insert tableName="intake_lov_codes">
+            <column name="cat_id" valueNumeric="121"/>
+            <column name="lg_sys_id" valueNumeric="7058"/>
+            <column name="intake_code" value="A"/>
+            <column name="intake_display" value="A"/>
+            <column name="omit_ind" valueBoolean="false"/>
+            <column name="sort_order" valueNumeric="5"/>
+        </insert>
+        <insert tableName="intake_lov_codes">
+            <column name="cat_id" valueNumeric="121"/>
+            <column name="lg_sys_id" valueNumeric="7058"/>
+            <column name="intake_code" value="B"/>
+            <column name="intake_display" value="B"/>
+            <column name="omit_ind" valueBoolean="false"/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="intake_lov_codes">
+            <column name="cat_id" valueNumeric="121"/>
+            <column name="lg_sys_id" valueNumeric="7058"/>
+            <column name="intake_code" value="Z"/>
+            <column name="intake_display" value="Z"/>
+            <column name="omit_ind" valueBoolean="false"/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

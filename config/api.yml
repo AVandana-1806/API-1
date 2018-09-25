@@ -40,6 +40,8 @@ nsDataSourceFactory:
       hibernate.default_schema: ${DB_NS_SCHEMA:-intakens}
       hibernate.connection.autocommit: false
       hibernate.temp.use_jdbc_metadata_defaults: false
+      hibernate.connection.isolation: 2
+      # connection.logAbandoned: true
 
 cmsDataSourceFactory:
   autoCommitByDefault: false
@@ -61,7 +63,9 @@ cmsDataSourceFactory:
       hibernate.use_sql_comments: true
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
+      # connection.debugUnreturnedConnectionStackTraces: true
+      # connection.logAbandoned: true
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.current_session_context_class: thread
 
@@ -85,7 +89,7 @@ rsDataSourceFactory:
       hibernate.use_sql_comments: true
       hibernate.default_schema: ${DB_CWSRS_SCHEMA}
       hibernate.connection.autocommit: false
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
 
 ##==========================
 ## XA DATA SOURCES:
@@ -114,12 +118,12 @@ xaCmsDataSourceFactory:
       hibernate.transaction.jta.platform: com.atomikos.icatch.jta.hibernate4.AtomikosPlatform
       hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: after_transaction
-      connection.release_mode: after_transaction
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
+      connection.release_mode: after_transaction
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
@@ -154,11 +158,11 @@ xaCmsRsDataSourceFactory:
       hibernate.transaction.factory_class: gov.ca.cwds.data.persistence.xa.CaresJtaTransactionCoordinatorBuilderImpl
       hibernate.connection.release_mode: after_transaction
       connection.release_mode: after_transaction
-      hibernate.connection.isolation: 1
+      hibernate.connection.isolation: 2
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
@@ -198,7 +202,7 @@ xaNsDataSourceFactory:
       hibernate.cache.use_query_cache: true
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
-      connection.blockingReadConnectionTimeout: 120
+      connection.blockingReadConnectionTimeout: 90
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:

@@ -1,5 +1,8 @@
 package gov.ca.cwds.rest.services.hoi;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,7 @@ import gov.ca.cwds.rest.api.domain.hoi.HOIVictim;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * <p>
@@ -96,15 +101,22 @@ public class HOICaseService extends SimpleResourceService<HOIRequest, HOICase, H
    * @return HOI REST response
    */
   @Override
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   public HOICaseResponse handleFind(HOIRequest hoiRequest) {
+    return handleFindInternal(hoiRequest);
+  }
+
+  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
+      flushMode = FlushMode.MANUAL)
+  protected HOICaseResponse handleFindInternal(HOIRequest hoiRequest) {
     final Collection<String> authorizedClientIds = authorizationService.filterClientIds(
         hoiRequest.getClientIds().stream().filter(Objects::nonNull).collect(Collectors.toSet()));
     if (authorizedClientIds.isEmpty()) {
+      LOGGER.debug("NOT AUTHORIZED TO VIEW REQUESTED CLIENTS!");
       return new HOICaseResponse();
     }
 
     final HOICasesData hcd = new HOICasesData(authorizedClientIds);
-
     loadRelationshipsByClients(authorizedClientIds, hcd);
     hcd.getAllClientIds().addAll(getClientIdsFromRelations(hcd));
     loadRelationshipsByClients(hcd.getAllClientIds(), hcd);

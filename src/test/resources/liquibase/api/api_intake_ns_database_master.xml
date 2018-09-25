@@ -37,6 +37,7 @@
   <include file="liquibase/data/201807021637_add_probation_youth.xml"/>
   <include file="liquibase/data/201807021050_add_additional_fields_to_relationship.xml"/>
   <include file="liquibase/data/201809071248_add_related_screening_field_to_participant.xml"/>
+  <include file="liquibase/data/201809241107_add_estimated_dob_code_participant.xml"/>
 
   <include file="data/screening_data.xml" relativeToChangelogFile="true"/>
   <include file="data/addresses_data.xml" relativeToChangelogFile="true"/>
@@ -53,5 +54,7 @@
   <include file="data/safely_surr_babies_data.xml" relativeToChangelogFile="true"/>
   <include file="data/relationships_data.xml" relativeToChangelogFile="true"/>
   <include file="data/contact_data.xml" relativeToChangelogFile="true"/>
+  <include file="data/h2_sort_order.xml" relativeToChangelogFile="true"/>
+  <include file="data/intake_lov_code_data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

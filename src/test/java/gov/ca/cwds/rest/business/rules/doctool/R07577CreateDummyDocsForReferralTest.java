@@ -85,7 +85,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
-import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -134,7 +134,7 @@ public class R07577CreateDummyDocsForReferralTest {
   private ChildClientService childClientService;
   private LongTextService longTextService;
   private AssignmentService assignmentService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
@@ -279,7 +279,7 @@ public class R07577CreateDummyDocsForReferralTest {
     when(staffpersonDao.find(any(String.class))).thenReturn(staffPerson);
     when(triggerTablesDao.getLaCountySpecificCode()).thenReturn("52");
 
-    participantService = mock(ParticipantService.class);
+    participantToLegacyClient = mock(ParticipantToLegacyClient.class);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
 
@@ -300,10 +300,11 @@ public class R07577CreateDummyDocsForReferralTest {
     referralService.setRiReferral(riReferral);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantService, clientRelationshipService,
+        crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   /**
@@ -411,7 +412,7 @@ public class R07577CreateDummyDocsForReferralTest {
           }
         });
 
-    mockParticipantService(screeningToReferral);
+    mockParticipantToLegacyClient(screeningToReferral);
 
     screeningToReferralService.create(screeningToReferral);
     assertThat(referral.getDrmsAllegationDescriptionDoc(), is(equalTo("ABD1234568")));
@@ -506,7 +507,7 @@ public class R07577CreateDummyDocsForReferralTest {
           }
         });
 
-    mockParticipantService(screeningToReferral);
+    mockParticipantToLegacyClient(screeningToReferral);
 
     screeningToReferralService.create(screeningToReferral);
     assertThat(referral.getDrmsErReferralDoc(), is(equalTo("ABZ123456k")));
@@ -601,14 +602,14 @@ public class R07577CreateDummyDocsForReferralTest {
           }
         });
 
-    mockParticipantService(screeningToReferral);
+    mockParticipantToLegacyClient(screeningToReferral);
 
     screeningToReferralService.create(screeningToReferral);
     assertThat(referral.getDrmsInvestigationDoc(), is(equalTo("AYZ12340X5")));
 
   }
 
-  private void mockParticipantService(ScreeningToReferral screeningToReferral) {
+  private void mockParticipantToLegacyClient(ScreeningToReferral screeningToReferral) {
 
     ClientParticipants clientParticipants = new ClientParticipants();
     Set<Participant> participants = screeningToReferral.getParticipants();
@@ -620,7 +621,7 @@ public class R07577CreateDummyDocsForReferralTest {
       participant.setLegacyDescriptor(legacyDescriptor);
     }
     clientParticipants.addParticipants(participants);
-    when(participantService.saveParticipants(any(), any(), any(), any(), any()))
+    when(participantToLegacyClient.saveParticipants(any(), any(), any(), any(), any()))
         .thenReturn(clientParticipants);
   }
 

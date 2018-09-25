@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.resources;
+package gov.ca.cwds.rest.resources.screening.participant;
 
 import static gov.ca.cwds.rest.core.Api.RESOURCE_PARTICIPANTS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_SCREENINGS;
@@ -25,8 +25,9 @@ import com.google.inject.Inject;
 import gov.ca.cwds.inject.ParticipantServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.core.Api.ResponseMessage;
+import gov.ca.cwds.rest.resources.TypedResourceDelegate;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +37,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * A resource providing a RESTful interface for {@link ParticipantIntakeApi}. It delegates functions
- * to {@link ParticipantIntakeApiService}.
+ * to {@link ParticipantService}.
  *
  * @author CWDS API Team
  */
@@ -45,7 +46,7 @@ import io.swagger.annotations.ApiResponses;
 @Path(value = RESOURCE_SCREENINGS + "/{" + SCREENING_ID + "}/" + RESOURCE_PARTICIPANTS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ParticipantIntakeApiResource {
+public class ParticipantResource {
 
   @Inject
   @ParticipantServiceBackedResource
@@ -54,7 +55,7 @@ public class ParticipantIntakeApiResource {
   /**
    * Constructor
    */
-  public ParticipantIntakeApiResource() {
+  public ParticipantResource() {
     // no ops
   }
 
@@ -163,5 +164,12 @@ public class ParticipantIntakeApiResource {
     return resourceDelegate.update(new ParticipantResourceParameters(screeningId, participantId),
         participant);
   }
+
+  public void setResourceDelegate(
+      TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate) {
+    this.resourceDelegate = resourceDelegate;
+  }
+
+
 
 }

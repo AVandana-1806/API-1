@@ -3024,6 +3024,24 @@
     "sub_category": null
   },
   {
+    "code" : "7058",
+    "value" : "B",
+    "category" : "sort_order_test",
+    "sub_category" : null
+  },
+  {
+    "code" : "7058",
+    "value" : "Z",
+    "category" : "sort_order_test",
+    "sub_category" : null
+  },
+  {
+    "code" : "7058",
+    "value" : "A",
+    "category" : "sort_order_test",
+    "sub_category" : null
+  },
+  {
     "code": "A",
     "value": "Abandoned",
     "category": "unable_to_determine_code",

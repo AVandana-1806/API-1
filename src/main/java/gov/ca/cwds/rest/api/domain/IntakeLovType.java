@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.api.domain;
 
 /**
  * @author CWDS API Team
- *
  */
 public enum IntakeLovType {
 
@@ -26,4 +25,5 @@ public enum IntakeLovType {
   public String getValue() {
     return value;
   }
+
 }

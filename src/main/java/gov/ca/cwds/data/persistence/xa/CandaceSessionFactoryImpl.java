@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -55,19 +57,23 @@ import io.dropwizard.hibernate.HibernateBundle;
  */
 @SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
     "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S2095"})
 public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecutionContextCallback {
 
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionFactoryImpl.class);
 
+  private final Map<Integer, CandaceSessionTracker> outstanding = new ConcurrentHashMap<>();
+
+  // Core members.
   private String sessionFactoryName;
   private SessionFactory normSessionFactory;
   private SessionFactory xaSessionFactory;
 
   // Only works for the same datasource, for which this class is a facade.
   private transient ThreadLocal<CandaceSessionImpl> local = new ThreadLocal<>();
+  private transient ThreadLocal<CandaceSessionTracker> tracker = new ThreadLocal<>();
 
   private transient HibernateBundle<ApiConfiguration> hibernateBundle;
   private transient FerbHibernateBundle xaHibernateBundle;
@@ -86,6 +92,9 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.sessionFactoryName = makeSessionFactoryName(sessionFactoryName);
     this.normSessionFactory = normSessionFactory;
     this.xaSessionFactory = xaSessionFactory;
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
   }
 
   public CandaceSessionFactoryImpl(HibernateBundle<ApiConfiguration> hibernateBundle,
@@ -95,6 +104,20 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
     this.sessionFactoryName = makeSessionFactoryName(xaHibernateBundle.name());
     this.hibernateBundle = hibernateBundle;
     this.xaHibernateBundle = xaHibernateBundle;
+    init();
+
+    // Notify this instance when requests start or end.
+    RequestExecutionContextRegistry.registerCallback(this);
+  }
+
+  public List<CandaceSessionTracker> getOutstandingSessions() {
+    return outstanding.values().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId()))
+        .collect(Collectors.toList());
+  }
+
+  public void printOutstandingSessions() {
+    outstanding.values().stream().forEach(s -> LOGGER
+        .info("Outstanding sessions: data source: {}, session: {}", sessionFactoryName, s));
   }
 
   /**
@@ -123,7 +146,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   /**
    * Initialize once.
    */
-  protected synchronized void init() {
+  protected final synchronized void init() {
     if (normSessionFactory == null || xaSessionFactory == null) {
       this.normSessionFactory = hibernateBundle.getSessionFactory();
       this.xaSessionFactory = xaHibernateBundle.getSessionFactory();
@@ -149,12 +172,32 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
   @Override
   public void startRequest(RequestExecutionContext ctx) {
     LOGGER.debug("startRequest");
-    local.set(null); // clear the current thread
+    resetLocals();
   }
 
   @Override
   public void endRequest(RequestExecutionContext ctx) {
     LOGGER.debug("endRequest");
+
+    final CandaceSessionImpl session = local.get();
+    if (session != null && session.isOpen()) {
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.error("ERROR ON SESSION AUTO-CLOSE: data source: {}", sessionFactoryName, e);
+      }
+    }
+
+    resetLocals();
+  }
+
+  protected void resetLocals() {
+    final CandaceSessionTracker track = tracker.get();
+    if (track != null) {
+      outstanding.remove(track.getId());
+    }
+
+    tracker.set(null);
     local.set(null); // clear the current thread
   }
 
@@ -210,11 +253,14 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.openSession: opening a **NEW** session for datasource: {}, XA: {}",
-          sessionFactoryName, isXaTransaction());
-      session = new CandaceSessionImpl(pick().openSession());
+      LOGGER.info("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
+          isXaTransaction());
+      session = new CandaceSessionImpl(this, pick().openSession());
       local.set(session);
+
+      final CandaceSessionTracker track = new CandaceSessionTracker(this, session);
+      tracker.set(track);
+      outstanding.put(track.getId(), track);
     }
 
     return session;
@@ -238,8 +284,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.warn(
-          "CandaceSessionFactoryImpl.getCurrentSession: call openSession() for datasource: {}, is XA: {}",
+      LOGGER.info("getCurrentSession(): call session.openSession(): datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = openSession();
     }
@@ -273,7 +318,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public Statistics getStatistics() {
-    // IDEA: store statistics by request.
+    // IDEA: store statistics by request, not on the global session factory.
     LOGGER.trace("getStatistics");
     return pick().getStatistics();
   }
@@ -317,10 +362,10 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.info("******** CandaceSessionFactoryImpl.close ********");
-    local.set(null);
+    LOGGER.info("close");
     pick().close();
     CaresStackUtils.logStack();
+    resetLocals();
   }
 
   @Override

@@ -41,6 +41,25 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
   private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
 
   /**
+   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
+   * the filters package.
+   */
+  static void startRequest() {
+    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
+    if (userIdentity == null) {
+      userIdentity = DEFAULT_IDENTITY;
+    }
+    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
+  }
+
+  /**
+   * Perform cleanup after request completion.
+   */
+  static void stopRequest() {
+    RequestExecutionContextRegistry.remove();
+  }
+
+  /**
    * Private constructor
    * 
    * @param userIdentity User identity
@@ -104,13 +123,8 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
    */
   @Override
   public String getStaffId() {
-    String staffId = null;
     final PerryUserIdentity userIdentity = getUserIdentity();
-
-    if (userIdentity != null) {
-      staffId = userIdentity.getStaffId();
-    }
-    return staffId;
+    return userIdentity != null ? userIdentity.getStaffId() : null;
   }
 
   @Override
@@ -151,28 +165,14 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
   }
 
   @Override
-  public long getInitiatorThreadId() {
+  public long getThreadId() {
     final Long ret = (Long) get(Parameter.THREAD_ID);
     return ret != null ? ret.longValue() : 0;
   }
 
-  /**
-   * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
-   * the filters package.
-   */
-  static void startRequest() {
-    PerryUserIdentity userIdentity = StaffPersonIdRetriever.getPerryUserIdentity();
-    if (userIdentity == null) {
-      userIdentity = DEFAULT_IDENTITY;
-    }
-    RequestExecutionContextRegistry.register(new RequestExecutionContextImpl(userIdentity));
-  }
-
-  /**
-   * Perform cleanup after request completion.
-   */
-  static void stopRequest() {
-    RequestExecutionContextRegistry.remove();
+  @Override
+  public String getRequestId() {
+    return null;
   }
 
 }

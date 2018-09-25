@@ -16,12 +16,15 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpStatus;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.data.persistence.xa.CandaceDatasourceSlate;
+import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovEntry;
@@ -52,12 +55,46 @@ public class IntakeLovResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(IntakeLovResource.class);
 
+  private CandaceDatasourceSlate sessionFactories;
+
   /**
    * Constructor
+   * 
+   * @param sessionFactories Ferb session factories
    */
   @Inject
-  public IntakeLovResource() {
-    // Default
+  public IntakeLovResource(CandaceDatasourceSlate sessionFactories) {
+    this.sessionFactories = sessionFactories;
+  }
+
+  protected void logDatabaseHealth(SessionFactory sessionFactory) {
+    final CandaceSessionFactoryImpl sf = (CandaceSessionFactoryImpl) sessionFactory;
+    LOGGER.info("DATASOURCE HEALTH: {}", sf.getSessionFactoryName());
+    sf.printOutstandingSessions();
+  }
+
+  @Path("/db_health")
+  @GET
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
+      @ApiResponse(code = 404, message = "Not found"),
+      @ApiResponse(code = 400, message = "Unable to parse parameters")})
+  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
+      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
+  public Response showDatabaseConnectionHealth() {
+    Response ret;
+    try {
+      logDatabaseHealth(sessionFactories.getCmsRsSessionFactory());
+      logDatabaseHealth(sessionFactories.getNsSessionFactory());
+      logDatabaseHealth(sessionFactories.getCmsRsSessionFactory());
+
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(new ArrayList<>()))
+          .build();
+    } catch (Exception e) {
+      LOGGER.error("FAILED TO SHOW OUTSTANDING DATABASE SESSIONS: {}", e.getMessage(), e);
+      throw new ApiException("FAILED TO SHOW OUTSTANDING DATABASE SESSIONS: " + e.getMessage(), e);
+    }
+
+    return ret;
   }
 
   /**
@@ -65,26 +102,26 @@ public class IntakeLovResource {
    * 
    * @return web service response
    */
+  // @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.MINUTES)
   @UnitOfWork(value = NS, cacheMode = CacheMode.NORMAL, flushMode = FlushMode.MANUAL,
-      readOnly = true, transactional = true)
+      readOnly = true, transactional = false)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 400, message = "Unable to parse parameters")})
-  @ApiOperation(value = "Query ElasticSearch Persons on given search terms",
-      code = HttpStatus.SC_OK, response = IntakeLovEntry[].class)
+  @ApiOperation(value = "Show Postgres LOV's", code = HttpStatus.SC_OK,
+      response = IntakeLovEntry[].class)
   public Response getAll() {
     Response ret;
     try {
-      List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAll();
-      List<IntakeLovEntry> intakeLovEntries = new ArrayList<>();
-      for (IntakeLov lov : intakeLovs) {
-        IntakeLovEntry intakeLovEntry = new IntakeLovEntry(lov);
-        intakeLovEntries.add(intakeLovEntry);
+      final List<IntakeLov> lovs = IntakeCodeCache.global().getAll();
+      final List<IntakeLovEntry> lovEntries = new ArrayList<>(lovs.size());
+      for (IntakeLov lov : lovs) {
+        lovEntries.add(new IntakeLovEntry(lov));
       }
 
-      IntakeLovResponse intakeLovResponse = new IntakeLovResponse(intakeLovEntries);
-      ret = Response.status(Response.Status.OK).entity(intakeLovResponse).build();
+      LOGGER.info("Intake LOV domain count: {}, raw count: {}", lovEntries.size(), lovs.size());
+      ret = Response.status(Response.Status.OK).entity(new IntakeLovResponse(lovEntries)).build();
     } catch (Exception e) {
       LOGGER.error("Intake LOV ERROR: {}", e.getMessage(), e);
       throw new ApiException("Intake LOV ERROR. " + e.getMessage(), e);

@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.health.FerbHealthCheckException;
 
 /**
- * CARES logging utilities.
+ * CARES logging utilities. Convenient methods to log an exception and throw an appropriate runtime
+ * one, log every N records, and so on. Reuse loggers from other classes or use its own.
  * 
  * @author CWDS API Team
  */

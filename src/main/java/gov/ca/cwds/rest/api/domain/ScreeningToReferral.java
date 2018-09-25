@@ -448,6 +448,10 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
     return startedAt;
   }
 
+  public void setStartedAt(@Date(format = "yyyy-MM-ddTHH:mm:ss") String startedAt) {
+    this.startedAt = startedAt;
+  }
+
   /**
    * @return assignee
    */

@@ -36,9 +36,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("nsIntakeLovEntry")
 public class IntakeLovEntry implements Request, Response, ApiMarker {
 
-  /**
-   * Default serialization.
-   */
   private static final long serialVersionUID = 1L;
 
   @JsonIgnore
@@ -87,7 +84,7 @@ public class IntakeLovEntry implements Request, Response, ApiMarker {
   private String category;
 
   /**
-   * use logical: whether to use the logical id, not the system code id
+   * use logical: whether to use the logical id instead of the system code id
    */
   @JsonIgnore
   @ApiModelProperty(example = "false")

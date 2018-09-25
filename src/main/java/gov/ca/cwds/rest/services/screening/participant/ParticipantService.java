@@ -1,4 +1,4 @@
-package gov.ca.cwds.rest.services;
+package gov.ca.cwds.rest.services.screening.participant;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +43,8 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabiesIntakeApi;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
+import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.services.TypedCrudsService;
 import gov.ca.cwds.rest.services.mapper.CsecMapper;
 import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 
@@ -51,10 +53,10 @@ import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
  *
  * @author CWDS API Team
  */
-public class ParticipantIntakeApiService implements
+public class ParticipantService implements
     TypedCrudsService<ParticipantResourceParameters, ParticipantIntakeApi, ParticipantIntakeApi> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantIntakeApiService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantService.class);
 
   @Inject
   private ParticipantDao participantDao;
@@ -72,7 +74,7 @@ public class ParticipantIntakeApiService implements
   private ParticipantAddressesDao participantAddressesDao;
 
   @Inject
-  private AddressIntakeApiService addressIntakeApiService;
+  private AddressService addressService;
 
   @Inject
   private PhoneNumbersDao phoneNumbersDao;
@@ -91,6 +93,9 @@ public class ParticipantIntakeApiService implements
 
   @Inject
   private SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper;
+
+  @Inject
+  private ParticipantTransformer participantTransformer;
 
   /**
    * {@inheritDoc}
@@ -170,9 +175,16 @@ public class ParticipantIntakeApiService implements
       return null;
     }
 
-    // Delete all allegations for this participant
-    allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
+    // Delete allegations for this participant where he is a Victim
+    allegationDao.deleteByIdList(allegationDao.findByVictimId(participantId).stream()
         .map(AllegationEntity::getId).collect(Collectors.toList()));
+
+    // Update allegations -  clear reference to this participant where he is a Perpetrator
+    allegationDao.findByPerpetratorId(participantId).stream()
+        .forEach(allegation -> {
+          allegation.setPerpetratorId(null);
+          allegationDao.update(allegation);
+        });
 
     // Delete Participant Addresses & PhoneNumbers
     participantAddressesDao.findByParticipantId(participantId).forEach(
@@ -194,6 +206,7 @@ public class ParticipantIntakeApiService implements
     return new ParticipantIntakeApi(participantEntity);
   }
 
+
   /**
    * {@inheritDoc}
    *
@@ -204,6 +217,11 @@ public class ParticipantIntakeApiService implements
     if (participant == null) {
       throw new ServiceException("NULL argument for CREATE participant");
     }
+    return persistParticipantObjectInNS(
+        participantTransformer.prepareParticipantObject(participant));
+  }
+
+  public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
 
     setLegacyIdAndTable(participant);
     ParticipantEntity participantEntityManaged =
@@ -284,8 +302,10 @@ public class ParticipantIntakeApiService implements
     Set<PhoneNumber> phoneSet =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
-    LegacyDescriptorEntity foundDescriptor = legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
-    LegacyDescriptor discriptor = foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
+    LegacyDescriptorEntity foundDescriptor =
+        legacyDescriptorDao.findParticipantLegacyDescriptor(participantId);
+    LegacyDescriptor discriptor =
+        foundDescriptor == null ? new LegacyDescriptor() : new LegacyDescriptor(foundDescriptor);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
@@ -380,7 +400,7 @@ public class ParticipantIntakeApiService implements
     List<CsecEntity> csecEntities = new ArrayList<>();
     for (CsecEntity csecEntity : toUpdateList) {
       csecEntity.setParticipantId(participantId);
-      //"update" is not working here due to XA transaction implementation
+      // "update" is not working here due to XA transaction implementation
       csecEntities.add(csecDao.merge(csecEntity));
     }
     for (CsecEntity csecEntity : toCreateList) {
@@ -450,7 +470,7 @@ public class ParticipantIntakeApiService implements
       addressesEntityManaged = addressesDao.create(new Addresses(addressIntakeApi));
       LegacyDescriptor legacyDescriptor = addressIntakeApi.getLegacyDescriptor();
       addressIntakeApi = new AddressIntakeApi(addressesEntityManaged);
-      addressIntakeApi.setLegacyDescriptor(addressIntakeApiService
+      addressIntakeApi.setLegacyDescriptor(addressService
           .saveLegacyDescriptor(legacyDescriptor, addressesEntityManaged.getId()));
     }
     return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
@@ -536,4 +556,5 @@ public class ParticipantIntakeApiService implements
       SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper) {
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
+
 }

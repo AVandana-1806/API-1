@@ -9,4 +9,5 @@ public class SwaggerHealthCheck extends PingableResourceHealthCheck {
   public SwaggerHealthCheck(Pingable resource) {
     super(resource, ERROR_MESSAGE);
   }
+
 }

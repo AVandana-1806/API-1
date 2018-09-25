@@ -47,10 +47,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.CaresStackUtils;
+import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 
 /**
- * Hibernate session facade that adds logging and facilitates XA transactions.
+ * Hibernate session facade. Adds method logging, facilitates XA transactions, and tracks orphaned
+ * connections.
  * 
  * @author CWDS API Team
  */
@@ -63,13 +66,61 @@ public class CandaceSessionImpl implements Session {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CandaceSessionImpl.class);
 
-  protected Session session;
+  protected final Session session;
+
+  protected final SessionFactory sessionFactory;
 
   protected transient CandaceTransactionImpl txn;
 
-  public CandaceSessionImpl(Session session) {
-    LOGGER.debug("CandaceSessionImpl.ctor");
+  /**
+   * Preferred constructor. Automatically returns sessions/connections back to the pool.
+   * 
+   * @param sessionFactory datasource session factory
+   * @param session Hibernate session
+   */
+  public CandaceSessionImpl(CandaceSessionFactoryImpl sessionFactory, Session session) {
+    LOGGER.debug("ctor");
+    this.sessionFactory = sessionFactory;
     this.session = session;
+  }
+
+  /**
+   * Secondary constructor.
+   * 
+   * <p>
+   * <strong>WARNING:</strong> By using this alternate constructor, the caller must close the
+   * session when finished or risk a connection leak.
+   * </p>
+   * 
+   * @param dao DAO to grab a session
+   */
+  public CandaceSessionImpl(CrudsDaoImpl<?> dao) {
+    LOGGER.debug("ctor(CrudsDaoImpl<?>)");
+    final SessionFactory sf = dao.getSessionFactory();
+    this.sessionFactory =
+        sf instanceof CandaceSessionFactoryImpl ? (CandaceSessionFactoryImpl) sf : sf;
+    this.session = grabSession();
+  }
+
+  /**
+   * Grab a session! If a current session is available, return it, else open a new session.
+   * 
+   * <p>
+   * <strong>WARNING:<strong> If you open it, then you close it. You break it, you bought it.
+   * </p>
+   * 
+   * @return usable session
+   */
+  private final Session grabSession() {
+    Session ret;
+    try {
+      ret = sessionFactory.getCurrentSession();
+    } catch (HibernateException e) {
+      LOGGER.trace("No open session. Open a new one.", e); // Appease SonarQube
+      ret = sessionFactory.openSession();
+    }
+
+    return ret;
   }
 
   /**
@@ -83,10 +134,9 @@ public class CandaceSessionImpl implements Session {
     if (LOGGER.isTraceEnabled()) {
       if (obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
-        LOGGER.info("CandaceSessionImpl.{}: class: {}, key: {}", methodMsg, po.getClass(),
-            po.getPrimaryKey());
+        LOGGER.info("{}: class: {}, key: {}", methodMsg, po.getClass(), po.getPrimaryKey());
       } else {
-        LOGGER.info("CandaceSessionImpl.{}", methodMsg);
+        LOGGER.info("{}", methodMsg);
       }
       CaresStackUtils.logStack();
     }
@@ -125,9 +175,26 @@ public class CandaceSessionImpl implements Session {
   @Override
   public void close() throws HibernateException {
     LOGGER.info("close");
-    if (session != null) {
-      session.close();
-      session = null; // release session references
+    if (session != null && session.isOpen()) {
+      final Transaction tx = session.getTransaction();
+      if (tx.isActive() && !tx.getRollbackOnly()) {
+        try {
+          tx.rollback(); // Can't close DB2 connections with open transactions.
+        } catch (Exception e) {
+          LOGGER.warn("FAILED TO ROLLBACK ACTIVE TRANSACTION TO CLOSE SESSION!", e);
+        }
+      }
+
+      try {
+        session.close();
+      } catch (Exception e) {
+        LOGGER.error("FAILED TO CLOSE SESSION! session: {}", session, e);
+      } finally {
+        if (sessionFactory instanceof CandaceSessionFactoryImpl) {
+          ((CandaceSessionFactoryImpl) sessionFactory)
+              .endRequest(RequestExecutionContext.instance());
+        }
+      }
     }
   }
 
@@ -227,6 +294,11 @@ public class CandaceSessionImpl implements Session {
   }
 
   @Override
+  public Criteria createCriteria(String entityName) {
+    return session.createCriteria(entityName);
+  }
+
+  @Override
   public <T> T find(Class<T> entityClass, Object primaryKey) {
     LOGGER.trace("find(Class<T>,Object): entityClass: {}, primaryKey: {}", entityClass, primaryKey);
     return session.find(entityClass, primaryKey);
@@ -234,14 +306,9 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void flush() throws HibernateException {
-    LOGGER.debug("***** CandaceSessionImpl.flush *****");
+    LOGGER.debug("flush()");
     logStack("flush");
     session.flush();
-  }
-
-  @Override
-  public Criteria createCriteria(String entityName) {
-    return session.createCriteria(entityName);
   }
 
   @Override
@@ -624,8 +691,8 @@ public class CandaceSessionImpl implements Session {
     LOGGER.debug("clear()");
     logStack("clear()");
     if (session != null) {
-      final Transaction txn = session.getTransaction();
-      if (txn != null && txn.isActive()) {
+      final Transaction transaction = session.getTransaction();
+      if (transaction != null && transaction.isActive()) {
         session.clear();
       }
     }
@@ -855,101 +922,98 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void doWork(Work work) throws HibernateException {
-    LOGGER.debug("CandanceSessionImpl.doWork: work class: {}", work.getClass());
+    LOGGER.debug("doWork: work class: {}", work.getClass());
     session.doWork(work);
   }
 
   @Override
   public <T> T doReturningWork(ReturningWork<T> work) throws HibernateException {
-    LOGGER.debug("CandanceSessionImpl.doReturningWork: work class: {}", work.getClass());
+    LOGGER.debug("doReturningWork: work class: {}", work.getClass());
     return session.doReturningWork(work);
   }
 
   @Override
   public Connection disconnect() {
-    LOGGER.warn("CandanceSessionImpl.disconnect");
+    LOGGER.warn("disconnect");
     return session.disconnect();
   }
 
   @Override
   public void reconnect(Connection connection) {
-    LOGGER.warn("CandanceSessionImpl.reconnect: connection: {}", connection);
+    LOGGER.warn("reconnect: connection: {}", connection);
     session.reconnect(connection);
   }
 
   @Override
   public boolean isFetchProfileEnabled(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.isFetchProfileEnabled: name: {}", name);
+    LOGGER.trace("isFetchProfileEnabled: name: {}", name);
     return session.isFetchProfileEnabled(name);
   }
 
   @Override
   public void enableFetchProfile(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.enableFetchProfile: name: {}", name);
+    LOGGER.trace("enableFetchProfile: name: {}", name);
     session.enableFetchProfile(name);
   }
 
   @Override
   public void disableFetchProfile(String name) throws UnknownProfileException {
-    LOGGER.trace("CandanceSessionImpl.disableFetchProfile: name: {}", name);
+    LOGGER.trace("disableFetchProfile: name: {}", name);
     session.disableFetchProfile(name);
   }
 
   @Override
   public TypeHelper getTypeHelper() {
-    LOGGER.trace("CandanceSessionImpl.getTypeHelper");
+    LOGGER.trace("getTypeHelper");
     return session.getTypeHelper();
   }
 
   @Override
   public LobHelper getLobHelper() {
-    LOGGER.trace("CandanceSessionImpl.getLobHelper");
+    LOGGER.trace("getLobHelper");
     return session.getLobHelper();
   }
 
   @Override
   public void addEventListeners(SessionEventListener... listeners) {
-    LOGGER.trace("CandanceSessionImpl.addEventListeners: listeners: {}", (Object[]) listeners);
+    LOGGER.trace("addEventListeners: listeners: {}", (Object[]) listeners);
     session.addEventListeners(listeners);
   }
 
   @Override
   public Query createQuery(String queryString) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(String): queryString: {}", queryString);
+    LOGGER.debug("createQuery(String): queryString: {}", queryString);
     return session.createQuery(queryString);
   }
 
   @Override
   public <T> Query<T> createQuery(String queryString, Class<T> resultType) {
-    LOGGER.debug(
-        "CandanceSessionImpl.createQuery(String, Class<T>): queryString: {}, resultType: {}",
-        queryString, resultType);
+    LOGGER.debug("createQuery(String, Class<T>): queryString: {}, resultType: {}", queryString,
+        resultType);
     return session.createQuery(queryString, resultType);
   }
 
   @Override
   public <T> Query<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery<T>): criteriaQuery: {}",
-        criteriaQuery);
+    LOGGER.debug("createQuery(CriteriaQuery<T>): criteriaQuery: {}", criteriaQuery);
     return session.createQuery(criteriaQuery);
   }
 
   @Override
   public Query createQuery(CriteriaUpdate updateQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): updateQuery: {}", updateQuery);
+    LOGGER.debug("createQuery(CriteriaQuery): updateQuery: {}", updateQuery);
     return session.createQuery(updateQuery);
   }
 
   @Override
   public Query createQuery(CriteriaDelete deleteQuery) {
-    LOGGER.debug("CandanceSessionImpl.createQuery(CriteriaQuery): deleteQuery: {}", deleteQuery);
+    LOGGER.debug("createQuery(CriteriaQuery): deleteQuery: {}", deleteQuery);
     return session.createQuery(deleteQuery);
   }
 
   @Override
   public <T> Query<T> createNamedQuery(String name, Class<T> resultType) {
-    LOGGER.debug("CandanceSessionImpl.createNamedQuery: name: {}, resultType: {}", name,
-        resultType);
+    LOGGER.debug("createNamedQuery: name: {}, resultType: {}", name, resultType);
     return session.createNamedQuery(name, resultType);
   }
 
@@ -962,8 +1026,7 @@ public class CandaceSessionImpl implements Session {
   @SuppressWarnings("unchecked")
   @Override
   public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
-    LOGGER.debug("CandanceSessionImpl.createNativeQuery: sqlString: {}, resultClass: {}", sqlString,
-        resultClass);
+    LOGGER.debug("createNativeQuery: sqlString: {}, resultClass: {}", sqlString, resultClass);
     return session.createNativeQuery(sqlString, resultClass);
   }
 

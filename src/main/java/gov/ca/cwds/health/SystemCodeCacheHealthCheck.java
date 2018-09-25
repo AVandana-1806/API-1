@@ -14,14 +14,10 @@ public class SystemCodeCacheHealthCheck extends HealthCheck {
 
   @Override
   protected Result check() throws Exception {
-    int count = SystemCodeCache.global().getAllSystemCodes().size();
-
-    String message = "Expected minimum system codes " + MINIMUM_SYSTEM_CODES + ", found " + count;
-
-    if (count >= MINIMUM_SYSTEM_CODES) {
-      return Result.healthy(message);
-    } else {
-      return Result.unhealthy(message);
-    }
+    final int count = SystemCodeCache.global().getAllSystemCodes().size();
+    final String message =
+        "Expected minimum system codes " + MINIMUM_SYSTEM_CODES + ", found " + count;
+    return count >= MINIMUM_SYSTEM_CODES ? Result.healthy(message) : Result.unhealthy(message);
   }
+
 }

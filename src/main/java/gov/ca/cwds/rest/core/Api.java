@@ -74,6 +74,12 @@ public final class Api {
     public static final String SYSTEM_CODES_STATUS = "system_code";
     public static final String INTAKE_LOV_CODE_CACHE_STATUS = "lov_code_cache";
     public static final String SYSTEM_CODE_CACHE_STATUS = "system_code_cache";
+    public static final String MQT_STATUS = "mqts";
+    public static final String VIEW_STATUS = "views";
+    public static final String TRIGGER_STATUS = "triggers";
+    public static final String SP_GENCLNCNTY_STATUS = "client_county";
+    public static final String SP_SPSSANAME3_STATUS = "spssaname3";
+    public static final String DB_CMS_PERMISSION_STATUS = "db_cms_permissions";
 
     private HealthCheck() {}
   }
@@ -234,29 +240,29 @@ public final class Api {
   public static final String DS_NS = Datasource.NS;
 
   /**
-   * Identifer for CMS DB2 replicated datasources.
-   */
-  public static final String DATASOURCE_CMS_REP = Datasource.CMS_REP;
-
-  /**
-   * Identifer for CMS DB2 datasources for XA, transactional schema.
-   */
-  public static final String DATASOURCE_XA_CMS = Datasource.XA_CMS;
-
-  /**
-   * Identifer for CMS DB2 datasources for XA, replicated schema.
-   */
-  public static final String DATASOURCE_XA_CMS_RS = Datasource.XA_CMS_RS;
-
-  /**
    * Identifer for NS Postgres datasources.
    */
   public static final String DATASOURCE_NS = Datasource.NS;
 
   /**
+   * Identifer for CMS DB2 replicated datasources.
+   */
+  public static final String DS_CMS_REP = Datasource.CMS_REP;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, transactional schema.
+   */
+  public static final String DS_XA_CMS = Datasource.XA_CMS;
+
+  /**
+   * Identifer for CMS DB2 datasources for XA, replicated schema.
+   */
+  public static final String DS_XA_CMS_RS = Datasource.XA_CMS_RS;
+
+  /**
    * Identifer for NS Postgres datasources for XA transactions.
    */
-  public static final String DATASOURCE_XA_NS = Datasource.XA_NS;
+  public static final String DS_XA_NS = Datasource.XA_NS;
 
   /**
    * Default private constructor

@@ -17,6 +17,7 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -72,7 +73,7 @@ import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
-import gov.ca.cwds.rest.services.ParticipantService;
+import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -122,7 +123,7 @@ public class LastUpdatedTimeIsUniqueTest {
   private ChildClientService childClientService;
   private LongTextService longTextService;
   private AssignmentService assignmentService;
-  private ParticipantService participantService;
+  private ParticipantToLegacyClient participantToLegacyClient;
   private ClientRelationshipCoreService clientRelationshipService;
   private RIChildClient riChildClient;
   private RIAllegationPerpetratorHistory riAllegationPerpetratorHistory;
@@ -280,7 +281,7 @@ public class LastUpdatedTimeIsUniqueTest {
     riReferral = mock(RIReferral.class);
     governmentOrganizationCrossReportService = mock(GovernmentOrganizationCrossReportService.class);
 
-    participantService = new ParticipantService(clientService, referralClientService,
+    participantToLegacyClient = new ParticipantToLegacyClient(clientService, referralClientService,
         reporterService, childClientService, clientAddressService, validator,
         clientScpEthnicityService, caseDao, referralClientDao);
     clientRelationshipService = mock(ClientRelationshipCoreService.class);
@@ -302,7 +303,7 @@ public class LastUpdatedTimeIsUniqueTest {
     referralService.setRiReferral(riReferral);
 
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantService, clientRelationshipService,
+        crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
         clientRelationshipDao);
@@ -553,6 +554,11 @@ public class LastUpdatedTimeIsUniqueTest {
     assertThat(createdAllegationPerpetratorHistory.getLastUpdatedTime(),
         is(equalTo(createdTimestamp)));
     assertThat(response.hasMessages(), is(equalTo(false)));
+  }
+
+  @Test
+  public void tempTest() {
+
   }
 
 }

@@ -9,7 +9,6 @@ import org.junit.Test;
 import com.google.inject.Injector;
 
 import gov.ca.cwds.rest.services.AddressService;
-import gov.ca.cwds.rest.services.ParticipantIntakeApiService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
 import gov.ca.cwds.rest.services.ScreeningService;
@@ -44,6 +43,7 @@ import gov.ca.cwds.rest.services.investigation.CrossReportListService;
 import gov.ca.cwds.rest.services.investigation.HistoryOfInvolvementService;
 import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 
 public class ResourcesModuleTest {
   ResourcesModule resourceModule;
@@ -191,7 +191,7 @@ public class ResourcesModuleTest {
   @Test
   public void participantServiceBackedResourceShouldRetrieveServiceFromInjector() {
     resourceModule.participantServiceBackedResource(injector);
-    verify(injector).getInstance(ParticipantIntakeApiService.class);
+    verify(injector).getInstance(ParticipantService.class);
   }
 
   @Test

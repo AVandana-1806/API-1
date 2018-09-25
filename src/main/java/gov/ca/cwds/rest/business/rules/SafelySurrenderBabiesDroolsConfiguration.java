@@ -12,7 +12,7 @@ public class SafelySurrenderBabiesDroolsConfiguration
 
   public static final SafelySurrenderBabiesDroolsConfiguration INSTANCE =
       new SafelySurrenderBabiesDroolsConfiguration("safely-surrender-babies-session",
-          "safely-surrender-babies-agenda", "safely-surrender-babies-rules");
+          "safely-surrender-babies-agenda", "rules/safely-surrender-babies");
 
   private SafelySurrenderBabiesDroolsConfiguration(String rulesSession, String rulesAgenda,
       String kieContainerId) {
