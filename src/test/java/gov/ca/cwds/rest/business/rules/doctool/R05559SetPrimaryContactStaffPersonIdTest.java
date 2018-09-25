@@ -290,6 +290,7 @@ public class R05559SetPrimaryContactStaffPersonIdTest {
         crossReportService, participantToLegacyClient, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
         governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   /**

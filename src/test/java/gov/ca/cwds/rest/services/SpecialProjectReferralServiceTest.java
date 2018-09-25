@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.services;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -85,6 +86,17 @@ public class SpecialProjectReferralServiceTest {
     new TestingRequestExecutionContext("0X5");
   }
 
+  @Test
+  public void testProcessSafelySurrenderedBabiesGetters() {
+    assertThat(specialProjectReferralService.getNonCWSNumberDao(), is(equalTo(nonCWSNumberDao)));
+    assertThat(specialProjectReferralService.getDroolsService(), is(equalTo(droolsService)));
+    assertThat(specialProjectReferralService.getSpecialProjectDao(), is(equalTo(specialProjectDao)));
+    assertThat(specialProjectReferralService.getRiSpecialProjectReferral(), is(equalTo(riSpecialProjectReferral)));
+    assertThat(specialProjectReferralService.getSafelySurrenderedBabiesDao(), is(equalTo(safelySurrenderedBabiesDao)));
+    assertThat(specialProjectReferralService.getValidator(), is(equalTo(validator)));
+    assertThat(specialProjectReferralService.getSpecialProjectReferralDao(), is(equalTo(specialProjectReferralDao)));
+  }
+  
   @Test
   public void testProcessSafelySurrenderedBabies() {
     LocalDateTime now = LocalDateTime.now();

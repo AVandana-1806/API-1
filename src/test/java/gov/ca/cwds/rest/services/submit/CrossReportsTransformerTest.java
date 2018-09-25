@@ -81,6 +81,7 @@ public class CrossReportsTransformerTest {
     assertEquivalent(expectedCrossReport, crossReportsIterator.next());
   }
 
+  
   @Test
   public void transformConvertsCrossReportsIntakeToCrossReportsWhenMethodEmpty() {
     CrossReport expectedCrossReport = crossReportResourceBuilder.setMethod(null).createCrossReport();

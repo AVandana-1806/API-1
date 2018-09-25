@@ -43,6 +43,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
   private String approximateAgeUnits = "YR";
   private String relatedScreeningId = "123123";
   private ScreeningEntity screeningEntity;
+  private Boolean estimatedDob;
   ParticipantEntity target;
 
   @Override
@@ -62,7 +63,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
     screeningEntity = new ScreeningEntityBuilder().build();
     ParticipantEntity pe = new ParticipantEntity(id, birthDate, deathDate, firstName, gender,
         lastName, ssn, screeningEntity, legacyId, roles, languages, middleName, nameSuffix, races,
-        ethnicity, legacySourceTable, sensitivity, sealed, probationYouth, approximateAge, approximateAgeUnits);
+        ethnicity, legacySourceTable, sensitivity, sealed, probationYouth, approximateAge, approximateAgeUnits, estimatedDob);
     pe.setRelatedScreeningId(relatedScreeningId);
     assertThat(pe.getId(), is(equalTo(id)));
     assertThat(pe.getPrimaryKey(), is(equalTo(id)));
@@ -87,6 +88,7 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
     assertThat(pe.getApproximateAge(), is(equalTo(approximateAge)));
     assertThat(pe.getApproximateAgeUnits(), is(equalTo(approximateAgeUnits)));
     assertThat(pe.getRelatedScreeningId(), is(equalTo(relatedScreeningId)));
+    assertThat(pe.getEstimatedDob(), is(equalTo(estimatedDob)));
   }
 
   @Test
@@ -451,6 +453,13 @@ public class ParticipantEntityTest extends Doofenshmirtz<ParticipantEntity> {
   public void getRelateScreeningId_A$() throws Exception {
     String actual = target.getRelatedScreeningId();
     String expected = null;
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getEstimatedDob_A$Boolean() {
+    Boolean actual = target.getEstimatedDob();
+    Boolean expected = null;
     assertThat(actual, is(equalTo(expected)));
   }
 

@@ -1,11 +1,11 @@
-package gov.ca.cwds.rest.validation;
+package gov.ca.cwds.rest.validation.rules;
 
 import gov.ca.cwds.data.legacy.cms.entity.NonCWSNumber;
 import gov.ca.cwds.data.legacy.cms.entity.SafelySurrenderedBabies;
 import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.business.rules.SafelySurrenderBabiesDroolsConfiguration;
 import gov.ca.cwds.rest.exception.IssueDetails;
-import java.util.Set;
+import java.util.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * CWDS API Team
  */
-public class BusinessRulesValidationTest {
+public class SafelySurrenderBabiesBusinessRulesValidationTest {
   private DroolsService droolsService;
 
   @Before

@@ -6,9 +6,7 @@ allowAllCredentialsMatcher = org.apache.shiro.authc.credential.AllowAllCredentia
 # Perry Realm
 # -------------
 perryRealm = gov.ca.cwds.security.realm.PerryRealm
-#perryRealm.validationUri = http://localhost:8080/perry/authn/validate
-perryRealm.validationUri = https://web.preint.cwds.io/perry/authn/validate
-#perryRealm.validationUri = ${AUTH_VALIDATION_URL:-http://localhost:8080/perry/authn/validate}
+perryRealm.validationUri = https://perry.preint.cwds.io/perry//authn/validate
 
 perryRealm.credentialsMatcher = $allowAllCredentialsMatcher
 
@@ -26,9 +24,10 @@ securityManager.realm = $perryRealm
 [urls]
 /system-information = noSession, anon
 /application = noSession, anon
+/admin/** = noSession, anon
 /static/** = noSession, anon
 /swagger* = noSession, anon
 /token* = noSession, anon
-#/** = noSession, anon
+/** = noSession, anon
 #enable security
-/** = noSession, perry
+#/** = noSession, perry

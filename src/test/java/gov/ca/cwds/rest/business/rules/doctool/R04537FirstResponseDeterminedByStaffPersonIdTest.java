@@ -305,6 +305,7 @@ public class R04537FirstResponseDeterminedByStaffPersonIdTest {
         crossReportService, participantToLegacyClient, clientRelationshipService, validator, referralDao,
         new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
         governmentOrganizationCrossReportService, clientRelationshipDao);
+    screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
   /**
