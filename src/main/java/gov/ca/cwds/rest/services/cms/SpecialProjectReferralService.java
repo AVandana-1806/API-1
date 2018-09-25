@@ -266,6 +266,18 @@ public class SpecialProjectReferralService implements
     }
     spr.setReferralId(referralId);
     spr.setSpecialProjectId(ssbSpecialProject.getId());
+    /**
+     * <blockquote>
+     * 
+     * <pre>
+     * BUSINESS RULE: "R - 7539" 
+     * 
+     * If (selected) SPECIAL_PROJECT_REFERRAL > SAFELY_SURRENDERED_BABIES exist, 
+     * set SPECIAL_PROJECT_REFERRAL.Safely_Surrenderd_Babies_Ind_Var ='Y', else set to 'N'.
+     * 
+     * </blockquote>
+     * </pre>
+     */
     spr.setSafelySurrenderedBabiesIndicator(Boolean.TRUE);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral createdSpr = this.create(spr);
