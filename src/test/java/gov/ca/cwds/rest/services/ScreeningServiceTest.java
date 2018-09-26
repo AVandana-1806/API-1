@@ -123,7 +123,6 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     when(crossReportDao.findByScreeningId(any(String.class))).thenReturn(crossReportEntities);
 
     target = new ScreeningService();
-    target.setEsDao(esDao);
     target.setScreeningDao(screeningDao);
     target.setScreeningMapper(screeningMapper);
     target.setAllegationDao(allegationDao);
@@ -216,22 +215,13 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     }
   }
 
-  @Test
-  public void testUpdatePrimaryKeyObjectTypMismatchn() {
-    try {
-      target.update(new Integer(1), null);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
-  }
-
   @Test(expected = ServiceException.class)
   public void testUpdateRequestObjectTypMismatchn() {
     final Request request = new Screening();
     target.update("abc", request);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void testCreateRequestObjectTypMismatchn() {
     final Request request = new Screening();
     target.create(request);
@@ -294,23 +284,22 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     assertThat(actual, is(equalTo(expected)));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void create_A$Request() throws Exception {
     final Request request = new Screening();
     final Screening actual = target.create(request);
     final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual.getId(), is(equalTo(expected)));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void update_A$Serializable$Request() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
     final Screening request = new Screening();
     request.setId(DEFAULT_CLIENT_ID);
 
     final Screening actual = target.update(primaryKey, request);
-    final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual.getId(), is(equalTo(DEFAULT_CLIENT_ID)));
   }
 
   @Test
