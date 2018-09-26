@@ -158,7 +158,20 @@ public class SpecialProjectReferralService implements
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
           new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(incidentCounty, referralId,
               specialProjectId, null,
-              startDate, Boolean.FALSE);
+              startDate, 
+              /**
+               * <blockquote>
+               * 
+               * <pre>
+               * BUSINESS RULE: "R - 7539" 
+               * 
+               * If (selected) SPECIAL_PROJECT_REFERRAL > SAFELY_SURRENDERED_BABIES exist, 
+               * set SPECIAL_PROJECT_REFERRAL.Safely_Surrenderd_Babies_Ind_Var ='Y', else set to 'N'.
+               * 
+               * </blockquote>
+               * </pre>
+               */
+              Boolean.FALSE);
       messageBuilder.addDomainValidationError(validator.validate(sprDomain));
 
       if (!specialProjectReferralExists(referralId, specialProjectId)) {
