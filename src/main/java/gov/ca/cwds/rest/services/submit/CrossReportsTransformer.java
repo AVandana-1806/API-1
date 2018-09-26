@@ -1,7 +1,6 @@
 package gov.ca.cwds.rest.services.submit;
 
 import gov.ca.cwds.CWSDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import gov.ca.cwds.rest.api.domain.CrossReport;
 import gov.ca.cwds.rest.api.domain.CrossReportIntake;
-import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.GovernmentAgency;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
