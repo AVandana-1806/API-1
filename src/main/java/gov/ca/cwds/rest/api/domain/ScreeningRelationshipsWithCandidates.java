@@ -42,7 +42,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
     public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(Boolean estimatedDob) {
       if (estimatedDob != null) {
-        withEstimatedDob(estimatedDob == Boolean.TRUE ? "Y" : "N");
+        withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
       }
       return this;
     }
@@ -181,7 +181,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
       public RelatedToBuilder withEstimatedDob(Boolean estimatedDob) {
         if (estimatedDob != null) {
-          withEstimatedDob(estimatedDob == Boolean.TRUE ? "Y" : "N");
+          withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
         }
         return this;
       }
@@ -536,7 +536,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
       public CandidateToBuilder withEstimatedDob(Boolean estimatedDob) {
         if (estimatedDob != null) {
-          withEstimatedDob(estimatedDob == Boolean.TRUE ? "Y" : "N");
+          withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
         }
         return this;
       }
