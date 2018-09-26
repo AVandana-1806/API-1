@@ -1,6 +1,7 @@
 package gov.ca.cwds.data.ns;
 
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_RELATED_SCREENING_ID_AND_PARTICIPANT_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_RELATED_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_SCREENING_IDS;
@@ -108,6 +109,16 @@ public class ParticipantDao extends BaseDaoImpl<ParticipantEntity> {
     @SuppressWarnings("unchecked") final Query<ParticipantEntity> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByScreeningIdAndParticipantId"))
         .setParameter(PathParam.SCREENING_ID, screeningId)
+        .setParameter(PathParam.PARTICIPANT_ID, participantId);
+    readOnlyQuery(query);
+    return query.uniqueResult();
+  }
+
+  public ParticipantEntity findByRelatedScreeningAndParticipantId(String screeningId,
+      String participantId) {
+    @SuppressWarnings("unchecked") final Query<ParticipantEntity> query = this.grabSession()
+        .getNamedQuery(FIND_BY_RELATED_SCREENING_ID_AND_PARTICIPANT_ID)
+        .setParameter(PathParam.RELATED_SCREENING_ID, screeningId)
         .setParameter(PathParam.PARTICIPANT_ID, participantId);
     readOnlyQuery(query);
     return query.uniqueResult();

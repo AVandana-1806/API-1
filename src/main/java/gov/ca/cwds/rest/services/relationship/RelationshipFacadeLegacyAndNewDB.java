@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.util.ConcurrencyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -176,33 +178,39 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   @Override
-  public void deleteParticipantsAndRelationships(String participantId, String screeningId)
-      throws ExecutionException, InterruptedException {
-    ExecutorService executor = Executors.newFixedThreadPool(2);
-    Future<Set<ParticipantEntity>> task1 = executor.submit(() -> participantDao
-        .findByRelatedScreeningId(screeningId));
-    Future<List<Relationship>> task2 = executor
-        .submit(() -> nsRelationshipDao.getRelationshipsByScreeningId(screeningId));
-    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
+  public void deleteRelationshipsAndRelatedParticipants(String participantId, String screeningId) {
+    List<Relationship> relationships = nsRelationshipDao.getRelationshipsByScreeningId(screeningId);
 
-    Set<ParticipantEntity> deletedParticipants = task1.get();
-    List<Relationship> deletedRelationships = task2.get();
+    Set<String> ids = relationships.stream().map(Relationship::getRelativeId)
+        .collect(Collectors.toSet());
+    Set<String> primarydIds = relationships.stream().map(Relationship::getClientId)
+        .collect(Collectors.toSet());
+    ids.addAll(primarydIds);
 
-    deletedParticipants.forEach(e -> participantDao.delete(e.getId()));
-    deletedRelationships.forEach(e -> nsRelationshipDao.delete(e.getId()));
+    Map<String, ParticipantEntity> participantsMappedById = getMappedParticipantsById(ids);
 
+    Set<String> participantsForDelete = new HashSet<>();
+    if (CollectionUtils.isNotEmpty(relationships)) {
+      relationships.forEach(e -> {
+        if (e.getClientId().equals(participantId) || e.getRelativeId().equals(participantId)) {
+          nsRelationshipDao.delete(e.getId());
 
-//    executor = Executors.newFixedThreadPool(2);
-//    executor.execute(() -> participantDao
-//        .deleteParticipantsByRelatedScreningIdWithNullableScreeningId(screeningId));
-//    executor.execute(() -> nsRelationshipDao.deleteRelationshipsByRelatedScreeningId(screeningId));
-//    ConcurrencyUtil.awaitTerminationAfterShutdown(executor);
+          if (participantsMappedById.get(e.getClientId()) != null && StringUtils
+              .isEmpty(participantsMappedById.get(e.getClientId()).getScreeningId())) {
+            participantsForDelete.add(e.getClientId());
+          }
+          if (participantsMappedById.get(e.getRelativeId()) != null && StringUtils
+              .isEmpty(participantsMappedById.get(e.getRelativeId()).getScreeningId())) {
+            participantsForDelete.add(e.getRelativeId());
+          }
+        }
+      });
+      participantsForDelete.remove(participantId);
+    }
 
-    // достаем новые релейшены
-//    Set<ScreeningRelationship> allRelationships = fromResponse(
-//        getRelationshipsByScreeningId(screeningId));
-
-    // обновляем их по легаси ID и добавляем те у кого нет легаси id
+    // delete related participants
+    participantsForDelete
+        .forEach(e -> participantService.delete(new ParticipantResourceParameters(screeningId, e)));
   }
 
   private ScreeningRelationship enrichReversedRelationship(ScreeningRelationship relationship) {
@@ -529,8 +537,6 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
       final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
-    LOGGER.info("lagacyRelationships {}", lagacyRelationships);
-    LOGGER.info("nsRelationships {}", nsRelationships);
     final List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
     if (CollectionUtils.isEmpty(lagacyRelationships)) {
       return relationshipsToCreate;

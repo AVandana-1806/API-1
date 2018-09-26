@@ -1,6 +1,7 @@
 package gov.ca.cwds.data.persistence.ns;
 
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID;
+import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_RELATED_SCREENING_ID_AND_PARTICIPANT_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_BY_SCREENING_ID_AND_LEGACY_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_LEGACY_ID_LIST_BY_SCREENING_ID;
 import static gov.ca.cwds.data.persistence.ns.ParticipantEntity.FIND_PARTICIPANTS_BY_PARTICIPANT_IDS;
@@ -30,6 +31,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -73,6 +75,9 @@ import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 @NamedQuery(name = DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID,
     query = "delete FROM ParticipantEntity WHERE relatedScreeningId = :"
         + PathParam.RELATED_SCREENING_ID + " and " + PathParam.SCREENING_ID + " is null")
+@NamedQuery(name = FIND_BY_RELATED_SCREENING_ID_AND_PARTICIPANT_ID,
+    query = "FROM ParticipantEntity WHERE relatedScreeningId = :"
+        + PathParam.RELATED_SCREENING_ID + " and id = :" + PathParam.PARTICIPANT_ID)
 @Entity
 @Table(name = "participants")
 @SuppressWarnings({"squid:S00107"})
@@ -95,6 +100,8 @@ public class ParticipantEntity
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findParticipantsByRelatedScreeningId";
   public static final String DELETE_PARTICIPANTS_BY_RELATED_SCREENING_ID =
       "gov.ca.cwds.data.persistence.ns.ParticipantEntity.deleteParticipantsByRelatedScreeningId";
+  public static final String FIND_BY_RELATED_SCREENING_ID_AND_PARTICIPANT_ID =
+      "gov.ca.cwds.data.persistence.ns.ParticipantEntity.findByRelatedScreeningIdAndParticipantId";
 
   @Id
   @Column(name = "id")
@@ -233,7 +240,8 @@ public class ParticipantEntity
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,
       String[] roles, String[] languages, String middleName, String nameSuffix, String races,
       String ethnicity, String legacySourceTable, Boolean sensitive, Boolean sealed,
-      Boolean probationYouth, String approximateAge, String approximateAgeUnits, Boolean estimatedDob) {
+      Boolean probationYouth, String approximateAge, String approximateAgeUnits,
+      Boolean estimatedDob) {
     this.id = id;
     this.dateOfBirth = freshDate(dateOfBirth);
     this.dateOfDeath = freshDate(dateOfDeath);
@@ -284,7 +292,10 @@ public class ParticipantEntity
     probationYouth = participantIntakeApi.isProbationYouth();
     approximateAge = participantIntakeApi.getApproximateAge();
     approximateAgeUnits = participantIntakeApi.getApproximateAgeUnits();
-    relatedScreeningId = participantIntakeApi.getRelatedScreeningId();
+    relatedScreeningId =
+        StringUtils.isEmpty(participantIntakeApi.getRelatedScreeningId()) ? participantIntakeApi
+            .getScreeningId()
+            : participantIntakeApi.getRelatedScreeningId();
     return this;
   }
 

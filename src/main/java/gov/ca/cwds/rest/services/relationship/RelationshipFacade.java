@@ -20,6 +20,5 @@ public interface RelationshipFacade {
 
   List<Response> getRelationshipsByScreeningId(String screeningId);
 
-  void deleteParticipantsAndRelationships(String participantId, String screeningId)
-      throws ExecutionException, InterruptedException;
+  void deleteRelationshipsAndRelatedParticipants(String participantId, String screeningId);
 }

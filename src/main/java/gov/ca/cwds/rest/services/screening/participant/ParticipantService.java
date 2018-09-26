@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
-import gov.ca.cwds.data.ns.RelationshipDao;
-import gov.ca.cwds.data.persistence.ns.Relationship;
 import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -178,7 +175,7 @@ public class ParticipantService implements
     }
 
     ParticipantEntity participantEntity =
-        participantDao.findByScreeningIdAndParticipantId(screeningId, participantId);
+        participantDao.findByRelatedScreeningAndParticipantId(screeningId, participantId);
     if (participantEntity == null) {
       return null;
     }
@@ -209,6 +206,7 @@ public class ParticipantService implements
       legacyDescriptorDao.delete(legacyDescriptorEntity.getId());
     }
 
+    relationshipFacade.deleteRelationshipsAndRelatedParticipants(participantId, screeningId);
     participantDao.delete(participantId);
 
     return new ParticipantIntakeApi(participantEntity);
@@ -252,6 +250,12 @@ public class ParticipantService implements
   public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
 
     setLegacyIdAndTable(participant);
+
+    ParticipantEntity entity = participantDao.findByRelatedScreeningIdAndLegacyId(participant.getLegacyId(), participant.getScreeningId());
+    if (entity != null) {
+      return new ParticipantIntakeApi(entity);
+    }
+
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 

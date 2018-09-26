@@ -420,6 +420,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   public void setScreeningId(String screeningId) {
     this.screeningId = screeningId;
+    setRelatedScreeningId(relatedScreeningId);
   }
 
   public void setRoles(Set<String> roles) {
