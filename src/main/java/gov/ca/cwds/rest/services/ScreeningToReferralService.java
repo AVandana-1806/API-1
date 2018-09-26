@@ -340,10 +340,10 @@ public class ScreeningToReferralService implements CrudsService {
       CrossReport crossReport, Boolean outStateLawEnforcementIndicator,
       String outStateLawEnforcementAddr) {
 
-    Set<IssueDetails> detailsList = droolsService.performBusinessRules(
+    Set<IssueDetails> detailsSet = droolsService.performBusinessRules(
         CrossReportDroolsConfiguration.INSTANCE, crossReport, screeningToReferral);
-    if (!detailsList.isEmpty()) {
-      throw new BusinessValidationException(detailsList);
+    if (!detailsSet.isEmpty()) {
+      throw new BusinessValidationException(detailsSet);
     }
 
     if (StringUtils.isBlank(crossReport.getLegacyId())) {
