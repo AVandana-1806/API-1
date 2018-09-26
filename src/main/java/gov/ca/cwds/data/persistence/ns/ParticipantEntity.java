@@ -216,6 +216,7 @@ public class ParticipantEntity
    * @param probationYouth - probationYouth
    * @param approximateAge - approximateAge
    * @param approximateAgeUnits - approximateAgeUnits
+   * @param estimatedDob - estimatedDob
    */
   public ParticipantEntity(String id, Date dateOfBirth, Date dateOfDeath, String firstName,
       String gender, String lastName, String ssn, ScreeningEntity screeningEntity, String legacyId,

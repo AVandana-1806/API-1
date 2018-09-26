@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,9 +176,16 @@ public class ParticipantService implements
       return null;
     }
 
-    // Delete all allegations for this participant
-    allegationDao.deleteByIdList(allegationDao.findByVictimOrPerpetratorId(participantId).stream()
+    // Delete allegations for this participant where he is a Victim
+    allegationDao.deleteByIdList(allegationDao.findByVictimId(participantId).stream()
         .map(AllegationEntity::getId).collect(Collectors.toList()));
+
+    // Update allegations -  clear reference to this participant where he is a Perpetrator
+    allegationDao.findByPerpetratorId(participantId).stream()
+        .forEach(allegation -> {
+          allegation.setPerpetratorId(null);
+          allegationDao.update(allegation);
+        });
 
     // Delete Participant Addresses & PhoneNumbers
     participantAddressesDao.findByParticipantId(participantId).forEach(
@@ -210,8 +218,29 @@ public class ParticipantService implements
     if (participant == null) {
       throw new ServiceException("NULL argument for CREATE participant");
     }
+
+    // validate if participant already exist but didn't attach
+    ParticipantIntakeApi participantIntakeApi = getExistingParticipant(participant);
+    if (participantIntakeApi != null) {
+      return participantIntakeApi;
+    }
+
     return persistParticipantObjectInNS(
         participantTransformer.prepareParticipantObject(participant));
+  }
+
+  private ParticipantIntakeApi getExistingParticipant(ParticipantIntakeApi participant) {
+    ParticipantEntity existing = getExistingParticipant(
+        participant.getScreeningId(),
+        participant.getLegacyDescriptor());
+    if (existing != null) {
+      existing = enrichExistingParticipantWithScreeningId(
+          participant.getScreeningId(),
+          existing);
+      participantDao.update(existing);
+      return new ParticipantIntakeApi(existing);
+    }
+    return null;
   }
 
   public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
@@ -309,6 +338,24 @@ public class ParticipantService implements
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
     return participantIntakeApiPosted;
+  }
+
+  private ParticipantEntity getExistingParticipant(String screeningId,
+      LegacyDescriptor legacyDescriptor) {
+    String legacyId = "";
+    if (legacyDescriptor != null && StringUtils.isNoneEmpty(legacyDescriptor.getId())) {
+      legacyId += legacyDescriptor.getId();
+    }
+    return participantDao
+        .findByRelatedScreeningIdAndLegacyId(screeningId,
+            legacyId);
+  }
+
+
+  private ParticipantEntity enrichExistingParticipantWithScreeningId(String screeningId,
+      ParticipantEntity existingParticipant) {
+    existingParticipant.setScreeningId(screeningId);
+    return existingParticipant;
   }
 
   private void setLegacyIdAndTable(ParticipantIntakeApi participant) {
@@ -550,4 +597,7 @@ public class ParticipantService implements
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
 
+  void setParticipantDao(ParticipantDao participantDao) {
+    this.participantDao = participantDao;
+  }
 }
