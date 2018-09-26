@@ -98,6 +98,12 @@ public class ScreeningParticipantService
             legacyId);
   }
 
+  private ParticipantEntity enrichExistingParticipantWithScreeningId(String screeningId,
+      ParticipantEntity existingParticipant) {
+    existingParticipant.setScreeningId(screeningId);
+    return existingParticipant;
+  }
+
   private ParticipantIntakeApi createParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
     ParticipantMapper<CmsPersistentObject> participantMapper;
@@ -109,12 +115,6 @@ public class ScreeningParticipantService
       LOGGER.error("Object is not found with the given identifier {}", id);
       throw new ServiceException("");
     }
-  }
-
-  private ParticipantEntity enrichExistingParticipantWithScreeningId(String screeningId,
-      ParticipantEntity existingParticipant) {
-    existingParticipant.setScreeningId(screeningId);
-    return existingParticipant;
   }
 
   private void ensureScreeningExistsAndOpen(ParticipantIntakeApi participantIntakeApi) {

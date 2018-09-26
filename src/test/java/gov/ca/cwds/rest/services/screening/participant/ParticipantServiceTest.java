@@ -3,6 +3,8 @@ package gov.ca.cwds.rest.services.screening.participant;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -117,7 +119,6 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     phoneNumbers2 =
         new PhoneNumbersEntityBuilder().setId(pN2).setNumber("222222222").setType("Work").build();
 
-
     when(addressesDao.find(aId1)).thenReturn(addresses1);
     when(addressesDao.find(aId2)).thenReturn(null);
     when(addressesDao.create(any())).thenReturn(addresses2);
@@ -133,8 +134,28 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
         "tableName", "a table to store data");
     legacyDescriptorEntity = new LegacyDescriptorEntity(legacyDescriptor, "", 219L);
     when(legacyDescriptorDao.create(any())).thenReturn(legacyDescriptorEntity);
+
+    when(participantDao.findByRelatedScreeningIdAndLegacyId(null, "JhHq86Iaaf"))
+        .thenReturn(new ParticipantEntityBuilder().setId("1121").setLegacyId("2222").build());
   }
 
+  @Test
+  public void testCreateExistingParticipant() {
+    ParticipantEntity shouldBeCreated = new ParticipantEntity();
+    shouldBeCreated.setLegacyId("2222");
+    shouldBeCreated.setScreeningId(null);
+    ParticipantIntakeApi participantIntakeApiRequest = new ParticipantIntakeApi(shouldBeCreated);
+    participantIntakeApiRequest
+        .setLegacyDescriptor(legacyDescriptor);
+
+    participantService.setParticipantDao(participantDao);
+
+    ParticipantIntakeApi participantIntakeApi = participantService
+        .create(participantIntakeApiRequest);
+
+    assertNotNull(participantIntakeApi);
+    assertEquals("1121", participantIntakeApi.getId());
+  }
 
   @Override
   @Test
@@ -173,7 +194,6 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     String aId2 = "2";
     String pN1 = "11";
     String pN2 = "22";
-
 
     ParticipantEntity participantEntity =
         new ParticipantEntityBuilder().setId(participantId).build();
@@ -283,7 +303,8 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
   }
 
   @Override
-  public void testCreateNullIDError() throws Exception {}
+  public void testCreateNullIDError() throws Exception {
+  }
 
   @Override
   public void testCreateEmptyIDError() throws Exception {
@@ -352,7 +373,6 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     String aId2 = "2";
     String pN1 = "11";
     String pN2 = "22";
-
 
     ParticipantEntity participantEntity =
         new ParticipantEntityBuilder().setId(participantId).build();
@@ -442,7 +462,6 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     String pN1 = "11";
     String pN2 = "22";
     String pN3 = "33";
-
 
     ParticipantEntity participantEntity = new ParticipantEntityBuilder().setId(pId).build();
 
