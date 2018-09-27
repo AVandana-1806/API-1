@@ -296,6 +296,7 @@ public class ParticipantEntity
         StringUtils.isEmpty(participantIntakeApi.getRelatedScreeningId()) ? participantIntakeApi
             .getScreeningId()
             : participantIntakeApi.getRelatedScreeningId();
+    this.estimatedDob = participantIntakeApi.getEstimatedDob();
     return this;
   }
 

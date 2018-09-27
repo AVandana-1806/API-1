@@ -1,8 +1,11 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,6 +104,9 @@ public class ParticipantService implements
 
   @Inject
   private RelationshipFacade relationshipFacade;
+
+  @Inject
+  private ClientDao clientDao;
 
   /**
    * {@inheritDoc}
@@ -250,6 +256,7 @@ public class ParticipantService implements
   public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
 
     setLegacyIdAndTable(participant);
+    enrichEstimatedDob(participant);
 
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
@@ -284,6 +291,10 @@ public class ParticipantService implements
           .setLegacyDescriptor(new LegacyDescriptor(legacyDescriptorEntityManaged));
     }
     return participantIntakeApiPosted;
+  }
+
+  private void enrichEstimatedDob(ParticipantIntakeApi participant) {
+    participant.setEstimatedDob(getDobCode(participant.getLegacyDescriptor()));
   }
 
   /**
@@ -600,6 +611,19 @@ public class ParticipantService implements
   void setSafelySurrenderedBabiesMapper(
       SafelySurrenderedBabiesMapper safelySurrenderedBabiesMapper) {
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
+  }
+
+  // Temp fix (this logic should be moved to elasticsearch)
+  private Boolean getDobCode(LegacyDescriptor legacyDescriptor) {
+    if (legacyDescriptor == null) {
+      return null;
+    }
+    Client client = clientDao.findClientsByIds(Arrays.asList(legacyDescriptor.getId()))
+        .get(legacyDescriptor.getId());
+    if (client != null) {
+      return client.getEstimatedDobCode().equals("Y") ? Boolean.TRUE : Boolean.FALSE;
+    }
+    return null;
   }
 
   void setParticipantDao(ParticipantDao participantDao) {

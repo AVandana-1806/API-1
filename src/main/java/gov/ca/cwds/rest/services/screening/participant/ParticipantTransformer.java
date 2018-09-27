@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import gov.ca.cwds.data.persistence.cms.Client;
+import java.util.Arrays;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -94,7 +96,6 @@ public class ParticipantTransformer {
   private Boolean isProbationYouth(String clientId) {
     return clientDao.findProbationYouth(clientId) != null;
   }
-
 
   /**
    * @param screeningDao - screeningDao

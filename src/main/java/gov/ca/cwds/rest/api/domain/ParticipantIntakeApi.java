@@ -112,9 +112,8 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   private String legacySourceTable;
 
   @JsonProperty("estimated_dob")
-  @OneOf(value = {"Y", "N", "U"})
-  @ApiModelProperty(value = "Estimated Date of birth", example = "Y")
-  private String estimatedDob;
+  @ApiModelProperty(value = "Estimated Date of birth", example = "true")
+  private Boolean estimatedDob;
 
   /*
    * Workafoung for fields containing raw json races ethnicity
@@ -623,11 +622,11 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.relatedScreeningId = relatedScreeningId;
   }
 
-  public String getEstimatedDob() {
+  public Boolean getEstimatedDob() {
     return estimatedDob;
   }
 
-  public void setEstimatedDob(String estimatedDob) {
+  public void setEstimatedDob(Boolean estimatedDob) {
     this.estimatedDob = estimatedDob;
   }
 
