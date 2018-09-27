@@ -163,7 +163,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     // compare
     List<ClientRelationship> shouldBeUpdated =
         getRelationshipsThatShouldBeUpdated(lagacyRelationships, nsRelationships);
-    List<ClientRelationship> shouldBeCreated =
+    Set<ClientRelationship> shouldBeCreated =
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
     result.addAll(createRelationships(shouldBeCreated, screeningId));
     result.addAll(updateRelationships(shouldBeUpdated));
@@ -468,7 +468,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return result;
   }
 
-  private List<ScreeningRelationship> createRelationships(List<ClientRelationship> shouldBeCreated,
+  private List<ScreeningRelationship> createRelationships(Set<ClientRelationship> shouldBeCreated,
       String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
       return new ArrayList<>();
@@ -482,20 +482,13 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     ParticipantEntity participantEntity1;
     ParticipantEntity participantEntity2;
 
-    Set<ParticipantEntity> existingParticipants = participantDao.findByRelatedScreeningId(screeningId);
-
     for (ClientRelationship clientRelationship : shouldBeCreated) {
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
         final Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         if (client == null) {
           continue;
         }
-//
-//        participantEntity1 = existingParticipants.stream().filter(e -> {
-//          if (StringUtils.equals(screeningId, e.getRelatedScreeningId()) && StringUtils
-//              .equals(e.getLegacyId(), client.getId())) {
-//
-//          };).
+
         participantEntity1 = createParticipant(client, screeningId);
       } else {
         participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,
@@ -507,7 +500,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         if (client == null) {
           continue;
         }
+
         participantEntity2 = createParticipant(client, screeningId);
+
       } else {
         participantEntity2 = participantDao.findByScreeningIdAndLegacyId(screeningId,
             clientRelationship.getSecondaryClientId());
@@ -538,10 +533,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
+    participantDao.getSessionFactory().getCurrentSession().flush();
 
     ParticipantEntity entity = participantDao
-        .findByRelatedScreeningIdAndLegacyId(client.getId(),
-            screeningId);
+        .findByRelatedScreeningIdAndLegacyId(screeningId, client.getId());
     if (entity != null) {
       return entity;
     }
@@ -551,9 +546,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return participantDao.find(participantIntakeApi.getId());
   }
 
-  private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
+  private Set<ClientRelationship> getRelationshipsThatShouldBeCreated(
       final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
-    final List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
+    final Set<ClientRelationship> relationshipsToCreate = new HashSet<>();
     if (CollectionUtils.isEmpty(lagacyRelationships)) {
       return relationshipsToCreate;
     }
