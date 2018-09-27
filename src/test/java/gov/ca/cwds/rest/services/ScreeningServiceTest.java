@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
@@ -28,7 +27,6 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.ns.AllegationIntakeDao;
 import gov.ca.cwds.data.ns.CrossReportDao;
 import gov.ca.cwds.data.ns.ScreeningAddressDao;
@@ -58,9 +56,6 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-
-  @Mock
-  private ElasticsearchDao esDao;
 
   @Mock
   private ScreeningDao screeningDao;
@@ -103,14 +98,6 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     super.setup();
     MockitoAnnotations.initMocks(this);
 
-    when(esDao.getConfig()).thenReturn(esConfig);
-    when(esDao.getClient()).thenReturn(esClient);
-    when(esConfig.getElasticsearchAlias()).thenReturn("screenings");
-    when(esConfig.getElasticsearchDocType()).thenReturn("screening");
-
-    when(esClient.prepareIndex(any(), any(), any())).thenReturn(indexRequestBuilder);
-    when(indexRequestBuilder.get()).thenReturn(indexResponse);
-
     final ScreeningEntity screeningEntity = new ScreeningEntity();
     when(screeningDao.find(any(Serializable.class))).thenReturn(screeningEntity);
     when(screeningDao.create(screeningEntity)).thenReturn(screeningEntity);
@@ -123,7 +110,6 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     when(crossReportDao.findByScreeningId(any(String.class))).thenReturn(crossReportEntities);
 
     target = new ScreeningService();
-    target.setEsDao(esDao);
     target.setScreeningDao(screeningDao);
     target.setScreeningMapper(screeningMapper);
     target.setAllegationDao(allegationDao);
@@ -216,22 +202,13 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     }
   }
 
-  @Test
-  public void testUpdatePrimaryKeyObjectTypMismatchn() {
-    try {
-      target.update(new Integer(1), null);
-      fail("Expected exception");
-    } catch (java.lang.AssertionError e) {
-    }
-  }
-
   @Test(expected = ServiceException.class)
   public void testUpdateRequestObjectTypMismatchn() {
     final Request request = new Screening();
     target.update("abc", request);
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void testCreateRequestObjectTypMismatchn() {
     final Request request = new Screening();
     target.create(request);
@@ -294,23 +271,22 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
     assertThat(actual, is(equalTo(expected)));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void create_A$Request() throws Exception {
     final Request request = new Screening();
     final Screening actual = target.create(request);
     final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual.getId(), is(equalTo(expected)));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void update_A$Serializable$Request() throws Exception {
     final Serializable primaryKey = DEFAULT_CLIENT_ID;
     final Screening request = new Screening();
     request.setId(DEFAULT_CLIENT_ID);
 
     final Screening actual = target.update(primaryKey, request);
-    final Screening expected = null;
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual.getId(), is(equalTo(DEFAULT_CLIENT_ID)));
   }
 
   @Test
@@ -335,12 +311,6 @@ public class ScreeningServiceTest extends Doofenshmirtz<ScreeningEntity> {
 
     final Screening actual = target.updateScreening(id, request);
     assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
-  public void setEsDao_A$ElasticsearchDao() throws Exception {
-    final ElasticsearchDao esDao = mock(ElasticsearchDao.class);
-    target.setEsDao(esDao);
   }
 
   @Test
