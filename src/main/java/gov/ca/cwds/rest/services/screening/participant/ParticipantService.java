@@ -613,8 +613,7 @@ public class ParticipantService implements
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
 
-  // Temp fix (this logic should be moved to elasticsearch)
-  private Boolean getDobCode(LegacyDescriptor legacyDescriptor) {
+  protected Boolean getDobCode(LegacyDescriptor legacyDescriptor) {
     if (legacyDescriptor == null) {
       return null;
     }
@@ -628,5 +627,14 @@ public class ParticipantService implements
 
   void setParticipantDao(ParticipantDao participantDao) {
     this.participantDao = participantDao;
+  }
+
+  public void setClientDao(ClientDao clientDao) {
+    this.clientDao = clientDao;
+  }
+
+  public void setRelationshipFacade(
+      RelationshipFacade relationshipFacade) {
+    this.relationshipFacade = relationshipFacade;
   }
 }

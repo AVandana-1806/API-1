@@ -555,4 +555,8 @@ public class ParticipantEntity
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 }
