@@ -56,6 +56,7 @@ import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralEntityBuilder;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Role;
@@ -103,6 +104,7 @@ public class ParticipantToLegacyClientTest {
   ClientAddressService clientAddressService;
   private ClientScpEthnicityService clientScpEthnicityService;
 
+  private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
   private DateTime lastUpdateDate;
   private DateTime modifiedLastUpdateDate;
   private DateTime updatedTime;
@@ -400,6 +402,35 @@ public class ParticipantToLegacyClientTest {
         .contains("Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC"));
   }
 
+  @Test
+  public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
+    Csec csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(null)
+        .createCsec();
+    List<Csec> csecs = new ArrayList<Csec>();
+    csecs.add(csec);
+    Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
+    victimParticipant.setCsecs(csecs);
+
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
+            .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder()
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
+    participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+
+    assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
+        .collect(Collectors.toList())
+        .contains("Victim while Absent from Placement requires an end date"));
+    
+  }
+  
   @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_MandatedNonMandatedFail()

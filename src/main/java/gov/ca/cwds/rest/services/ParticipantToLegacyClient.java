@@ -37,6 +37,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.ReferralClient;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
+import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparator;
 import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparatorInterface;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
@@ -66,6 +67,8 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
 public class ParticipantToLegacyClient {
 
   private static final String ASSESMENT = "A";
+  
+  private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantToLegacyClient.class);
 
@@ -509,6 +512,14 @@ public class ParticipantToLegacyClient {
         messageBuilder.addError("CSEC duplication for code: " + intakeLov.getIntakeCode(),
             ErrorMessage.ErrorType.VALIDATION);
         return false;
+      }
+    }
+
+    for (Csec csec :csecs) {
+      if (csec.getCsecCodeId().equals(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)) {
+        if (csec.getEndDate().equals(null)) {
+          messageBuilder.addError("Victim while Absent from Placement requires an end date");
+        }
       }
     }
 
