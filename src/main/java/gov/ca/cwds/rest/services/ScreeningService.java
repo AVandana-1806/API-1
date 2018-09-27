@@ -14,10 +14,8 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import gov.ca.cwds.ObjectMapperUtils;
-import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
 import gov.ca.cwds.data.ns.AllegationIntakeDao;
@@ -62,9 +60,6 @@ public class ScreeningService implements CrudsService {
 
   private static final ObjectMapper OBJECT_MAPPER = ObjectMapperUtils.createObjectMapper();
 
-  @Named("screenings.index")
-  @Inject
-  private ElasticsearchDao esDao;
 
   @Inject
   private AllegationIntakeDao allegationDao;
@@ -442,10 +437,6 @@ public class ScreeningService implements CrudsService {
     screening.setParticipantIntakeApis(participantIntakeApis);
   }
 
-  void setEsDao(ElasticsearchDao esDao) {
-    this.esDao = esDao;
-  }
-
   void setScreeningDao(ScreeningDao screeningDao) {
     this.screeningDao = screeningDao;
   }
@@ -536,10 +527,6 @@ public class ScreeningService implements CrudsService {
 
   public void setCrossReportMapper(CrossReportMapper crossReportMapper) {
     this.crossReportMapper = crossReportMapper;
-  }
-
-  public ElasticsearchDao getEsDao() {
-    return esDao;
   }
 
   public ScreeningDao getScreeningDao() {
