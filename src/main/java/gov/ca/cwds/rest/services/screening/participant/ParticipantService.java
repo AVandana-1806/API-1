@@ -251,11 +251,6 @@ public class ParticipantService implements
 
     setLegacyIdAndTable(participant);
 
-    ParticipantEntity entity = participantDao.findByRelatedScreeningIdAndLegacyId(participant.getLegacyId(), participant.getScreeningId());
-    if (entity != null) {
-      return new ParticipantIntakeApi(entity);
-    }
-
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 
@@ -437,7 +432,7 @@ public class ParticipantService implements
       }
       csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
           .findFirst().ifPresent(c -> toUpdateList
-              .add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
+          .add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
     }
 
     toCreateList.addAll(csecMapper

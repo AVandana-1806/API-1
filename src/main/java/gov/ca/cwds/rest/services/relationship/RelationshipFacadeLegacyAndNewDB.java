@@ -482,12 +482,20 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     ParticipantEntity participantEntity1;
     ParticipantEntity participantEntity2;
 
+    Set<ParticipantEntity> existingParticipants = participantDao.findByRelatedScreeningId(screeningId);
+
     for (ClientRelationship clientRelationship : shouldBeCreated) {
       if (!clientIdSet.contains(clientRelationship.getPrimaryClientId())) {
         final Client client = cmsClientDao.find(clientRelationship.getPrimaryClientId());
         if (client == null) {
           continue;
         }
+//
+//        participantEntity1 = existingParticipants.stream().filter(e -> {
+//          if (StringUtils.equals(screeningId, e.getRelatedScreeningId()) && StringUtils
+//              .equals(e.getLegacyId(), client.getId())) {
+//
+//          };).
         participantEntity1 = createParticipant(client, screeningId);
       } else {
         participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,
@@ -530,6 +538,14 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
+
+    ParticipantEntity entity = participantDao
+        .findByRelatedScreeningIdAndLegacyId(client.getId(),
+            screeningId);
+    if (entity != null) {
+      return entity;
+    }
+
     participantIntakeApi = participantService.persistParticipantObjectInNS(participantIntakeApi);
     participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
