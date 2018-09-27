@@ -134,8 +134,6 @@ public class DataAccessModule extends AbstractModule {
     LOGGER.warn("DataAccessModule: static point 1");
   }
 
-  // private Map<String, Client> clients;
-
   private final PaperTrailInterceptor paperTrailInterceptor = new PaperTrailInterceptor();
 
   // CMS:
