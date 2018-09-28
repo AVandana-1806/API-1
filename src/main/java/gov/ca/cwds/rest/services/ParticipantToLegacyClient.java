@@ -47,6 +47,7 @@ import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
 import gov.ca.cwds.rest.business.rules.R02265ChildClientExists;
 import gov.ca.cwds.rest.business.rules.R04466ClientSensitivityIndicator;
 import gov.ca.cwds.rest.business.rules.R04880EstimatedDOBCodeSetting;
+import gov.ca.cwds.rest.business.rules.R10971CsecEndDate;
 import gov.ca.cwds.rest.core.FerbConstants;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
@@ -467,7 +468,7 @@ public class ParticipantToLegacyClient {
         FerbConstants.ReportType.SSB.equals(screeningToReferral.getReportType());
     final boolean csecReportType =
         FerbConstants.ReportType.CSEC.equals(screeningToReferral.getReportType());
-
+    
     if (exsistingChild == null) {
       final ChildClient childClient = ChildClient.createWithDefaults(clientId);
       childClient.setSafelySurrendedBabiesIndicatorVar(ssbReportType);
@@ -491,6 +492,9 @@ public class ParticipantToLegacyClient {
   }
 
   private boolean isValidCsecs(List<Csec> csecs, MessageBuilder messageBuilder) {
+    
+    final boolean validCsecEndDate = new R10971CsecEndDate(csecs).isValid();
+
     if (csecs == null || csecs.isEmpty()) {
       messageBuilder.addError("CSEC data is empty", ErrorMessage.ErrorType.VALIDATION);
       return false;
@@ -514,27 +518,10 @@ public class ParticipantToLegacyClient {
       }
     }
 
-    /**
-     * <blockquote>
-     * 
-     * <pre>
-     * BUSINESS RULE: R - R - 10971
-     * 
-     *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
-     *  
-     * </blockquote>
-     * </pre>
-     */
-    for (Csec csec :csecs) {
-      final String csecCodeId = csec.getCsecCodeId();
-      if (null != csecCodeId && csec.getCsecCodeId().equals(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)) {
-        if (null == csec.getEndDate()) {
-          messageBuilder.addError("Victim while Absent from Placement requires an end date");
-          return false;
-        }
-      }
+    if (!validCsecEndDate) {
+      messageBuilder.addError("Victim while Absent from Placement requires an end date");
+      return false;
     }
-
     return true;
   }
 
