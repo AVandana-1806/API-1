@@ -1,7 +1,10 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
-import gov.ca.cwds.data.persistence.cms.Client;
-import java.util.Arrays;
+import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
+import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
+import gov.ca.cwds.rest.services.mapper.cms.CsecMapper;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +47,12 @@ public class ParticipantTransformer {
   @Inject
   private ClientDao clientDao;
 
+  @Inject
+  private CsecMapper csecMapper;
+
+  @Inject
+  private CsecHistoryService csecHistoryService;
+
   public ParticipantIntakeApi prepareParticipantObject(
       ParticipantIntakeApi incomingParticipantIntakeApi) {
     if (StringUtils.isBlank(incomingParticipantIntakeApi.getScreeningId())) {
@@ -58,7 +67,7 @@ public class ParticipantTransformer {
     if (legacyDescriptor != null && StringUtils.isNotBlank(legacyDescriptor.getId())
         && StringUtils.isNotBlank(legacyDescriptor.getTableName())) {
       participantIntakeApi =
-          transformParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
+          buildParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
       participantIntakeApi.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
@@ -68,7 +77,21 @@ public class ParticipantTransformer {
     }
   }
 
-  private ParticipantIntakeApi transformParticipant(String id, String tableName) {
+  private ParticipantIntakeApi buildParticipant(String id, String tableName) {
+    ParticipantIntakeApi participant = findParticipant(id, tableName);
+    addCsecTo(participant);
+    return participant;
+  }
+
+  private void addCsecTo(ParticipantIntakeApi participant) {
+    List<CsecHistory> csecHistory = new ArrayList();
+    if (participant != null && participant.getLegacyDescriptor() != null) {
+      csecHistory = csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId());
+      participant.setCsecs(csecMapper.toDomain(csecHistory));
+    }
+  }
+
+  private ParticipantIntakeApi findParticipant(String id, String tableName) {
     CmsPersistentObject persistentObject;
     ParticipantMapper<CmsPersistentObject> participantMapper;
     CrudsDao<CmsPersistentObject> crudsDaoObject = participantDaoFactory.create(tableName);
@@ -127,4 +150,19 @@ public class ParticipantTransformer {
     this.participantMapperFactoryImpl = participantMapperFactoryImpl;
   }
 
+  /**
+   * Set the CSEC service for processing CSEC.
+   * @param csecHistoryService
+   */
+  public void setCsecHistoryService(CsecHistoryService csecHistoryService) {
+    this.csecHistoryService = csecHistoryService;
+  }
+
+  /**
+   * Set the mapper to convert CSEC entity to CSEC domain object
+   * @param csecMapper
+   */
+  public void setCsecMapper(CsecMapper csecMapper) {
+    this.csecMapper = csecMapper;
+  }
 }

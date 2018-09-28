@@ -4,11 +4,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
+import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
+import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
+import gov.ca.cwds.rest.api.domain.Csec;
+import gov.ca.cwds.rest.services.mapper.cms.CsecMapper;
+import gov.ca.cwds.rest.services.mapper.cms.CsecMapperImpl;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.joda.time.DateTime;
@@ -53,98 +65,120 @@ public class ParticipantTransformerTest {
   private ParticipantDaoFactoryImpl participantDaoFactory;
   private ParticipantMapperFactoryImpl participantMapperFactoryImpl;
   private ParticipantMapper<CmsPersistentObject> participantMapper;
-
+  private CsecHistoryService csecHistoryService;
+  private CsecMapper csecMapper;
+  private CrudsDao<CmsPersistentObject> crudsDaoObject;
+  ParticipantIntakeApi participantIntakeApi;
+  LegacyDescriptor legacyDescriptor;
 
   @Before
   public void setup() {
+    legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
+        LegacyTable.REPORTER.getName(), null);
+    participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
+        .setScreeningId("18").setLegacyDescriptor(legacyDescriptor).build();
+
     screeningDao = mock(ScreeningDao.class);
+    when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
     participantDaoFactory = mock(ParticipantDaoFactoryImpl.class);
     participantMapperFactoryImpl = mock(ParticipantMapperFactoryImpl.class);
-    clientDao = mock(ClientDao.class);
+    when(participantMapperFactoryImpl.create(any(String.class)))
+        .thenReturn(new ReporterTransformer());
 
+    clientDao = mock(ClientDao.class);
+    Client probationYouthClient = new ClientEntityBuilder().build();
+    when(clientDao.findProbationYouth(any(String.class))).thenReturn(probationYouthClient);
+
+    csecHistoryService = mock(CsecHistoryService.class);
+    when(csecHistoryService.findByClientId(anyString())).thenReturn(new ArrayList());
+    csecMapper = new CsecMapperImpl();
+
+    crudsDaoObject = mock(CrudsDao.class);
+    Reporter reporter = new ReporterEntityBuilder().setReferralId(legacyDescriptor.getId()).build();
+    when(crudsDaoObject.find(any(String.class))).thenReturn(reporter);
+    when(participantDaoFactory.create(any(String.class))).thenReturn(crudsDaoObject);
+
+    participantTransformer.setCsecHistoryService(csecHistoryService);
+    participantTransformer.setCsecMapper(csecMapper);
     participantTransformer.setScreeningDao(screeningDao);
     participantTransformer.setClientDao(clientDao);
     participantTransformer.setParticipantDaoFactory(participantDaoFactory);
     participantTransformer.setParticipantMapperFactoryImpl(participantMapperFactoryImpl);
   }
 
-  /**
-   *
-   */
   @Test(expected = EntityNotFoundException.class)
-  public void testScreeningIdNotFoundInPostgres() {
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
-        LegacyTable.REPORTER.getName(), null);
-    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
-        .setScreeningId("18").setLegacyDescriptor(legacyDescriptor).build();
+  public void shouldThrowExceptionWhenEntityIsNotFound() {
+    when(screeningDao.find(any(String.class))).thenReturn(null);
     participantTransformer.prepareParticipantObject(participantIntakeApi);
   }
 
-  /**
-   *
-   */
   @Test(expected = ServiceException.class)
-  public void testScreeningIdNull() {
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
-        LegacyTable.REPORTER.getName(), null);
+  public void shouldThrowServiceExceptionWhenScreeningIdIsNull() {
     ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
         .setScreeningId(null).setLegacyDescriptor(legacyDescriptor).build();
+
     participantTransformer.prepareParticipantObject(participantIntakeApi);
+
     assertThat("issue_details[0].technical_message", is(equalTo("Screening not found")));
   }
 
-  /**
-   *
-   */
   @Test(expected = ServiceException.class)
   public void testScreeningIsSubmitted() {
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
-        LegacyTable.REPORTER.getName(), null);
-    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
-        .setScreeningId("12").setLegacyDescriptor(legacyDescriptor).build();
     ScreeningEntity screeningEntity = new ScreeningEntityBuilder().setId("12")
         .setScreeningStatus(ScreeningStatus.SUBMITTED.getStatus()).build();
     when(screeningDao.find(anyString())).thenReturn(screeningEntity);
+
     participantTransformer.prepareParticipantObject(participantIntakeApi);
+
     assertThat("issue_details[0].technical_message",
         is(equalTo("Screeening is already Submitted")));
   }
 
-  /**
-  *
-  */
+  @Test(expected = ServiceException.class)
+  public void shouldThrowExceptionWhenParticipantDoesNotExist() {
+    when(crudsDaoObject.find(any(String.class))).thenReturn(null);
+    participantTransformer.prepareParticipantObject(participantIntakeApi);
+    verify(csecHistoryService, never()).findByClientId(participantIntakeApi.getLegacyDescriptor().getId());
+  }
+
   @Test
   public void prepareParticipantObjectWithLegacyDescriptor() {
-    Reporter reporter = new ReporterEntityBuilder().build();
-    Client probationYouthClient = new ClientEntityBuilder().build();
-    CrudsDao<CmsPersistentObject> crudsDaoObject = mock(CrudsDao.class);
-    when(crudsDaoObject.find(any(String.class))).thenReturn(reporter);
-    when(participantMapperFactoryImpl.create(any(String.class)))
-        .thenReturn(new ReporterTransformer());
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("Abc1234567", null, new DateTime(),
-        LegacyTable.REPORTER.getName(), null);
-    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
-        .setScreeningId("18").setLegacyDescriptor(legacyDescriptor).build();
-    when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
-    when(clientDao.findProbationYouth(any(String.class))).thenReturn(probationYouthClient);
-    when(participantDaoFactory.create(any(String.class))).thenReturn(crudsDaoObject);
     ParticipantIntakeApi expected =
         participantTransformer.prepareParticipantObject(participantIntakeApi);
     assertThat(expected, is(notNullValue()));
     assertThat(expected.isProbationYouth(), is(Boolean.TRUE));
   }
 
-  /**
-   *
-   */
   @Test
   public void prepareParticipantObjectNewParticipant() {
-    ParticipantIntakeApi participantIntakeApi = new ParticipantIntakeApiResourceBuilder()
-        .setScreeningId("18").setLegacyDescriptor(null).build();
     when(screeningDao.find(any(String.class))).thenReturn(new ScreeningEntity());
     ParticipantIntakeApi expected =
         participantTransformer.prepareParticipantObject(participantIntakeApi);
     assertThat(expected, is(notNullValue()));
   }
 
+  @Test
+  public void shouldAddCsecHistoryAddAnyCsecDataToParticipant() {
+    CsecHistory csec = new CsecHistory();
+    SexualExploitationType type = new SexualExploitationType();
+    type.setSystemId((short)1);
+    csec.setSexualExploitationType(type);
+    csec.setStartDate(LocalDate.parse("2001-01-30"));
+    csec.setEndDate(LocalDate.parse("2001-01-30"));
+    List csecList = new <CsecHistory>ArrayList();
+    csecList.add(csec);
+    when(csecHistoryService.findByClientId(participantIntakeApi.getLegacyDescriptor().getId()))
+        .thenReturn(csecList);
+
+    ParticipantIntakeApi expected =
+        participantTransformer.prepareParticipantObject(participantIntakeApi);
+    verify(csecHistoryService).findByClientId(participantIntakeApi.getLegacyDescriptor().getId());
+    assertEquals(1, expected.getCsecs().size());
+    Csec foundCsec = expected.getCsecs().get(0);
+
+    assertEquals(csec.getSexualExploitationType().getSystemId().toString(),foundCsec.getCsecCodeId());
+    assertEquals(csec.getStartDate(),foundCsec.getStartDate());
+    assertEquals(csec.getEndDate(),foundCsec.getEndDate());
+    assertEquals(null,foundCsec.getId());
+  }
 }
