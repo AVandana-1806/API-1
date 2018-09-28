@@ -12,7 +12,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -37,16 +36,12 @@ import org.mockito.ArgumentMatcher;
 
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.cms.CaseDao;
-import gov.ca.cwds.data.cms.ClientAddressDao;
-import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.cms.ReferralClientDao;
-import gov.ca.cwds.data.cms.StaffPersonDao;
 import gov.ca.cwds.data.cms.TestIntakeCodeCache;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
-import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ClientResourceBuilder;
 import gov.ca.cwds.fixture.CsecBuilder;
@@ -56,6 +51,7 @@ import gov.ca.cwds.fixture.SafelySurrenderedBabiesBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.fixture.SpecialProjectReferralEntityBuilder;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Role;
@@ -71,9 +67,8 @@ import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.PostedReporter;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
-import gov.ca.cwds.rest.business.rules.LACountyTrigger;
-import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
 import gov.ca.cwds.rest.core.FerbConstants;
+import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
@@ -83,7 +78,6 @@ import gov.ca.cwds.rest.services.cms.ClientService;
 import gov.ca.cwds.rest.services.cms.ReferralClientService;
 import gov.ca.cwds.rest.services.cms.ReporterService;
 import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
-import gov.ca.cwds.rest.services.referentialintegrity.RIClientAddress;
 
 /**
  * @author CWDS API Team
@@ -103,22 +97,15 @@ public class ParticipantToLegacyClientTest {
   ClientAddressService clientAddressService;
   private ClientScpEthnicityService clientScpEthnicityService;
 
+  private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
   private DateTime lastUpdateDate;
   private DateTime modifiedLastUpdateDate;
   private DateTime updatedTime;
   private String dateStarted;
   private String timeStarted;
   private String referralId;
-  private Date timestamp;
   private MessageBuilder messageBuilder;
-  private ClientAddressDao clientAddressDao;
-  private NonLACountyTriggers nonLACountyTriggers;
-  private LACountyTrigger laCountyTrigger;
-  private TriggerTablesDao triggerTablesDao;
-  private StaffPersonDao staffpersonDao;
-  private RIClientAddress riClientAddress;
   private CaseDao caseDao;
-  private ClientRelationshipDao clientRelationshipDao;
   private ReferralClientDao referralClientDao;
 
   private Validator validator;
@@ -131,13 +118,13 @@ public class ParticipantToLegacyClientTest {
   private SexualExploitationTypeDao sexualExploitationTypeDao;
   private CsecHistoryService csecHistoryService;
   private SpecialProjectReferralService specialProjectReferralService;
-  private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    *
    */
   @Before
   public void setup() {
+    new TestingRequestExecutionContext("0X5");
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
     legacyDescriptor.setLastUpdated(DateTime.now());
     defaultVictim =
@@ -177,7 +164,6 @@ public class ParticipantToLegacyClientTest {
     clientAddressService = mock(ClientAddressService.class);
     clientScpEthnicityService = mock(ClientScpEthnicityService.class);
     caseDao = mock(CaseDao.class);
-    clientRelationshipDao = mock(ClientRelationshipDao.class);
     referralClientDao = mock(ReferralClientDao.class);
 
     messageBuilder = new MessageBuilder();
@@ -191,7 +177,6 @@ public class ParticipantToLegacyClientTest {
     dateStarted = "2017-10-21";
     timeStarted = "00:00:00";
     referralId = "1234567890";
-    timestamp = new Date();
 
     sexualExploitationTypeDao = mock(SexualExploitationTypeDao.class);
     SexualExploitationType sexualExploitationType = new SexualExploitationType();
@@ -373,6 +358,7 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
+    
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
         .contains("There is no CSEC code id provided for client with id: 1234567ABC"));
@@ -400,6 +386,45 @@ public class ParticipantToLegacyClientTest {
         .contains("Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC"));
   }
 
+  @Test
+  public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
+    Csec csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(null)
+        .createCsec();
+    List<Csec> csecs = new ArrayList<Csec>();
+    csecs.add(csec);
+    Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
+    victimParticipant.setCsecs(csecs);
+
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
+            .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    when(clientService.find(any())).thenReturn(foundClient);
+    participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+
+    assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
+        .collect(Collectors.toList())
+        .contains("Victim while Absent from Placement requires an end date"));
+  }
+     /**
+     * <blockquote>
+     * 
+     * <pre>
+     * BUSINESS RULE: R - R - 10971
+     * 
+     *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
+     *  
+     * </blockquote>
+     * </pre>
+     */
+  
   @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_MandatedNonMandatedFail()
@@ -971,7 +996,6 @@ public class ParticipantToLegacyClientTest {
   @SuppressWarnings("javadoc")
   @Test
   public void shouldReportExceptionWhenUpdateClientThrowsPersistenceException() {
-    String victimClientLegacyId = "ABC123DSAF";
 
     LegacyDescriptor descriptor =
         new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, LegacyTable.CLIENT.getName(), "");

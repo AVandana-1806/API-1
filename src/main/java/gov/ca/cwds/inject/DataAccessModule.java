@@ -7,14 +7,8 @@ import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_NS;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.transaction.SystemException;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +63,6 @@ import gov.ca.cwds.data.dao.contact.ContactPartyDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.DeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.IndividualDeliveredServiceDao;
 import gov.ca.cwds.data.dao.contact.ReferralClientDeliveredServiceDao;
-import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import gov.ca.cwds.data.legacy.cms.dao.SafetyAlertDao;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
@@ -107,8 +100,6 @@ import gov.ca.cwds.data.persistence.xa.CandaceSessionFactoryImpl;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.data.rules.TriggerTablesDao;
 import gov.ca.cwds.rest.ApiConfiguration;
-import gov.ca.cwds.rest.ElasticUtils;
-import gov.ca.cwds.rest.ElasticsearchConfiguration;
 import gov.ca.cwds.rest.TriggerTablesConfiguration;
 import gov.ca.cwds.rest.business.rules.LACountyTrigger;
 import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
@@ -142,8 +133,6 @@ public class DataAccessModule extends AbstractModule {
   static {
     LOGGER.warn("DataAccessModule: static point 1");
   }
-
-  private Map<String, Client> clients;
 
   private final PaperTrailInterceptor paperTrailInterceptor = new PaperTrailInterceptor();
 
@@ -633,75 +622,13 @@ public class DataAccessModule extends AbstractModule {
     return new CandaceDatasourceSlate(sfCms, sfNs, sfCmsRs);
   }
 
-  // ==========================
-  // Elasticsearch
-  // ==========================
-
   static {
     LOGGER.warn("DataAccessModule: static point 7");
   }
 
   @Provides
-  public Map<String, ElasticsearchConfiguration> elasticSearchConfigs(
-      ApiConfiguration apiConfiguration) {
-    return apiConfiguration.getElasticsearchConfigurations();
-  }
-
-  @Provides
   public TriggerTablesConfiguration triggerTablesConfiguration(ApiConfiguration apiConfiguration) {
     return apiConfiguration.getTriggerTablesConfiguration();
-  }
-
-  @Provides
-  @Named("elasticsearch.daos")
-  public synchronized Map<String, ElasticsearchDao> provideElasticSearchDaos(
-      ApiConfiguration apiConfiguration) {
-    if (clients == null) {
-      provideElasticsearchClients(apiConfiguration);
-    }
-
-    final Map<String, ElasticsearchDao> esDaos = new HashMap<>();
-    for (Map.Entry<String, Client> esKey : clients.entrySet()) {
-      final ElasticsearchConfiguration config =
-          apiConfiguration.getElasticsearchConfigurations().get(esKey.getKey());
-      final ElasticsearchDao dao = new ElasticsearchDao(esKey.getValue(), config);
-      esDaos.put(esKey.getKey(), dao);
-    }
-    return esDaos;
-  }
-
-  @Provides
-  @Named("screenings.index")
-  public ElasticsearchDao provideElasticSearchDaoScreenings(
-      @Named("elasticsearch.daos") Map<String, ElasticsearchDao> esDaos) {
-    return esDaos.get("screeningsIndex");
-  }
-
-  private synchronized Map<String, Client> makeElasticsearchClients(
-      ApiConfiguration apiConfiguration) {
-    if (clients == null) {
-      clients = new ConcurrentHashMap<>();
-      final Map<String, ElasticsearchConfiguration> esConfigs =
-          apiConfiguration.getElasticsearchConfigurations();
-
-      for (Map.Entry<String, ElasticsearchConfiguration> esConfigKey : esConfigs.entrySet()) {
-        final ElasticsearchConfiguration config = esConfigs.get(esConfigKey.getKey());
-        final TransportClient transportClient = ElasticUtils.buildElasticsearchClient(config);
-        clients.put(esConfigKey.getKey(), transportClient);
-      }
-    }
-
-    return clients;
-  }
-
-  @Provides
-  public synchronized Map<String, Client> provideElasticsearchClients(
-      ApiConfiguration apiConfiguration) {
-    if (clients == null) {
-      makeElasticsearchClients(apiConfiguration);
-    }
-
-    return clients;
   }
 
   public PaperTrailInterceptor getPaperTrailInterceptor() {

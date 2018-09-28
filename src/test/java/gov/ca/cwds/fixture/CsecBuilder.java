@@ -22,4 +22,29 @@ public class CsecBuilder {
     csec.setEndDate(setEndDate);
     return csec;
   }
+  
+  public CsecBuilder setId(String id) {
+    this.id = id;
+    return this;
+  }
+  
+  public CsecBuilder setCsecCodeId(String csecCodeId) {
+    this.csecCodeId = csecCodeId;
+    return this;
+  }
+  
+  public CsecBuilder setParticipantId(String participantId) {
+    this.participantId = participantId;
+    return this;
+  }
+  
+  public CsecBuilder setStartDate(LocalDate startDate) {
+    this.startDate = startDate;
+    return this;
+  }
+  
+  public CsecBuilder setEndDate(LocalDate endDate) {
+    this.setEndDate = endDate;
+    return this;
+  }
 }

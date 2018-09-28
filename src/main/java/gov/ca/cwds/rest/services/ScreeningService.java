@@ -11,18 +11,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.rest.RestStatus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
-import gov.ca.cwds.ObjectMapperUtils;
-import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
 import gov.ca.cwds.data.ns.AllegationIntakeDao;
@@ -64,12 +55,6 @@ import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
  * @author CWDS API Team
  */
 public class ScreeningService implements CrudsService {
-
-  private static final ObjectMapper OBJECT_MAPPER = ObjectMapperUtils.createObjectMapper();
-
-  @Named("screenings.index")
-  @Inject
-  private ElasticsearchDao esDao;
 
   @Inject
   private AllegationIntakeDao allegationDao;
@@ -154,7 +139,6 @@ public class ScreeningService implements CrudsService {
    */
   @Override
   public Screening create(Request request) {
-    index(request);
     return (Screening) request;
   }
 
@@ -166,63 +150,19 @@ public class ScreeningService implements CrudsService {
    */
   @Override
   public Screening update(Serializable primaryKey, Request request) {
-    assert primaryKey instanceof String;
-    assert request instanceof Screening;
     final Screening screening = (Screening) request;
 
     if (!primaryKey.equals(screening.getId())) {
       throw new ServiceException(
           "Primary key mismatch, [" + primaryKey + " != " + screening.getId() + "]");
     }
-
-    index(request);
     return (Screening) request;
   }
 
   /**
-   * Convert given screening to JSON.
-   *
-   * @param screening Screening to convert to JSON format
-   * @return Screening as JSON format
+   * @param id - id
+   * @return the Screening
    */
-  private String toJson(Screening screening) {
-    String screeningJson;
-    try {
-      screeningJson = OBJECT_MAPPER.writeValueAsString(screening);
-    } catch (JsonProcessingException e) {
-      throw new ServiceException(e);
-    }
-    return screeningJson;
-  }
-
-  /**
-   * Index given screening request.
-   *
-   * @param request The screening request
-   * @return The IndexResponse
-   */
-  private IndexResponse index(Request request) {
-    assert request instanceof Screening;
-    final Screening screening = (Screening) request;
-    final String screeningJson = toJson(screening);
-
-    final IndexRequestBuilder builder =
-        esDao.getClient().prepareIndex(esDao.getConfig().getElasticsearchAlias(),
-            esDao.getConfig().getElasticsearchDocType(), screening.getId());
-    builder.setSource(screeningJson, XContentType.JSON);
-
-    final IndexResponse response = builder.get();
-    final RestStatus status = response.status();
-    final boolean success = RestStatus.OK == status || RestStatus.CREATED == status;
-
-    if (!success) {
-      throw new ServiceException("Could not index screening. Status: "
-          + (status != null ? status.getStatus() : "unknown") + ", Response: " + response);
-    }
-
-    return response;
-  }
-
   public Screening getScreening(String id) {
     final ScreeningEntity screeningEntity = screeningDao.find(id);
     if (screeningEntity == null) {
@@ -267,8 +207,8 @@ public class ScreeningService implements CrudsService {
         participantService.getByScreeningId(screeningId);
 
     for (ParticipantEntity participantEntity : participantEntities) {
-      final ParticipantIntakeApi participantIntakeApi = participantService
-          .find(new ParticipantResourceParameters(id, participantEntity.getId()));
+      final ParticipantIntakeApi participantIntakeApi =
+          participantService.find(new ParticipantResourceParameters(id, participantEntity.getId()));
       screening.getParticipantIntakeApis().add(participantIntakeApi);
     }
 
@@ -290,6 +230,10 @@ public class ScreeningService implements CrudsService {
     return filteredAgencyEntities;
   }
 
+  /**
+   * @param screening - screening
+   * @return the POST screening
+   */
   @SuppressWarnings("fb-contrib:CFS_CONFUSING_FUNCTION_SEMANTICS")
   public Screening createScreening(Screening screening) {
     if (screening == null) {
@@ -312,6 +256,11 @@ public class ScreeningService implements CrudsService {
     return screening;
   }
 
+  /**
+   * @param id - id
+   * @param screening - screening
+   * @return the Updated screening
+   */
   public Screening updateScreening(String id, Screening screening) {
     if (screening == null) {
       throw new ServiceException("Screening for update is null");
@@ -457,9 +406,8 @@ public class ScreeningService implements CrudsService {
 
   private void createUpdateDeleteParticipants(Screening screening) {
     final Set<ParticipantIntakeApi> participantIntakeApis = new HashSet<>();
-    final Set<String> participantIdsOld =
-        participantService.getByScreeningId(screening.getId()).stream()
-            .map(ParticipantEntity::getId).collect(Collectors.toSet());
+    final Set<String> participantIdsOld = participantService.getByScreeningId(screening.getId())
+        .stream().map(ParticipantEntity::getId).collect(Collectors.toSet());
 
     for (ParticipantIntakeApi participantIntakeApi : screening.getParticipantIntakeApis()) {
       final String participantIntakeApiId = participantIntakeApi.getId();
@@ -482,10 +430,6 @@ public class ScreeningService implements CrudsService {
         .delete(new ParticipantResourceParameters(screening.getId(), participantId)));
 
     screening.setParticipantIntakeApis(participantIntakeApis);
-  }
-
-  void setEsDao(ElasticsearchDao esDao) {
-    this.esDao = esDao;
   }
 
   void setScreeningDao(ScreeningDao screeningDao) {
@@ -578,10 +522,6 @@ public class ScreeningService implements CrudsService {
 
   public void setCrossReportMapper(CrossReportMapper crossReportMapper) {
     this.crossReportMapper = crossReportMapper;
-  }
-
-  public ElasticsearchDao getEsDao() {
-    return esDao;
   }
 
   public ScreeningDao getScreeningDao() {

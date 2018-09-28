@@ -2,6 +2,10 @@ package gov.ca.cwds.rest.services.submit;
 
 import static org.junit.Assert.assertEquals;
 
+import gov.ca.cwds.CWSDateTime;
+import gov.ca.cwds.rest.util.FerbDateUtils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,7 +62,8 @@ public class ScreeningTransformerTest {
     allegations = new HashSet<>();
 
     screeningBuilder = new ScreeningToReferralResourceBuilder()
-        .setEndedAt("2017-01-03T11:10:09.999Z").setStartedAt("2017-01-02T10:09:08.999Z")
+        .setStartedAt(convertToSystem("2017-01-02T10:09:08.999Z"))
+        .setEndedAt(convertToSystem("2017-01-03T11:10:09.999Z"))
         .setIncidentDate("2017-01-01").setLegacySourceTable("REFERL_T").setLimitedAccessDate(null)
         .setResponseTime((short) 1519).setScreeningDecisionDetail("evaluate_out")
         .setLimitedAccessAgency("34").setLimitedAccessCode("N").setCommunicationMethod((short) 408)
@@ -107,5 +112,11 @@ public class ScreeningTransformerTest {
     Screening screening = new ScreeningResourceBuilder().setIncidentAddress(nsAddress).build();
     ScreeningToReferral actual = new ScreeningTransformer().transform(screening, "0X5", "34");
     assertEquals(actual, expected);
+  }
+
+  private String convertToSystem(String date) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
+    LocalDateTime parsed = LocalDateTime.parse(date, formatter);
+    return formatter.format(FerbDateUtils.utcToSystemTime(parsed));
   }
 }

@@ -17,6 +17,7 @@ import javax.validation.Validator;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -553,6 +554,11 @@ public class LastUpdatedTimeIsUniqueTest {
     assertThat(createdAllegationPerpetratorHistory.getLastUpdatedTime(),
         is(equalTo(createdTimestamp)));
     assertThat(response.hasMessages(), is(equalTo(false)));
+  }
+
+  @Test
+  public void tempTest() {
+
   }
 
 }

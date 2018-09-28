@@ -35,6 +35,18 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates();
     }
 
+    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(String estimatedDob) {
+      screeningRelationshipsWithCandidates.estimatedDob = estimatedDob;
+      return this;
+    }
+
+    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(Boolean estimatedDob) {
+      if (estimatedDob != null) {
+        withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
+      }
+      return this;
+    }
+
     public ScreeningRelationshipsWithCandidatesBuilder withId(String id) {
       screeningRelationshipsWithCandidates.id = id;
       return this;
@@ -159,6 +171,18 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
       public RelatedToBuilder withRelationshipId(String relationshipId) {
         relatedTo.relationshipId = relationshipId;
+        return this;
+      }
+
+      public RelatedToBuilder withEstimatedDob(String estimatedDob) {
+        relatedTo.estimatedDob = estimatedDob;
+        return this;
+      }
+
+      public RelatedToBuilder withEstimatedDob(Boolean estimatedDob) {
+        if (estimatedDob != null) {
+          withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
+        }
         return this;
       }
 
@@ -352,6 +376,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         example = "true")
     private boolean reversed;
 
+    @JsonProperty("estimated_dob")
+    @ApiModelProperty(value = "Estimated date of birth", example = "N")
+    @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+    private String estimatedDob;
+
     @JsonProperty("legacy_descriptor")
     @ApiModelProperty
     private LegacyDescriptor legacyDescriptor;
@@ -439,6 +468,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       return legacyDescriptor;
     }
 
+    public String getEstimatedDob() {
+      return estimatedDob;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -493,6 +526,18 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
       public CandidateToBuilder withId(String id) {
         candidateTo.candidateId = id;
+        return this;
+      }
+
+      public CandidateToBuilder withEstimatedDob(String estimatedDob) {
+        candidateTo.estimatedDob = estimatedDob;
+        return this;
+      }
+
+      public CandidateToBuilder withEstimatedDob(Boolean estimatedDob) {
+        if (estimatedDob != null) {
+          withEstimatedDob(estimatedDob.equals(Boolean.TRUE) ? "Y" : "N");
+        }
         return this;
       }
 
@@ -608,6 +653,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(required = true)
     private LegacyDescriptor legacyDescriptor;
 
+    @JsonProperty("estimated_dob")
+    @ApiModelProperty(value = "Estimated date of birth", example = "N")
+    @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+    private String estimatedDob;
+
     private CandidateTo() {
     }
 
@@ -657,6 +707,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
     public void setCandidateAgeUnit(String candidateAgeUnit) {
       this.candidateAgeUnit = candidateAgeUnit;
+    }
+
+    public String getEstimatedDob() {
+      return estimatedDob;
     }
 
     @Override
@@ -743,6 +797,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
   @ApiModelProperty(value = "sealed", example = "false")
   private Boolean sealed;
 
+  @JsonProperty("estimated_dob")
+  @ApiModelProperty(value = "Estimated date of birth", example = "N")
+  @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+  private String estimatedDob;
+
   @JsonProperty("relationship_to")
   private Set<RelatedTo> relatedTo;
   @JsonProperty("candidate_to")
@@ -813,6 +872,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
   public void setAgeUnit(String ageUnit) {
     this.ageUnit = ageUnit;
+  }
+
+  public String getEstimatedDob() {
+    return estimatedDob;
   }
 
   @Override

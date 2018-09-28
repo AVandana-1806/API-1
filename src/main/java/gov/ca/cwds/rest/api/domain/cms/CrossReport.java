@@ -151,6 +151,10 @@ public class CrossReport extends ReportingDomain implements Request, Response {
   @ApiModelProperty(required = true, readOnly = false)
   private Boolean satisfyCrossReportIndicator;
 
+  public CrossReport() {
+    //empty
+  }
+
   /**
    * Construct from all fields.
    * 

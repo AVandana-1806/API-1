@@ -30,7 +30,6 @@ import gov.ca.cwds.data.legacy.cms.entity.SpecialProjectReferral;
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.drools.DroolsConfiguration;
 import gov.ca.cwds.drools.DroolsService;
-import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.SystemCode;
@@ -159,7 +158,20 @@ public class SpecialProjectReferralService implements
       gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral sprDomain =
           new gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral(incidentCounty, referralId,
               specialProjectId, null,
-              startDate, Boolean.FALSE);
+              startDate, 
+              /**
+               * <blockquote>
+               * 
+               * <pre>
+               * BUSINESS RULE: "R - 7539" 
+               * 
+               * If (selected) SPECIAL_PROJECT_REFERRAL > SAFELY_SURRENDERED_BABIES exist, 
+               * set SPECIAL_PROJECT_REFERRAL.Safely_Surrenderd_Babies_Ind_Var ='Y', else set to 'N'.
+               * 
+               * </blockquote>
+               * </pre>
+               */
+              Boolean.FALSE);
       messageBuilder.addDomainValidationError(validator.validate(sprDomain));
 
       if (!specialProjectReferralExists(referralId, specialProjectId)) {
@@ -267,6 +279,18 @@ public class SpecialProjectReferralService implements
     }
     spr.setReferralId(referralId);
     spr.setSpecialProjectId(ssbSpecialProject.getId());
+    /**
+     * <blockquote>
+     * 
+     * <pre>
+     * BUSINESS RULE: "R - 7539" 
+     * 
+     * If (selected) SPECIAL_PROJECT_REFERRAL > SAFELY_SURRENDERED_BABIES exist, 
+     * set SPECIAL_PROJECT_REFERRAL.Safely_Surrenderd_Babies_Ind_Var ='Y', else set to 'N'.
+     * 
+     * </blockquote>
+     * </pre>
+     */
     spr.setSafelySurrenderedBabiesIndicator(Boolean.TRUE);
 
     gov.ca.cwds.rest.api.domain.cms.SpecialProjectReferral createdSpr = this.create(spr);
@@ -302,10 +326,10 @@ public class SpecialProjectReferralService implements
     braceltInfo.setOtherId(ssb.getBraceletId());
     braceltInfo.setOtherIdCode(MEDICAL_RECORD_SYSTEM_CODE_ID);
 
-    Set<IssueDetails> detailsList =
+    Set<IssueDetails> detailsSet =
         droolsService.performBusinessRules(createConfiguration(), ssbEntity, braceltInfo);
-    if (!detailsList.isEmpty()) {
-      throw new BusinessValidationException(detailsList);
+    if (!detailsSet.isEmpty()) {
+      throw new BusinessValidationException(detailsSet);
     }
 
     safelySurrenderedBabiesDao.create(ssbEntity);
