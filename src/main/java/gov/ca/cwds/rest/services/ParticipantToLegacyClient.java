@@ -66,6 +66,8 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
 public class ParticipantToLegacyClient {
 
   private static final String ASSESMENT = "A";
+  
+  private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantToLegacyClient.class);
 
@@ -509,6 +511,27 @@ public class ParticipantToLegacyClient {
         messageBuilder.addError("CSEC duplication for code: " + intakeLov.getIntakeCode(),
             ErrorMessage.ErrorType.VALIDATION);
         return false;
+      }
+    }
+
+    /**
+     * <blockquote>
+     * 
+     * <pre>
+     * BUSINESS RULE: R - R - 10971
+     * 
+     *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
+     *  
+     * </blockquote>
+     * </pre>
+     */
+    for (Csec csec :csecs) {
+      final String csecCodeId = csec.getCsecCodeId();
+      if (null != csecCodeId && csec.getCsecCodeId().equals(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)) {
+        if (null == csec.getEndDate()) {
+          messageBuilder.addError("Victim while Absent from Placement requires an end date");
+          return false;
+        }
       }
     }
 
