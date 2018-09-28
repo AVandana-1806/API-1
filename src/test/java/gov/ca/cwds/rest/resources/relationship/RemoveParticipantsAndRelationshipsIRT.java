@@ -17,7 +17,7 @@ import org.junit.Test;
 /**
  * @author CWDS TPT-3 Team
  */
-public class RemoveParticipantsAndRelationships extends RelationshipsBaseTest {
+public class RemoveParticipantsAndRelationshipsIRT extends RelationshipsBaseTest {
 
   public static final String SCREENING_ID = "2201";
 
