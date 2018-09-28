@@ -58,7 +58,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private static final RelationshipMapper mapper = RelationshipMapper.INSTANCE;
 
   // For now I don't know how it would be shown on the UI I am waiting for this information
-  private final static String DB_ERROR_MESSAGE = "Relationship couldn't be created";
+  private static final String DB_ERROR_MESSAGE = "Relationship couldn't be created";
 
   private final Map<String, gov.ca.cwds.rest.api.domain.cms.SystemCode> codesMappedByDescription =
       new HashMap<>();
@@ -373,7 +373,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .filter(e -> e.getClientId().equals(participant.getId())
             && e.getRelativeId().equals(relatedCandidate.getId())
             || e.getClientId().equals(relatedCandidate.getId())
-            && e.getRelativeId().equals(participant.getId()))
+                && e.getRelativeId().equals(participant.getId()))
         .findFirst();
     return existingRelationshiop.isPresent();
   }
