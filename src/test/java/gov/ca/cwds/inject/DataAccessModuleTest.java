@@ -6,10 +6,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.elasticsearch.client.Client;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +14,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import gov.ca.cwds.data.es.ElasticsearchDao;
 import gov.ca.cwds.data.persistence.ns.papertrail.PaperTrailInterceptor;
 import gov.ca.cwds.rest.ApiConfiguration;
-import gov.ca.cwds.rest.ElasticsearchConfiguration;
 import gov.ca.cwds.rest.TriggerTablesConfiguration;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -130,36 +124,10 @@ public class DataAccessModuleTest {
   }
 
   @Test
-  public void elasticSearchConfigs_A$ApiConfiguration() throws Exception {
-    Map<String, ElasticsearchConfiguration> actual = target.elasticSearchConfigs(apiConfiguration);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
   public void triggerTablesConfiguration_A$ApiConfiguration() throws Exception {
     TriggerTablesConfiguration actual = target.triggerTablesConfiguration(apiConfiguration);
     TriggerTablesConfiguration expected = null;
     assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
-  public void provideElasticSearchDaos_A$ApiConfiguration() throws Exception {
-    Map<String, ElasticsearchDao> actual = target.provideElasticSearchDaos(apiConfiguration);
-    assertThat(actual, is(notNullValue()));
-  }
-
-  @Test
-  public void provideEelasticSearchDaoScreenings_A$Map() throws Exception {
-    Map<String, ElasticsearchDao> esDaos = new HashMap<String, ElasticsearchDao>();
-    ElasticsearchDao actual = target.provideElasticSearchDaoScreenings(esDaos);
-    ElasticsearchDao expected = null;
-    assertThat(actual, is(expected));
-  }
-
-  @Test
-  public void provideElasticsearchClients_A$ApiConfiguration() throws Exception {
-    Map<String, Client> actual = target.provideElasticsearchClients(apiConfiguration);
-    assertThat(actual, is(notNullValue()));
   }
 
   @Test
