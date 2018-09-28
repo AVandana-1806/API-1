@@ -1,7 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.util.ConcurrencyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,16 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,11 +162,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     result.addAll(updateRelationships(shouldBeUpdated));
     result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
-    // select and return
-    if (participantDao.getSessionFactory().getCurrentSession().getTransaction()
-        .getStatus() == TransactionStatus.ACTIVE) {
-      participantDao.getSessionFactory().getCurrentSession().flush();
-    }
+    participantDao.grabSession().flush();
     return result;
   }
 
@@ -533,7 +522,6 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
-    participantDao.getSessionFactory().getCurrentSession().flush();
 
     ParticipantEntity entity = participantDao
         .findByRelatedScreeningIdAndLegacyId(screeningId, client.getId());
@@ -542,7 +530,6 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     }
 
     participantIntakeApi = participantService.persistParticipantObjectInNS(participantIntakeApi);
-    participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
   }
 
