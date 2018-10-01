@@ -12,10 +12,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
-import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.data.ns.AddressesDao;
 import gov.ca.cwds.data.ns.AgencyDao;
 import gov.ca.cwds.data.ns.AllegationIntakeDao;
@@ -57,9 +55,6 @@ import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
  * @author CWDS API Team
  */
 public class ScreeningService implements CrudsService {
-
-  private static final ObjectMapper OBJECT_MAPPER = ObjectMapperUtils.createObjectMapper();
-
 
   @Inject
   private AllegationIntakeDao allegationDao;

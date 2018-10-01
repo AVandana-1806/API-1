@@ -21,6 +21,7 @@ import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
@@ -41,6 +42,7 @@ import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparator;
 import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparatorInterface;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
+import gov.ca.cwds.rest.business.rules.CommercialSexualExploitationHistoryDroolsConfiguration;
 import gov.ca.cwds.rest.business.rules.R00824SetDispositionCode;
 import gov.ca.cwds.rest.business.rules.R00832SetStaffPersonAddedInd;
 import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
@@ -49,6 +51,8 @@ import gov.ca.cwds.rest.business.rules.R04466ClientSensitivityIndicator;
 import gov.ca.cwds.rest.business.rules.R04880EstimatedDOBCodeSetting;
 import gov.ca.cwds.rest.business.rules.R10971CsecEndDate;
 import gov.ca.cwds.rest.core.FerbConstants;
+import gov.ca.cwds.rest.exception.BusinessValidationException;
+import gov.ca.cwds.rest.exception.IssueDetails;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
 import gov.ca.cwds.rest.services.cms.ClientAddressService;
@@ -67,7 +71,7 @@ import gov.ca.cwds.rest.validation.ParticipantValidator;
 public class ParticipantToLegacyClient {
 
   private static final String ASSESMENT = "A";
-  
+
   private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantToLegacyClient.class);
@@ -92,6 +96,9 @@ public class ParticipantToLegacyClient {
 
   @Inject
   private SpecialProjectReferralService specialProjectReferralService;
+
+  @Inject
+  private DroolsService droolsService;
 
   /**
    * Constructor
@@ -178,7 +185,7 @@ public class ParticipantToLegacyClient {
   private boolean isReporter(String role, Participant incomingParticipant) {
     return ParticipantValidator.roleIsReporterType(role)
         && (!ParticipantValidator.roleIsAnonymousReporter(role)
-        && !ParticipantValidator.selfReported(incomingParticipant));
+            && !ParticipantValidator.selfReported(incomingParticipant));
   }
 
   private boolean isClient(String role) {
@@ -270,7 +277,7 @@ public class ParticipantToLegacyClient {
     }
     return false;
   }
-  
+
   /**
    * <blockquote>
    * 
@@ -539,6 +546,11 @@ public class ParticipantToLegacyClient {
   private void saveOrUpdateCsec(String clientId, List<Csec> csecs, MessageBuilder messageBuilder) {
     final List<CsecHistory> csecHistories = new ArrayList<>();
     for (Csec csec : csecs) {
+      Set<IssueDetails> detailsSet = droolsService.performBusinessRules(
+          CommercialSexualExploitationHistoryDroolsConfiguration.INSTANCE, csec);
+      if (!detailsSet.isEmpty()) {
+        throw new BusinessValidationException(detailsSet);
+      }
       final String csecCodeId = csec.getCsecCodeId();
       if (csecCodeId == null) {
         messageBuilder.addError("There is no CSEC code id provided for client with id: " + clientId,
@@ -641,6 +653,10 @@ public class ParticipantToLegacyClient {
   public void setSpecialProjectReferralService(
       SpecialProjectReferralService specialProjectReferralService) {
     this.specialProjectReferralService = specialProjectReferralService;
+  }
+
+  public void setDroolsService(DroolsService droolsService) {
+    this.droolsService = droolsService;
   }
 
 }

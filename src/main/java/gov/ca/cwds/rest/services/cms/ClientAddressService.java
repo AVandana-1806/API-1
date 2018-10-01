@@ -28,8 +28,6 @@ import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAddress;
-import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparator;
-import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparatorInterface;
 import gov.ca.cwds.rest.business.rules.LACountyTrigger;
 import gov.ca.cwds.rest.business.rules.NonLACountyTriggers;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
@@ -204,13 +202,13 @@ public class ClientAddressService implements
 
       Address domainAddress = Address.createWithDefaults(address);
       messageBuilder.addDomainValidationError(validator.validate(domainAddress));
-      
+
       if (StringUtils.isBlank(getAddressLegacyId(address))) {
         /*
          * Since legacy address id is not provided, we consider this is a new address.
          */
         addressId = createNewAddress(address, domainAddress);
-        
+
         /*
          * Create client address entry for given referral.
          */
@@ -226,7 +224,7 @@ public class ClientAddressService implements
           messageBuilder.addDomainValidationError(validator.validate(clientAddress));
           address.setLegacySourceTable(LegacyTable.ADDRESS.getName());
           address.setLegacyId(addressId);
-        }        
+        }
       }
     }
 
@@ -253,13 +251,6 @@ public class ClientAddressService implements
     return true;
   }
 
-  private boolean okToUpdateAddress(gov.ca.cwds.rest.api.domain.Address address,
-      Address foundAddress) {
-    DateTimeComparatorInterface comparator = new DateTimeComparator();
-    return comparator.compare(address.getLegacyDescriptor().getLastUpdated(),
-        foundAddress.getLastUpdatedTime());
-  }
-
   private String createNewAddress(gov.ca.cwds.rest.api.domain.Address address,
       Address domainAddress) {
     String addressId;
@@ -269,19 +260,9 @@ public class ClientAddressService implements
     return addressId;
   }
 
-  private String updateAddress(MessageBuilder messageBuilder,
-      gov.ca.cwds.rest.api.domain.Address address, Address domainAddress) {
-    String addressId = getAddressLegacyId(address);
-    Address savedAddress = this.addressService.update(addressId, domainAddress);
-    if (savedAddress != null) {
-      address.getLegacyDescriptor().setLastUpdated(savedAddress.getLastUpdatedTime());
-    } else {
-      String message = "Unable to save Client Address";
-      messageBuilder.addMessageAndLog(message, LOGGER);
-    }
-    return addressId;
-  }
-
+  /**
+   * @return the riClientAddress
+   */
   public RIClientAddress getRiClientAddress() {
     return riClientAddress;
   }

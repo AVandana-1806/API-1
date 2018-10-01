@@ -2,7 +2,6 @@ package gov.ca.cwds.rest.services.submit;
 
 import java.io.Serializable;
 
-import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import org.apache.commons.lang3.NotImplementedException;
 
 import com.google.inject.Inject;
@@ -11,6 +10,7 @@ import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.CrudsService;
 import gov.ca.cwds.rest.services.ScreeningService;

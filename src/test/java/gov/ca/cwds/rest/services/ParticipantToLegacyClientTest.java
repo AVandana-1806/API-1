@@ -42,6 +42,7 @@ import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.data.legacy.cms.dao.SexualExploitationTypeDao;
 import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.legacy.cms.entity.syscodes.SexualExploitationType;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ClientResourceBuilder;
 import gov.ca.cwds.fixture.CsecBuilder;
@@ -201,6 +202,7 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.setSexualExploitationTypeDao(sexualExploitationTypeDao);
     participantToLegacyClient.setCsecHistoryService(csecHistoryService);
     participantToLegacyClient.setSpecialProjectReferralService(specialProjectReferralService);
+    participantToLegacyClient.setDroolsService(mock(DroolsService.class));
   }
 
   @Test
@@ -358,7 +360,7 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
-    
+
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
         .contains("There is no CSEC code id provided for client with id: 1234567ABC"));
@@ -388,9 +390,7 @@ public class ParticipantToLegacyClientTest {
 
   @Test
   public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
-    Csec csec = new CsecBuilder()
-        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
-        .setEndDate(null)
+    Csec csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).setEndDate(null)
         .createCsec();
     List<Csec> csecs = new ArrayList<Csec>();
     csecs.add(csec);
@@ -413,18 +413,17 @@ public class ParticipantToLegacyClientTest {
         .collect(Collectors.toList())
         .contains("Victim while Absent from Placement requires an end date"));
   }
-     /**
-     * <blockquote>
-     * 
-     * <pre>
-     * BUSINESS RULE: R - R - 10971
-     * 
-     *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
-     *  
-     * </blockquote>
-     * </pre>
-     */
-  
+
+  /**
+   * <blockquote>
+   * 
+   * <pre>
+   * BUSINESS RULE: R - R - 10971
+   * 
+   *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
+   * </blockquote>
+   * </pre>
+   */
   @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_MandatedNonMandatedFail()
