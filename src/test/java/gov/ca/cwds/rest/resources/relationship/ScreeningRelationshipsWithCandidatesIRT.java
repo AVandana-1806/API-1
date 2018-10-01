@@ -54,6 +54,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
+    System.out.println(actualJson);
+
     validateResponse(actualJson, expectedResponse);
   }
 
@@ -64,6 +66,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
+    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -73,6 +76,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+    System.out.println(actualJson);
+
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -83,6 +88,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
+    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -94,6 +100,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
+    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -105,7 +112,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
-
+    System.out.println(actualJson);
     validateResponse(actualJson, expectedResponse);
   }
 

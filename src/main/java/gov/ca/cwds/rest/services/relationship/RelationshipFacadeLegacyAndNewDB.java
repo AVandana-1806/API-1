@@ -239,6 +239,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         getMappedParticipantsById(participantIds);
     final Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors =
         legacyDescriptorDao.findParticipantLegacyDescriptors(participantIds);
+    final Set<String> legacyIds = participantsLegacyDescriptors.values().stream()
+        .map(e -> e.getLegacyId()).collect(Collectors.toSet());
+    final Map<String, Client> clients = cmsClientDao.findClientsByIds(legacyIds);
 
     final RelationshipFacadeData relationshipFacadeData = new RelationshipFacadeData();
     relationshipFacadeData.allMappedParticipants = allMappedParticipants;
@@ -246,6 +249,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     relationshipFacadeData.participantsLegacyDescriptors = participantsLegacyDescriptors;
     relationshipFacadeData.screeningId = screeningId;
     relationshipFacadeData.screeningParticipants = screeningParticipants;
+    relationshipFacadeData.allClients = clients;
     return relationshipFacadeData;
   }
 
@@ -267,7 +271,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         getCandidatesTo(screeningParticipant, relationshipFacadeData);
     final Set<RelatedTo> relatedTos = getRelatedTo(screeningParticipant, relationshipFacadeData);
 
-    return new ScreeningRelationshipsWithCandidatesBuilder().withRelatedTo(relatedTos)
+    return new ScreeningRelationshipsWithCandidatesBuilder()
+        .withRelatedTo(relatedTos)
         .witCandidatesTo(candidateTos).withId(screeningParticipant.getId())
         .withDateOfBirth(screeningParticipant.getDateOfBirth())
         .withFirstName(screeningParticipant.getFirstName())
@@ -280,7 +285,25 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .withSensitive(screeningParticipant.getSensitive())
         .withAge(screeningParticipant.getApproximateAge())
         .withAgeUnit(screeningParticipant.getApproximateAgeUnits())
-        .withEstimatedDob(screeningParticipant.getEstimatedDob()).build();
+        .withEstimatedDob(getEstimatedDob(screeningParticipant,
+            relationshipFacadeData))
+        .withEstimatedDobCode(screeningParticipant.getEstimatedDob()).build();
+  }
+
+  private String getEstimatedDob(ParticipantEntity participant,
+      RelationshipFacadeData relationshipFacadeData) {
+    if (participant == null || StringUtils.isEmpty(participant.getLegacyId())) {
+      return null;
+    }
+
+    if (participant.getEstimatedDob() != null && participant.getEstimatedDob()) {
+      Client client = relationshipFacadeData.allClients.get(participant.getLegacyId());
+      if (client != null) {
+        return client.getId();
+      }
+    }
+
+    return null;
   }
 
   private Set<RelatedTo> getRelatedTo(ParticipantEntity screeningParticipant,
@@ -304,10 +327,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       if (screeningParticipant.getScreeningId().equals(relationshipFacadeData.screeningId)) {
         if (relationship.getClientId().equals(screeningParticipant.getId())) {
           relatedTos.add(getPrimaryRelatedTo(relationship, participantSecondary,
-              relationshipFacadeData.participantsLegacyDescriptors, true));
+              relationshipFacadeData.participantsLegacyDescriptors, true, relationshipFacadeData));
         } else if (relationship.getRelativeId().equals(screeningParticipant.getId())) {
           relatedTos.add(getPrimaryRelatedTo(relationship, participantPrimary,
-              relationshipFacadeData.participantsLegacyDescriptors, false));
+              relationshipFacadeData.participantsLegacyDescriptors, false, relationshipFacadeData));
         }
       }
     });
@@ -316,7 +339,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   private RelatedTo getPrimaryRelatedTo(ScreeningRelationship relationship,
       ParticipantEntity participantEntity,
-      Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors, boolean isPrimary) {
+      Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors, boolean isPrimary,
+      RelationshipFacadeData relationshipFacadeData) {
 
     final RelatedToBuilder relatedToBuilder = new RelatedToBuilder();
     relatedToBuilder.withAbsentParentCode(relationship.isAbsentParentIndicator() ? "Y" : "N");
@@ -333,7 +357,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     relatedToBuilder.withRelationshipId(relationship.getId());
     relatedToBuilder.withRelationshipStartDate(relationship.getStartDate());
     relatedToBuilder.withSameHomeCode(relationship.getSameHomeStatus());
-    relatedToBuilder.withEstimatedDob(participantEntity.getEstimatedDob());
+    relatedToBuilder.withEstimatedDobCode(participantEntity.getEstimatedDob());
+    relatedToBuilder.withEstimatedDob(getEstimatedDob(participantEntity, relationshipFacadeData));
 
     final LegacyDescriptorEntity legacyDescriptorEntity =
         participantsLegacyDescriptors.get(participantEntity.getId());
@@ -388,7 +413,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
             .withCandidateLastName(participant.getLastName())
             .withCandidateMiddleName(participant.getMiddleName())
             .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId())
-            .withEstimatedDob(participant.getEstimatedDob());
+            .withEstimatedDobCode(participant.getEstimatedDob())
+            .withEstimatedDob(getEstimatedDob(screeningParticipant, relationshipFacadeData));
         candidates.add(builder.build());
       }
     });
@@ -406,7 +432,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         .filter(e -> e.getClientId().equals(participant.getId())
             && e.getRelativeId().equals(relatedCandidate.getId())
             || e.getClientId().equals(relatedCandidate.getId())
-                && e.getRelativeId().equals(participant.getId()))
+            && e.getRelativeId().equals(participant.getId()))
         .findFirst();
     return existingRelationshiop.isPresent();
   }
@@ -654,9 +680,10 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
 class RelationshipFacadeData {
 
-  Map<String, ParticipantEntity> allMappedParticipants;
-  Set<ScreeningRelationship> allRelationships;
-  List<ParticipantEntity> screeningParticipants;
-  Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors;
+  Map<String, ParticipantEntity> allMappedParticipants = new HashMap<>();
+  Set<ScreeningRelationship> allRelationships = new HashSet<>();
+  List<ParticipantEntity> screeningParticipants = new ArrayList<>();
+  Map<String, LegacyDescriptorEntity> participantsLegacyDescriptors = new HashMap<>();
   String screeningId;
+  Map<String, Client> allClients = new HashMap<>();
 }

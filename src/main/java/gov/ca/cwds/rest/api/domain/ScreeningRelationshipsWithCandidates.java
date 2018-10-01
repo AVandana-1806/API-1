@@ -35,16 +35,16 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       screeningRelationshipsWithCandidates = new ScreeningRelationshipsWithCandidates();
     }
 
-    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(String estimatedDob) {
-      screeningRelationshipsWithCandidates.estimatedDob = estimatedDob;
+    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDobCode(String estimatedDob) {
+      screeningRelationshipsWithCandidates.estimatedDobCode = estimatedDob;
       return this;
     }
 
-    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(Boolean estimatedDob) {
+    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDobCode(Boolean estimatedDob) {
       if (estimatedDob != null) {
-        withEstimatedDob(estimatedDob ? "Y" : "N");
+        withEstimatedDobCode(estimatedDob ? "Y" : "N");
       } else {
-        withEstimatedDob("U");
+        withEstimatedDobCode("U");
       }
       return this;
     }
@@ -131,6 +131,11 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       return this;
     }
 
+    public ScreeningRelationshipsWithCandidatesBuilder withEstimatedDob(String estimatedDob) {
+      screeningRelationshipsWithCandidates.estimatedDob = estimatedDob;
+      return this;
+    }
+
     public ScreeningRelationshipsWithCandidates build() {
       if (screeningRelationshipsWithCandidates.relatedTo == null) {
         screeningRelationshipsWithCandidates.relatedTo = new HashSet<>();
@@ -171,21 +176,26 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         relatedTo = new RelatedTo();
       }
 
-      public RelatedToBuilder withRelationshipId(String relationshipId) {
-        relatedTo.relationshipId = relationshipId;
-        return this;
-      }
-
       public RelatedToBuilder withEstimatedDob(String estimatedDob) {
         relatedTo.estimatedDob = estimatedDob;
         return this;
       }
 
-      public RelatedToBuilder withEstimatedDob(Boolean estimatedDob) {
+      public RelatedToBuilder withRelationshipId(String relationshipId) {
+        relatedTo.relationshipId = relationshipId;
+        return this;
+      }
+
+      public RelatedToBuilder withEstimatedDobCode(String estimatedDob) {
+        relatedTo.estimatedDobCode = estimatedDob;
+        return this;
+      }
+
+      public RelatedToBuilder withEstimatedDobCode(Boolean estimatedDob) {
         if (estimatedDob != null) {
-          withEstimatedDob(estimatedDob ? "Y" : "N");
+          withEstimatedDobCode(estimatedDob ? "Y" : "N");
         } else {
-          withEstimatedDob("U");
+          withEstimatedDobCode("U");
         }
         return this;
       }
@@ -383,6 +393,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @JsonProperty("estimated_dob")
     @ApiModelProperty(value = "Estimated date of birth", example = "N")
     @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+    private String estimatedDobCode;
+
+    @JsonProperty("estimated_date_of_birth")
+    @ApiModelProperty(value = "estimated date of birth", example = "2000-10-01")
     private String estimatedDob;
 
     @JsonProperty("legacy_descriptor")
@@ -390,6 +404,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     private LegacyDescriptor legacyDescriptor;
 
     private RelatedTo() {
+    }
+
+    public String getEstimatedDob() {
+      return estimatedDob;
     }
 
     public String getRelationshipId() {
@@ -472,8 +490,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       return legacyDescriptor;
     }
 
-    public String getEstimatedDob() {
-      return estimatedDob;
+    public String getEstimatedDobCode() {
+      return estimatedDobCode;
     }
 
     @Override
@@ -538,11 +556,16 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         return this;
       }
 
-      public CandidateToBuilder withEstimatedDob(Boolean estimatedDob) {
+      public CandidateToBuilder withEstimatedDobCode(String estimatedDob) {
+        candidateTo.estimatedDobCode = estimatedDob;
+        return this;
+      }
+
+      public CandidateToBuilder withEstimatedDobCode(Boolean estimatedDob) {
         if (estimatedDob != null) {
-          withEstimatedDob(estimatedDob ? "Y" : "N");
+          withEstimatedDobCode(estimatedDob ? "Y" : "N");
         } else {
-          withEstimatedDob("U");
+          withEstimatedDobCode("U");
         }
         return this;
       }
@@ -662,9 +685,17 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @JsonProperty("estimated_dob")
     @ApiModelProperty(value = "Estimated date of birth", example = "N")
     @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+    private String estimatedDobCode;
+
+    @JsonProperty("estimated_date_of_birth")
+    @ApiModelProperty(value = "estimated date of birth", example = "2000-10-01")
     private String estimatedDob;
 
     private CandidateTo() {
+    }
+
+    public String getEstimatedDob() {
+      return estimatedDob;
     }
 
     public String getCandidateId() {
@@ -715,8 +746,8 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       this.candidateAgeUnit = candidateAgeUnit;
     }
 
-    public String getEstimatedDob() {
-      return estimatedDob;
+    public String getEstimatedDobCode() {
+      return estimatedDobCode;
     }
 
     @Override
@@ -806,6 +837,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
   @JsonProperty("estimated_dob")
   @ApiModelProperty(value = "Estimated date of birth", example = "N")
   @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
+  private String estimatedDobCode;
+
+  @JsonProperty("estimated_date_of_birth")
+  @ApiModelProperty(value = "estimated date of birth", example = "2000-10-01")
   private String estimatedDob;
 
   @JsonProperty("relationship_to")
@@ -878,6 +913,10 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
 
   public void setAgeUnit(String ageUnit) {
     this.ageUnit = ageUnit;
+  }
+
+  public String getEstimatedDobCode() {
+    return estimatedDobCode;
   }
 
   public String getEstimatedDob() {
