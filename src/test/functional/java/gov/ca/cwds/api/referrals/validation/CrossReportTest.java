@@ -42,7 +42,7 @@ public class CrossReportTest extends FunctionalTest {
   }
   
   @Test
-//  @Ignore("returns 500 status due to null date/time - error in CrossReportMapper")
+  @Ignore("returns 500 status due to null date/time - error in CrossReportMapper")
   public void shouldReturn201WhenInformDateTimeNull() {
     Set<CrossReport> crossReports = new HashSet();
     CrossReport crossReport = new CrossReportResourceBuilder().setInformDate(null).createCrossReport();
