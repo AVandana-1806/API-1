@@ -2,16 +2,19 @@ package gov.ca.cwds.inject;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-
 import gov.ca.cwds.health.resource.AuthServer;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
+import gov.ca.cwds.health.resource.MQTExistCheck;
+import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
+import gov.ca.cwds.health.resource.SpSpssaname3ExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
+import gov.ca.cwds.health.resource.TriggerExistCheck;
+import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
@@ -34,12 +37,17 @@ public class HealthCheckModule extends AbstractModule {
     bind(SwaggerEndpoint.class);
     bind(IntakeLovCheck.class);
     bind(SystemCodeCheck.class);
+    bind(MQTExistCheck.class);
+    bind(ViewExistCheck.class);
+    bind(TriggerExistCheck.class);
+    bind(SpGenclncntyExistCheck.class);
+    bind(SpSpssaname3ExistCheck.class);
   }
 
-  @Named("authClient")
+  @Named("swaggerTokenClient")
   @Provides
   public Client getAuthClient(final Environment environment) {
-    return buildClient(environment, "AuthHealthCheckRestClient");
+    return buildClient(environment, "SwaggerTokenHealthCheckRestClient");
   }
 
   @Named("swaggerClient")
@@ -52,10 +60,10 @@ public class HealthCheckModule extends AbstractModule {
     return new JerseyClientBuilder(environment).build(name);
   }
 
-  @Named("auth-url")
+  @Named("swagger-toekn-url")
   @Provides
   private String getAuthUrl(SwaggerConfiguration swaggerConfiguration) {
-    return swaggerConfiguration.getLoginUrl() + "?callback=foo";
+    return swaggerConfiguration.getTokenUrl();
   }
 
   @Named("swagger-url")
