@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -227,8 +228,11 @@ public class RelationshipTest {
   }
 
   @Test
+//  @Ignore
   public void deserializesFromJSON() throws Exception {
     Relationship relationship = new RelationshipEntityBuilder().build();
+    String rs = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(relationship);
+    System.out.println(rs);
     assertThat(MAPPER.readValue(fixture("fixtures/domain/investigation/relationship/valid.json"),
         Relationship.class), is(equalTo(relationship)));
   }
