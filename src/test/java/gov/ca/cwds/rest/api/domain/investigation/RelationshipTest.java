@@ -228,7 +228,7 @@ public class RelationshipTest {
   }
 
   @Test
-  @Ignore
+//  @Ignore
   public void deserializesFromJSON() throws Exception {
     Relationship relationship = new RelationshipEntityBuilder().build();
     String rs = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(relationship);
