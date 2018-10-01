@@ -60,7 +60,7 @@ public class HealthCheckModule extends AbstractModule {
     return new JerseyClientBuilder(environment).build(name);
   }
 
-  @Named("swagger-toekn-url")
+  @Named("swagger-token-url")
   @Provides
   private String getAuthUrl(SwaggerConfiguration swaggerConfiguration) {
     return swaggerConfiguration.getTokenUrl();
