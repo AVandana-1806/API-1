@@ -28,7 +28,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryIm
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- * 
+ *
  * @author CWDS API Team
  */
 public class ParticipantTransformer {
@@ -70,6 +70,7 @@ public class ParticipantTransformer {
           buildParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
+      participantIntakeApi.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
       return participantIntakeApi;
     } else {
       return incomingParticipantIntakeApi;
@@ -118,7 +119,6 @@ public class ParticipantTransformer {
   private Boolean isProbationYouth(String clientId) {
     return clientDao.findProbationYouth(clientId) != null;
   }
-
 
   /**
    * @param screeningDao - screeningDao

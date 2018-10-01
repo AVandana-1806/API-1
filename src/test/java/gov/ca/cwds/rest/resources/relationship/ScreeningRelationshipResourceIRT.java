@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.resources.relationship;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
