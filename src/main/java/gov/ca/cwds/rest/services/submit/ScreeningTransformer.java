@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.submit;
 
-import gov.ca.cwds.CWSDateTime;
-import gov.ca.cwds.rest.util.FerbDateUtils;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,10 +9,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import gov.ca.cwds.CWSDateTime;
 import gov.ca.cwds.rest.api.domain.Address;
 import gov.ca.cwds.rest.api.domain.Allegation;
 import gov.ca.cwds.rest.api.domain.CrossReport;
-import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.Screening;
@@ -23,6 +21,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.util.FerbDateUtils;
 
 /**
  * Business layer object to transform an NS {@link Screening} to a {@link ScreeningToReferral}
@@ -78,13 +77,16 @@ public class ScreeningTransformer {
     DateTimeFormatter dateTimeFormatter =
         DateTimeFormatter.ofPattern(CWSDateTime.TIMESTAMP_ISO8601_FORMAT);
 
-    String screeningEndDate = screening.getEndedAt() == null ? null :
-        dateTimeFormatter.format(FerbDateUtils.utcToSystemTime(ZonedDateTime.ofInstant(
-            screening.getEndedAt().toInstant(), ZoneOffset.systemDefault()).toLocalDateTime()));
+    String screeningEndDate =
+        screening.getEndedAt() == null ? null
+            : dateTimeFormatter.format(FerbDateUtils.utcToSystemTime(ZonedDateTime
+                .ofInstant(screening.getEndedAt().toInstant(), ZoneOffset.systemDefault())
+                .toLocalDateTime()));
 
-    String screeningStartDate = screening.getStartedAt() == null ? null :
-        dateTimeFormatter.format(FerbDateUtils.utcToSystemTime(ZonedDateTime.ofInstant(
-            screening.getStartedAt().toInstant(), ZoneOffset.systemDefault()).toLocalDateTime()));
+    String screeningStartDate = screening.getStartedAt() == null ? null
+        : dateTimeFormatter.format(FerbDateUtils.utcToSystemTime(ZonedDateTime
+            .ofInstant(screening.getStartedAt().toInstant(), ZoneOffset.systemDefault())
+            .toLocalDateTime()));
 
     return new ScreeningToReferral(Integer.parseInt(screening.getId()),
         LegacyTable.REFERRAL.getName(), screening.getReferralId(), screeningEndDate,

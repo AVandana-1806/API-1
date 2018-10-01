@@ -37,6 +37,7 @@ public class MappingModule extends AbstractModule {
     bind(ClientMapper.class).to(ClientMapperImpl.INSTANCE.getClass()).asEagerSingleton();
     bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CsecMapper.class).to(CsecMapper.INSTANCE.getClass()).asEagerSingleton();
+    bind(gov.ca.cwds.rest.services.mapper.cms.CsecMapper.class).to(gov.ca.cwds.rest.services.mapper.cms.CsecMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CrossReportMapper.class).to(CrossReportMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(LegacyDescriptorMapper.class).to(LegacyDescriptorMapper.INSTANCE.getClass())
         .asEagerSingleton();
