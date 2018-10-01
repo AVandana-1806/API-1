@@ -10,7 +10,7 @@ import gov.ca.cwds.rest.business.rules.R10971CsecEndDate;
 
 public class R10971CsecEndDateTest {
   
-  private List<Csec> csecs = new ArrayList<Csec>();
+  private List<Csec> csecs = new ArrayList<>();
   private Csec csec;
   private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
 

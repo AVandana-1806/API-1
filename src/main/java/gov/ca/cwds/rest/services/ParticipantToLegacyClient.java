@@ -72,8 +72,6 @@ public class ParticipantToLegacyClient {
 
   private static final String ASSESMENT = "A";
 
-  private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
-
   private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantToLegacyClient.class);
 
   private Validator validator;
