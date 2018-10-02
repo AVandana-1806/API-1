@@ -10,7 +10,7 @@
     "name_suffix": "Jr",
     "gender": "male",
     "sensitive": false,
-    "estimated_dob": "Y",
+    "estimated_dob_code": "Y",
     "sealed": false,
     "relationship_to": [
       {
@@ -30,7 +30,7 @@
         "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
         "relationship_end_date": "2019-07-19",
-        "estimated_dob": "N",
+        "estimated_dob_code": "N",
         "reversed": false
       }
     ],
@@ -43,7 +43,7 @@
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,
-        "estimated_dob": "N",
+        "estimated_dob_code": "N",
         "candidate_age_unit": "Y"
       }
     ]
@@ -60,7 +60,7 @@
     "gender": "male",
     "sensitive": false,
     "sealed": false,
-    "estimated_dob": "N",
+    "estimated_dob_code": "N",
     "relationship_to": [
       {
         "relationship_id": "11",
@@ -79,7 +79,7 @@
         "related_person_relationship": "188",
         "relationship_start_date": "2018-07-19",
         "relationship_end_date": "2019-07-19",
-        "estimated_dob": "Y",
+        "estimated_dob_code": "Y",
         "reversed": true
       }
     ],
@@ -92,7 +92,7 @@
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,
-        "estimated_dob": "N",
+        "estimated_dob_code": "N",
         "candidate_age_unit": "Y"
       }
     ]
@@ -110,7 +110,7 @@
     "sensitive": false,
     "sealed": false,
     "relationship_to": [],
-    "estimated_dob": "N",
+    "estimated_dob_code": "N",
     "candidate_to": [
       {
         "candidate_id": "2019",
@@ -120,7 +120,7 @@
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "2018-01-15",
         "candidate_age": 7,
-        "estimated_dob": "Y",
+        "estimated_dob_code": "Y",
         "candidate_age_unit": "M"
       },
       {
@@ -131,7 +131,7 @@
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "2018-08-08",
         "candidate_age": 13,
-        "estimated_dob": "N",
+        "estimated_dob_code": "N",
         "candidate_age_unit": "D"
       }
     ]

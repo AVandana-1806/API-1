@@ -12,6 +12,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +47,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
   public static final String SCREENING_ID_13 = "2113";
   public static final String FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-four-participants.json";
 
+  public static final String SCREENING_ID_14 = "2215";
+  public static final String PARTICIPANT_ID_14 = "2039";
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_threeParticipantOneRelationshipTwoCandidates()
@@ -54,6 +57,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
+
     validateResponse(actualJson, expectedResponse);
   }
 
@@ -73,6 +77,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
+
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
 
@@ -105,7 +110,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
-
     validateResponse(actualJson, expectedResponse);
   }
 
@@ -140,5 +144,45 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
     assertNull(fromResponse.get(2).getRelatedTo().iterator().next().getLegacyDescriptor());
     assertNotNull(fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor());
     assertEquals("0000000008", fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor().getId());
+  }
+
+  @Test
+  public void getRelationshipsWithCandidateWithEstimatedDob() throws IOException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_14 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+    System.out.println(actualJson);
+    List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
+        .readValue(actualJson,
+            new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
+            });
+    assertNotNull(fromResponse);
+    assertEquals(1, fromResponse.size());
+    assertEquals("N", fromResponse.get(0).getEstimatedDobCode());
+    assertEquals("1944-01-30", fromResponse.get(0).getDateOfBirth());
+    assertNull(fromResponse.get(0).getEstimatedDob());
+    assertNotNull(fromResponse.get(0).getRelatedTo());
+    assertEquals(2, fromResponse.get(0).getRelatedTo().size());
+
+    Iterator setIterator = fromResponse.get(0).getRelatedTo().iterator();
+    RelatedTo relatedTo1 = (RelatedTo)setIterator.next();
+    RelatedTo relatedTo2 = (RelatedTo)setIterator.next();
+
+    RelatedTo relatedTo;
+    if ("Y".equals(relatedTo1.getEstimatedDobCode())) {
+      relatedTo = relatedTo1;
+    } else {
+      relatedTo = relatedTo2;
+    }
+
+    assertEquals("Y", relatedTo.getEstimatedDobCode());
+    assertEquals("1944-01-30", relatedTo.getEstimatedDob());
+    assertNull(relatedTo.getRelatedDateOfBirth());
+
+    if ("U".equals(relatedTo1.getEstimatedDobCode())) {
+      relatedTo2 = relatedTo1;
+    }
+    assertEquals("U", relatedTo2.getEstimatedDobCode());
+    assertNull(relatedTo2.getEstimatedDob());
+    assertNull(relatedTo2.getRelatedDateOfBirth());
   }
 }

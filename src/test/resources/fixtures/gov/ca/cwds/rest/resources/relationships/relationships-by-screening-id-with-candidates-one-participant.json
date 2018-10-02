@@ -11,7 +11,7 @@
     "gender": "male",
     "sensitive": false,
     "sealed": false,
-    "estimated_dob": "U",
+    "estimated_dob_code": "U",
     "relationship_to": [
       {
         "relationship_id": "15",
@@ -22,7 +22,7 @@
         "related_person_name_suffix": "Jr.",
         "related_person_gender": "male",
         "related_person_date_of_birth": "1999-11-15",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "related_person_age": 18,
         "related_person_age_unit": "Y",
         "absent_parent_code": "Y",
