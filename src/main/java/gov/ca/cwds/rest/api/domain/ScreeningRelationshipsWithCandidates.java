@@ -390,7 +390,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
         example = "true")
     private boolean reversed;
 
-    @JsonProperty("estimated_dob")
+    @JsonProperty("estimated_dob_code")
     @ApiModelProperty(value = "Estimated date of birth", example = "N")
     @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
     private String estimatedDobCode;
@@ -682,7 +682,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     @ApiModelProperty(required = true)
     private LegacyDescriptor legacyDescriptor;
 
-    @JsonProperty("estimated_dob")
+    @JsonProperty("estimated_dob_code")
     @ApiModelProperty(value = "Estimated date of birth", example = "N")
     @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
     private String estimatedDobCode;
@@ -834,7 +834,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
   @ApiModelProperty(value = "sealed", example = "false")
   private Boolean sealed;
 
-  @JsonProperty("estimated_dob")
+  @JsonProperty("estimated_dob_code")
   @ApiModelProperty(value = "Estimated date of birth", example = "N")
   @OneOf(value = {"Y", "N", "U"}, ignoreWhitespace = true)
   private String estimatedDobCode;
