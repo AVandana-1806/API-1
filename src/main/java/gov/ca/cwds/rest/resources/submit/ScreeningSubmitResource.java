@@ -15,7 +15,7 @@ import org.apache.http.HttpStatus;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
-import gov.ca.cwds.inject.ScreeningToReferralServiceBackedResource;
+import gov.ca.cwds.inject.ScreeningSubmitServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
@@ -52,7 +52,7 @@ public class ScreeningSubmitResource {
    */
   @Inject
   public ScreeningSubmitResource(
-      @ScreeningToReferralServiceBackedResource ResourceDelegate resourceDelegate) {
+      @ScreeningSubmitServiceBackedResource ResourceDelegate resourceDelegate) {
     this.resourceDelegate = resourceDelegate;
   }
 
