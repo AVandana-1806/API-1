@@ -11,7 +11,7 @@
     "gender": "male",
     "sensitive": false,
     "sealed": false,
-    "estimated_dob": "U",
+    "estimated_dob_code": "U",
     "relationship_to": [
       {
         "relationship_id": "12",
@@ -30,7 +30,7 @@
         "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
         "relationship_end_date": "2019-07-19",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "reversed": false
       }
     ],
@@ -48,7 +48,7 @@
     "gender": "male",
     "sensitive": false,
     "sealed": false,
-    "estimated_dob": "U",
+    "estimated_dob_code": "U",
     "relationship_to": [
       {
         "relationship_id": "13",
@@ -67,7 +67,7 @@
         "related_person_relationship": "203",
         "relationship_start_date": "2018-07-19",
         "relationship_end_date": "2019-07-19",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "reversed": false
       },
       {
@@ -86,7 +86,7 @@
         "indexed_person_relationship": "203",
         "related_person_relationship": "188",
         "relationship_start_date": "2018-07-19",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "relationship_end_date": "2019-07-19",
         "reversed": true
       }
