@@ -152,7 +152,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the CSEC service for processing CSEC.
-   * @param csecHistoryService
+   * @param csecHistoryService - csecHistoryService
    */
   public void setCsecHistoryService(CsecHistoryService csecHistoryService) {
     this.csecHistoryService = csecHistoryService;
@@ -160,7 +160,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the mapper to convert CSEC entity to CSEC domain object
-   * @param csecMapper
+   * @param csecMapper - csecMapper
    */
   public void setCsecMapper(CsecMapper csecMapper) {
     this.csecMapper = csecMapper;

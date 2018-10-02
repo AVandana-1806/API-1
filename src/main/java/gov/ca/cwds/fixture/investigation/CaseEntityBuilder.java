@@ -75,41 +75,4 @@ public class CaseEntityBuilder {
     return this;
   }
 
-  public String getEndDate() {
-    return endDate;
-  }
-
-  public String getCountyName() {
-    return countyName;
-  }
-
-  public SimpleLegacyDescriptor getLegacyDescriptor() {
-    return legacyDescriptor;
-  }
-
-  public SimplePerson getFocusChild() {
-    return focusChild;
-  }
-
-  public String getServiceComponent() {
-    return serviceComponent;
-  }
-
-  public SimplePerson getAssignedSocialWorker() {
-    return assignedSocialWorker;
-  }
-
-  public String getServiceComponentId() {
-    return serviceComponentId;
-  }
-
-  public String getStartDate() {
-    return startDate;
-  }
-
-  public Set<SimplePersonWithRelationship> getParents() {
-    return parents;
-  }
-
-
 }
