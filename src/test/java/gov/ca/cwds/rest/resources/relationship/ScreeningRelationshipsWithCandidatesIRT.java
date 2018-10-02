@@ -46,6 +46,8 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
   public static final String SCREENING_ID_13 = "2113";
   public static final String FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS = "fixtures/gov/ca/cwds/rest/resources/relationships/relationships-by-screening-id-with-candidates-four-participants.json";
 
+  public static final String SCREENING_ID_14 = "2215";
+  public static final String PARTICIPANT_ID_14 = "2039";
 
   @Test
   public void getRelationshipsByScreeningIdWithCandidates_threeParticipantOneRelationshipTwoCandidates()
@@ -54,7 +56,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_8 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_THREE_PARTICIPANTS_TWO_RELATIONSHIPS);
-    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -66,7 +67,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_9 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_NO_RELATIONSHIPS);
-    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -76,7 +76,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
       throws IOException, JSONException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_10 + "/" + RELATIONSHIPS));
-    System.out.println(actualJson);
 
     JSONAssert.assertEquals("[]", actualJson, JSONCompareMode.NON_EXTENSIBLE);
   }
@@ -88,7 +87,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_11 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_RESPONSE_TWO_RELATIONSHIPS_NO_CANDIDATES);
-    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -100,7 +98,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
-    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -112,7 +109,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_13 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_ONE_PARTICIPANT);
-    System.out.println(actualJson);
     validateResponse(actualJson, expectedResponse);
   }
 
@@ -147,5 +143,26 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
     assertNull(fromResponse.get(2).getRelatedTo().iterator().next().getLegacyDescriptor());
     assertNotNull(fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor());
     assertEquals("0000000008", fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor().getId());
+  }
+
+  @Test
+  public void getRelationshipsWithCandidateWithEstimatedDob() throws IOException {
+    String actualJson = getStringResponse(
+        doGetCall(SCREENING_PATH + "/" + SCREENING_ID_14 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
+
+    List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
+        .readValue(actualJson,
+            new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
+            });
+    assertNotNull(fromResponse);
+    assertEquals(1, fromResponse.size());
+    assertEquals("N", fromResponse.get(0).getEstimatedDobCode());
+    assertEquals("1944-01-30", fromResponse.get(0).getDateOfBirth());
+    assertNull(fromResponse.get(0).getEstimatedDob());
+    assertNotNull(fromResponse.get(0).getRelatedTo());
+    assertEquals(1, fromResponse.get(0).getRelatedTo().size());
+    assertEquals("Y", fromResponse.get(0).getRelatedTo().iterator().next().getEstimatedDobCode());
+    assertEquals("1944-01-30", fromResponse.get(0).getRelatedTo().iterator().next().getEstimatedDob());
+    assertNull(fromResponse.get(0).getRelatedTo().iterator().next().getRelatedDateOfBirth());
   }
 }

@@ -39,6 +39,11 @@
       SAME_HM_CD, START_DT, LST_UPD_ID, LST_UPD_TS, FKCLIENT_T, FKCLIENT_0)VALUES
       ('0btlf7s006', 'Y', 190, NULL, 'N', NULL, '0Jy', '2015-03-28 22:47:04.869985', '0000000111',
       '0000000112');
+
+      INSERT INTO ${database.defaultSchemaName}.CLN_RELT (IDENTIFIER, ABSENT_CD, CLNTRELC, END_DT,
+      SAME_HM_CD, START_DT, LST_UPD_ID, LST_UPD_TS, FKCLIENT_T, FKCLIENT_0)VALUES
+      ('0btlf7s007', 'Y', 190, NULL, 'N', NULL, '0Jy', '2015-03-28 22:47:04.869985', 'aassdd1133',
+      'aassdd1122');
     </sql>
   </changeSet>
 </databaseChangeLog>

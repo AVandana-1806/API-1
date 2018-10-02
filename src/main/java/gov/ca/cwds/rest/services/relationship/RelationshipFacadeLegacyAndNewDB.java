@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -299,7 +300,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     if (participant.getEstimatedDob() != null && participant.getEstimatedDob()) {
       Client client = relationshipFacadeData.allClients.get(participant.getLegacyId());
       if (client != null) {
-        return client.getId();
+        return DomainChef.cookDate(client.getBirthDate());
       }
     }
 

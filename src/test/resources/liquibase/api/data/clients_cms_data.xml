@@ -1,0 +1,145 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+  <changeSet id="clients_data_for_relationships_with_candidates" author="mzemlyanoi">
+    <insert tableName="CLIENT_T">
+      <column name="IDENTIFIER" value="aassdd1122"/>
+      <column name="ADJDEL_IND" value="null"/>
+      <column name="ALN_REG_NO" value="111483672"/>
+      <column name="ADPTN_STCD" value="N"/>
+      <column name="BIRTH_DT" value="1944-01-30"/>
+      <column name="BR_FAC_NM" value="San Jose Medical Center"/>
+      <column name="B_STATE_C" value="1823"/>
+      <column name="B_CNTRY_C" value="470"/>
+      <column name="CHLD_CLT_B" value="N"/>
+      <column name="COM_FST_NM" value="Ken"/>
+      <column name="COM_LST_NM" value="Potter"/>
+      <column name="COM_MID_NM" value="Juliet"/>
+      <column name="CONF_EFIND" value="N"/>
+      <column name="CONF_ACTDT" value="2004-06-14"/>
+      <column name="CREATN_DT" value="1999-08-15"/>
+      <column name="DTH_RN_TXT" value="U8SxGBF00c"/>
+      <column name="D_STATE_C" value="1823"/>
+      <column name="GENDER_CD" value="M"/>
+      <column name="I_CNTRY_C" value="563"/>
+      <column name="IMGT_STC" value="1199"/>
+      <column name="INCAPC_CD" value="NA"/>
+      <column name="LITRATE_CD" value="N"/>
+      <column name="MAR_HIST_B" value="N"/>
+      <column name="MRTL_STC" value="1308"/>
+      <column name="MILT_STACD" value="U"/>
+      <column name="NMPRFX_DSC" value="Mrs"/>
+      <column name="NAME_TPC" value="1313"/>
+      <column name="OUTWRT_IND" value="Y"/>
+      <column name="P_ETHNCTYC" value="841"/>
+      <column name="P_LANG_TPC" value="1248"/>
+      <column name="RLGN_TPC" value="1553"/>
+      <column name="S_LANG_TC" value="1249"/>
+      <column name="SENSTV_IND" value="R"/>
+      <column name="SNTV_HLIND" value="Y"/>
+      <column name="SS_NO" value="123456789"/>
+      <column name="SSN_CHG_CD" value="N"/>
+      <column name="SUFX_TLDSC" value="D.D"/>
+      <column name="UNEMPLY_CD" value="U"/>
+      <column name="COMMNT_DSC" value="Primary Comments for the Primary Client."/>
+      <column name="EST_DOB_CD" value="N"/>
+      <column name="BP_VER_IND" value="N"/>
+      <column name="HISP_CD" value="U"/>
+      <column name="CURRCA_IND" value="N"/>
+      <column name="CURREG_IND" value="Y"/>
+      <column name="COTH_DESC" value="QWREQWER"/>
+      <column name="PREVCA_IND" value="N"/>
+      <column name="PREREG_IND" value="N"/>
+      <column name="POTH_DESC" value=" "/>
+      <column name="HCARE_IND" value="N"/>
+      <column name="LIMIT_IND" value="N"/>
+      <column name="BIRTH_CITY" value="San Francisco"/>
+      <column name="HEALTH_TXT" value="0Wqj8l901w"/>
+      <column name="FTERM_DT" value="1999-08-15"/>
+      <column name="ZIPPY_IND" value="N"/>
+      <column name="TR_MBVRT_B" value="N"/>
+      <column name="TRBA_CLT_B" value="N"/>
+      <column name="SOC158_IND" value="Y"/>
+      <column name="DTH_DT_IND" value="N"/>
+      <column name="EMAIL_ADDR" value="test@test.com"/>
+      <column name="HISP_UD_CD" value="A"/>
+      <column name="SOCPLC_CD" value="M"/>
+      <column name="CL_INDX_NO" value=" "/>
+      <column name="LST_UPD_TS" value="2000-03-17 17:01:54.924155"/>
+      <column name="LST_UPD_ID" value="200"/>
+    </insert>
+    <insert tableName="CLIENT_T">
+      <column name="IDENTIFIER" value="aassdd1133"/>
+      <column name="ADJDEL_IND" value="null"/>
+      <column name="ALN_REG_NO" value="111483672"/>
+      <column name="ADPTN_STCD" value="N"/>
+      <column name="BIRTH_DT" value="1944-01-30"/>
+      <column name="BR_FAC_NM" value="San Jose Medical Center"/>
+      <column name="B_STATE_C" value="1823"/>
+      <column name="B_CNTRY_C" value="470"/>
+      <column name="CHLD_CLT_B" value="N"/>
+      <column name="COM_FST_NM" value="Ken"/>
+      <column name="COM_LST_NM" value="Potter"/>
+      <column name="COM_MID_NM" value="Juliet"/>
+      <column name="CONF_EFIND" value="N"/>
+      <column name="CONF_ACTDT" value="2004-06-14"/>
+      <column name="CREATN_DT" value="1999-08-15"/>
+      <column name="DTH_RN_TXT" value="U8SxGBF00c"/>
+      <column name="D_STATE_C" value="1823"/>
+      <column name="GENDER_CD" value="M"/>
+      <column name="I_CNTRY_C" value="563"/>
+      <column name="IMGT_STC" value="1199"/>
+      <column name="INCAPC_CD" value="NA"/>
+      <column name="LITRATE_CD" value="N"/>
+      <column name="MAR_HIST_B" value="N"/>
+      <column name="MRTL_STC" value="1308"/>
+      <column name="MILT_STACD" value="U"/>
+      <column name="NMPRFX_DSC" value="Mrs"/>
+      <column name="NAME_TPC" value="1313"/>
+      <column name="OUTWRT_IND" value="Y"/>
+      <column name="P_ETHNCTYC" value="841"/>
+      <column name="P_LANG_TPC" value="1248"/>
+      <column name="RLGN_TPC" value="1553"/>
+      <column name="S_LANG_TC" value="1249"/>
+      <column name="SENSTV_IND" value="R"/>
+      <column name="SNTV_HLIND" value="Y"/>
+      <column name="SS_NO" value="123456784"/>
+      <column name="SSN_CHG_CD" value="N"/>
+      <column name="SUFX_TLDSC" value="D.D"/>
+      <column name="UNEMPLY_CD" value="U"/>
+      <column name="COMMNT_DSC" value="Primary Comments for the Primary Client."/>
+      <column name="EST_DOB_CD" value="Y"/>
+      <column name="BP_VER_IND" value="N"/>
+      <column name="HISP_CD" value="U"/>
+      <column name="CURRCA_IND" value="N"/>
+      <column name="CURREG_IND" value="Y"/>
+      <column name="COTH_DESC" value="QWREQWER"/>
+      <column name="PREVCA_IND" value="N"/>
+      <column name="PREREG_IND" value="N"/>
+      <column name="POTH_DESC" value=" "/>
+      <column name="HCARE_IND" value="N"/>
+      <column name="LIMIT_IND" value="N"/>
+      <column name="BIRTH_CITY" value="San Francisco"/>
+      <column name="HEALTH_TXT" value="0Wqj8l901w"/>
+      <column name="FTERM_DT" value="1999-08-15"/>
+      <column name="ZIPPY_IND" value="N"/>
+      <column name="TR_MBVRT_B" value="N"/>
+      <column name="TRBA_CLT_B" value="N"/>
+      <column name="SOC158_IND" value="Y"/>
+      <column name="DTH_DT_IND" value="N"/>
+      <column name="EMAIL_ADDR" value="test@test.com"/>
+      <column name="HISP_UD_CD" value="A"/>
+      <column name="SOCPLC_CD" value="M"/>
+      <column name="CL_INDX_NO" value=" "/>
+      <column name="LST_UPD_TS" value="2000-03-17 17:01:54.924155"/>
+      <column name="LST_UPD_ID" value="200"/>
+    </insert>
+    <rollback>
+      <delete tableName="CLIENT_T">
+        <where>IDENTIFIER = '0Aa7CHj000'</where>
+      </delete>
+    </rollback>
+  </changeSet>
+</databaseChangeLog>
