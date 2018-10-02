@@ -17,7 +17,7 @@ import nl.jqno.equalsverifier.Warning;
 @SuppressWarnings("javadoc")
 public class IdTest {
 
-  private String id = "123";
+  private String identifier = "123";
 
   @Test
   public void type() throws Exception {
@@ -27,9 +27,9 @@ public class IdTest {
   @Test
   public void constructorTest() throws Exception {
 
-    Id domain = new Id(id);
+    Id domain = new Id(identifier);
 
-    assertThat(domain.getId(), is(equalTo(id)));
+    assertThat(domain.getIdentifier(), is(equalTo(identifier)));
   }
 
   @Test

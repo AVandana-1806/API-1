@@ -135,7 +135,7 @@ public class ScreeningToReferralService implements CrudsService {
   @Override
   public Response create(@Valid Request request) {
     if (request instanceof Id) {
-      return submit(((Id) request).getId());
+      return submit(((Id) request).getIdentifier());
     }
     final ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
     return createReferral(screeningToReferral);

@@ -83,7 +83,6 @@ import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
-import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import gov.ca.cwds.rest.services.PersonService;
@@ -125,7 +124,6 @@ import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
-import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 
 /**
  * Identifies all CWDS API domain resource classes (REST endpoints) and supporting service classes
@@ -181,7 +179,6 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiScreeningResource.class);
     bind(AuthorizationResource.class);
     bind(HoiUsingClientIdResource.class);
-    bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
     bind(IntakeLovResource.class);
     LOGGER.info("configure: done");
@@ -271,14 +268,6 @@ public class ResourcesModule extends AbstractModule {
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
         injector.getInstance(HistoryOfInvolvementService.class));
-  }
-
-  @Provides
-  @ScreeningParticipantServiceBackedResource
-  public TypedResourceDelegate<String, ParticipantIntakeApi> screeningParticipantResource(
-      Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ScreeningParticipantService.class));
   }
 
   @Provides

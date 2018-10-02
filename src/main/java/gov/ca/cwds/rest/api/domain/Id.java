@@ -16,19 +16,19 @@ public class Id implements Request {
 
   private static final long serialVersionUID = 1L;
 
-  String id;
+  String identifier;
 
   /**
    * @param id - primary key
    */
-  public Id(@JsonProperty("id") String id) {
+  public Id(@JsonProperty("identifier") String identifier) {
     super();
-    this.id = id;
+    this.identifier = identifier;
   }
 
 
-  public String getId() {
-    return id;
+  public String getIdentifier() {
+    return identifier;
   }
 
   /**
@@ -37,7 +37,7 @@ public class Id implements Request {
    * @see java.lang.Object#hashCode()
    */
   @Override
-  final public int hashCode() {
+  public final int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this, false);
   }
 
@@ -47,7 +47,7 @@ public class Id implements Request {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  final public boolean equals(Object obj) {
+  public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
 

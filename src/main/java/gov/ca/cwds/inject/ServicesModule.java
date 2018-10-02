@@ -81,7 +81,6 @@ import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
-import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
@@ -197,7 +196,6 @@ public class ServicesModule extends AbstractModule {
     bind(ReferralClientService.class);
     bind(ReferralService.class);
     bind(ReporterService.class);
-    bind(ScreeningParticipantService.class);
     bind(ScreeningRelationshipService.class);
     bind(ScreeningService.class);
     bind(ScreeningToReferral.class);
