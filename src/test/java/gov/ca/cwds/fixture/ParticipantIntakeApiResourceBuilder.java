@@ -45,7 +45,7 @@ public class ParticipantIntakeApiResourceBuilder {
   Boolean sealed = false;
   Boolean sensitive = false;
   LegacyDescriptor legacyDescriptor = new LegacyDescriptor();;
-  List<Csec> csec = new ArrayList<>(Arrays.asList(new CsecBuilder().createCsec()));
+  List<Csec> csec = new ArrayList<>(Arrays.asList(new CsecBuilder().build()));
 
   /**
    * @return the ParticipantIntakeApi

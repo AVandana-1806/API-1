@@ -323,7 +323,7 @@ public class ParticipantToLegacyClientTest {
   @Ignore
   public void testCsecDuplication() {
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
-    victimParticipant.getCsecs().add(new CsecBuilder().createCsec());
+    victimParticipant.getCsecs().add(new CsecBuilder().build());
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
@@ -391,7 +391,7 @@ public class ParticipantToLegacyClientTest {
   @Test
   public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
     Csec csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).setEndDate(null)
-        .createCsec();
+        .build();
     List<Csec> csecs = new ArrayList<Csec>();
     csecs.add(csec);
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
