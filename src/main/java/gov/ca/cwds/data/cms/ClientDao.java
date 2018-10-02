@@ -6,9 +6,11 @@ import gov.ca.cwds.data.persistence.cms.BaseClient;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.inject.CmsSessionFactory;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
@@ -39,6 +41,9 @@ public class ClientDao extends BaseDaoImpl<Client> {
    * @return map where key is a Client id and value is a Client itself
    */
   public Map<String, Client> findClientsByIds(Collection<String> ids) {
+    if (CollectionUtils.isEmpty(ids)) {
+      return new HashMap<>();
+    }
     @SuppressWarnings("unchecked") final Query<Client> query = this.grabSession()
         .getNamedQuery(constructNamedQueryName("findByIds")).setParameter("ids", ids);
     return query.list().stream().collect(Collectors.toMap(BaseClient::getId, c -> c));
