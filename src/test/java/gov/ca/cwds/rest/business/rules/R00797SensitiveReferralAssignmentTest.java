@@ -76,6 +76,7 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
+import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -166,6 +167,7 @@ public class R00797SensitiveReferralAssignmentTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
+  private ScreeningService screeningService;
 
   private gov.ca.cwds.data.persistence.cms.Referral referral;
   private Validator validator;
@@ -281,10 +283,12 @@ public class R00797SensitiveReferralAssignmentTest {
     referralService.setLongTextService(longTextService);
     referralService.setRiReferral(riReferral);
 
+    screeningService = mock(ScreeningService.class);
+
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
-        crossReportService, participantToLegacyClient, clientRelationshipService, validator, referralDao,
-        new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
-        governmentOrganizationCrossReportService, clientRelationshipDao);
+        crossReportService, participantToLegacyClient, clientRelationshipService, validator,
+        referralDao, new MessageBuilder(), allegationPerpetratorHistoryService, reminders,
+        governmentOrganizationCrossReportService, clientRelationshipDao, screeningService);
     screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 

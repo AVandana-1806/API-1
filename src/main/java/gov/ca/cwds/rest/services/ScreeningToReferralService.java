@@ -2,9 +2,6 @@ package gov.ca.cwds.rest.services;
 
 import static gov.ca.cwds.rest.core.Api.DATASOURCE_CMS;
 
-import gov.ca.cwds.drools.DroolsService;
-import gov.ca.cwds.rest.business.rules.CrossReportDroolsConfiguration;
-import gov.ca.cwds.rest.exception.IssueDetails;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,12 +23,14 @@ import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelatio
 import gov.ca.cwds.data.access.dto.ClientRelationshipDtoBuilder;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.cms.ReferralDao;
+import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Allegation;
 import gov.ca.cwds.rest.api.domain.CrossReport;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.GovernmentAgency;
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationship;
@@ -39,11 +38,14 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.AgencyType;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedAllegation;
+import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
+import gov.ca.cwds.rest.business.rules.CrossReportDroolsConfiguration;
 import gov.ca.cwds.rest.business.rules.R06998ZippyIndicator;
 import gov.ca.cwds.rest.business.rules.R08740SetNonProtectingParentCode;
 import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.exception.BusinessValidationException;
+import gov.ca.cwds.rest.exception.IssueDetails;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -51,6 +53,7 @@ import gov.ca.cwds.rest.services.cms.AllegationService;
 import gov.ca.cwds.rest.services.cms.CrossReportService;
 import gov.ca.cwds.rest.services.cms.GovernmentOrganizationCrossReportService;
 import gov.ca.cwds.rest.services.cms.ReferralService;
+import gov.ca.cwds.rest.services.submit.ScreeningTransformer;
 import gov.ca.cwds.rest.validation.CaresValidationUtils;
 import gov.ca.cwds.rest.validation.ParticipantValidator;
 import gov.ca.cwds.rest.validation.StartDateTimeValidator;
@@ -64,6 +67,9 @@ import io.dropwizard.hibernate.UnitOfWork;
 public class ScreeningToReferralService implements CrudsService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningToReferralService.class);
+
+
+  private ScreeningService screeningService;
 
   private Validator validator;
   private MessageBuilder messageBuilder;
@@ -107,7 +113,7 @@ public class ScreeningToReferralService implements CrudsService {
       ReferralDao referralDao, MessageBuilder messageBuilder,
       AllegationPerpetratorHistoryService allegationPerpetratorHistoryService, Reminders reminders,
       GovernmentOrganizationCrossReportService governmentOrganizationCrossReportService,
-      ClientRelationshipDao clientRelationshipDao) {
+      ClientRelationshipDao clientRelationshipDao, ScreeningService screeningService) {
 
     super();
     this.clientRelationshipDao = clientRelationshipDao;
@@ -122,16 +128,26 @@ public class ScreeningToReferralService implements CrudsService {
     this.allegationPerpetratorHistoryService = allegationPerpetratorHistoryService;
     this.reminders = reminders;
     this.governmentOrganizationCrossReportService = governmentOrganizationCrossReportService;
+    this.screeningService = screeningService;
+  }
+
+
+  @Override
+  public Response create(@Valid Request request) {
+    if (request instanceof Id) {
+      return submit(((Id) request).getId());
+    }
+    final ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
+    return createReferral(screeningToReferral);
   }
 
   @UnitOfWork(DATASOURCE_CMS)
-  @Override
-  public Response create(@Valid Request request) {
-    final ScreeningToReferral screeningToReferral = (ScreeningToReferral) request;
+  public Response createReferral(final ScreeningToReferral screeningToReferral) {
+
     verifyReferralHasValidParticipants(screeningToReferral);
 
-    //BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
-    //Referral received date and received time need to set when referral was created
+    // BUSINESS RULE: "R - 05446" - Default dateStarted and timeStarted
+    // Referral received date and received time need to set when referral was created
     String referralToBeCreatedAt =
         DomainChef.cookISO8601Timestamp(RequestExecutionContext.instance().getRequestStartTime());
     final String dateStarted =
@@ -140,11 +156,11 @@ public class ScreeningToReferralService implements CrudsService {
         StartDateTimeValidator.extractStartTime(referralToBeCreatedAt, messageBuilder);
 
     final String referralId = createCmsReferral(screeningToReferral, dateStarted, timeStarted);
-    final ClientParticipants clientParticipants = participantToLegacyClient.saveParticipants(screeningToReferral, dateStarted, timeStarted,
-        referralId, messageBuilder);
+    final ClientParticipants clientParticipants = participantToLegacyClient.saveParticipants(
+        screeningToReferral, dateStarted, timeStarted, referralId, messageBuilder);
     saveRelationships(screeningToReferral, clientParticipants);
-    final PostedScreeningToReferral pstr = createPostedScreeningToReferral(screeningToReferral,
-        referralId, clientParticipants);
+    final PostedScreeningToReferral pstr =
+        createPostedScreeningToReferral(screeningToReferral, referralId, clientParticipants);
     reminders.createTickle(pstr);
 
     handleErrors();
@@ -586,4 +602,40 @@ public class ScreeningToReferralService implements CrudsService {
   public void setDroolsService(DroolsService droolsService) {
     this.droolsService = droolsService;
   }
+
+  /**
+   * @param screeningId - the screening id
+   * @return the screening
+   */
+  public Response submit(String screeningId) {
+    Screening screening = screeningService.getScreening(screeningId);
+    // cms session
+    String referralId = createReferralAndGetIdentifier(screening);
+    // ns session
+    setReferralIdAndSubmittedStatusOnScreening(referralId, screening);
+    return screeningService.updateScreening(screeningId, screening);
+  }
+
+
+  private String createReferralAndGetIdentifier(Screening screening) {
+    ScreeningToReferral screeningToReferral =
+        (ScreeningToReferral) createReferral(buildReferralFromScreening(screening));
+    return screeningToReferral.getReferralId();
+  }
+
+
+  Screening setReferralIdAndSubmittedStatusOnScreening(String referralId, Screening screening) {
+    screening.setReferralId(referralId);
+    screening.setScreeningStatus(ScreeningStatus.SUBMITTED.getStatus());
+    return screening;
+  }
+
+
+  ScreeningToReferral buildReferralFromScreening(Screening screening) {
+    return new ScreeningTransformer().transform(screening,
+        RequestExecutionContext.instance().getStaffId(),
+        RequestExecutionContext.instance().getUserIdentity().getCountyCode());
+  }
+
+
 }

@@ -84,7 +84,6 @@ import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
 import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
-import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
 import gov.ca.cwds.rest.services.PersonService;
@@ -127,7 +126,6 @@ import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
-import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
 /**
  * Identifies all CWDS API domain resource classes (REST endpoints) and supporting service classes
@@ -155,7 +153,6 @@ public class ResourcesModule extends AbstractModule {
     bind(ParticipantResource.class);
     bind(PersonResource.class);
     bind(ScreeningResource.class);
-    bind(ScreeningSubmitResource.class);
     bind(ScreeningIntakeResource.class);
     bind(ScreeningDashboardResource.class);
     bind(CmsDocReferralClientResource.class);
@@ -230,12 +227,6 @@ public class ResourcesModule extends AbstractModule {
   public ResourceDelegate screeningRelationshipServiceBackedResource(Injector injector) {
     return new ServiceBackedResourceDelegate(
         injector.getInstance(ScreeningRelationshipService.class));
-  }
-
-  @Provides
-  @ScreeningSubmitServiceBackedResource
-  public ResourceDelegate screeningSubmitServiceBackedResource(Injector injector) {
-    return new ServiceBackedResourceDelegate(injector.getInstance(ScreeningSubmitService.class));
   }
 
   @Provides
@@ -403,8 +394,7 @@ public class ResourcesModule extends AbstractModule {
   @ParticipantServiceBackedResource
   public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
       Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ParticipantService.class));
+    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ParticipantService.class));
   }
 
   @Provides

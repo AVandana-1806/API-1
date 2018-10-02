@@ -53,6 +53,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
+import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -143,6 +144,7 @@ public class R05914DoNotUpdateApprovalStatusTypeTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
+  private ScreeningService screeningService;
 
   @SuppressWarnings("javadoc")
   @Rule
@@ -159,6 +161,7 @@ public class R05914DoNotUpdateApprovalStatusTypeTest {
     new TestingRequestExecutionContext("0X5");
     validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+    screeningService = mock(ScreeningService.class);
     longTextDao = mock(LongTextDao.class);
     longTextService = new LongTextService(longTextDao);
 
@@ -262,7 +265,7 @@ public class R05914DoNotUpdateApprovalStatusTypeTest {
         crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao);
+        clientRelationshipDao, screeningService);
   }
 
   /**

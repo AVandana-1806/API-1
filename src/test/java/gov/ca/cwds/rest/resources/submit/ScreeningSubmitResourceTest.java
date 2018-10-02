@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
 
 public class ScreeningSubmitResourceTest {
@@ -20,8 +21,8 @@ public class ScreeningSubmitResourceTest {
   }
 
   @Test
-  public void callScreeningSubmitService() throws Exception {
+  public void callScreeningToReferralService() throws Exception {
     resource.create("id");
-    verify(service).get("id");
+    verify(service).create(new Id("id"));
   }
 }

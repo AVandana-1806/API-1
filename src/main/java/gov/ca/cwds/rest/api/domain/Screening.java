@@ -2,15 +2,19 @@ package gov.ca.cwds.rest.api.domain;
 
 import static gov.ca.cwds.rest.util.FerbDateUtils.freshDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import io.dropwizard.jackson.JsonSnakeCase;
@@ -408,6 +412,10 @@ public class Screening extends ReportingDomain implements Request, Response {
 
   public Set<AllegationIntake> getAllegations() {
     return allegations;
+  }
+
+  public void setAllegations(Set<AllegationIntake> allegations) {
+    this.allegations = allegations;
   }
 
   public Set<ParticipantIntakeApi> getParticipantIntakeApis() {
