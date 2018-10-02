@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.Before;
@@ -138,15 +139,6 @@ public class CaseTest {
     assertThat(actual, is(equalTo(expected)));
   }
 
-  // @Test
-  // @Ignore
-  // public void testSerializedOutput()
-  // throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
-  // Case validCase = new CaseEntityBuilder().build();
-  // final String expected = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(validCase);
-  // System.out.println(expected);
-  // }
-
   @Test
   public void deserializesFromJSON() throws Exception {
     Case validCase = new CaseEntityBuilder().build();
@@ -155,4 +147,39 @@ public class CaseTest {
         is(equalTo(validCase)));
   }
 
+  @Test
+  public void testGettersAndSettersOfBuilder() {
+    SimplePerson assignedSocialWorker = new SimplePersonEntityBuilder()
+        .setLastName("lastName")
+        .build();
+    SimplePerson focusChild = new SimplePersonEntityBuilder()
+        .setLastName("Child")
+        .build();
+    Set<SimplePersonWithRelationship> parents = new LinkedHashSet<>();
+    SimplePersonWithRelationship father = new SimplePersonWithRelationshipEntityBuilder()
+        .setLastName("father")
+        .build();
+    parents.add(father);
+    SimpleLegacyDescriptor legacyDescriptor = new SimpleLegacyDescriptor("5678901ABC");
+    Case validCase = new CaseEntityBuilder()
+        .setAssignedSocialWorker(assignedSocialWorker)
+        .setCmsRecordDescriptor(legacyDescriptor)
+        .setCountyName("Marin")
+        .setEndDate("2018-10-01")
+        .setFocusChild(focusChild)
+        .setParents(parents)
+        .setServiceComponent("0123456ABC")
+        .setServiceComponentId("9012345ABC")
+        .setStartDate("2018-06-01")
+        .build();
+    assertThat(validCase.getAssignedSocialWorker(), is(equalTo(assignedSocialWorker)));
+    assertThat(validCase.getCountyName(), is(equalTo("Marin")));
+    assertThat(validCase.getEndDate(), is(equalTo("2018-10-01")));
+    assertThat(validCase.getFocusChild(), is(equalTo(focusChild)));
+    assertThat(validCase.getLegacyDescriptor(), is(equalTo(legacyDescriptor)));
+    assertThat(validCase.getParents(), is(equalTo(parents)));
+    assertThat(validCase.getServiceComponent(), is(equalTo("0123456ABC")));
+    assertThat(validCase.getServiceComponentId(), is(equalTo("9012345ABC")));
+    assertThat(validCase.getStartDate(), is(equalTo("2018-06-01")));
+  }
 }

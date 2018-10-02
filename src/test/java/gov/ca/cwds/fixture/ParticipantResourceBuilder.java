@@ -273,7 +273,7 @@ public class ParticipantResourceBuilder {
   public Participant createVictimParticipant() {
     this.roles = new HashSet<>(Arrays.asList("Victim"));
     csecs = new ArrayList<>();
-    csecs.add(new CsecBuilder().createCsec());
+    csecs.add(new CsecBuilder().build());
     safelySurrenderedBabies = new SafelySurrenderedBabiesBuilder().build();
     return createParticipant();
   }

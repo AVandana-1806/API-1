@@ -23,7 +23,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author CWDS TPT-3 Team
  */
-public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
+public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTest {
 
   public static final String RELATIONSHIPS = "relationships";
   public static final String SCREENING_PATH = "screenings";
@@ -94,7 +94,6 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_12 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     String expectedResponse =
         fixture(FIXTURE_GET_RELATIONSHIPS_FOUR_PARTICIPANTS);
-    System.out.println(actualJson);
 
     validateResponse(actualJson, expectedResponse);
   }
@@ -141,61 +140,5 @@ public class ScreeningRelationshipsWithCandidatesIRT extends IntakeBaseTest {
     assertNull(fromResponse.get(2).getRelatedTo().iterator().next().getLegacyDescriptor());
     assertNotNull(fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor());
     assertEquals("0000000008", fromResponse.get(2).getRelatedCandidatesTo().iterator().next().getLegacyDescriptor().getId());
-  }
-
-  private void validateResponse(String actualJson, String expectedResponse)
-      throws IOException {
-    List<ScreeningRelationshipsWithCandidates> expected = objectMapper
-        .readValue(expectedResponse,
-            new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
-            });
-    List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
-        .readValue(actualJson,
-            new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
-            });
-    assertNotNull(expected);
-    assertNotNull(fromResponse);
-    assertNotEquals(0, fromResponse.size());
-    assertNotEquals(0, expected.size());
-
-    expected.forEach(e -> {
-      Optional<ScreeningRelationshipsWithCandidates> optional = fromResponse.stream()
-          .filter(b -> b.getId().equals(e.getId())).findFirst();
-      if (optional.isPresent()) {
-        e.setAge(optional.get().getAge());
-        e.setAgeUnit(optional.get().getAgeUnit());
-
-        Set<RelatedTo> relatedTos = optional.get().getRelatedTo();
-        e.getRelatedTo().forEach(relatedTo -> {
-          Optional<RelatedTo> optionalRelatedTo = relatedTos.stream()
-              .filter(c -> c.getRelationshipId().equals(relatedTo.getRelationshipId())).findFirst();
-          if (optionalRelatedTo.isPresent()) {
-            relatedTo.setRelatedAge(optionalRelatedTo.get().getRelatedAge());
-            relatedTo.setRelatedAgeUnit(optionalRelatedTo.get().getRelatedAgeUnit());
-          }
-
-          assertEquals(optionalRelatedTo.get().getRelationshipId(), relatedTo.getRelationshipId());
-          assertEquals(optionalRelatedTo.get().getEstimatedDob(), relatedTo.getEstimatedDob());
-          assertEquals(optionalRelatedTo.get().getRelatedPersonId(),
-              relatedTo.getRelatedPersonId());
-
-        });
-
-        Set<CandidateTo> candidateTos = optional.get().getRelatedCandidatesTo();
-        e.getRelatedCandidatesTo().forEach(candidateTo -> {
-          Optional<CandidateTo> optionalCandidateTo = candidateTos.stream()
-              .filter(c -> c.getCandidateId().equals(candidateTo.getCandidateId())).findFirst();
-          if (optionalCandidateTo.isPresent()) {
-            candidateTo.setCandidateAge(optionalCandidateTo.get().getCandidateAge());
-            candidateTo.setCandidateAgeUnit(optionalCandidateTo.get().getCandidateAgeUnit());
-          }
-
-          assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
-          assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
-          assertEquals(optionalCandidateTo.get().getEstimatedDob(), candidateTo.getEstimatedDob());
-        });
-        assertEquals(e.getId(), optional.get().getId());
-      }
-    });
   }
 }

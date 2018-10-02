@@ -28,7 +28,7 @@ import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryIm
 
 /**
  * Business layer object to work on ParticipantIntakeApi
- * 
+ *
  * @author CWDS API Team
  */
 public class ParticipantTransformer {
@@ -70,6 +70,7 @@ public class ParticipantTransformer {
           buildParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
       participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
+      participantIntakeApi.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
       return participantIntakeApi;
     } else {
       return incomingParticipantIntakeApi;
@@ -119,7 +120,6 @@ public class ParticipantTransformer {
     return clientDao.findProbationYouth(clientId) != null;
   }
 
-
   /**
    * @param screeningDao - screeningDao
    */
@@ -152,7 +152,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the CSEC service for processing CSEC.
-   * @param csecHistoryService
+   * @param csecHistoryService - csecHistoryService
    */
   public void setCsecHistoryService(CsecHistoryService csecHistoryService) {
     this.csecHistoryService = csecHistoryService;
@@ -160,7 +160,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the mapper to convert CSEC entity to CSEC domain object
-   * @param csecMapper
+   * @param csecMapper - csecMapper
    */
   public void setCsecMapper(CsecMapper csecMapper) {
     this.csecMapper = csecMapper;

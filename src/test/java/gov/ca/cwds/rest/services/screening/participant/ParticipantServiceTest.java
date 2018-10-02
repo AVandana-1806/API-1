@@ -8,12 +8,21 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.fixture.ClientResourceBuilder;
+import gov.ca.cwds.rest.api.domain.cms.Client;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -81,6 +90,10 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
   private ParticipantPhoneNumbersDao participantPhoneNumbersDao;
   @Mock
   private CsecDao csecDao;
+  @Mock
+  private ClientDao clientDao;
+  @Mock
+  private RelationshipFacade relationshipFacade;
 
   ParticipantEntity participantEntity;
   Addresses addresses1;
@@ -137,6 +150,9 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
 
     when(participantDao.findByRelatedScreeningIdAndLegacyId(null, "JhHq86Iaaf"))
         .thenReturn(new ParticipantEntityBuilder().setId("1121").setLegacyId("2222").build());
+
+    participantService.setClientDao(clientDao);
+    participantService.setRelationshipFacade(relationshipFacade);
   }
 
   @Test
@@ -401,6 +417,8 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     when(participantPhoneNumbersDao.findByParticipantId(participantId)).thenReturn(
         new HashSet<>(Arrays.asList(participantPhoneNumbers1, participantPhoneNumbers2)));
     when(participantDao.findByScreeningIdAndParticipantId("-1", participantId))
+        .thenReturn(participantEntity);
+    when(participantDao.findByRelatedScreeningAndParticipantId("-1", participantId))
         .thenReturn(participantEntity);
 
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);

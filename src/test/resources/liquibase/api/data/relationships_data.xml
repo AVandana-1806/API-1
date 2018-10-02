@@ -162,5 +162,72 @@
             <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
             <column name="legacy_id" value="0btlf7s006"/>
         </insert>
+
+        <insert tableName="relationships">
+            <column name="id" value="16"/>
+            <column name="relation" value="189"/>
+            <column name="client" value="2036"/>
+            <column name="relative" value="2037"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s111"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="17"/>
+            <column name="relation" value="204"/>
+            <column name="client" value="2036"/>
+            <column name="relative" value="2038"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s222"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="18"/>
+            <column name="relation" value="205"/>
+            <column name="client" value="2037"/>
+            <column name="relative" value="2036"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s333"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="19"/>
+            <column name="relation" value="192"/>
+            <column name="client" value="2037"/>
+            <column name="relative" value="2038"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s444"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="20"/>
+            <column name="relation" value="191"/>
+            <column name="client" value="2038"/>
+            <column name="relative" value="2036"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s555"/>
+        </insert>
+        <insert tableName="relationships">
+            <column name="id" value="21"/>
+            <column name="relation" value="190"/>
+            <column name="client" value="2038"/>
+            <column name="relative" value="2037"/>
+            <column name="created_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="start_date" valueDate="2018-07-19"/>
+            <column name="end_date" valueDate="2019-07-19"/>
+            <column name="updated_at" valueDate="2018-03-28 22:47:04.869985"/>
+            <column name="legacy_id" value="0btlf7s666"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

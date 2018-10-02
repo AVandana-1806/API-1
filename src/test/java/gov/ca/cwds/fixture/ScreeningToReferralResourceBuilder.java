@@ -37,6 +37,7 @@ public class ScreeningToReferralResourceBuilder {
   private String reference = "123ABC";
   private Short responseTime = 1520;
   private String startedAt = "2016-08-03T01:00:00.000Z";
+  private String crossReportInformDate = "2016-08-04T00:00:00.000";
   private String assignee = "Michael Bastow";
   private String assigneeStaffId = "0X5";
   private String additionalInformation = "addtional information";
@@ -70,7 +71,9 @@ public class ScreeningToReferralResourceBuilder {
     this.participants = new HashSet<>(Arrays.asList(victim, perp, reporter));
     this.relationships = new HashSet<ScreeningRelationship>();
     gov.ca.cwds.rest.api.domain.CrossReport crossReport =
-        new CrossReportResourceBuilder().createCrossReport();
+        new CrossReportResourceBuilder()
+        .setInformDate(crossReportInformDate)
+        .createCrossReport();
     this.crossReports = new HashSet<>(Arrays.asList(crossReport));
     gov.ca.cwds.rest.api.domain.Allegation allegation =
         new AllegationResourceBuilder().setInjuryHarmType(injuryHarmCategory).createAllegation();

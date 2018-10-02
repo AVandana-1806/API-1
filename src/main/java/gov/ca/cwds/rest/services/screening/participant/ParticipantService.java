@@ -1,7 +1,11 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,6 +102,12 @@ public class ParticipantService implements
   @Inject
   private ParticipantTransformer participantTransformer;
 
+  @Inject
+  private RelationshipFacade relationshipFacade;
+
+  @Inject
+  private ClientDao clientDao;
+
   /**
    * {@inheritDoc}
    *
@@ -171,7 +181,7 @@ public class ParticipantService implements
     }
 
     ParticipantEntity participantEntity =
-        participantDao.findByScreeningIdAndParticipantId(screeningId, participantId);
+        participantDao.findByRelatedScreeningAndParticipantId(screeningId, participantId);
     if (participantEntity == null) {
       return null;
     }
@@ -202,11 +212,11 @@ public class ParticipantService implements
       legacyDescriptorDao.delete(legacyDescriptorEntity.getId());
     }
 
+    relationshipFacade.deleteRelationshipsAndRelatedParticipants(participantId, screeningId);
     participantDao.delete(participantId);
 
     return new ParticipantIntakeApi(participantEntity);
   }
-
 
   /**
    * {@inheritDoc}
@@ -246,6 +256,8 @@ public class ParticipantService implements
   public ParticipantIntakeApi persistParticipantObjectInNS(ParticipantIntakeApi participant) {
 
     setLegacyIdAndTable(participant);
+    enrichEstimatedDob(participant);
+
     ParticipantEntity participantEntityManaged =
         participantDao.create(new ParticipantEntity(participant));
 
@@ -279,6 +291,10 @@ public class ParticipantService implements
           .setLegacyDescriptor(new LegacyDescriptor(legacyDescriptorEntityManaged));
     }
     return participantIntakeApiPosted;
+  }
+
+  private void enrichEstimatedDob(ParticipantIntakeApi participant) {
+    participant.setEstimatedDob(getDobCode(participant.getLegacyDescriptor()));
   }
 
   /**
@@ -427,7 +443,7 @@ public class ParticipantService implements
       }
       csecs.stream().filter(c -> String.valueOf(managedCsecEntity.getId()).equals(c.getId()))
           .findFirst().ifPresent(c -> toUpdateList
-              .add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
+          .add(csecMapper.update(managedCsecEntity, csecs.remove(csecs.indexOf(c)))));
     }
 
     toCreateList.addAll(csecMapper
@@ -597,7 +613,28 @@ public class ParticipantService implements
     this.safelySurrenderedBabiesMapper = safelySurrenderedBabiesMapper;
   }
 
+  protected Boolean getDobCode(LegacyDescriptor legacyDescriptor) {
+    if (legacyDescriptor == null) {
+      return null;
+    }
+    Client client = clientDao.findClientsByIds(Arrays.asList(legacyDescriptor.getId()))
+        .get(legacyDescriptor.getId());
+    if (client != null) {
+      return client.getEstimatedDobCode().equals("Y") ? Boolean.TRUE : Boolean.FALSE;
+    }
+    return null;
+  }
+
   void setParticipantDao(ParticipantDao participantDao) {
     this.participantDao = participantDao;
+  }
+
+  public void setClientDao(ClientDao clientDao) {
+    this.clientDao = clientDao;
+  }
+
+  public void setRelationshipFacade(
+      RelationshipFacade relationshipFacade) {
+    this.relationshipFacade = relationshipFacade;
   }
 }

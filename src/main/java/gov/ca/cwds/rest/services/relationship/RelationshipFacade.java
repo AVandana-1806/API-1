@@ -18,4 +18,6 @@ public interface RelationshipFacade {
   List<Response> getRelationshipsWithCandidatesByScreeningId(String screeningId);
 
   List<Response> getRelationshipsByScreeningId(String screeningId);
+
+  void deleteRelationshipsAndRelatedParticipants(String participantId, String screeningId);
 }

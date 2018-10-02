@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.relationship;
 
+import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,10 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,18 +156,50 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     // compare
     List<ClientRelationship> shouldBeUpdated =
         getRelationshipsThatShouldBeUpdated(lagacyRelationships, nsRelationships);
-    List<ClientRelationship> shouldBeCreated =
+    Set<ClientRelationship> shouldBeCreated =
         getRelationshipsThatShouldBeCreated(lagacyRelationships, nsRelationships);
     result.addAll(createRelationships(shouldBeCreated, screeningId));
     result.addAll(updateRelationships(shouldBeUpdated));
     result = getRelationshipsThatShouldNotBeUpdated(result, nsRelationships);
 
-    // select and return
-    if (participantDao.getSessionFactory().getCurrentSession().getTransaction()
-        .getStatus() == TransactionStatus.ACTIVE) {
-      participantDao.getSessionFactory().getCurrentSession().flush();
-    }
+    participantDao.grabSession().flush();
     return result;
+  }
+
+  @Override
+  public void deleteRelationshipsAndRelatedParticipants(String participantId, String screeningId) {
+    List<Relationship> relationships = nsRelationshipDao.getRelationshipsByScreeningId(screeningId);
+
+    Set<String> ids = relationships.stream().map(Relationship::getRelativeId)
+        .collect(Collectors.toSet());
+    Set<String> primarydIds = relationships.stream().map(Relationship::getClientId)
+        .collect(Collectors.toSet());
+    ids.addAll(primarydIds);
+
+    Map<String, ParticipantEntity> participantsMappedById = getMappedParticipantsById(ids);
+
+    Set<String> participantsForDelete = new HashSet<>();
+    if (CollectionUtils.isNotEmpty(relationships)) {
+      relationships.forEach(e -> {
+        if (e.getClientId().equals(participantId) || e.getRelativeId().equals(participantId)) {
+          nsRelationshipDao.delete(e.getId());
+
+          if (participantsMappedById.get(e.getClientId()) != null && StringUtils
+              .isEmpty(participantsMappedById.get(e.getClientId()).getScreeningId())) {
+            participantsForDelete.add(e.getClientId());
+          }
+          if (participantsMappedById.get(e.getRelativeId()) != null && StringUtils
+              .isEmpty(participantsMappedById.get(e.getRelativeId()).getScreeningId())) {
+            participantsForDelete.add(e.getRelativeId());
+          }
+        }
+      });
+      participantsForDelete.remove(participantId);
+    }
+
+    // delete related participants
+    participantsForDelete
+        .forEach(e -> participantService.delete(new ParticipantResourceParameters(screeningId, e)));
   }
 
   private ScreeningRelationship enrichReversedRelationship(ScreeningRelationship relationship) {
@@ -424,7 +457,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return result;
   }
 
-  private List<ScreeningRelationship> createRelationships(List<ClientRelationship> shouldBeCreated,
+  private List<ScreeningRelationship> createRelationships(Set<ClientRelationship> shouldBeCreated,
       String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
       return new ArrayList<>();
@@ -444,6 +477,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         if (client == null) {
           continue;
         }
+
         participantEntity1 = createParticipant(client, screeningId);
       } else {
         participantEntity1 = participantDao.findByScreeningIdAndLegacyId(screeningId,
@@ -455,7 +489,9 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
         if (client == null) {
           continue;
         }
+
         participantEntity2 = createParticipant(client, screeningId);
+
       } else {
         participantEntity2 = participantDao.findByScreeningIdAndLegacyId(screeningId,
             clientRelationship.getSecondaryClientId());
@@ -486,16 +522,20 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private ParticipantEntity createParticipant(Client client, String screeningId) {
     ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
+
+    ParticipantEntity entity = participantDao
+        .findByRelatedScreeningIdAndLegacyId(screeningId, client.getId());
+    if (entity != null) {
+      return entity;
+    }
+
     participantIntakeApi = participantService.persistParticipantObjectInNS(participantIntakeApi);
-    participantDao.getSessionFactory().getCurrentSession().flush();
     return participantDao.find(participantIntakeApi.getId());
   }
 
-  private List<ClientRelationship> getRelationshipsThatShouldBeCreated(
+  private Set<ClientRelationship> getRelationshipsThatShouldBeCreated(
       final Set<ClientRelationship> lagacyRelationships, List<Relationship> nsRelationships) {
-    LOGGER.info("lagacyRelationships {}", lagacyRelationships);
-    LOGGER.info("nsRelationships {}", nsRelationships);
-    final List<ClientRelationship> relationshipsToCreate = new ArrayList<>();
+    final Set<ClientRelationship> relationshipsToCreate = new HashSet<>();
     if (CollectionUtils.isEmpty(lagacyRelationships)) {
       return relationshipsToCreate;
     }

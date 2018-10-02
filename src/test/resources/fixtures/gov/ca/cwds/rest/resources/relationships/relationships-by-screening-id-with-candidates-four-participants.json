@@ -10,6 +10,7 @@
     "name_suffix": "Jr.",
     "gender": "male",
     "sensitive": false,
+    "estimated_dob": "U",
     "sealed": false,
     "relationship_to": [
       {
@@ -24,6 +25,7 @@
         "related_person_age": 18,
         "related_person_age_unit": "Y",
         "absent_parent_code": "Y",
+        "estimated_dob": "U",
         "same_home_code": "U",
         "indexed_person_relationship": "188",
         "related_person_relationship": "203",
@@ -40,6 +42,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       },
@@ -49,6 +52,7 @@
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
+        "estimated_dob": "U",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
@@ -63,6 +67,7 @@
     "first_name": "Dima",
     "middle_name": "T",
     "last_name": "Pfeiffer",
+    "estimated_dob": "U",
     "name_suffix": "Jr.",
     "gender": "male",
     "sensitive": false,
@@ -76,6 +81,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       },
@@ -86,6 +92,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       },
@@ -95,6 +102,7 @@
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
+        "estimated_dob": "U",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
@@ -111,6 +119,7 @@
     "last_name": "Pfeiffer",
     "name_suffix": "Jr.",
     "gender": "male",
+    "estimated_dob": "U",
     "sensitive": false,
     "sealed": false,
     "relationship_to": [],
@@ -122,6 +131,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       },
@@ -132,6 +142,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       },
@@ -142,6 +153,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
+        "estimated_dob": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       }
@@ -156,6 +168,7 @@
     "middle_name": "T",
     "last_name": "Pfeiffer",
     "name_suffix": "Jr.",
+    "estimated_dob": "U",
     "gender": "male",
     "sensitive": false,
     "sealed": false,
@@ -168,6 +181,7 @@
         "related_person_last_name": "Pfeiffer",
         "related_person_name_suffix": "Jr.",
         "related_person_gender": "male",
+        "estimated_dob": "U",
         "related_person_date_of_birth": "1999-11-15",
         "related_person_age": 18,
         "related_person_age_unit": "Y",
@@ -186,6 +200,7 @@
         "candidate_first_name": "Dima",
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
+        "estimated_dob": "U",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,
@@ -196,6 +211,7 @@
         "candidate_first_name": "Dima",
         "candidate_middle_name": "T",
         "candidate_last_name": "Pfeiffer",
+        "estimated_dob": "U",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
         "candidate_age": 18,

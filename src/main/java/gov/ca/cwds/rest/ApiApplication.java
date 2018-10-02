@@ -131,49 +131,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     // Health checks:
     // -----------------------
 
-    final AuthHealthCheck authHealthCheck =
-        new AuthHealthCheck(injector.getInstance(AuthServer.class));
-    environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
-
-    final LovHealthCheck lovHealthCheck =
-        new LovHealthCheck(injector.getInstance(IntakeLovCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.LOV_STATUS, lovHealthCheck);
-
-    final SystemCodeHealthCheck sysCodesHealthCheck =
-        new SystemCodeHealthCheck(injector.getInstance(SystemCodeCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODES_STATUS, sysCodesHealthCheck);
-
-    environment.healthChecks().register(Api.HealthCheck.INTAKE_LOV_CODE_CACHE_STATUS,
-        new IntakeCodeCacheHealthCheck());
-
-    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODE_CACHE_STATUS,
-        new SystemCodeCacheHealthCheck());
-
-    final MQTHealthCheck mQTHealthCheck =
-        new MQTHealthCheck(injector.getInstance(MQTExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.MQT_STATUS, mQTHealthCheck);
-
-    final ViewsHealthCheck viewsHealthCheck =
-        new ViewsHealthCheck(injector.getInstance(ViewExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.VIEW_STATUS, viewsHealthCheck);
-
-    final TriggerHealthCheck triggerHealthCheck =
-        new TriggerHealthCheck(injector.getInstance(TriggerExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.TRIGGER_STATUS, triggerHealthCheck);
-
-    final SpGenclncntyHealthCheck spGenclncntyHealthCheck =
-        new SpGenclncntyHealthCheck(injector.getInstance(SpGenclncntyExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.SP_GENCLNCNTY_STATUS,
-        spGenclncntyHealthCheck);
-
-    final SpSpssaname3HealthCheck spSpssaname3HealthCheck =
-        new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
-        spSpssaname3HealthCheck);
-
-    final SwaggerHealthCheck swaggerHealthCheck =
-        new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
-    environment.healthChecks().register(Api.HealthCheck.SWAGGER_STATUS, swaggerHealthCheck);
+    registerHealthChecks(injector, environment);
 
     // -----------------------
     // Specialty singletons:
@@ -217,6 +175,52 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     }
 
     LOGGER.info("Finished Upgrading INTAKE_NS DB");
+  }
+  
+  private void registerHealthChecks(final Injector injector, final Environment environment) {
+    final AuthHealthCheck authHealthCheck =
+        new AuthHealthCheck(injector.getInstance(AuthServer.class));
+    environment.healthChecks().register(Api.HealthCheck.AUTH_STATUS, authHealthCheck);
+
+    final LovHealthCheck lovHealthCheck =
+        new LovHealthCheck(injector.getInstance(IntakeLovCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.LOV_STATUS, lovHealthCheck);
+
+    final SystemCodeHealthCheck sysCodesHealthCheck =
+        new SystemCodeHealthCheck(injector.getInstance(SystemCodeCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODES_STATUS, sysCodesHealthCheck);
+
+    environment.healthChecks().register(Api.HealthCheck.INTAKE_LOV_CODE_CACHE_STATUS,
+        new IntakeCodeCacheHealthCheck());
+
+    environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODE_CACHE_STATUS,
+        new SystemCodeCacheHealthCheck());
+
+    final MQTHealthCheck mQTHealthCheck =
+        new MQTHealthCheck(injector.getInstance(MQTExistCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.MQT_STATUS, mQTHealthCheck);
+
+    final ViewsHealthCheck viewsHealthCheck =
+        new ViewsHealthCheck(injector.getInstance(ViewExistCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.VIEW_STATUS, viewsHealthCheck);
+
+    final TriggerHealthCheck triggerHealthCheck =
+        new TriggerHealthCheck(injector.getInstance(TriggerExistCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.TRIGGER_STATUS, triggerHealthCheck);
+
+    final SpGenclncntyHealthCheck spGenclncntyHealthCheck =
+        new SpGenclncntyHealthCheck(injector.getInstance(SpGenclncntyExistCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.SP_GENCLNCNTY_STATUS,
+        spGenclncntyHealthCheck);
+
+    final SpSpssaname3HealthCheck spSpssaname3HealthCheck =
+        new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
+    environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
+        spSpssaname3HealthCheck);
+
+    final SwaggerHealthCheck swaggerHealthCheck =
+        new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
+    environment.healthChecks().register(Api.HealthCheck.SWAGGER_STATUS, swaggerHealthCheck);
   }
 
 }
