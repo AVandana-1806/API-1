@@ -411,7 +411,7 @@ public class ParticipantToLegacyClientTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
-        .contains("Victim while Absent from Placement requires an end date"));
+        .contains("CSEC Victim while Absent from Placement requires an end date"));
   }
 
   /**
