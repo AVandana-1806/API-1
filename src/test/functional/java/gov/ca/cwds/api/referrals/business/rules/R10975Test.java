@@ -12,8 +12,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import gov.ca.cwds.api.FunctionalTest;
 import gov.ca.cwds.api.builder.HttpRequestHandler;
 import gov.ca.cwds.api.builder.ResourceEndPoint;
@@ -43,11 +41,11 @@ public class R10975Test extends FunctionalTest {
   }
 
   /**
-   * @throws JsonProcessingException
+   * Test to check the rules R-10975 when start date is greater then end date
    * 
    */
   @Test
-  public void testShouldReturn422WhenStartDateGreaterThanEndDate() throws JsonProcessingException {
+  public void testShouldReturn422WhenStartDateGreaterThanEndDate() {
     LocalDate startDate = LocalDate.parse("2018-09-29");
     LocalDate endDate = LocalDate.parse("2018-09-28");
     ScreeningToReferral referral = buildScreeningToReferral(startDate, endDate);
