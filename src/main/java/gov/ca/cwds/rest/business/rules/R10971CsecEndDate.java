@@ -21,7 +21,7 @@ import gov.ca.cwds.rest.business.RuleValidator;
 public class R10971CsecEndDate implements RuleValidator {
   
   private static final String VICTIM_WHILE_ABSENT_FROM_PLACEMENT = "6871";
-  private List<Csec> csecs = new ArrayList<Csec>();
+  private List<Csec> csecs = new ArrayList<>();
 
   /**
    * @param csecs - list of Csec objects
@@ -34,16 +34,14 @@ public class R10971CsecEndDate implements RuleValidator {
   
   @Override
   public boolean isValid() {
-    if (null == csecs) {
-      return true;
-    }
-    for (Csec csec :csecs) {
-      final String csecCodeId = csec.getCsecCodeId();
-      if (null != csecCodeId && VICTIM_WHILE_ABSENT_FROM_PLACEMENT.equals(csec.getCsecCodeId()) && null == csec.getEndDate()) {
-        return false;
+    if (null != csecs) {
+      for (Csec csec :csecs) {
+        final String csecCodeId = csec.getCsecCodeId();
+        if (null != csecCodeId && VICTIM_WHILE_ABSENT_FROM_PLACEMENT.equals(csec.getCsecCodeId()) && null == csec.getEndDate()) {
+          return false;
+        }
       }
     }
     return true;
   }
-
 }

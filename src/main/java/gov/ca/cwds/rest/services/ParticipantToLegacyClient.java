@@ -524,7 +524,8 @@ public class ParticipantToLegacyClient {
     }
 
     if (!validCsecEndDate) {
-      messageBuilder.addError("Victim while Absent from Placement requires an end date");
+      messageBuilder.addError("CSEC Victim while Absent from Placement requires an end date",
+          ErrorMessage.ErrorType.VALIDATION);
       return false;
     }
     return true;
