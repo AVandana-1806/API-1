@@ -18,9 +18,6 @@ public class Id implements Request {
 
   String identifier;
 
-  /**
-   * @param id - primary key
-   */
   public Id(@JsonProperty("identifier") String identifier) {
     super();
     this.identifier = identifier;
