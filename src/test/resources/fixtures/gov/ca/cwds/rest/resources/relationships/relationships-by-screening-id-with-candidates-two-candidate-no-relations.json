@@ -10,7 +10,7 @@
     "name_suffix": "Jr",
     "gender": "male",
     "sensitive": false,
-    "estimated_dob": "U",
+    "estimated_dob_code": "U",
     "sealed": false,
     "relationship_to": [],
     "candidate_to": [
@@ -21,7 +21,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr.",
         "candidate_date_of_birth": "1999-11-15",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       }
@@ -37,7 +37,7 @@
     "last_name": "Pfeiffer",
     "name_suffix": "Jr.",
     "gender": "male",
-    "estimated_dob": "U",
+    "estimated_dob_code": "U",
     "sensitive": false,
     "sealed": false,
     "relationship_to": [],
@@ -49,7 +49,7 @@
         "candidate_last_name": "Pfeiffer",
         "candidate_name_suffix": "Jr",
         "candidate_date_of_birth": "1999-11-15",
-        "estimated_dob": "U",
+        "estimated_dob_code": "U",
         "candidate_age": 18,
         "candidate_age_unit": "Y"
       }
