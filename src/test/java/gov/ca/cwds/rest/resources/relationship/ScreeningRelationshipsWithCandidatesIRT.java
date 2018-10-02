@@ -12,6 +12,7 @@ import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -149,7 +150,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
   public void getRelationshipsWithCandidateWithEstimatedDob() throws IOException {
     String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_14 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
-
+    System.out.println(actualJson);
     List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
         .readValue(actualJson,
             new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {
@@ -160,9 +161,28 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
     assertEquals("1944-01-30", fromResponse.get(0).getDateOfBirth());
     assertNull(fromResponse.get(0).getEstimatedDob());
     assertNotNull(fromResponse.get(0).getRelatedTo());
-    assertEquals(1, fromResponse.get(0).getRelatedTo().size());
-    assertEquals("Y", fromResponse.get(0).getRelatedTo().iterator().next().getEstimatedDobCode());
-    assertEquals("1944-01-30", fromResponse.get(0).getRelatedTo().iterator().next().getEstimatedDob());
-    assertNull(fromResponse.get(0).getRelatedTo().iterator().next().getRelatedDateOfBirth());
+    assertEquals(2, fromResponse.get(0).getRelatedTo().size());
+
+    Iterator setIterator = fromResponse.get(0).getRelatedTo().iterator();
+    RelatedTo relatedTo1 = (RelatedTo)setIterator.next();
+    RelatedTo relatedTo2 = (RelatedTo)setIterator.next();
+
+    RelatedTo relatedTo;
+    if ("Y".equals(relatedTo1.getEstimatedDobCode())) {
+      relatedTo = relatedTo1;
+    } else {
+      relatedTo = relatedTo2;
+    }
+
+    assertEquals("Y", relatedTo.getEstimatedDobCode());
+    assertEquals("1944-01-30", relatedTo.getEstimatedDob());
+    assertNull(relatedTo.getRelatedDateOfBirth());
+
+    if ("U".equals(relatedTo1.getEstimatedDobCode())) {
+      relatedTo2 = relatedTo1;
+    }
+    assertEquals("U", relatedTo2.getEstimatedDobCode());
+    assertNull(relatedTo2.getEstimatedDob());
+    assertNull(relatedTo2.getRelatedDateOfBirth());
   }
 }

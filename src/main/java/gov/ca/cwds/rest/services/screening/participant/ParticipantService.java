@@ -620,7 +620,14 @@ public class ParticipantService implements
     Client client = clientDao.findClientsByIds(Arrays.asList(legacyDescriptor.getId()))
         .get(legacyDescriptor.getId());
     if (client != null) {
-      return client.getEstimatedDobCode().equals("Y") ? Boolean.TRUE : Boolean.FALSE;
+      switch (client.getEstimatedDobCode()) {
+        case "Y":
+          return Boolean.TRUE;
+        case "N":
+          return Boolean.FALSE;
+        default:
+          return null;
+      }
     }
     return null;
   }
