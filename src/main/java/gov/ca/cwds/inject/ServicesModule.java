@@ -35,6 +35,7 @@ import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
@@ -187,6 +188,7 @@ public class ServicesModule extends AbstractModule {
     bind(GovernmentOrganizationCrossReportService.class);
     bind(HOICaseService.class);
     bind(HOIReferralService.class);
+    bind(Id.class);
     bind(InvolvementHistoryService.class);
     bind(LegacyKeyService.class);
     bind(OtherCaseReferralDrmsDocumentService.class);
