@@ -76,7 +76,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", screeningId);
+    pathParams.put("screeningId", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
@@ -92,7 +92,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", screeningId);
+    pathParams.put("screeningId", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
@@ -108,7 +108,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
         .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", screeningId);
+    pathParams.put("screeningId", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
