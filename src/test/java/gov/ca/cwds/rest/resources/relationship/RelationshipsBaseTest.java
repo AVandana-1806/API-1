@@ -55,7 +55,7 @@ public abstract class RelationshipsBaseTest extends IntakeBaseTest {
           }
 
           assertEquals(optionalRelatedTo.get().getRelationshipId(), relatedTo.getRelationshipId());
-          assertEquals(optionalRelatedTo.get().getEstimatedDob(), relatedTo.getEstimatedDob());
+          assertEquals(optionalRelatedTo.get().getEstimatedDobCode(), relatedTo.getEstimatedDobCode());
           assertEquals(optionalRelatedTo.get().getRelatedPersonId(),
               relatedTo.getRelatedPersonId());
 
@@ -72,7 +72,7 @@ public abstract class RelationshipsBaseTest extends IntakeBaseTest {
 
           assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
           assertEquals(optionalCandidateTo.get().getCandidateId(), candidateTo.getCandidateId());
-          assertEquals(optionalCandidateTo.get().getEstimatedDob(), candidateTo.getEstimatedDob());
+          assertEquals(optionalCandidateTo.get().getEstimatedDobCode(), candidateTo.getEstimatedDobCode());
         });
         assertEquals(e.getId(), optional.get().getId());
       }
