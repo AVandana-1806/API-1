@@ -40,6 +40,7 @@ import gov.ca.cwds.rest.business.rules.UpperCaseTables;
 import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
+import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -127,6 +128,7 @@ public class R00796ScreeningToReferralDeleteTest {
   private CwsOfficeDao cwsOfficeDao;
   private MessageBuilder messageBuilder;
   private ClientRelationshipDao clientRelationshipDao;
+  private ScreeningService screeningService;
 
   @SuppressWarnings("javadoc")
   @Rule
@@ -211,6 +213,7 @@ public class R00796ScreeningToReferralDeleteTest {
         new ClientAddressService(clientAddressDao, staffpersonDao, triggerTablesDao,
             laCountyTrigger, nonLACountyTriggers, riClientAddress, validator, addressService);
 
+    screeningService = mock(ScreeningService.class);
     longTextDao = mock(LongTextDao.class);
     longTextService = new LongTextService(longTextDao);
 
@@ -240,7 +243,7 @@ public class R00796ScreeningToReferralDeleteTest {
         crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao);
+        clientRelationshipDao, screeningService);
   }
 
   /**

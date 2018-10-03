@@ -37,7 +37,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
   public void setup() throws Exception {
     httpRequestHandler = new HttpRequestHandler();
     getScreeningId();
-    resourcePath = getResourceUrlFor("/" + Api.RESOURCE_SCREENINGS + "/{id}" + "/participant");
+    resourcePath = getResourceUrlFor("/" + Api.RESOURCE_SCREENINGS + "/{id}" + "/participants");
   }
 
   private void getScreeningId() throws Exception {

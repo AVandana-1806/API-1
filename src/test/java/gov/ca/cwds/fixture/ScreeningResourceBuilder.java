@@ -3,9 +3,12 @@ package gov.ca.cwds.fixture;
 import static gov.ca.cwds.rest.api.domain.DomainChef.uncookISO8601Timestamp;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.AllegationIntake;
@@ -39,7 +42,7 @@ public class ScreeningResourceBuilder {
   String screeningDecisionDetail = "evaluate_out";
   AddressIntakeApi incidentAddress = null;
   Set<ParticipantIntakeApi> participantIntakeApis = null;
-  Set<AllegationIntake> allegations = null;
+  Set<AllegationIntake> allegations = new HashSet<>();
   Set<CrossReportIntake> crossReports = null;
   Set<String> safetyAlerts = new HashSet<>();
   String safetyInformation = null;
@@ -74,10 +77,38 @@ public class ScreeningResourceBuilder {
     screening.setSafetyAlerts(safetyAlerts);
     screening.setSafetyInformation(safetyInformation);
     screening.setAccessRestrictions(accessRestrictions);
+    screening.setAllegations(allegations);
 
     return screening;
   }
 
+  public Screening buildValidScreeningWithAllegationAndParticipants() {
+    Set<AllegationIntake> validAllegations = buildValidAllegations();
+    Set<ParticipantIntakeApi> validParticipants = buildValidParticipants();
+    this.setAllegations(validAllegations);
+    this.setParticipantIntakeApis(validParticipants);
+    return this.build();
+  }
+
+  private Set<AllegationIntake> buildValidAllegations() {
+    AllegationIntake allegation = new AllegationIntakeResourceBuilder().build();
+    return Stream.of(allegation).collect(Collectors.toSet());
+  }
+
+  private Set<ParticipantIntakeApi> buildValidParticipants() {
+    ParticipantIntakeApi reporter = new ParticipantIntakeApiResourceBuilder()
+        .setLanguages(Arrays.asList("English")).setLegacyDescriptor(null).setRaces("")
+        .setEthnicity("").setRoles(new HashSet<>(Arrays.asList("Non-mandated Reporter"))).build();
+    ParticipantIntakeApi perpetrator = new ParticipantIntakeApiResourceBuilder()
+        .setLanguages(Arrays.asList("English")).setLegacyDescriptor(null).setRaces("")
+        .setEthnicity("").setRoles(new HashSet<>(Arrays.asList("Perpetrator"))).build();
+    ParticipantIntakeApi victim = new ParticipantIntakeApiResourceBuilder().setId("5432")
+        .setLanguages(Arrays.asList("English")).setLegacyDescriptor(null).setRaces("")
+        .setEthnicity("").setRoles(new HashSet<>(Arrays.asList("Victim"))).build();
+
+    return new HashSet<>(Arrays.asList(reporter, perpetrator, victim));
+
+  }
 
   public ScreeningResourceBuilder setReferralId(String referralId) {
     this.referralId = referralId;
