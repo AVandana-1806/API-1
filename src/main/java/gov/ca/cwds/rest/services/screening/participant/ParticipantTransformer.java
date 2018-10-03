@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -88,7 +89,7 @@ public class ParticipantTransformer {
   }
 
   private void addCsecTo(ParticipantIntakeApi participant) {
-    List<CsecHistory> csecHistory;
+    List<CsecHistory> csecHistory = new ArrayList<>();
     if (participant != null && participant.getLegacyDescriptor() != null) {
       csecHistory = csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId());
       participant.setCsecs(csecMapper.toDomain(csecHistory));
