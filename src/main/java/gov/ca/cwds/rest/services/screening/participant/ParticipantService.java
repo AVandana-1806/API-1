@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -614,22 +615,15 @@ public class ParticipantService implements
   }
 
   protected Boolean getDobCode(LegacyDescriptor legacyDescriptor) {
-    if (legacyDescriptor == null) {
-      return null;
-    }
-    Client client = clientDao.findClientsByIds(Arrays.asList(legacyDescriptor.getId()))
-        .get(legacyDescriptor.getId());
-    if (client != null) {
-      switch (client.getEstimatedDobCode()) {
-        case "Y":
-          return Boolean.TRUE;
-        case "N":
-          return Boolean.FALSE;
-        default:
-          return null;
+    String dobCode = null;
+    if (legacyDescriptor != null) {
+      Client client = clientDao.findClientsByIds(Arrays.asList(legacyDescriptor.getId()))
+              .get(legacyDescriptor.getId());
+      if (client != null) {
+        dobCode = client.getEstimatedDobCode();
       }
     }
-    return null;
+    return BooleanUtils.toBooleanObject(dobCode);
   }
 
   void setParticipantDao(ParticipantDao participantDao) {
