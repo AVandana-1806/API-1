@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningSubmitServiceBackedResource;
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.resources.ResourceDelegate;
 import gov.ca.cwds.rest.resources.ServiceBackedResourceDelegate;
@@ -65,17 +66,17 @@ public class ScreeningSubmitResource {
   @XAUnitOfWork
   @POST
   @Path("/{id}/submit")
-  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process"),
       @ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 406, message = "Accept Header not supported"),
       @ApiResponse(code = 409, message = "Conflict - already exists"),
-      @ApiResponse(code = 422, message = "Unable to validate Screening")})
+      @ApiResponse(code = 422, message = "Unable to validate")})
   @Consumes(value = MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Promotes a screening", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Promotes a screening to a Referral", code = HttpStatus.SC_CREATED,
       response = Screening.class)
   public Response create(
       @PathParam("id") @ApiParam(required = true, name = "id", value = "Screening id") String id) {
-    return resourceDelegate.get(id);
+    return resourceDelegate.create(new Id(id));
   }
 
 }

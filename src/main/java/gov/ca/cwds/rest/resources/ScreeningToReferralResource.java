@@ -19,7 +19,10 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWork;
 import gov.ca.cwds.inject.ScreeningToReferralServiceBackedResource;
+import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.PostedScreeningToReferral;
+import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -92,11 +95,36 @@ public class ScreeningToReferralResource {
       @ApiResponse(code = 409, message = "Conflict - already exists"),
       @ApiResponse(code = 422, message = "Unable to validate ScreeningToReferral")})
   @Consumes(value = MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Create Referral from Screening", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Create Referral from Screening Object", code = HttpStatus.SC_CREATED,
       response = PostedScreeningToReferral.class)
   public Response create(
       @Valid @ApiParam(hidden = false, required = true) ScreeningToReferral screeningToReferral) {
     return resourceDelegate.create(screeningToReferral);
   }
+
+  /**
+   * Promotes a Screening To A Referral. Creates a Referral From the Screening and Updates the
+   * Screening with the Referral Legacy Id.
+   *
+   * @param id - the id of the screening
+   * @return The {@link Response}
+   */
+  @XAUnitOfWork
+  @POST
+  @Path("screenings/{screeningId}")
+  @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process"),
+      @ApiResponse(code = 401, message = "Not Authorized"),
+      @ApiResponse(code = 406, message = "Accept Header not supported"),
+      @ApiResponse(code = 409, message = "Conflict - already exists"),
+      @ApiResponse(code = 422, message = "Unable to validate")})
+  @Consumes(value = MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Create a Referral from a Screening Id", code = HttpStatus.SC_CREATED,
+      response = Screening.class)
+  public Response create(@PathParam("screeningId") @ApiParam(required = true, name = "screeningId",
+      value = "Screening id") String id) {
+    Request screeningId = new Id(id);
+    return resourceDelegate.create(screeningId);
+  }
+
 
 }

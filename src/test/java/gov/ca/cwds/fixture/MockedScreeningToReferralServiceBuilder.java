@@ -9,6 +9,7 @@ import javax.validation.Validation;
 import gov.ca.cwds.cms.data.access.service.impl.clientrelationship.ClientRelationshipCoreService;
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.data.cms.ReferralDao;
+import gov.ca.cwds.rest.api.domain.Screening;
 import gov.ca.cwds.rest.api.domain.cms.Address;
 import gov.ca.cwds.rest.api.domain.cms.Allegation;
 import gov.ca.cwds.rest.api.domain.cms.AllegationPerpetratorHistory;
@@ -30,6 +31,7 @@ import gov.ca.cwds.rest.api.domain.cms.Reporter;
 import gov.ca.cwds.rest.business.rules.Reminders;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
+import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -67,6 +69,7 @@ public class MockedScreeningToReferralServiceBuilder {
   private ClientRelationshipDao clientRelationshipDao;
   private ReferralDao referralDao;
   private MessageBuilder messageBuilder;
+  private ScreeningService screeningService;
 
   /**
    * @return the referralService
@@ -250,6 +253,22 @@ public class MockedScreeningToReferralServiceBuilder {
     childClientService = mock(ChildClientService.class);
     ChildClient childClient = mock(ChildClient.class);
     when(childClientService.create(any(ChildClient.class))).thenReturn(childClient);
+  }
+
+  /**
+   * @return the screeningService
+   */
+  public ScreeningService getScreeningService() {
+    if (screeningService == null) {
+      buildDefaultMockForScreeningService();
+    }
+    return screeningService;
+  }
+
+  private void buildDefaultMockForScreeningService() {
+    screeningService = mock(ScreeningService.class);
+    Screening screening = mock(Screening.class);
+    when(screeningService.create(any(Screening.class))).thenReturn(screening);
   }
 
   /**
@@ -469,6 +488,7 @@ public class MockedScreeningToReferralServiceBuilder {
         getCrossReportService(), getParticipantToLegacyClient(), clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), getReferralDao(),
         getMessageBuilder(), getAllegationPerpetratorHistoryService(), getReminders(),
-        getGovernmentOrganizationCrossReportService(), getClientRelationshipDao());
+        getGovernmentOrganizationCrossReportService(), getClientRelationshipDao(),
+        getScreeningService());
   }
 }

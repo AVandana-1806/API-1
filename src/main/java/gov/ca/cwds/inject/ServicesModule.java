@@ -35,6 +35,7 @@ import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.drools.DroolsService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
+import gov.ca.cwds.rest.api.domain.Id;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
@@ -81,7 +82,6 @@ import gov.ca.cwds.rest.services.relationship.RelationshipFacadeLegacyAndNewDB;
 import gov.ca.cwds.rest.services.screeningparticipant.ClientTransformer;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
-import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -189,6 +189,7 @@ public class ServicesModule extends AbstractModule {
     bind(GovernmentOrganizationCrossReportService.class);
     bind(HOICaseService.class);
     bind(HOIReferralService.class);
+    bind(Id.class);
     bind(InvolvementHistoryService.class);
     bind(LegacyKeyService.class);
     bind(OtherCaseReferralDrmsDocumentService.class);
@@ -198,7 +199,6 @@ public class ServicesModule extends AbstractModule {
     bind(ReferralClientService.class);
     bind(ReferralService.class);
     bind(ReporterService.class);
-    bind(ScreeningParticipantService.class);
     bind(ScreeningRelationshipService.class);
     bind(ScreeningService.class);
     bind(ScreeningSubmitService.class);

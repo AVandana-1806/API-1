@@ -83,7 +83,6 @@ import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
 import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
-import gov.ca.cwds.rest.resources.screeningparticipant.ScreeningParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
@@ -126,7 +125,6 @@ import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
-import gov.ca.cwds.rest.services.screeningparticipant.ScreeningParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
 
 /**
@@ -155,12 +153,12 @@ public class ResourcesModule extends AbstractModule {
     bind(ParticipantResource.class);
     bind(PersonResource.class);
     bind(ScreeningResource.class);
-    bind(ScreeningSubmitResource.class);
     bind(ScreeningIntakeResource.class);
     bind(ScreeningDashboardResource.class);
     bind(CmsDocReferralClientResource.class);
     bind(CmsDocumentResource.class);
     bind(CmsNSReferralResource.class);
+    bind(ScreeningSubmitResource.class);
     bind(ScreeningToReferralResource.class);
     bind(ScreeningRelationshipResource.class);
     bind(ClientCollateralResource.class);
@@ -184,7 +182,6 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiScreeningResource.class);
     bind(AuthorizationResource.class);
     bind(HoiUsingClientIdResource.class);
-    bind(ScreeningParticipantResource.class);
     bind(ContactIntakeResource.class);
     bind(IntakeLovResource.class);
     LOGGER.info("configure: done");
@@ -233,12 +230,6 @@ public class ResourcesModule extends AbstractModule {
   }
 
   @Provides
-  @ScreeningSubmitServiceBackedResource
-  public ResourceDelegate screeningSubmitServiceBackedResource(Injector injector) {
-    return new ServiceBackedResourceDelegate(injector.getInstance(ScreeningSubmitService.class));
-  }
-
-  @Provides
   @AllegationServieBackedResource
   public TypedResourceDelegate<String, Allegation> allegationServiceBackedResource(
       Injector injector) {
@@ -280,14 +271,6 @@ public class ResourcesModule extends AbstractModule {
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
         injector.getInstance(HistoryOfInvolvementService.class));
-  }
-
-  @Provides
-  @ScreeningParticipantServiceBackedResource
-  public TypedResourceDelegate<String, ParticipantIntakeApi> screeningParticipantResource(
-      Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ScreeningParticipantService.class));
   }
 
   @Provides
@@ -353,6 +336,12 @@ public class ResourcesModule extends AbstractModule {
   }
 
   @Provides
+  @ScreeningSubmitServiceBackedResource
+  public ResourceDelegate screeningSubmitServiceBackedResource(Injector injector) {
+    return new ServiceBackedResourceDelegate(injector.getInstance(ScreeningSubmitService.class));
+  }
+
+  @Provides
   @ReferralClientServiceBackedResource
   public TypedResourceDelegate<String, ReferralClient> referralClientServiceBackedResource(
       Injector injector) {
@@ -403,8 +392,7 @@ public class ResourcesModule extends AbstractModule {
   @ParticipantServiceBackedResource
   public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
       Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(
-        injector.getInstance(ParticipantService.class));
+    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ParticipantService.class));
   }
 
   @Provides

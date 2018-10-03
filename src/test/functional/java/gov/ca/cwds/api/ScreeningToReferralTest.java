@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,14 +19,14 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ScreeningToReferralTest extends FunctionalTest {
+
   String referralPath;
   private HttpRequestHandler httpRequestHandler;
 
   /**
-   * 
+   *
    */
   @Before
   public void setup() {
@@ -33,7 +35,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void returnErrorWhenNoHeaderIsProvided() {
@@ -41,7 +43,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void return500ErrorWhenIncorrectStaffPerson() {
@@ -58,7 +60,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void return422ErrorWhenNoVictimIsPresent() {
@@ -73,7 +75,7 @@ public class ScreeningToReferralTest extends FunctionalTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   @Ignore("TEMP Causes table lock")
@@ -84,5 +86,30 @@ public class ScreeningToReferralTest extends FunctionalTest {
 
     httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
+  }
+
+  /**
+   * DocTool rule R - 02535
+   * HOT-1648
+   */
+  @Test
+  @Ignore("This test works locally if configured against preint but does not work in pipeline."
+      +" Tom Parker found some issues with the triggers that are causing problems in pipeline.")
+  public void testFiledCrossReportWithLawEnforcementIndicatorIsFalse() {
+    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
+        .setName("filedWithLawEnforcementIsFalse")
+        .setFiledWithLawEnforcement(true)
+        .setAssigneeStaffId(userInfo.getStaffId())
+        .setIncidentCounty(userInfo.getIncidentCounty()).createScreeningToReferral();
+
+    // post a referral with Filed With Law Enforcement flag set to true
+    String legacyId = httpRequestHandler.postRequest(referral, referralPath, token).then()
+        .statusCode(201).extract().path("legacy_id");
+
+    // load the referral and make sure that the flag value in CWS/CMS is false
+    Map<String, Object> queryParams = new HashMap<String, Object>();
+    queryParams.put(httpRequestHandler.TOKEN, token);
+    httpRequestHandler.getRequest(referralPath + "/" + legacyId, queryParams).then().statusCode(200)
+        .and().body("filedSuspectedChildAbuseReporttoLawEnforcementIndicator", equalTo(false));
   }
 }

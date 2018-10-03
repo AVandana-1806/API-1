@@ -86,6 +86,7 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.ClientParticipants;
 import gov.ca.cwds.rest.services.ParticipantToLegacyClient;
+import gov.ca.cwds.rest.services.ScreeningService;
 import gov.ca.cwds.rest.services.ScreeningToReferralService;
 import gov.ca.cwds.rest.services.cms.AddressService;
 import gov.ca.cwds.rest.services.cms.AllegationPerpetratorHistoryService;
@@ -177,6 +178,7 @@ public class R07577CreateDummyDocsForReferralTest {
   private MessageBuilder messageBuilder;
   private StaffPerson staffPerson;
   private ClientRelationshipDao clientRelationshipDao;
+  private ScreeningService screeningService;
 
   private Validator validator;
 
@@ -299,11 +301,13 @@ public class R07577CreateDummyDocsForReferralTest {
     referralService.setLongTextService(longTextService);
     referralService.setRiReferral(riReferral);
 
+    screeningService = mock(ScreeningService.class);
+
     screeningToReferralService = new ScreeningToReferralService(referralService, allegationService,
         crossReportService, participantToLegacyClient, clientRelationshipService,
         Validation.buildDefaultValidatorFactory().getValidator(), referralDao, new MessageBuilder(),
         allegationPerpetratorHistoryService, reminders, governmentOrganizationCrossReportService,
-        clientRelationshipDao);
+        clientRelationshipDao, screeningService);
     screeningToReferralService.setDroolsService(mock(DroolsService.class));
   }
 
