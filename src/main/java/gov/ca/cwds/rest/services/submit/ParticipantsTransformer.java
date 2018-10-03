@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.submit;
 
-import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
-import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +13,9 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
+import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.business.rules.CalendarEnum;
+import gov.ca.cwds.rest.services.mapper.SafelySurrenderedBabiesMapper;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeAddressConverter;
 
 /**
@@ -63,15 +63,15 @@ public class ParticipantsTransformer {
         primaryLanguage = getlanguageLegacyId(p.getLanguages().get(0));
       }
 
-      SafelySurrenderedBabies safelySurrenderedBabies = SafelySurrenderedBabiesMapper.INSTANCE.
-          mapToScreeningToReferral(p.getSafelySurenderedBabies());
-      Participant participant = new Participant(pid, p.getLegacySourceTable(), null,
-          p.getLegacyDescriptor(), p.getFirstName(), p.getMiddleName(), p.getLastName(),
-          p.getNameSuffix(), gender, ssn, dob, primaryLanguage, secondayLanguage,
-          Integer.parseInt(p.getScreeningId()), reporterConfidentialWaiver, reporterEmployerName,
-          clientStaffPersonAdded, setSensitivityIndicator(p), p.getApproximateAge(),
-          setApproximateAgeUnit(p), p.getRoles(), addresses, raceAndEthnicity, p.getCsecs(),
-          safelySurrenderedBabies);
+      SafelySurrenderedBabies safelySurrenderedBabies = SafelySurrenderedBabiesMapper.INSTANCE
+          .mapToScreeningToReferral(p.getSafelySurenderedBabies());
+      Participant participant =
+          new Participant(pid, p.getLegacySourceTable(), null, p.getLegacyDescriptor(),
+              p.getFirstName(), p.getMiddleName(), p.getLastName(), p.getNameSuffix(), gender, ssn,
+              dob, primaryLanguage, secondayLanguage, Integer.parseInt(p.getScreeningId()),
+              reporterConfidentialWaiver, reporterEmployerName, clientStaffPersonAdded,
+              setSensitivityIndicator(p), p.getApproximateAge(), setApproximateAgeUnit(p),
+              p.getRoles(), addresses, raceAndEthnicity, p.getCsecs(), safelySurrenderedBabies);
       participants.add(participant);
     }
     return participants;
