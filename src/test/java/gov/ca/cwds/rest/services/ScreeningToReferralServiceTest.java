@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -203,6 +202,7 @@ public class ScreeningToReferralServiceTest {
   private Participant defaultMandatedReporter;
   private Participant defaultPerpetrator;
   private ScreeningService screeningService;
+  private Screening validScreening;
 
   private MessageBuilder messageBuilder;
 
@@ -247,6 +247,10 @@ public class ScreeningToReferralServiceTest {
 
     referralClientService = mock(ReferralClientService.class);
     screeningService = mock(ScreeningService.class);
+    validScreening = new ScreeningResourceBuilder().buildValidScreeningWithAllegationAndParticipants();
+    when(screeningService.getScreening("1")).thenReturn(validScreening);
+    when(screeningService.updateScreening(eq("1"), any())).thenReturn(validScreening);
+
     gov.ca.cwds.rest.api.domain.cms.Address existingAddress =
         mock(gov.ca.cwds.rest.api.domain.cms.Address.class);
     when(existingAddress.getExistingAddressId()).thenReturn("ASDHJYTRED");
@@ -300,7 +304,6 @@ public class ScreeningToReferralServiceTest {
     referralService = mock(ReferralService.class);
     when(referralService.createCmsReferralFromScreening(eq(screeningToReferral), any(), any(),
         any())).thenReturn(validReferralId);
-
     reporterService = mock(ReporterService.class);
     Reporter savedReporter = new ReporterResourceBuilder().build();
     when(reporterService.find(any())).thenReturn(savedReporter);
@@ -326,6 +329,9 @@ public class ScreeningToReferralServiceTest {
         clientRelationshipDao, screeningService);
 
     screeningToReferralService.setDroolsService(mock(DroolsService.class));
+    ScreeningToReferral referralFromValidScreening = screeningToReferralService.buildReferralFromScreening(validScreening);
+    when(referralService.createCmsReferralFromScreening(eq(referralFromValidScreening), any(), any(), any()))
+        .thenReturn(validReferralId);
   }
 
   @SuppressWarnings("javadoc")
@@ -1394,14 +1400,10 @@ public class ScreeningToReferralServiceTest {
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
-  @Test
+  @Test(expected = Exception.class)
   public void testCreateByScreeningIdThrowsExceptionWhenScreeningIsNotFound() throws Exception {
-    when(screeningService.find("000")).thenReturn(null);
-    try {
-      screeningToReferralService.create(new Id("000"));
-      fail("Expected exception");
-    } catch (Exception e) {
-    }
+    when(screeningService.getScreening("000")).thenReturn(null);
+    screeningToReferralService.create(new Id("000"));
   }
 
   @Test
@@ -1414,7 +1416,7 @@ public class ScreeningToReferralServiceTest {
   }
 
   @Test
-  public void testBuildReferralFromScreening() throws Exception {
+  public void shouldBuildReferralFromScreening() throws Exception {
     Screening screening = new ScreeningResourceBuilder().build();
     ScreeningToReferral referral = screeningToReferralService.buildReferralFromScreening(screening);
 
@@ -1425,19 +1427,7 @@ public class ScreeningToReferralServiceTest {
   @Test
   public void shouldContainNoErrorMessageWhenSavingAValidReferralFromScreeningId()
       throws Exception {
-
-    Screening screening =
-        new ScreeningResourceBuilder().buildValidScreeningWithAllegationAndParticipants();
-
-    ScreeningToReferral screeningToReferral = defaultReferralBuilder.createScreeningToReferral();
-
-    mockParticipantToLegacyClient(screeningToReferral);
-
-    when(screeningService.getScreening("1")).thenReturn(screening);
-    when(screeningService.updateScreening(eq("1"), any())).thenReturn(screening);
-    when(referralService.createCmsReferralFromScreening(any(), any(), any(), any()))
-        .thenReturn(validReferralId);
-
+    mockParticipantToLegacyClient(defaultReferralBuilder.createScreeningToReferral());
     Response response = screeningToReferralService.create(new Id("1"));
 
     assertThat(response.hasMessages(), is(equalTo(false)));

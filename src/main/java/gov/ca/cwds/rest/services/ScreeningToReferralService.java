@@ -611,17 +611,12 @@ public class ScreeningToReferralService implements CrudsService {
   public Response submit(String screeningId) {
     Screening screening = screeningService.getScreening(screeningId);
     // cms session
-    String referralId = createReferralAndGetIdentifier(screening);
+    ScreeningToReferral screeningToReferral =
+        (ScreeningToReferral) createReferral(buildReferralFromScreening(screening));
+    String referralId = screeningToReferral.getReferralId();
     // ns session
     setReferralIdAndSubmittedStatusOnScreening(referralId, screening);
     return screeningService.updateScreening(screeningId, screening);
-  }
-
-
-  private String createReferralAndGetIdentifier(Screening screening) {
-    ScreeningToReferral screeningToReferral =
-        (ScreeningToReferral) createReferral(buildReferralFromScreening(screening));
-    return screeningToReferral.getReferralId();
   }
 
 

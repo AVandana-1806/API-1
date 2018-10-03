@@ -14,7 +14,6 @@ public class ScreeningToReferralResourceTest {
   private ScreeningToReferralResource resource;
   private ScreeningToReferral referral;
   private ResourceDelegate service;
-  private Id id = new Id("id");
 
   @Before
   public void setup() {
@@ -23,14 +22,14 @@ public class ScreeningToReferralResourceTest {
   }
 
   @Test
-  public void callScreeningToReferralService() throws Exception {
+  public void callScreeningToReferralServiceWhenJsonIsProvided() throws Exception {
     resource.create(referral);
     verify(service).create(referral);
   }
 
-  // @Test
-  // public void callScreeningToReferralSubmit() throws Exception {
-  // resource.create(new Id("id"));
-  // verify(service).create(any());
-  // }
+  @Test
+  public void callScreeningToReferralServiceWhenScreeningIdIsProvided() throws Exception {
+    resource.create("screeningId");
+    verify(service).create(new Id("screeningId"));
+  }
 }
