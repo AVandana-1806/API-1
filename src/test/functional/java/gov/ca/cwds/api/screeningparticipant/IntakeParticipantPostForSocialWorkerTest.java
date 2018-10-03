@@ -27,7 +27,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
   String resourcePath;
   String screeningPostPath;
   private HttpRequestHandler httpRequestHandler;
-  private String id;
+  private String screeningId;
 
   /**
    * @throws Exception - Exception
@@ -37,7 +37,8 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
   public void setup() throws Exception {
     httpRequestHandler = new HttpRequestHandler();
     getScreeningId();
-    resourcePath = getResourceUrlFor("/" + Api.RESOURCE_SCREENINGS + "/{id}" + "/participants");
+    resourcePath =
+        getResourceUrlFor("/" + Api.RESOURCE_SCREENINGS + "/{screeningId}" + "/participants");
   }
 
   private void getScreeningId() throws Exception {
@@ -46,7 +47,7 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     String response =
         httpRequestHandler.postRequest(intakeScreeningRequest, screeningPostPath, token).asString();
     Screening screening = objectMapper.readValue(response.getBytes(), Screening.class);
-    id = screening.getId();
+    screeningId = screening.getId();
   }
 
   /**
@@ -57,9 +58,9 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B2YtETx00T", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
-        .setScreeningId(id).setLegacyDescriptor(legacyDescriptor).build();
+        .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", id);
+    pathParams.put("screeningId", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
@@ -73,9 +74,9 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("B0gYFaU057", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
-        .setScreeningId(id).setLegacyDescriptor(legacyDescriptor).build();
+        .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", id);
+    pathParams.put("id", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
@@ -89,9 +90,9 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("TbCDoJB0La", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
-        .setScreeningId(id).setLegacyDescriptor(legacyDescriptor).build();
+        .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", id);
+    pathParams.put("id", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);
@@ -105,9 +106,9 @@ public class IntakeParticipantPostForSocialWorkerTest extends FunctionalTest {
     LegacyDescriptor legacyDescriptor =
         new LegacyDescriptor("AIwcGUp0Nu", null, null, LegacyTable.CLIENT.getName(), null);
     ParticipantIntakeApi intakeParticipant = new ParticipantIntakeApiResourceBuilder().setId(null)
-        .setScreeningId(id).setLegacyDescriptor(legacyDescriptor).build();
+        .setScreeningId(screeningId).setLegacyDescriptor(legacyDescriptor).build();
     Map<String, Object> pathParams = new HashMap<String, Object>();
-    pathParams.put("id", id);
+    pathParams.put("id", screeningId);
     httpRequestHandler
         .postRequestWithPathParameters(intakeParticipant, resourcePath, pathParams, token).then()
         .statusCode(403);

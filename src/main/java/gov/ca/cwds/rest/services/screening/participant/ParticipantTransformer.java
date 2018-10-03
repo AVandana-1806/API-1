@@ -1,10 +1,7 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
-import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
-import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
-import gov.ca.cwds.rest.services.mapper.cms.CsecMapper;
-import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,8 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
+import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -22,6 +21,7 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.enums.ScreeningStatus;
 import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.services.mapper.cms.CsecMapper;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantDaoFactoryImpl;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapper;
 import gov.ca.cwds.rest.services.screeningparticipant.ParticipantMapperFactoryImpl;
@@ -53,6 +53,10 @@ public class ParticipantTransformer {
   @Inject
   private CsecHistoryService csecHistoryService;
 
+  /**
+   * @param incomingParticipantIntakeApi - incomingParticipantIntakeApi
+   * @return the
+   */
   public ParticipantIntakeApi prepareParticipantObject(
       ParticipantIntakeApi incomingParticipantIntakeApi) {
     if (StringUtils.isBlank(incomingParticipantIntakeApi.getScreeningId())) {
@@ -84,7 +88,7 @@ public class ParticipantTransformer {
   }
 
   private void addCsecTo(ParticipantIntakeApi participant) {
-    List<CsecHistory> csecHistory = new ArrayList();
+    List<CsecHistory> csecHistory;
     if (participant != null && participant.getLegacyDescriptor() != null) {
       csecHistory = csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId());
       participant.setCsecs(csecMapper.toDomain(csecHistory));
@@ -114,7 +118,6 @@ public class ParticipantTransformer {
       throw new ServiceException("Screeening is already Submitted");
     }
   }
-
 
   private Boolean isProbationYouth(String clientId) {
     return clientDao.findProbationYouth(clientId) != null;
@@ -152,6 +155,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the CSEC service for processing CSEC.
+   * 
    * @param csecHistoryService - csecHistoryService
    */
   public void setCsecHistoryService(CsecHistoryService csecHistoryService) {
@@ -160,6 +164,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the mapper to convert CSEC entity to CSEC domain object
+   * 
    * @param csecMapper - csecMapper
    */
   public void setCsecMapper(CsecMapper csecMapper) {

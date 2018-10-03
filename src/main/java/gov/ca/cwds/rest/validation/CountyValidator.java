@@ -3,14 +3,17 @@ package gov.ca.cwds.rest.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class CountyValidator
-        implements ConstraintValidator<ValidCounty, Short> {
+/**
+ * @author CWDS API Team
+ *
+ */
+public class CountyValidator implements ConstraintValidator<ValidCounty, Short> {
 
   private static final Short STATE_OF_CALIFORNIA_SYSTEM_CODE = Short.valueOf("1126");
 
   @Override
   public void initialize(ValidCounty constraintAnnotation) {
-    //nothing to initialize
+    // nothing to initialize
   }
 
   /**
