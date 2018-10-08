@@ -32,15 +32,22 @@ public class R10971CsecEndDateTest {
 
   @Test
   public void shouldReturnTrueIfValidCsecs() {
-    csec = new CsecBuilder().build();
+    csec = new CsecBuilder()
+        .setCsecCodeId("6867")
+        .setEndDate(null)
+        .build();
     csecs.add(csec);
     assertEquals(new R10971CsecEndDate(csecs).isValid(), Boolean.TRUE);
   }
 
   @Test
   public void shouldReturnTrueWhenMultipleValidCsecs() {
-    csec = new CsecBuilder().build();
-    Csec csec1 = new CsecBuilder().build();
+    csec = new CsecBuilder()
+        .setCsecCodeId("6867")
+        .build();
+    Csec csec1 = new CsecBuilder()
+        .setCsecCodeId("6867")
+        .build();
     csecs.add(csec);
     csecs.add(csec1);
     assertEquals(new R10971CsecEndDate(csecs).isValid(), Boolean.TRUE);
@@ -49,7 +56,9 @@ public class R10971CsecEndDateTest {
 
   @Test
   public void shouldReturnTrueIfVictimWhileAbsentFromPlacementWithEndDate() {
-    csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).build();
+    csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .build();
     csecs.add(csec);
     assertEquals(new R10971CsecEndDate(csecs).isValid(), Boolean.TRUE);
 
@@ -57,7 +66,9 @@ public class R10971CsecEndDateTest {
 
   @Test
   public void shouldReturnFalseIfVictimWhileAbsentFromPlacementWithoutEndDate() {
-    csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).setEndDate(null)
+    csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(null)
         .build();
     csecs.add(csec);
     assertEquals(new R10971CsecEndDate(csecs).isValid(), Boolean.FALSE);
