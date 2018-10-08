@@ -39,8 +39,7 @@ public class CrossReportsTransformer {
           : null;
       String county = systemCode != null ? systemCode.getLogicalId() : null;
 
-      String informDate =
-          nsCrossReport.getInformDate() != null ? extractDateFromCrossReport(nsCrossReport) : null;
+      String informDate = extractDateFromCrossReport(nsCrossReport);
       crossReports.add(new CrossReport(nsCrossReport.getId(), nsCrossReport.getLegacySourceTable(),
           nsCrossReport.getLegacyId(), nsCrossReport.isFiledOutOfState(), method, informDate,
           county, governmentAgency));
