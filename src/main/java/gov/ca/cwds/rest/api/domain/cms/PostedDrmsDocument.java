@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,4 +43,33 @@ public class PostedDrmsDocument extends DrmsDocument {
     return id;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), id);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object drmsDocument) {
+    if (this == drmsDocument) {
+      return true;
+    }
+    if ( drmsDocument == null || getClass() != drmsDocument.getClass()) {
+      return false;
+    }
+    if (!super.equals(drmsDocument)) {
+      return false;
+    }
+    PostedDrmsDocument that = (PostedDrmsDocument) drmsDocument;
+    return Objects.equals(id, that.id);
+  }
 }

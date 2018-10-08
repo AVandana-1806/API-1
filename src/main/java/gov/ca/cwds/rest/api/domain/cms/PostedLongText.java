@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,4 +42,33 @@ public class PostedLongText extends LongText {
     return id;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), id);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object longText) {
+    if (this == longText) {
+      return true;
+    }
+    if (longText == null || getClass() != longText.getClass()) {
+      return false;
+    }
+    if (!super.equals(longText)) {
+      return false;
+    }
+    PostedLongText that = (PostedLongText) longText;
+    return Objects.equals(id, that.id);
+  }
 }
