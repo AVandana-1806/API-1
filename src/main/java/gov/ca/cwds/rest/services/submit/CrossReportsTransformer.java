@@ -1,11 +1,11 @@
 package gov.ca.cwds.rest.services.submit;
 
-import gov.ca.cwds.CWSDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import gov.ca.cwds.CWSDateTime;
 import gov.ca.cwds.rest.api.domain.CrossReport;
 import gov.ca.cwds.rest.api.domain.CrossReportIntake;
 import gov.ca.cwds.rest.api.domain.GovernmentAgency;
@@ -39,7 +39,8 @@ public class CrossReportsTransformer {
           : null;
       String county = systemCode != null ? systemCode.getLogicalId() : null;
 
-      String informDate = extractDateFromCrossReport(nsCrossReport);
+      String informDate =
+          nsCrossReport.getInformDate() != null ? extractDateFromCrossReport(nsCrossReport) : null;
       crossReports.add(new CrossReport(nsCrossReport.getId(), nsCrossReport.getLegacySourceTable(),
           nsCrossReport.getLegacyId(), nsCrossReport.isFiledOutOfState(), method, informDate,
           county, governmentAgency));
