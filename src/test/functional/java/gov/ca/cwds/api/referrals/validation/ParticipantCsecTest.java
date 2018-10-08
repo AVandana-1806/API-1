@@ -37,8 +37,8 @@ public class ParticipantCsecTest extends FunctionalTest {
 
   @Test
   public void shouldReturn201WhenValidCsec() {
-    Csec csec = new CsecBuilder().build();
-    List<Csec> csecs = new ArrayList();
+    Csec csec = new CsecBuilder().setCsecCodeId("6871").build();
+    List<Csec> csecs = new ArrayList<>();
     csecs.add(csec);
     ScreeningToReferral referral = buildScreeningToReferral(csecs);
 
@@ -50,7 +50,7 @@ public class ParticipantCsecTest extends FunctionalTest {
   @Ignore("incorrectly returns 201")
   public void shouldReturn402WhenInvalidCsec() {
     Csec csec = new CsecBuilder().setCsecCodeId("").build();
-    List<Csec> csecs = new ArrayList();
+    List<Csec> csecs = new ArrayList<>();
     csecs.add(csec);
     ScreeningToReferral referral = buildScreeningToReferral(csecs);
 

@@ -515,9 +515,9 @@ public class ParticipantToLegacyClient {
     final List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAllLegacySystemCodesForMeta(
         SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
     for (IntakeLov intakeLov : intakeLovs) {
-      if (csecs.stream().filter(c -> intakeLov.getIntakeCode().equals(c.getCsecCodeId()))
+      if (csecs.stream().filter(c -> intakeLov.getLegacySystemCodeId().toString().equals(c.getCsecCodeId()))
           .count() > 1) {
-        messageBuilder.addError("CSEC duplication for code: " + intakeLov.getIntakeCode(),
+        messageBuilder.addError("CSEC duplication for code: " + intakeLov.getLegacySystemCodeId(),
             ErrorMessage.ErrorType.VALIDATION);
         return false;
       }

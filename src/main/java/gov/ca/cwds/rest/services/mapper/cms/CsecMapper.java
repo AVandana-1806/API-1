@@ -6,8 +6,6 @@ import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -15,12 +13,11 @@ import org.mapstruct.factory.Mappers;
 public interface CsecMapper {
   CsecMapper INSTANCE = Mappers.getMapper(CsecMapper.class);
 
-  @Mappings({
-    @Mapping(target = "participantId", source = "childClient"),
-    @Mapping(target = "csecCodeId", source = "sexualExploitationType.systemId"),
-    @Mapping(target = "startDate", source = "startDate"),
-    @Mapping(target = "endDate", source = "endDate")
-  })
+  @Mapping(target = "participantId", source = "childClient")
+  @Mapping(target = "csecCodeId", source = "sexualExploitationType.systemId")
+  @Mapping(target = "startDate", source = "startDate")
+  @Mapping(target = "endDate", source = "endDate")
+    
   Csec map(CsecHistory csec);
 
   @InheritInverseConfiguration

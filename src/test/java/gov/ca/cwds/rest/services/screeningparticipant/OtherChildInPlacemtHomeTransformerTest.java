@@ -100,7 +100,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
   public void testAddressIsSet() {
     OtherChildInPlacemtHome otherChildInPlacemtHome =
         new OtherChildInPlacemtHomeEntityBuilder().build();
-    otherChildInPlacemtHome.setPlacementHome(placementHome);
+//    otherChildInPlacemtHome.setPlacementHome(placementHome);
     ParticipantIntakeApi participantIntakeApi =
         otherChildInPlacemtHomeTransformer.tranform(otherChildInPlacemtHome);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
