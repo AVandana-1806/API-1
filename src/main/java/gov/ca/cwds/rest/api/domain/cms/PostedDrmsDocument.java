@@ -59,17 +59,17 @@ public class PostedDrmsDocument extends DrmsDocument {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object drmsDocument) {
+    if (this == drmsDocument) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if ( drmsDocument == null || getClass() != drmsDocument.getClass()) {
       return false;
     }
-    if (!super.equals(o)) {
+    if (!super.equals(drmsDocument)) {
       return false;
     }
-    PostedDrmsDocument that = (PostedDrmsDocument) o;
+    PostedDrmsDocument that = (PostedDrmsDocument) drmsDocument;
     return Objects.equals(id, that.id);
   }
 }

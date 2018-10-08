@@ -58,17 +58,17 @@ public class PostedLongText extends LongText {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object longText) {
+    if (this == longText) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (longText == null || getClass() != longText.getClass()) {
       return false;
     }
-    if (!super.equals(o)) {
+    if (!super.equals(longText)) {
       return false;
     }
-    PostedLongText that = (PostedLongText) o;
+    PostedLongText that = (PostedLongText) longText;
     return Objects.equals(id, that.id);
   }
 }
