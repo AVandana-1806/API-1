@@ -320,10 +320,11 @@ public class ParticipantToLegacyClientTest {
   }
 
   @Test
-  @Ignore
-  public void testCsecDuplication() {
+//  @Ignore
+  public void shouldFailWhenDuplicateCsecCodeIds() {
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
-    victimParticipant.getCsecs().add(new CsecBuilder().build());
+    victimParticipant.getCsecs().add(new CsecBuilder()
+        .build());
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
@@ -335,7 +336,7 @@ public class ParticipantToLegacyClientTest {
         .setLastUpdateTime(modifiedLastUpdateDate).build();
     when(clientService.find(any())).thenReturn(foundClient);
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
-        messageBuilder);
+        messageBuilder);    
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList()).contains("CSEC duplication for code: 6867"));
@@ -390,7 +391,9 @@ public class ParticipantToLegacyClientTest {
 
   @Test
   public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
-    Csec csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).setEndDate(null)
+    Csec csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(null)
         .build();
     List<Csec> csecs = new ArrayList<Csec>();
     csecs.add(csec);

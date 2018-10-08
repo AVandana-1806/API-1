@@ -1,8 +1,7 @@
 package gov.ca.cwds.rest.api.domain.cms;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.rest.api.Response;
@@ -49,7 +48,7 @@ public class PostedAllegation extends Allegation {
    */
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, false);
+    return Objects.hash(super.hashCode(), id);
   }
 
   /**
@@ -58,7 +57,17 @@ public class PostedAllegation extends Allegation {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, false);
+  public boolean equals(Object postedAllegation) {
+    if (this == postedAllegation) {
+      return true;
+    }
+    if (postedAllegation == null || getClass() != postedAllegation.getClass()) {
+      return false;
+    }
+    if (!super.equals(postedAllegation)) {
+      return false;
+    }
+    PostedAllegation that = (PostedAllegation) postedAllegation;
+    return Objects.equals(id, that.id);
   }
 }
