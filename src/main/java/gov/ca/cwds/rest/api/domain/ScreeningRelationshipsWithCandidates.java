@@ -72,7 +72,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     }
 
     public ScreeningRelationshipsWithCandidatesBuilder withAgeUnit(String ageUnit) {
-      screeningRelationshipsWithCandidates.ageUnit = ageUnit;
+      screeningRelationshipsWithCandidates.ageUnit = getAgeUnit(ageUnit);
       return this;
     }
 
@@ -250,7 +250,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       }
 
       public RelatedToBuilder withRelatedAgeUnit(String relatedAgeUnit) {
-        relatedTo.relatedAgeUnit = relatedAgeUnit;
+        relatedTo.relatedAgeUnit = getAgeUnit(relatedAgeUnit);
         return this;
       }
 
@@ -614,7 +614,7 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
       }
 
       public CandidateToBuilder withCandidateAgeUnit(String candidateAgeUnit) {
-        candidateTo.candidateAgeUnit = candidateAgeUnit;
+        candidateTo.candidateAgeUnit = getAgeUnit(candidateAgeUnit);
         return this;
       }
 
@@ -998,5 +998,24 @@ public class ScreeningRelationshipsWithCandidates extends ReportingDomain
     }
 
     return map;
+  }
+
+  private static String getAgeUnit(String ageUnit) {
+    if (StringUtils.isEmpty(ageUnit)) {
+      return ageUnit;
+    }
+
+    switch (ageUnit) {
+      case "days":
+        return "D";
+      case "weeks":
+        return "W";
+      case "months":
+        return "M";
+      case "years":
+        return "Y";
+      default:
+        return ageUnit;
+    }
   }
 }
