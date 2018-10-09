@@ -216,7 +216,7 @@ public class HOIByClientsForSocialWorkerTest extends FunctionalTest {
         is(equalTo(SEVERE_NEGLECT)));
   }
 
-  protected String findVictimClientId(String sensitivityIndicator, String incidentCounty,
+  private String findVictimClientId(String sensitivityIndicator, String incidentCounty,
       Short responseTime, Short injuryHarmType)
       throws JsonParseException, JsonMappingException, IOException {
     Allegation allegation =

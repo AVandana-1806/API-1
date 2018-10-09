@@ -78,7 +78,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToDifferentCountySensitiveClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "9PIxHucCON");
@@ -107,7 +106,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantToAccessToDifferentCountySealedClient() throws Exception {
     Map<String, Object> queryParams = new HashMap<String, Object>();
     queryParams.put("clientIds", "AIwcGUp0Nu");
@@ -116,7 +114,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
         .body("cases[]", Matchers.empty()).body("referrals[]", Matchers.empty()).statusCode(200);
   }
 
-  protected String findVictimClientId(String sensitivityIndicator, String incidentCounty)
+  private String findVictimClientId(String sensitivityIndicator, String incidentCounty)
       throws IOException, JsonParseException, JsonMappingException {
     ScreeningToReferral referrals = new ScreeningToReferralResourceBuilder().setEndedAt(null)
         .setAssigneeStaffId(userInfo.getStaffId()).setIncidentCounty(incidentCounty)
