@@ -38,19 +38,25 @@ public class CrossReportTest extends FunctionalTest {
     httpRequestHandler = new HttpRequestHandler();
   }
 
+  /**
+   * 
+   */
   @Test
   public void shouldReturn201WhenNoCrossReportOnReferralWithGeneralNeglectAllegation() {
-    Set<CrossReport> emptyCrossReports = new HashSet();
+    Set<CrossReport> emptyCrossReports = new HashSet<>();
     ScreeningToReferral referral = buildScreeningToReferral(emptyCrossReports);
 
     httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
   }
 
+  /**
+   * 
+   */
   @Test
   @Ignore("returns 500 status due to null date/time - error in CrossReportMapper")
   public void shouldReturn201WhenInformDateTimeNull() {
-    Set<CrossReport> crossReports = new HashSet();
+    Set<CrossReport> crossReports = new HashSet<>();
     CrossReport crossReport =
         new CrossReportResourceBuilder().setInformDate(null).createCrossReport();
     crossReports.add(crossReport);
@@ -58,10 +64,9 @@ public class CrossReportTest extends FunctionalTest {
 
     httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
         .body("legacy_id", notNullValue());
-
   }
 
-  protected ScreeningToReferral buildScreeningToReferral(Set<CrossReport> crossReports) {
+  private ScreeningToReferral buildScreeningToReferral(Set<CrossReport> crossReports) {
     Participant victim =
         new ParticipantResourceBuilder().setLegacyDescriptor(null).createVictimParticipant();
     Participant Perp = new ParticipantResourceBuilder().setGender("M").setLegacyDescriptor(null)

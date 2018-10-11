@@ -1,14 +1,12 @@
-package gov.ca.cwds.api.referrals.validation;
+package gov.ca.cwds.api.referrals.business.rules;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gov.ca.cwds.api.FunctionalTest;
@@ -23,7 +21,8 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
  * @author CWDS API Team
  *
  */
-public class VictimBirthTest extends FunctionalTest {
+public class R05609Test extends FunctionalTest {
+
   String referralPath;
   private HttpRequestHandler httpRequestHandler;
 
@@ -40,40 +39,6 @@ public class VictimBirthTest extends FunctionalTest {
    * 
    */
   @Test
-  public void testVictimDObOrAgeIsRequired() {
-    String dateOfBith = null;
-    String approximateAge = null;
-    String approximateAgeUnits = null;
-    ScreeningToReferral referral =
-        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
-
-    httpRequestHandler.postRequest(referral, referralPath, token).then()
-        .body("issue_details.user_message[0]",
-            equalTo("Victim's should have either of the value DOB or approximateAge"))
-        .and().statusCode(422);
-  }
-
-  /**
-   * 
-   */
-  @Test
-  public void testToValidateAgeAndAgeUnitBothRequired() {
-    String dateOfBith = null;
-    String approximateAge = "12";
-    String approximateAgeUnits = null;
-    ScreeningToReferral referral =
-        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
-
-    httpRequestHandler.postRequest(referral, referralPath, token).then()
-        .body("issue_details.user_message[0]",
-            equalTo("Victim's approximateAgeUnits must be set if approximateAge is set"))
-        .and().statusCode(422);
-  }
-
-  /**
-   * R - 05609 Victim must be < 19
-   */
-  @Test
   public void shouldReturn422WhenVictimTooOld() {
     String approximateAge = null;
     String approximateAgeUnits = null;
@@ -84,38 +49,6 @@ public class VictimBirthTest extends FunctionalTest {
     httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]", equalTo("Victim's age must be less than 18 years"))
         .and().statusCode(422);
-  }
-
-  /**
-   * 
-   */
-  @Test
-  @Ignore("TEMP Causes table lock")
-  public void testSucessValidBirthDateGiven() {
-    String dateOfBith = "2010-06-18";
-    String approximateAge = null;
-    String approximateAgeUnits = null;
-    ScreeningToReferral referral =
-        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
-
-    httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
-        .body("legacy_id", notNullValue());
-  }
-
-  /**
-   * 
-   */
-  @Test
-  @Ignore("TEMP Causes table lock")
-  public void testSucessValidAgeAndAgeUnitGiven() {
-    String dateOfBith = null;
-    String approximateAge = "12";
-    String approximateAgeUnits = "Y";
-    ScreeningToReferral referral =
-        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
-
-    httpRequestHandler.postRequest(referral, referralPath, token).then().statusCode(201).and()
-        .body("legacy_id", notNullValue());
   }
 
   protected ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,

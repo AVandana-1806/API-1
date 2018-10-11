@@ -659,7 +659,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       String str = systemCode.getShortDescription();
       if (StringUtils.isNoneEmpty(str)) {
         String[] descriptionArray = str.split("/");
-        if (descriptionArray != null && descriptionArray.length == 2) {
+        if (descriptionArray.length == 2) {
           String part3 = "";
           if (descriptionArray[1].contains("(")) {
             int indexStart = descriptionArray[1].indexOf('(');
