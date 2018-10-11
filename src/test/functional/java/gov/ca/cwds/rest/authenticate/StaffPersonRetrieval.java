@@ -1,11 +1,9 @@
 package gov.ca.cwds.rest.authenticate;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -30,8 +28,10 @@ public class StaffPersonRetrieval extends HttpClientBuild {
   private static final Logger LOGGER = LoggerFactory.getLogger(StaffPersonRetrieval.class);
 
   private String validateUrl;
-  private static final String START_VALIDATION= "================Start Validating Token=========================";
-  private static final String END_VALIDATION= "================End Validating Token=========================";
+  private static final String START_VALIDATION =
+      "================Start Validating Token=========================";
+  private static final String END_VALIDATION =
+      "================End Validating Token=========================";
 
   /**
    * Constructor.

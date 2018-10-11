@@ -4,7 +4,6 @@ import static gov.ca.cwds.rest.core.Api.RESOURCE_SYSTEM_INFORMATION;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -17,9 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.health.HealthCheck.Result;
 import com.google.inject.Inject;
 
+import gov.ca.cwds.dto.app.SystemInformationDto;
 import gov.ca.cwds.rest.ApiConfiguration;
 import io.dropwizard.setup.Environment;
 import io.swagger.annotations.Api;
@@ -33,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = RESOURCE_SYSTEM_INFORMATION)
 @Path(RESOURCE_SYSTEM_INFORMATION)
 @Produces(MediaType.APPLICATION_JSON)
-public class SystemInformationResource {
+public class SystemInformationResource extends AbstractSystemInformationResource {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SystemInformationResource.class);
 
@@ -43,19 +42,26 @@ public class SystemInformationResource {
 
   private final String applicationName;
   private final String applicationVersion;
-  private final Environment environment;
   private final String buildNumber;
+  private final String gitCommit;
+  private final boolean healthStatus;
 
+  /**
+   * @param configuration - configuration
+   * @param environment - environment
+   */
   @Inject
   public SystemInformationResource(final ApiConfiguration configuration,
       final Environment environment) {
+    super(environment.healthChecks());
     this.applicationName = configuration.getApplicationName();
-    this.environment = environment;
     final Attributes manifestProperties = getManifestProperties();
     String value = manifestProperties.getValue(API_VERSION);
     this.applicationVersion = StringUtils.isBlank(value) ? N_A : value;
     value = manifestProperties.getValue(API_BUILD);
     this.buildNumber = StringUtils.isBlank(value) ? N_A : value;
+    this.gitCommit = N_A;
+    this.healthStatus = Boolean.TRUE;
   }
 
   /**
@@ -63,19 +69,16 @@ public class SystemInformationResource {
    *
    * @return the application name
    */
+  @Override
   @GET
-  @ApiOperation(value = "Returns System Information", response = SystemInformationDTO.class)
-  public SystemInformationDTO get() {
-    final SystemInformationDTO systemInformation = new SystemInformationDTO();
-    systemInformation.setApplication(applicationName);
+  @ApiOperation(value = "Returns System Information", response = SystemInformationDto.class)
+  public SystemInformationDto get() {
+    final SystemInformationDto systemInformation = super.get();
+    systemInformation.setApplicationName(applicationName);
     systemInformation.setVersion(applicationVersion);
-    systemInformation.setBuild(buildNumber);
-
-    final Map<String, Result> healthCheckResults = environment.healthChecks().runHealthChecks();
-    for (Map.Entry<String, Result> resultEntry : healthCheckResults.entrySet()) {
-      systemInformation.getHealthChecks().put(resultEntry.getKey(),
-          new HealthCheckResultDTO(resultEntry.getValue()));
-    }
+    systemInformation.setBuildNumber(buildNumber);
+    systemInformation.setHealthStatus(healthStatus);
+    systemInformation.setGitCommitHash(gitCommit);
     return systemInformation;
   }
 
