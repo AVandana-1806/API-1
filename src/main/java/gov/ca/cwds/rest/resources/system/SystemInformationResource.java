@@ -44,7 +44,6 @@ public class SystemInformationResource extends AbstractSystemInformationResource
   private final String applicationVersion;
   private final String buildNumber;
   private final String gitCommit;
-  private final boolean healthStatus;
 
   /**
    * @param configuration - configuration
@@ -61,7 +60,6 @@ public class SystemInformationResource extends AbstractSystemInformationResource
     value = manifestProperties.getValue(API_BUILD);
     this.buildNumber = StringUtils.isBlank(value) ? N_A : value;
     this.gitCommit = N_A;
-    this.healthStatus = Boolean.TRUE;
   }
 
   /**
@@ -72,12 +70,11 @@ public class SystemInformationResource extends AbstractSystemInformationResource
   @Override
   @GET
   @ApiOperation(value = "Returns System Information", response = SystemInformationDto.class)
-  public SystemInformationDto get() {
-    final SystemInformationDto systemInformation = super.get();
+  public SystemInformationDto prepareSystemInformation() {
+    final SystemInformationDto systemInformation = super.prepareSystemInformation();
     systemInformation.setApplicationName(applicationName);
     systemInformation.setVersion(applicationVersion);
     systemInformation.setBuildNumber(buildNumber);
-    systemInformation.setHealthStatus(healthStatus);
     systemInformation.setGitCommitHash(gitCommit);
     return systemInformation;
   }
