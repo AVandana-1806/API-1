@@ -11,8 +11,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +25,8 @@ import gov.ca.cwds.rest.ApiConfiguration;
 import io.dropwizard.setup.Environment;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Display Ferb version and health checks.
@@ -67,10 +71,17 @@ public class SystemInformationResource extends AbstractSystemInformationResource
    *
    * @return the application name
    */
-  @Override
   @GET
+  @ApiResponses(
+      value = {@ApiResponse(code = HttpStatus.SC_UNAUTHORIZED, message = "Not Authorized"),
+          @ApiResponse(code = 465, message = "CWS-CARES Ferb API is UnHealthy")})
   @ApiOperation(value = "Returns System Information", response = SystemInformationDto.class)
-  public SystemInformationDto prepareSystemInformation() {
+  public Response get() {
+    return super.buildResponse();
+  }
+
+  @Override
+  protected SystemInformationDto prepareSystemInformation() {
     final SystemInformationDto systemInformation = super.prepareSystemInformation();
     systemInformation.setApplicationName(applicationName);
     systemInformation.setVersion(applicationVersion);
