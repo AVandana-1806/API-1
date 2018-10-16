@@ -44,11 +44,6 @@ public class SystemInformationResource extends AbstractSystemInformationResource
   private static final String API_VERSION = "Api-Version";
   private static final String N_A = "N/A";
 
-  private final String applicationName;
-  private final String applicationVersion;
-  private final String buildNumber;
-  private final String gitCommit;
-
   /**
    * @param configuration - configuration
    * @param environment - environment
@@ -57,13 +52,13 @@ public class SystemInformationResource extends AbstractSystemInformationResource
   public SystemInformationResource(final ApiConfiguration configuration,
       final Environment environment) {
     super(environment.healthChecks());
-    this.applicationName = configuration.getApplicationName();
+    super.applicationName = configuration.getApplicationName();
     final Attributes manifestProperties = getManifestProperties();
     String value = manifestProperties.getValue(API_VERSION);
-    this.applicationVersion = StringUtils.isBlank(value) ? N_A : value;
+    super.version = StringUtils.isBlank(value) ? N_A : value;
     value = manifestProperties.getValue(API_BUILD);
     this.buildNumber = StringUtils.isBlank(value) ? N_A : value;
-    this.gitCommit = N_A;
+    super.gitCommitHash = N_A;
   }
 
   /**
@@ -78,16 +73,6 @@ public class SystemInformationResource extends AbstractSystemInformationResource
   @ApiOperation(value = "Returns System Information", response = SystemInformationDto.class)
   public Response get() {
     return super.buildResponse();
-  }
-
-  @Override
-  protected SystemInformationDto prepareSystemInformation() {
-    final SystemInformationDto systemInformation = super.prepareSystemInformation();
-    systemInformation.setApplicationName(applicationName);
-    systemInformation.setVersion(applicationVersion);
-    systemInformation.setBuildNumber(buildNumber);
-    systemInformation.setGitCommitHash(gitCommit);
-    return systemInformation;
   }
 
   private Attributes getManifestProperties() {
