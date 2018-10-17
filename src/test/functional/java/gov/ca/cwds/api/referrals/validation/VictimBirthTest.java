@@ -71,22 +71,6 @@ public class VictimBirthTest extends FunctionalTest {
   }
 
   /**
-   * R - 05609 Victim must be < 19
-   */
-  @Test
-  public void shouldReturn422WhenVictimTooOld() {
-    String approximateAge = null;
-    String approximateAgeUnits = null;
-    String dateOfBith = "1994-06-18";
-    ScreeningToReferral referral =
-        buildScreeningToReferral(dateOfBith, approximateAge, approximateAgeUnits);
-
-    httpRequestHandler.postRequest(referral, referralPath, token).then()
-        .body("issue_details.user_message[0]", equalTo("Victim's age must be less than 18 years"))
-        .and().statusCode(422);
-  }
-
-  /**
    * 
    */
   @Test
@@ -118,7 +102,7 @@ public class VictimBirthTest extends FunctionalTest {
         .body("legacy_id", notNullValue());
   }
 
-  protected ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,
+  private ScreeningToReferral buildScreeningToReferral(String dateOfBith, String approximateAge,
       String approximateAgeUnits) {
     Participant victim = new ParticipantResourceBuilder().setDateOfBirth(dateOfBith)
         .setApproximateAge(approximateAge).setApproximateAgeUnits(approximateAgeUnits)
