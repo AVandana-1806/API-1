@@ -137,7 +137,6 @@ public class ParticipantToLegacyClient {
   public ClientParticipants saveParticipants(ScreeningToReferral screeningToReferral,
       String dateStarted, String timeStarted, String referralId, MessageBuilder messageBuilder) {
     ClientParticipants clientParticipants = new ClientParticipants();
-    this.droolsService = new DroolsService();
 
     Set<Participant> participants = screeningToReferral.getParticipants();
     for (Participant incomingParticipant : participants) {

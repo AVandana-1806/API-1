@@ -32,7 +32,7 @@ public class CsecHistoryBusinessRulesValidationTest {
   }
   
   @Test
-  public void shouldFireR10971() {
+  public void shouldFireDrools() {
     Set<IssueDetails> issueDetailsSet = 
         droolsService.performBusinessRules(CommercialSexualExploitationHistoryDroolsConfiguration.INSTANCE, 
             createValidCsecHistory());

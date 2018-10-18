@@ -202,7 +202,7 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.setSexualExploitationTypeDao(sexualExploitationTypeDao);
     participantToLegacyClient.setCsecHistoryService(csecHistoryService);
     participantToLegacyClient.setSpecialProjectReferralService(specialProjectReferralService);
-    participantToLegacyClient.setDroolsService(mock(DroolsService.class));
+    participantToLegacyClient.setDroolsService(new DroolsService());
   }
 
   @Test
