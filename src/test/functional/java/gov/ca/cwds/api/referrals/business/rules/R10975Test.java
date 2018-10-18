@@ -22,6 +22,7 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.core.FerbConstants.ReportType;
+import io.restassured.response.Response;
 
 /**
  * @author CWDS API Team
@@ -52,7 +53,7 @@ public class R10975Test extends FunctionalTest {
 
     httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
-            equalTo("CSEC endDate should be greater than or equal to startDate"))
+            equalTo("CSEC End Date must be greater than or equal to CSEC Start Date"))
         .and().statusCode(422);
   }
 
