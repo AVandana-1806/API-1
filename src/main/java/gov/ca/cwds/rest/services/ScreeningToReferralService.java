@@ -600,6 +600,9 @@ public class ScreeningToReferralService implements CrudsService {
     this.allegationPerpetratorHistoryService.create(cmsPerpHistory);
   }
 
+  /**
+   * @param droolsService - droolsService
+   */
   public void setDroolsService(DroolsService droolsService) {
     this.droolsService = droolsService;
   }
@@ -619,13 +622,11 @@ public class ScreeningToReferralService implements CrudsService {
     return screeningService.updateScreening(screeningId, screening);
   }
 
-
   Screening setReferralIdAndSubmittedStatusOnScreening(String referralId, Screening screening) {
     screening.setReferralId(referralId);
     screening.setScreeningStatus(ScreeningStatus.SUBMITTED.getStatus());
     return screening;
   }
-
 
   ScreeningToReferral buildReferralFromScreening(Screening screening) {
     return new ScreeningTransformer().transform(screening,
