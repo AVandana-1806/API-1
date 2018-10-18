@@ -53,7 +53,7 @@ public class R10975Test extends FunctionalTest {
 
     httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
-            equalTo("CSEC End Date must be greater than or equal to CSEC Start Date"))
+            equalTo("CSEC endDate should be greater than or equal to startDate"))
         .and().statusCode(422);
   }
 
