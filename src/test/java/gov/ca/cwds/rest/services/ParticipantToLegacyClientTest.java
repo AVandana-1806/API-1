@@ -202,7 +202,7 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.setSexualExploitationTypeDao(sexualExploitationTypeDao);
     participantToLegacyClient.setCsecHistoryService(csecHistoryService);
     participantToLegacyClient.setSpecialProjectReferralService(specialProjectReferralService);
-    participantToLegacyClient.setDroolsService(mock(DroolsService.class));
+    participantToLegacyClient.setDroolsService(new DroolsService());
   }
 
   @Test
@@ -386,9 +386,12 @@ public class ParticipantToLegacyClientTest {
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
-        .contains("Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC"));
+        .contains("Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC History row"));
   }
 
+  /**
+   * Test the drools implementation of "commercial-sexual-exploitation-agenda" ParticipantToLegacy class
+   */
   @Test
   public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
     Csec csec = new CsecBuilder()
@@ -408,7 +411,13 @@ public class ParticipantToLegacyClientTest {
             .setParticipants(participants).createScreeningToReferral();
     Client foundClient = new ClientResourceBuilder().setBirthDate(null)
         .setLastUpdateTime(modifiedLastUpdateDate).build();
+    SexualExploitationType sexualExploitationType = new SexualExploitationType();
+    sexualExploitationType.setSystemId((short)6871);
+    sexualExploitationType.setFkMeta("CSEC_TPC");
+    sexualExploitationType.setShortDescription("Victim while Absent from Placement");
+
     when(clientService.find(any())).thenReturn(foundClient);
+    when(sexualExploitationTypeDao.find((short) 6871)).thenReturn(sexualExploitationType);
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
@@ -418,15 +427,46 @@ public class ParticipantToLegacyClientTest {
   }
 
   /**
-   * <blockquote>
-   * 
-   * <pre>
-   * BUSINESS RULE: R - R - 10971
-   * 
-   *  If the CSEC Type is 'Victim while Absent from Placement' make the End Date mandatory.
-   * </blockquote>
-   * </pre>
+   * Test the drools implementation of "commercial-sexual-exploitation-agenda" in ParticipantToLegacy class
    */
+  @Test
+  public void shouldFailWhenCsecEndDateBeforeStartDate() {
+    LocalDate startDate = LocalDate.parse("2018-09-29");
+    LocalDate endDate = LocalDate.parse("2018-09-28");
+
+    Csec csec = new CsecBuilder()
+        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(endDate)
+        .setStartDate(startDate)
+        .build();
+    List<Csec> csecs = new ArrayList<Csec>();
+    csecs.add(csec);
+    Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
+    victimParticipant.setCsecs(csecs);
+
+    Set<Participant> participants =
+        new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
+
+    ScreeningToReferral referral =
+        new ScreeningToReferralResourceBuilder().setReportType(FerbConstants.ReportType.CSEC)
+            .setParticipants(participants).createScreeningToReferral();
+    Client foundClient = new ClientResourceBuilder().setBirthDate(null)
+        .setLastUpdateTime(modifiedLastUpdateDate).build();
+    SexualExploitationType sexualExploitationType = new SexualExploitationType();
+    sexualExploitationType.setSystemId((short)6871);
+    sexualExploitationType.setFkMeta("CSEC_TPC");
+    sexualExploitationType.setShortDescription("Victim while Absent from Placement");
+
+    when(clientService.find(any())).thenReturn(foundClient);
+    when(sexualExploitationTypeDao.find((short) 6871)).thenReturn(sexualExploitationType);
+    participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
+        messageBuilder);
+
+    assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
+        .collect(Collectors.toList())
+        .contains("CSEC End Date must be greater than or equal to CSEC Start Date"));
+    
+  }
   @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_MandatedNonMandatedFail()

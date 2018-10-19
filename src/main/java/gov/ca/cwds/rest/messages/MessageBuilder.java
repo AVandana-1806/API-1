@@ -94,6 +94,19 @@ public class MessageBuilder {
       errors.forEach(error -> issues.add(IssueDetailsCreator.create(error, null)));
     }
   }
+  
+  /**
+   * @param issueDetails - Set of IssueDetails
+   * @param type - Error Type
+   */
+  public void addIssueDetails(Set<IssueDetails> issueDetails, ErrorType type) {
+    if (!issueDetails.isEmpty()) {
+      for (IssueDetails issueDetail : issueDetails) {
+        this.issues.add(issueDetail);
+        this.messages.add(new ErrorMessage(type, issueDetail.getUserMessage(), ""));
+      }
+    }    
+  }
 
   /**
    * @return the error message

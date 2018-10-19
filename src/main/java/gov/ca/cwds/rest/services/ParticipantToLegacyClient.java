@@ -49,9 +49,7 @@ import gov.ca.cwds.rest.business.rules.R00834AgeUnitRestriction;
 import gov.ca.cwds.rest.business.rules.R02265ChildClientExists;
 import gov.ca.cwds.rest.business.rules.R04466ClientSensitivityIndicator;
 import gov.ca.cwds.rest.business.rules.R04880EstimatedDOBCodeSetting;
-import gov.ca.cwds.rest.business.rules.R10971CsecEndDate;
 import gov.ca.cwds.rest.core.FerbConstants;
-import gov.ca.cwds.rest.exception.BusinessValidationException;
 import gov.ca.cwds.rest.exception.IssueDetails;
 import gov.ca.cwds.rest.messages.MessageBuilder;
 import gov.ca.cwds.rest.services.cms.ChildClientService;
@@ -498,8 +496,6 @@ public class ParticipantToLegacyClient {
 
   private boolean isValidCsecs(List<Csec> csecs, MessageBuilder messageBuilder) {
     
-    final boolean validCsecEndDate = new R10971CsecEndDate(csecs).isValid();
-
     if (csecs == null || csecs.isEmpty()) {
       messageBuilder.addError("CSEC data is empty", ErrorMessage.ErrorType.VALIDATION);
       return false;
@@ -522,12 +518,6 @@ public class ParticipantToLegacyClient {
         return false;
       }
     }
-
-    if (!validCsecEndDate) {
-      messageBuilder.addError("CSEC Victim while Absent from Placement requires an end date",
-          ErrorMessage.ErrorType.VALIDATION);
-      return false;
-    }
     return true;
   }
 
@@ -545,11 +535,6 @@ public class ParticipantToLegacyClient {
   private void saveOrUpdateCsec(String clientId, List<Csec> csecs, MessageBuilder messageBuilder) {
     final List<CsecHistory> csecHistories = new ArrayList<>();
     for (Csec csec : csecs) {
-      Set<IssueDetails> detailsSet = droolsService.performBusinessRules(
-          CommercialSexualExploitationHistoryDroolsConfiguration.INSTANCE, csec);
-      if (!detailsSet.isEmpty()) {
-        throw new BusinessValidationException(detailsSet);
-      }
       final String csecCodeId = csec.getCsecCodeId();
       if (csecCodeId == null) {
         messageBuilder.addError("There is no CSEC code id provided for client with id: " + clientId,
@@ -566,19 +551,25 @@ public class ParticipantToLegacyClient {
         }
         if (sexualExploitationType == null) {
           messageBuilder.addError(
-              "Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC",
+              "Legacy Id on CSEC does not correspond to an existing CMS/CWS CSEC History row",
               ErrorMessage.ErrorType.VALIDATION);
         } else {
-          final CsecHistory csecHistory = new CsecHistory();
+          CsecHistory csecHistory = new CsecHistory();
           csecHistory.setSexualExploitationType(sexualExploitationType);
           csecHistory.setChildClient(clientId);
           csecHistory.setStartDate(csec.getStartDate());
           csecHistory.setEndDate(csec.getEndDate());
-          csecHistories.add(csecHistory);
+          // validate CSEC History entity against DocTool rules
+          Set<IssueDetails> detailsSet = droolsService.performBusinessRules(
+              CommercialSexualExploitationHistoryDroolsConfiguration.INSTANCE, csecHistory);
+          if (!detailsSet.isEmpty()) {
+            messageBuilder.addIssueDetails(detailsSet, ErrorType.BUSINESS);
+          } else {
+            csecHistories.add(csecHistory);            
+          }
         }
       }
     }
-
     csecHistoryService.updateCsecHistoriesByClientId(clientId, csecHistories);
   }
 
