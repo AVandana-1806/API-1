@@ -213,10 +213,14 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     environment.healthChecks().register(Api.HealthCheck.SP_GENCLNCNTY_STATUS,
         spGenclncntyHealthCheck);
 
-    final SpSpssaname3HealthCheck spSpssaname3HealthCheck =
-        new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
-        spSpssaname3HealthCheck);
+    //
+    // SP_SPSSANAME3_STATUS is disabled to fix this Jira:
+    // https://osi-cwds.atlassian.net/browse/DS-1427
+    //
+//    final SpSpssaname3HealthCheck spSpssaname3HealthCheck =
+//        new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
+//    environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
+//        spSpssaname3HealthCheck);
 
     final SwaggerHealthCheck swaggerHealthCheck =
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));
