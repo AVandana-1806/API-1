@@ -64,9 +64,9 @@ public class PeopleSummaryThreadHandler
   protected static final int CRO = CONCUR_READ_ONLY;
 
   /**
-   * Let queries run -- until it's time to give up. Default to 3 minutes.
+   * Let queries run -- until it's time to give up. Default to 2 minutes.
    */
-  protected static final int QUERY_TIMEOUT_IN_SECONDS = 180;
+  protected static final int QUERY_TIMEOUT_IN_SECONDS = 120;
 
   /**
    * Default fetch size for Hibernate and JDBC. Pull records in bulk to minimize network
@@ -83,8 +83,7 @@ public class PeopleSummaryThreadHandler
   /**
    * key = client id. Single thread, non-thread-safe containers OK.
    */
-  protected transient Map<String, PlacementHomeAddress> placementHomeAddresses =
-      new HashMap<>(5011);
+  protected transient Map<String, PlacementHomeAddress> placementHomeAddresses = new HashMap<>(11);
 
   /**
    * key = client id. Single thread, non-thread-safe containers OK.
