@@ -1,6 +1,6 @@
 package gov.ca.cwds.data.es.transform;
 
-import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -13,6 +13,10 @@ import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 public class RawCase extends ClientReference implements NeutronJdbcReader<RawCase> {
 
   private static final long serialVersionUID = 1L;
+
+  protected enum ColumnPosition {
+    START, CLT_IDENTIFIER, CAS_IDENTIFIER, CAS_RSP_AGY_CD, CAS_IBMSNAP_OPERATION, CAS_IBMSNAP_LOGMARKER
+  }
 
   // ====================================
   // CASE_T: (is there an open case)
@@ -27,8 +31,11 @@ public class RawCase extends ClientReference implements NeutronJdbcReader<RawCas
   @Override
   public RawCase read(ResultSet rs) throws SQLException {
     super.read(rs);
-    openCaseId = trimToEmpty(rs.getString("CAS_IDENTIFIER"));
-    openCaseResponsibleAgencyCode = trimToEmpty(rs.getString("CAS_RSP_AGY_CD"));
+
+    openCaseId = trimToNull(rs.getString(ColumnPosition.CAS_IDENTIFIER.ordinal()));
+    openCaseResponsibleAgencyCode =
+        trimToNull(rs.getString(ColumnPosition.CAS_RSP_AGY_CD.ordinal()));
+
     return this;
   }
 

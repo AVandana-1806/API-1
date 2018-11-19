@@ -1,6 +1,6 @@
 package gov.ca.cwds.data.es.transform;
 
-import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -14,6 +14,10 @@ public class ClientAddressReference extends ClientReference {
 
   private static final long serialVersionUID = 1L;
 
+  protected enum ColumnPosition {
+    START, CLT_IDENTIFIER, CLA_IDENTIFIER, CLA_LST_UPD_ID, CLA_LST_UPD_TS, CLA_ADDR_TPC, CLA_BK_INMT_ID, CLA_EFF_END_DT, CLA_EFF_STRTDT, CLA_FKADDRS_T, CLA_FKCLIENT_T, CLA_FKREFERL_T, CLA_HOMLES_IND, CLA_IBMSNAP_LOGMARKER, CLA_IBMSNAP_OPERATION
+  }
+
   @Id
   @Column(name = "CLA_IDENTIFIER")
   protected String claId;
@@ -21,7 +25,7 @@ public class ClientAddressReference extends ClientReference {
   @Override
   public ClientAddressReference read(ResultSet rs) throws SQLException {
     super.read(rs);
-    this.claId = trimToEmpty(rs.getString("CLA_IDENTIFIER"));
+    this.claId = trimToNull(rs.getString(ColumnPosition.CLA_IDENTIFIER.ordinal()));
     return this;
   }
 
