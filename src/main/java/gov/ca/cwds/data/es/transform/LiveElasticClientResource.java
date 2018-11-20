@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.LiveElasticClientServiceResource;
+import gov.ca.cwds.rest.resources.TypedResourceDelegate;
 import gov.ca.cwds.rest.resources.TypedServiceBackedResourceDelegate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +68,7 @@ public class LiveElasticClientResource {
    * </tr>
    * </table>
    */
-  private TypedServiceBackedResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse> resourceDelegate;
+  private TypedResourceDelegate<String[], LiveElasticClientRequest> resourceDelegate;
 
   /**
    * Preferred constructor.
