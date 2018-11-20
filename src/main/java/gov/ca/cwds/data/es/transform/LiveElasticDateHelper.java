@@ -15,9 +15,9 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author CWDS API Team
  */
-public class LiveElasticDateUtils {
+public class LiveElasticDateHelper {
 
-  private LiveElasticDateUtils() {
+  private LiveElasticDateHelper() {
     // no-op
   }
 

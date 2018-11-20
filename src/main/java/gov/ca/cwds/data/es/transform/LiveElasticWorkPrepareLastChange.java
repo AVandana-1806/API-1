@@ -53,7 +53,7 @@ public class LiveElasticWorkPrepareLastChange extends LiveElasticWorkTotalImpl {
   public void execute(Connection con) throws SQLException {
     LiveElasticJdbcUtils.enableBatchSettings(con);
 
-    final String strLastRunTime = LiveElasticDateUtils.makeTimestampStringLookBack(lastRunTime);
+    final String strLastRunTime = LiveElasticDateHelper.makeTimestampStringLookBack(lastRunTime);
     LOGGER.info("strLastRunTime: {}", strLastRunTime);
 
     try (final PreparedStatement stmt = createPreparedStatement(con)) {
