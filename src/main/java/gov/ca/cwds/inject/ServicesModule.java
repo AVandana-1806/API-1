@@ -24,6 +24,7 @@ import gov.ca.cwds.data.cms.GovernmentOrganizationDao;
 import gov.ca.cwds.data.cms.LawEnforcementDao;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
+import gov.ca.cwds.data.es.transform.LiveElasticClientService;
 import gov.ca.cwds.data.ns.IntakeLovDao;
 import gov.ca.cwds.data.persistence.xa.CandaceSessionImpl;
 import gov.ca.cwds.data.persistence.xa.CaresMethodInterceptor;
@@ -209,6 +210,7 @@ public class ServicesModule extends AbstractModule {
     bind(TickleService.class);
     bind(DroolsService.class);
     bind(RelationshipFacade.class).to(RelationshipFacadeLegacyAndNewDB.class);
+    bind(LiveElasticClientService.class);
 
     LOGGER.info("configure: point 2");
 

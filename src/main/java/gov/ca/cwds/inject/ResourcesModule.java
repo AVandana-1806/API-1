@@ -8,7 +8,9 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+import gov.ca.cwds.data.es.transform.LiveElasticClientRequest;
 import gov.ca.cwds.data.es.transform.LiveElasticClientResource;
+import gov.ca.cwds.data.es.transform.LiveElasticClientService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import gov.ca.cwds.rest.api.contact.DeliveredServiceDomain;
@@ -537,6 +539,14 @@ public class ResourcesModule extends AbstractModule {
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
         injector.getInstance(ContactIntakeApiService.class));
+  }
+
+  @Provides
+  @LiveElasticClientServiceResource
+  public TypedResourceDelegate<String[], LiveElasticClientRequest> liveElasticClientServiceBackedResource(
+      Injector injector) {
+    return new TypedServiceBackedResourceDelegate<>(
+        injector.getInstance(LiveElasticClientService.class));
   }
 
 }

@@ -295,7 +295,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         c = rawClients.get(csec.getCltId());
         if (c != null) {
           c.addCsec(csec);
-          CaresLog.logEvery(LOGGER, 250, ++counter, "read", "csec");
+          CaresLog.logEvery(LOGGER, 5, ++counter, "read", "csec");
         } else {
           LOGGER.warn("ORPHAN CSEC! id: {}, client: {}", csec.getCsecId(), csec.getCltId());
         }

@@ -1,6 +1,6 @@
 package gov.ca.cwds.data.es.transform;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,7 +31,7 @@ public class LiveElasticClientRequest implements Request {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("client_ids")
-  private Collection<String> clientIds;
+  private List<String> clientIds;
 
   public LiveElasticClientRequest() {
     // default
@@ -43,16 +43,15 @@ public class LiveElasticClientRequest implements Request {
    * @param key String search term.
    */
   @JsonCreator
-  public LiveElasticClientRequest(
-      @Valid @NotNull @JsonProperty("key") Collection<String> clientIds) {
+  public LiveElasticClientRequest(@Valid @NotNull @JsonProperty("key") List<String> clientIds) {
     this.clientIds = clientIds;
   }
 
-  public Collection<String> getClientIds() {
+  public List<String> getClientIds() {
     return clientIds;
   }
 
-  public void setClientIds(Collection<String> clientIds) {
+  public void setClientIds(List<String> clientIds) {
     this.clientIds = clientIds;
   }
 

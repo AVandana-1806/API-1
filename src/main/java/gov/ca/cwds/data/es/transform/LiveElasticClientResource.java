@@ -14,8 +14,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.LiveElasticClientServiceResource;
-import gov.ca.cwds.rest.resources.SimpleResourceDelegate;
-import gov.ca.cwds.rest.resources.converter.ResponseConverter;
+import gov.ca.cwds.rest.resources.TypedServiceBackedResourceDelegate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,7 +48,7 @@ public class LiveElasticClientResource {
    * <tr>
    * <td>K</td>
    * <td>Key</td>
-   * <td>String</td>
+   * <td>String[]</td>
    * </tr>
    * <tr>
    * <td>Q</td>
@@ -68,7 +67,7 @@ public class LiveElasticClientResource {
    * </tr>
    * </table>
    */
-  private SimpleResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse, LiveElasticClientService> resourceDelegate;
+  private TypedServiceBackedResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse> resourceDelegate;
 
   /**
    * Preferred constructor.
@@ -77,7 +76,7 @@ public class LiveElasticClientResource {
    */
   @Inject
   public LiveElasticClientResource(
-      @LiveElasticClientServiceResource SimpleResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse, LiveElasticClientService> resourceDelegate) {
+      @LiveElasticClientServiceResource TypedServiceBackedResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse> resourceDelegate) {
     this.resourceDelegate = resourceDelegate;
   }
 
@@ -96,9 +95,7 @@ public class LiveElasticClientResource {
       response = LiveElasticClientResponse.class)
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The clients' id's") final List<String> clientIds) {
-    gov.ca.cwds.rest.api.Response clients = null;
-    // resourceDelegate.findInvolvementHistoryByClientIds(clientIds);
-    return new ResponseConverter().withDataResponse(clients);
+    return resourceDelegate.get(clientIds.toArray(new String[0]));
   }
 
 }
