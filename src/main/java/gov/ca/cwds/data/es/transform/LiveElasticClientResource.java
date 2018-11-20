@@ -97,10 +97,10 @@ public class LiveElasticClientResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
-  @ApiOperation(value = "Find 'live' Elasticsearch person documents by client ids",
+  @ApiOperation(value = "Find live Elasticsearch person documents by client ids",
       response = LiveElasticClientResponse.class)
   public Response get(@QueryParam("clientIds") @ApiParam(required = true, name = "clientIds",
-      value = "The clients' id's") final List<String> clientIds) {
+      value = "The client ids") final List<String> clientIds) {
     return resourceDelegate.get(clientIds.toArray(new String[0]));
   }
 

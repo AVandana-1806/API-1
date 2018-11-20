@@ -8,7 +8,7 @@ public class LiveElasticClientSQLResource implements ApiMarker {
   private static final long serialVersionUID = 1L;
 
   // =================================
-  // Neutron, the next generation.
+  // Search, the next generation.
   // =================================
 
   public static final String KEY_SOURCE = "FROM GT_ID   gt \n";
