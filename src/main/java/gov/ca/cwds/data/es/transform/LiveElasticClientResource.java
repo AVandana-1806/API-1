@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.LiveElasticClientServiceResource;
 import gov.ca.cwds.rest.resources.TypedResourceDelegate;
-import gov.ca.cwds.rest.resources.TypedServiceBackedResourceDelegate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -77,7 +76,7 @@ public class LiveElasticClientResource {
    */
   @Inject
   public LiveElasticClientResource(
-      @LiveElasticClientServiceResource TypedServiceBackedResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse> resourceDelegate) {
+      @LiveElasticClientServiceResource TypedResourceDelegate<String[], LiveElasticClientRequest> resourceDelegate) {
     this.resourceDelegate = resourceDelegate;
   }
 
