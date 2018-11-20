@@ -13,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.inject.LiveElasticClientServiceResource;
+import gov.ca.cwds.rest.resources.SimpleResourceDelegate;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +34,41 @@ import io.swagger.annotations.ApiResponses;
 @Consumes(MediaType.APPLICATION_JSON)
 public class LiveElasticClientResource {
 
-  private LiveElasticClientService liveElasticClientService;
+  /**
+   * Java lacks short-hand notation for typed interfaces and classes, such as C++ "typedef" or
+   * "using alias", resulting in verbose type declarations.
+   * 
+   * <h4>Resource Delegate Type Parameters</h4>
+   * 
+   * <table>
+   * <tr>
+   * <th>Param</th>
+   * <th>Purpose</th>
+   * <th>Class</th>
+   * </tr>
+   * <tr>
+   * <td>K</td>
+   * <td>Key</td>
+   * <td>String</td>
+   * </tr>
+   * <tr>
+   * <td>Q</td>
+   * <td>API Request</td>
+   * <td>LiveElasticClientRequest</td>
+   * </tr>
+   * <tr>
+   * <td>P</td>
+   * <td>API Response</td>
+   * <td>LiveElasticClientResponse</td>
+   * </tr>
+   * <tr>
+   * <td>S</td>
+   * <td>Service</td>
+   * <td>LiveElasticClientService</td>
+   * </tr>
+   * </table>
+   */
+  private SimpleResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse, LiveElasticClientService> resourceDelegate;
 
   /**
    * Preferred constructor.
@@ -40,8 +76,9 @@ public class LiveElasticClientResource {
    * @param liveElasticClientService - LiveElasticClientService
    */
   @Inject
-  public LiveElasticClientResource(LiveElasticClientService liveElasticClientService) {
-    this.liveElasticClientService = liveElasticClientService;
+  public LiveElasticClientResource(
+      @LiveElasticClientServiceResource SimpleResourceDelegate<String[], LiveElasticClientRequest, LiveElasticClientResponse, LiveElasticClientService> resourceDelegate) {
+    this.resourceDelegate = resourceDelegate;
   }
 
   /**
@@ -60,7 +97,7 @@ public class LiveElasticClientResource {
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The clients' id's") final List<String> clientIds) {
     gov.ca.cwds.rest.api.Response clients = null;
-    // liveElasticClientService.findInvolvementHistoryByClientIds(clientIds);
+    // resourceDelegate.findInvolvementHistoryByClientIds(clientIds);
     return new ResponseConverter().withDataResponse(clients);
   }
 

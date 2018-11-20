@@ -50,12 +50,12 @@ import gov.ca.cwds.data.std.ApiMarker;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC"})
-public class PeopleSummaryThreadHandler
+public class LiveElasticClientHandler
     implements ApiMarker, AtomLoadStepHandler<ReplicatedClient> {
 
   private static final long serialVersionUID = 1L;
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(PeopleSummaryThreadHandler.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(LiveElasticClientHandler.class);
 
   public static final int LG_SZ = 10;
   public static final int FULL_LOAD_SIZE = 13;
@@ -95,7 +95,7 @@ public class PeopleSummaryThreadHandler
    */
   protected transient Map<String, ReplicatedClient> normalized = new HashMap<>(FULL_LOAD_SIZE);
 
-  public PeopleSummaryThreadHandler(CaresInterruptibleOperation rocket) {
+  public LiveElasticClientHandler(CaresInterruptibleOperation rocket) {
     this.rocket = rocket;
   }
 

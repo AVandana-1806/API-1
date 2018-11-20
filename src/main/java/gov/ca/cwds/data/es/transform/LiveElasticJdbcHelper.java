@@ -27,14 +27,14 @@ import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
  * 
  * @author CWDS API Team
  */
-public class LiveElasticJdbcUtils {
+public class LiveElasticJdbcHelper {
 
   private static final ConditionalLogger LOGGER =
-      new CaresConditionalLoggerImpl(LiveElasticJdbcUtils.class);
+      new CaresConditionalLoggerImpl(LiveElasticJdbcHelper.class);
 
   public static final String CURRENT_SCHEMA = "DB_CMS_SCHEMA";
 
-  private LiveElasticJdbcUtils() {
+  private LiveElasticJdbcHelper() {
     // Static utility class.
   }
 
@@ -59,7 +59,8 @@ public class LiveElasticJdbcUtils {
 
   public static int runStatementInsertLastChangeKeys(final Session session, final Date lastRunTime,
       final String sql, final Function<Connection, PreparedStatement> func) {
-    final LiveElasticWorkTotalImpl work = new LiveElasticWorkPrepareLastChange(lastRunTime, sql, func);
+    final LiveElasticWorkTotalImpl work =
+        new LiveElasticWorkPrepareLastChange(lastRunTime, sql, func);
     doWork(session, work);
     return work.getTotalProcessed();
   }
@@ -72,8 +73,11 @@ public class LiveElasticJdbcUtils {
   }
 
   /**
-   * Prepare a statement through a Java Function to avoid vulnerability to SQL injection. Thanks a
-   * lot, SonarQube. Boo! Hiss!
+   * Prepare a statement through a Java Function to avoid vulnerability to SQL injection.
+   * 
+   * <p>
+   * Thanks a lot, SonarQube. Boo! Hiss!
+   * </p>
    * 
    * @param sql SQL statement to prepare
    * @return Java Function to execute the prepared statement

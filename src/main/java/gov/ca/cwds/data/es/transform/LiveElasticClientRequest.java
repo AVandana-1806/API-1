@@ -1,13 +1,12 @@
 package gov.ca.cwds.data.es.transform;
 
+import java.util.Collection;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.rest.api.Request;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * A domain API {@link Request} for converting a 10 character legacy key to a 19 digit UI
@@ -32,12 +30,12 @@ public class LiveElasticClientRequest implements Request {
    */
   private static final long serialVersionUID = 1L;
 
-  @ApiModelProperty(required = true, readOnly = false, example = "JJaIiuJ0Fk")
-  @JsonProperty("key")
-  @NotEmpty
-  @Size(min = 10, max = 10)
-  @Pattern(regexp = "[a-zA-Z0-9]{10}", message = "invalid legacy key")
-  private String key;
+  @JsonProperty("client_ids")
+  private Collection<String> clientIds;
+
+  public LiveElasticClientRequest() {
+    // default
+  }
 
   /**
    * JSON DropWizard Constructor. Takes solitary search term.
@@ -45,33 +43,34 @@ public class LiveElasticClientRequest implements Request {
    * @param key String search term.
    */
   @JsonCreator
-  public LiveElasticClientRequest(@Valid @NotNull @JsonProperty("key") String key) {
-    this.key = key;
+  public LiveElasticClientRequest(
+      @Valid @NotNull @JsonProperty("key") Collection<String> clientIds) {
+    this.clientIds = clientIds;
+  }
+
+  public Collection<String> getClientIds() {
+    return clientIds;
+  }
+
+  public void setClientIds(Collection<String> clientIds) {
+    this.clientIds = clientIds;
   }
 
   /**
-   * Getter for auto-complete search term(s).
-   * 
-   * @return search term
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#hashCode()
    */
-  public String getLegacyKey() {
-    return key;
-  }
-
-  /**
-   * Setter for auto-complete search term.
-   * 
-   * @param key legacy 10-char key
-   */
-  public void setLegacyKey(String key) {
-    this.key = key;
-  }
-
   @Override
   public final int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this, false);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public final boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);

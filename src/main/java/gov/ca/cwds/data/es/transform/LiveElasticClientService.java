@@ -2,16 +2,15 @@ package gov.ca.cwds.data.es.transform;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 
 /**
- * Business service for for {@link CmsKeyIdGenerator}.
+ * Business service for live Elasticsearch client.
  * 
  * @author CWDS API Team
  */
 public class LiveElasticClientService
-    extends SimpleResourceService<String, LiveElasticClientRequest, LiveElasticClientResponse> {
+    extends SimpleResourceService<String[], LiveElasticClientRequest, LiveElasticClientResponse> {
 
   /**
    * Constructor
@@ -23,12 +22,13 @@ public class LiveElasticClientService
 
   @Override
   protected LiveElasticClientResponse handleRequest(LiveElasticClientRequest req) {
-    return handleFind(req.getLegacyKey());
+    return handleFind(req.getClientIds().toArray(new String[0]));
   }
 
   @Override
-  protected LiveElasticClientResponse handleFind(String key) {
-    return new LiveElasticClientResponse(CmsKeyIdGenerator.getUIIdentifierFromKey(key));
+  protected LiveElasticClientResponse handleFind(String[] key) {
+    // TODO: call LiveElasticClientHandler
+    return new LiveElasticClientResponse("placeholder");
   }
 
 }
