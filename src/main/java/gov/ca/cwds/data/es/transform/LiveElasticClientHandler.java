@@ -50,8 +50,7 @@ import gov.ca.cwds.data.std.ApiMarker;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC"})
-public class LiveElasticClientHandler
-    implements ApiMarker, AtomLoadStepHandler<ReplicatedClient> {
+public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<ReplicatedClient> {
 
   private static final long serialVersionUID = 1L;
 
@@ -160,7 +159,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} client records.", counter);
+    LOGGER.debug("Retrieved {} client records.", counter);
   }
 
   protected void readClientAddress(final ResultSet rs) {
@@ -183,7 +182,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT ADDRESS! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} client address records.", counter);
+    LOGGER.debug("Retrieved {} client address records.", counter);
   }
 
   protected void readAddress(final ResultSet rs) {
@@ -213,7 +212,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ ADDRESS! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} address records.", counter);
+    LOGGER.debug("Retrieved {} address records.", counter);
   }
 
   protected void readClientCounty(final ResultSet rs) {
@@ -236,7 +235,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT COUNTY! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} client county records.", counter);
+    LOGGER.debug("Retrieved {} client county records.", counter);
   }
 
   protected void readAka(final ResultSet rs) {
@@ -259,7 +258,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ AKA! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} aka records.", counter);
+    LOGGER.debug("Retrieved {} aka records.", counter);
   }
 
   protected void readCase(final ResultSet rs) {
@@ -282,7 +281,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CASE! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} case records.", counter);
+    LOGGER.debug("Retrieved {} case records.", counter);
   }
 
   protected void readCsec(final ResultSet rs) {
@@ -305,7 +304,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CSEC! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} CSEC records.", counter);
+    LOGGER.debug("Retrieved {} CSEC records.", counter);
   }
 
   protected void readEthnicity(final ResultSet rs) {
@@ -329,7 +328,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ ETHNICITY! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} ethnicity records.", counter);
+    LOGGER.debug("Retrieved {} ethnicity records.", counter);
   }
 
   protected void readSafetyAlert(final ResultSet rs) {
@@ -353,7 +352,7 @@ public class LiveElasticClientHandler
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ SAFETY ALERT! {}", e.getMessage(), e);
     }
 
-    LOGGER.info("Retrieved {} safety alert records.", counter);
+    LOGGER.debug("Retrieved {} safety alert records.", counter);
   }
 
   protected void loadClientRange(Connection con, final PreparedStatement stmtInsClient,
@@ -370,7 +369,7 @@ public class LiveElasticClientHandler
     }
 
     final int clientCount = stmtInsClient.executeUpdate();
-    LOGGER.info("Client count: {}", clientCount);
+    LOGGER.debug("Client count: {}", clientCount);
   }
 
   protected boolean isInitialLoad() {
