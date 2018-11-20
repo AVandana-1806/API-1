@@ -1,90 +1,36 @@
 package gov.ca.cwds.data.es.transform;
 
-import static gov.ca.cwds.rest.core.Api.DS_CMS;
-import static gov.ca.cwds.rest.core.Api.DS_CMS_REP;
-
-import java.util.Collection;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.hibernate.FlushMode;
-
 import com.google.inject.Inject;
 
-import gov.ca.cwds.rest.api.Response;
-import gov.ca.cwds.rest.api.domain.hoi.HOIRequest;
-import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
-import gov.ca.cwds.rest.services.TypedCrudsService;
-import gov.ca.cwds.rest.services.hoi.HOIScreeningData;
-import gov.ca.cwds.rest.services.hoi.HOIScreeningService;
-import gov.ca.cwds.rest.services.hoi.InvolvementHistoryData;
-import io.dropwizard.hibernate.UnitOfWork;
+import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
+import gov.ca.cwds.rest.api.domain.cms.LegacyKeyRequest;
+import gov.ca.cwds.rest.api.domain.cms.LegacyKeyResponse;
+import gov.ca.cwds.rest.resources.SimpleResourceService;
 
 /**
- * Service to retrieve <strong>live</strong> client results in the exact same format as
- * Elasticsearch query results.
- *
+ * Business service for for {@link CmsKeyIdGenerator}.
+ * 
  * @author CWDS API Team
  */
 public class LiveElasticClientService
-    implements TypedCrudsService<String, InvolvementHistory, Response> {
+    extends SimpleResourceService<String, LegacyKeyRequest, LegacyKeyResponse> {
 
+  /**
+   * Constructor
+   */
   @Inject
-  private HOIScreeningService hoiScreeningService;
-
   public LiveElasticClientService() {
-    super();
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see gov.ca.cwds.rest.services.CrudsService#find(gov.ca.cwds.rest.api.Request)
-   */
-  @Override
-  public Response find(String screeningId) {
-    return findInvolvementHistory(new InvolvementHistoryData(screeningId));
-  }
-
-  /**
-   * @param clientIds - clientIds
-   * @return the history of involvement for the clients
-   */
-  public InvolvementHistory findInvolvementHistoryByClientIds(Collection<String> clientIds) {
-    return findInvolvementHistory(new InvolvementHistoryData(clientIds));
-  }
-
-  @UnitOfWork(value = DS_CMS_REP, readOnly = true, transactional = false,
-      flushMode = FlushMode.MANUAL)
-  @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
-  protected InvolvementHistory findInvolvementHistory(InvolvementHistoryData ihd) {
-    loadDataFromCMS(ihd);
-    return new InvolvementHistory(ihd.getScreeningId(), ihd.getHoiCases(), ihd.getHoiReferrals(),
-        ihd.getHoiScreenings());
-  }
-
-  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
-  @SuppressWarnings("WeakerAccess") // can't be private because the @UnitOfWork will not play
-  protected void loadDataFromCMS(InvolvementHistoryData ihd) {
-    final HOIScreeningData hsd = ihd.getHoiScreeningData();
-    if (!hsd.getClientIds().isEmpty()) {
-      hoiScreeningService.fetchDataFromCMS(hsd);
-      final HOIRequest hoiRequest = new HOIRequest(hsd.getClientIds());
-    }
+    // Default, no-op.
   }
 
   @Override
-  public Response create(InvolvementHistory request) {
-    throw new NotImplementedException("create not implemented");
+  protected LegacyKeyResponse handleRequest(LegacyKeyRequest req) {
+    return handleFind(req.getLegacyKey());
   }
 
   @Override
-  public Response delete(String primaryKey) {
-    throw new NotImplementedException("delete not implemented");
-  }
-
-  @Override
-  public Response update(String primaryKey, InvolvementHistory request) {
-    throw new NotImplementedException("update not implemented");
+  protected LegacyKeyResponse handleFind(String key) {
+    return new LegacyKeyResponse(CmsKeyIdGenerator.getUIIdentifierFromKey(key));
   }
 
 }

@@ -60,8 +60,8 @@ public class LiveElasticClientResource {
       response = InvolvementHistory.class)
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The clients' id's") final List<String> clientIds) {
-    gov.ca.cwds.rest.api.Response clients =
-        liveElasticClientService.findInvolvementHistoryByClientIds(clientIds);
+    gov.ca.cwds.rest.api.Response clients = null;
+    // liveElasticClientService.findInvolvementHistoryByClientIds(clientIds);
     return new ResponseConverter().withDataResponse(clients);
   }
 

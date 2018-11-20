@@ -1,9 +1,12 @@
 package gov.ca.cwds.rest.resources.converter;
 
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.OK;
+
 import java.util.List;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 /**
  * This class looks important but lacks any Javadoc comment, so it has one now. :-)
@@ -13,40 +16,33 @@ import javax.ws.rs.core.Response.Status;
 public class ResponseConverter {
 
   public Response withDataResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
-    return serviceResponse != null ? javax.ws.rs.core.Response.ok(serviceResponse).build()
-        : notFound();
+    return serviceResponse != null ? Response.ok(serviceResponse).build() : notFound();
   }
 
   public Response withDataResponse(List<gov.ca.cwds.rest.api.Response> serviceResponse) {
-    return serviceResponse != null ? javax.ws.rs.core.Response.ok(serviceResponse).build()
-        : notFound();
+    return serviceResponse != null ? Response.ok(serviceResponse).build() : notFound();
   }
 
   public Response withOKResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
-    return serviceResponse != null ? javax.ws.rs.core.Response.status(Response.Status.OK).build()
-        : notFound();
+    return serviceResponse != null ? Response.status(OK).build() : notFound();
   }
 
   public Response withCreatedResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
-    return javax.ws.rs.core.Response.status(Response.Status.CREATED).entity(serviceResponse)
-        .build();
+    return Response.status(CREATED).entity(serviceResponse).build();
   }
 
   public Response withUpdatedResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
-    return serviceResponse != null
-        ? javax.ws.rs.core.Response.status(Status.OK).entity(serviceResponse).build()
+    return serviceResponse != null ? Response.status(OK).entity(serviceResponse).build()
         : notFound();
   }
 
   public Response withCreatedResponse(List<gov.ca.cwds.rest.api.Response> serviceResponse) {
-    return serviceResponse != null
-        ? javax.ws.rs.core.Response.status(Response.Status.CREATED).entity(serviceResponse).build()
+    return serviceResponse != null ? Response.status(CREATED).entity(serviceResponse).build()
         : notFound();
   }
 
   private Response notFound() {
-    return javax.ws.rs.core.Response.status(Response.Status.NOT_FOUND).entity((Object) null)
-        .build();
+    return Response.status(NOT_FOUND).entity((Object) null).build();
   }
 
 }

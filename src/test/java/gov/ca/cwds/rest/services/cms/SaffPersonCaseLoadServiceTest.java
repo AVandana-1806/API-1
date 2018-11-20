@@ -22,7 +22,7 @@ import gov.ca.cwds.rest.api.domain.cms.StaffPersonCaseLoad;
  */
 public class SaffPersonCaseLoadServiceTest {
 
-  private SaffPersonCaseLoadService staffPersonCaseLoadService;
+  private StaffPersonCaseLoadService staffPersonCaseLoadService;
   private StaffPersonCaseLoadDao staffPersonCaseLoadDao;
 
   /**
@@ -31,8 +31,8 @@ public class SaffPersonCaseLoadServiceTest {
   @Before
   public void setup() throws Exception {
     staffPersonCaseLoadDao = mock(StaffPersonCaseLoadDao.class);
-    staffPersonCaseLoadService = mock(SaffPersonCaseLoadService.class);
-    staffPersonCaseLoadService = new SaffPersonCaseLoadService(staffPersonCaseLoadDao);
+    staffPersonCaseLoadService = mock(StaffPersonCaseLoadService.class);
+    staffPersonCaseLoadService = new StaffPersonCaseLoadService(staffPersonCaseLoadDao);
   }
 
   /**

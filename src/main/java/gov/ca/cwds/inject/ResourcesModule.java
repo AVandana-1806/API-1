@@ -46,6 +46,7 @@ import gov.ca.cwds.rest.api.domain.investigation.Investigation;
 import gov.ca.cwds.rest.api.domain.investigation.People;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipList;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
+import gov.ca.cwds.rest.api.domain.investigation.ScreeningSummary;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactIntake;
 import gov.ca.cwds.rest.api.domain.investigation.contact.ContactReferralRequest;
 import gov.ca.cwds.rest.resources.AddressResource;
@@ -257,7 +258,6 @@ public class ResourcesModule extends AbstractModule {
     return new TypedServiceBackedResourceDelegate<>(injector.getInstance(DeliveredService.class));
   }
 
-
   @Provides
   @ContactServiceBackedResource
   public TypedResourceDelegate<String, ContactReferralRequest> contactServiceBackedResource(
@@ -267,7 +267,7 @@ public class ResourcesModule extends AbstractModule {
 
   @Provides
   @HistoryOfInvolvementServiceBackedResource
-  public TypedResourceDelegate<String, InvolvementHistory> historyOfInvolementResource(
+  public TypedResourceDelegate<String, InvolvementHistory> historyOfInvolvementResource(
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(
         injector.getInstance(HistoryOfInvolvementService.class));
@@ -275,7 +275,7 @@ public class ResourcesModule extends AbstractModule {
 
   @Provides
   @ScreeningSummaryServiceBackedResource
-  public TypedResourceDelegate<String, gov.ca.cwds.rest.api.domain.investigation.ScreeningSummary> screeningSummaryServiceBackedResource(
+  public TypedResourceDelegate<String, ScreeningSummary> screeningSummaryServiceBackedResource(
       Injector injector) {
     return new TypedServiceBackedResourceDelegate<>(injector
         .getInstance(gov.ca.cwds.rest.services.investigation.ScreeningSummaryService.class));

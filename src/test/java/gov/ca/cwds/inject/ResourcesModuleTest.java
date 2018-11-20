@@ -105,7 +105,7 @@ public class ResourcesModuleTest {
 
   @Test
   public void historyOfInvolementServiceBackedResourceShouldRetrieveServiceFromInjector() {
-    resourceModule.historyOfInvolementResource(injector);
+    resourceModule.historyOfInvolvementResource(injector);
     verify(injector).getInstance(HistoryOfInvolvementService.class);
   }
 
