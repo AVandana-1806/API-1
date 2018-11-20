@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.std.ApiGroupNormalizer;
 
-public class RawClient extends ClientReference implements NeutronJdbcReader<RawClient>,
+public class RawClient extends ClientReference implements LiveElasticJdbcReader<RawClient>,
     ApiGroupNormalizer<ReplicatedClient>, Comparable<RawClient>, Comparator<RawClient> {
 
   private static final long serialVersionUID = 1L;

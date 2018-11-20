@@ -27,14 +27,14 @@ import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
  * 
  * @author CWDS API Team
  */
-public final class NeutronJdbcUtils {
+public class LiveElasticJdbcUtils {
 
   private static final ConditionalLogger LOGGER =
-      new CaresConditionalLoggerImpl(NeutronJdbcUtils.class);
+      new CaresConditionalLoggerImpl(LiveElasticJdbcUtils.class);
 
   public static final String CURRENT_SCHEMA = "DB_CMS_SCHEMA";
 
-  private NeutronJdbcUtils() {
+  private LiveElasticJdbcUtils() {
     // Static utility class.
   }
 
@@ -52,21 +52,21 @@ public final class NeutronJdbcUtils {
    * @return database Connection
    */
   public static Connection prepConnection(final Session session) {
-    final NeutronWorkConnectionStealer work = new NeutronWorkConnectionStealer();
+    final LiveElasticWorkConnectionStealer work = new LiveElasticWorkConnectionStealer();
     doWork(session, work);
     return work.getConnection();
   }
 
   public static int runStatementInsertLastChangeKeys(final Session session, final Date lastRunTime,
       final String sql, final Function<Connection, PreparedStatement> func) {
-    final NeutronWorkTotalImpl work = new WorkPrepareLastChange(lastRunTime, sql, func);
+    final LiveElasticWorkTotalImpl work = new LiveElasticWorkPrepareLastChange(lastRunTime, sql, func);
     doWork(session, work);
     return work.getTotalProcessed();
   }
 
   public static int runStatementInsertRownumBundle(final Session session, int start, int end,
       final Function<Connection, PreparedStatement> func) {
-    final NeutronWorkTotalImpl work = new WorkPrepareRownumBundle(start, end, func);
+    final LiveElasticWorkTotalImpl work = new LiveElasticWorkPrepareRownumBundle(start, end, func);
     doWork(session, work);
     return work.getTotalProcessed();
   }

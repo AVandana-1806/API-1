@@ -1,9 +1,10 @@
 package gov.ca.cwds.data.es.transform;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeDescriptor;
-
-import org.slf4j.Logger;
 
 /**
  * Common services for HOI service implementations.
@@ -24,8 +25,10 @@ public interface HOIBaseService {
     if (governmentEntityType == null) {
       return null;
     }
-    return new SystemCodeDescriptor(governmentEntityType, SystemCodeCache.global()
-        .getSystemCodeShortDescription(governmentEntityType) == null ? ""
-        : SystemCodeCache.global().getSystemCodeShortDescription(governmentEntityType));
+
+    final String description = StringUtils
+        .trimToNull(SystemCodeCache.global().getSystemCodeShortDescription(governmentEntityType));
+    return new SystemCodeDescriptor(governmentEntityType, description == null ? "" : description);
   }
+
 }

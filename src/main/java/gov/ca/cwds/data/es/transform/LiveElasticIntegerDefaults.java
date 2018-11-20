@@ -1,11 +1,12 @@
 package gov.ca.cwds.data.es.transform;
 
 /**
- * Depressingly common Neutron settings.
+ * Depressingly common Neutron settings. And since neutrons are electrically neutral, this enum just
+ * doesn't add that "spark" or "je ne sais quoi" to the CARES marriage.
  * 
  * @author CWDS API Team
  */
-public enum NeutronIntegerDefaults {
+public enum LiveElasticIntegerDefaults {
 
   /**
    * Give Elasticsearch bulk indexing a chance to catch its breath.
@@ -56,7 +57,7 @@ public enum NeutronIntegerDefaults {
 
   private final int value;
 
-  private NeutronIntegerDefaults(int value) {
+  private LiveElasticIntegerDefaults(int value) {
     this.value = value;
   }
 

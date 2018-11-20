@@ -15,7 +15,6 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
-import gov.ca.cwds.rest.services.hoi.InvolvementHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -34,20 +33,20 @@ import io.swagger.annotations.ApiResponses;
 @Consumes(MediaType.APPLICATION_JSON)
 public class LiveElasticClientResource {
 
-  private InvolvementHistoryService involvementHistoryService;
+  private LiveElasticClientService liveElasticClientService;
 
   /**
-   * Constructor to inject the InvolvementHistoryService.
+   * Preferred constructor.
    *
-   * @param involvementHistoryService - InvolvementHistoryService
+   * @param liveElasticClientService - LiveElasticClientService
    */
   @Inject
-  public LiveElasticClientResource(InvolvementHistoryService involvementHistoryService) {
-    this.involvementHistoryService = involvementHistoryService;
+  public LiveElasticClientResource(LiveElasticClientService liveElasticClientService) {
+    this.liveElasticClientService = liveElasticClientService;
   }
 
   /**
-   * Finds history of involvement by client id.
+   * Finds live Elasticsearch-like search results from a list of client ids.
    *
    * @param clientIds the clientId
    * @return the response
@@ -62,7 +61,7 @@ public class LiveElasticClientResource {
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The clients' id's") final List<String> clientIds) {
     gov.ca.cwds.rest.api.Response clients =
-        involvementHistoryService.findInvolvementHistoryByClientIds(clientIds);
+        liveElasticClientService.findInvolvementHistoryByClientIds(clientIds);
     return new ResponseConverter().withDataResponse(clients);
   }
 

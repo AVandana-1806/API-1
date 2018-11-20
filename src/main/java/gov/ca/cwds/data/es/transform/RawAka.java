@@ -17,7 +17,7 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
-public class RawAka extends ClientReference implements NeutronJdbcReader<RawAka> {
+public class RawAka extends ClientReference implements LiveElasticJdbcReader<RawAka> {
 
   private static final long serialVersionUID = 1L;
 

@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-public final class NeutronStringUtils {
+public class LiveElasticFileHelper {
 
-  private NeutronStringUtils() {
+  private LiveElasticFileHelper() {
     // static methods only
   }
 

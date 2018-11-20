@@ -1,7 +1,7 @@
 package gov.ca.cwds.data.es.transform;
 
-import static gov.ca.cwds.data.es.transform.NeutronDateTimeFormat.LEGACY_DATE_FORMAT;
-import static gov.ca.cwds.data.es.transform.NeutronDateTimeFormat.LEGACY_TIMESTAMP_FORMAT;
+import static gov.ca.cwds.data.es.transform.LiveElasticDateTimeFormat.LEGACY_DATE_FORMAT;
+import static gov.ca.cwds.data.es.transform.LiveElasticDateTimeFormat.LEGACY_TIMESTAMP_FORMAT;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,9 +15,9 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author CWDS API Team
  */
-public class NeutronDateUtils {
+public class LiveElasticDateUtils {
 
-  private NeutronDateUtils() {
+  private LiveElasticDateUtils() {
     // no-op
   }
 
@@ -34,7 +34,7 @@ public class NeutronDateUtils {
   public static Date lookBack(final Date lastRunTime) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(lastRunTime);
-    cal.add(Calendar.MINUTE, NeutronIntegerDefaults.LOOKBACK_MINUTES.getValue());
+    cal.add(Calendar.MINUTE, LiveElasticIntegerDefaults.LOOKBACK_MINUTES.getValue());
     return cal.getTime();
   }
 
@@ -82,7 +82,7 @@ public class NeutronDateUtils {
       ret = fmt.format(lookBack(date));
     } else {
       final Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.MINUTE, NeutronIntegerDefaults.LOOKBACK_MINUTES.getValue());
+      cal.add(Calendar.MINUTE, LiveElasticIntegerDefaults.LOOKBACK_MINUTES.getValue());
       ret = fmt.format(lookBack(cal.getTime()));
     }
 

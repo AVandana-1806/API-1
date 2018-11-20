@@ -15,7 +15,7 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
-public class RawCsec extends ClientReference implements NeutronJdbcReader<RawCsec> {
+public class RawCsec extends ClientReference implements LiveElasticJdbcReader<RawCsec> {
 
   private static final long serialVersionUID = 1L;
 

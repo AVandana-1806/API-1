@@ -20,17 +20,18 @@ import gov.ca.cwds.rest.services.hoi.InvolvementHistoryData;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
- * Business layer object to work on Screening History Of Involvement.
+ * Service to retrieve <strong>live</strong> client results in the exact same format as
+ * Elasticsearch query results.
  *
  * @author CWDS API Team
  */
-public class InvolvementHistoryService
+public class LiveElasticClientService
     implements TypedCrudsService<String, InvolvementHistory, Response> {
 
   @Inject
   private HOIScreeningService hoiScreeningService;
 
-  public InvolvementHistoryService() {
+  public LiveElasticClientService() {
     super();
   }
 

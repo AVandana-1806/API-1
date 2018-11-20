@@ -11,19 +11,19 @@ import org.hibernate.jdbc.Work;
  * 
  * @author CWDS API Team
  */
-public abstract class NeutronWorkTotalImpl implements NeutronWorkTotal {
+public abstract class LiveElasticWorkTotalImpl implements LiveElasticWorkTotal {
 
   private final Function<Connection, PreparedStatement> prepStmtMaker;
   private int totalProcessed = 0;
 
-  public NeutronWorkTotalImpl(Function<Connection, PreparedStatement> prepStmtMaker) {
+  public LiveElasticWorkTotalImpl(Function<Connection, PreparedStatement> prepStmtMaker) {
     this.prepStmtMaker = prepStmtMaker;
   }
 
   /**
    * {@inheritDoc}
    * 
-   * @see gov.ca.cwds.neutron.util.jdbc.NeutronWorkTotal#getTotalProcessed()
+   * @see gov.ca.cwds.LiveElasticWorkTotal.util.jdbc.NeutronWorkTotal#getTotalProcessed()
    */
   @Override
   public int getTotalProcessed() {

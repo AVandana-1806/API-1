@@ -18,7 +18,7 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
-public class RawSafetyAlert extends ClientReference implements NeutronJdbcReader<RawSafetyAlert> {
+public class RawSafetyAlert extends ClientReference implements LiveElasticJdbcReader<RawSafetyAlert> {
 
   private static final long serialVersionUID = 1L;
 

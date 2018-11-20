@@ -7,7 +7,7 @@ import org.hibernate.jdbc.Work;
  * 
  * @author CWDS API Team
  */
-public interface NeutronWorkTotal extends Work {
+public interface LiveElasticWorkTotal extends Work {
 
   int getTotalProcessed();
 

@@ -14,16 +14,20 @@ import gov.ca.cwds.data.persistence.xa.CaresWorkConnectionStealer;
 /**
  * Steal a connection from a Hibernate session and make it available to the caller.
  * 
+ * <p>
+ * Facilities direct JDBC in a Hibernate environment.
+ * </p>
+ * 
  * @author CWDS API Team
  */
-public class NeutronWorkConnectionStealer implements Work {
+public class LiveElasticWorkConnectionStealer implements Work {
 
   private Connection conn;
 
   /**
    * Constructor.
    */
-  public NeutronWorkConnectionStealer() {
+  public LiveElasticWorkConnectionStealer() {
     // default, no-op.
   }
 

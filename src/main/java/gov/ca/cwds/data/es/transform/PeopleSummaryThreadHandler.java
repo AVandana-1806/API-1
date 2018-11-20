@@ -126,7 +126,7 @@ public class PeopleSummaryThreadHandler
   }
 
   protected <T extends ClientReference> void readAny(final ResultSet rs,
-      NeutronJdbcReader<T> reader, BiConsumer<ClientReference, T> organizer, String msg) {
+      LiveElasticJdbcReader<T> reader, BiConsumer<ClientReference, T> organizer, String msg) {
     LOGGER.trace("readAny(): begin");
     int counter = 0;
     RawClient c = null;

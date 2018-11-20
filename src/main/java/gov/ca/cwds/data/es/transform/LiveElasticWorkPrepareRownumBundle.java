@@ -14,10 +14,10 @@ import java.util.function.Function;
  * 
  * @author CWDS API Team
  */
-public class WorkPrepareRownumBundle extends NeutronWorkTotalImpl {
+public class LiveElasticWorkPrepareRownumBundle extends LiveElasticWorkTotalImpl {
 
   private static final ConditionalLogger LOGGER =
-      new CaresConditionalLoggerImpl(WorkPrepareRownumBundle.class);
+      new CaresConditionalLoggerImpl(LiveElasticWorkPrepareRownumBundle.class);
 
   private final int start;
   private final int end;
@@ -29,7 +29,7 @@ public class WorkPrepareRownumBundle extends NeutronWorkTotalImpl {
    * @param end end of range
    * @param prepStmtMaker Function to produce prepared statement
    */
-  public WorkPrepareRownumBundle(int start, int end,
+  public LiveElasticWorkPrepareRownumBundle(int start, int end,
       final Function<Connection, PreparedStatement> prepStmtMaker) {
     super(prepStmtMaker);
     this.start = start;

@@ -17,7 +17,7 @@ import org.hibernate.annotations.Type;
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
 public class RawClientAddress extends ClientAddressReference
-    implements NeutronJdbcReader<RawClientAddress> {
+    implements LiveElasticJdbcReader<RawClientAddress> {
 
   private static final long serialVersionUID = 1L;
 

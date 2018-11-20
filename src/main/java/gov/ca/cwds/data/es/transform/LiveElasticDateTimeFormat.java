@@ -3,7 +3,7 @@ package gov.ca.cwds.data.es.transform;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public enum NeutronDateTimeFormat {
+public enum LiveElasticDateTimeFormat {
 
   /**
    * Date time format for last run date file.
@@ -22,7 +22,7 @@ public enum NeutronDateTimeFormat {
 
   private final String format;
 
-  private NeutronDateTimeFormat(String format) {
+  private LiveElasticDateTimeFormat(String format) {
     this.format = format;
   }
 

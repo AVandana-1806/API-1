@@ -13,7 +13,7 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
-public class RawEthnicity extends ClientReference implements NeutronJdbcReader<RawEthnicity> {
+public class RawEthnicity extends ClientReference implements LiveElasticJdbcReader<RawEthnicity> {
 
   private static final long serialVersionUID = 1L;
 

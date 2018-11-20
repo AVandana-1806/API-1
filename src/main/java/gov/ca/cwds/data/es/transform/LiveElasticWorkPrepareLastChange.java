@@ -17,10 +17,10 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author CWDS API Team
  */
-public class WorkPrepareLastChange extends NeutronWorkTotalImpl {
+public class LiveElasticWorkPrepareLastChange extends LiveElasticWorkTotalImpl {
 
   private static final ConditionalLogger LOGGER =
-      new CaresConditionalLoggerImpl(WorkPrepareLastChange.class);
+      new CaresConditionalLoggerImpl(LiveElasticWorkPrepareLastChange.class);
 
   private final Date lastRunTime;
   private final String sql;
@@ -32,7 +32,7 @@ public class WorkPrepareLastChange extends NeutronWorkTotalImpl {
    * @param sql SQL to run
    * @param prepStmtMaker Function to produce prepared statement
    */
-  public WorkPrepareLastChange(Date lastRunTime, String sql,
+  public LiveElasticWorkPrepareLastChange(Date lastRunTime, String sql,
       final Function<Connection, PreparedStatement> prepStmtMaker) {
     super(prepStmtMaker);
     this.lastRunTime = lastRunTime != null ? new Date(lastRunTime.getTime()) : null;
@@ -44,16 +44,16 @@ public class WorkPrepareLastChange extends NeutronWorkTotalImpl {
    * 
    * <p>
    * <strong>WARNING!</strong>. DB2 may not optimize a PreparedStatement the same as dynamic SQL and
-   * vice versa.
+   * vice versa, since prepared statements may use a <strong>different set of statistics!</strong>
    * </p>
    * 
    * @param con current database connection
    */
   @Override
   public void execute(Connection con) throws SQLException {
-    NeutronJdbcUtils.enableBatchSettings(con);
+    LiveElasticJdbcUtils.enableBatchSettings(con);
 
-    final String strLastRunTime = NeutronDateUtils.makeTimestampStringLookBack(lastRunTime);
+    final String strLastRunTime = LiveElasticDateUtils.makeTimestampStringLookBack(lastRunTime);
     LOGGER.info("strLastRunTime: {}", strLastRunTime);
 
     try (final PreparedStatement stmt = createPreparedStatement(con)) {

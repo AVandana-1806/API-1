@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
 @SuppressWarnings({"squid:S1206"})
-public class RawAddress extends ClientAddressReference implements NeutronJdbcReader<RawAddress> {
+public class RawAddress extends ClientAddressReference implements LiveElasticJdbcReader<RawAddress> {
 
   private static final long serialVersionUID = 1L;
 
