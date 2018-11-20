@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import gov.ca.cwds.data.std.ApiMarker;
 
 /**
- * {@link AtomLoadStepHandler} for People Summary index, initial load.
+ * Originally from Neutron/jobs {@link AtomLoadStepHandler} for People Summary index, initial load.
  * 
  * <p>
  * Loads {@link RawClient} and {@link PlacementHomeAddress}, normalizes to {@link ReplicatedClient}.
@@ -58,7 +58,7 @@ public class PeopleSummaryThreadHandler
   protected static final Logger LOGGER = LoggerFactory.getLogger(PeopleSummaryThreadHandler.class);
 
   public static final int LG_SZ = 10;
-  public static final int FULL_LOAD_SIZE = 100;
+  public static final int FULL_LOAD_SIZE = 13;
 
   protected static final int TFO = TYPE_FORWARD_ONLY;
   protected static final int CRO = CONCUR_READ_ONLY;

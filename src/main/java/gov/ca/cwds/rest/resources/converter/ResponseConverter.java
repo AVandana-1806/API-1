@@ -5,6 +5,11 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+/**
+ * This class looks important but lacks any Javadoc comment, so it has one now. :-)
+ * 
+ * @author CWDS API Team
+ */
 public class ResponseConverter {
 
   public Response withDataResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
@@ -28,15 +33,15 @@ public class ResponseConverter {
   }
 
   public Response withUpdatedResponse(gov.ca.cwds.rest.api.Response serviceResponse) {
-    return serviceResponse != null ? javax.ws.rs.core.Response.status(Status.OK)
-        .entity(serviceResponse)
-        .build() : notFound();
+    return serviceResponse != null
+        ? javax.ws.rs.core.Response.status(Status.OK).entity(serviceResponse).build()
+        : notFound();
   }
 
   public Response withCreatedResponse(List<gov.ca.cwds.rest.api.Response> serviceResponse) {
-    return serviceResponse != null ? javax.ws.rs.core.Response.status(Response.Status.CREATED)
-        .entity(serviceResponse)
-        .build() : notFound();
+    return serviceResponse != null
+        ? javax.ws.rs.core.Response.status(Response.Status.CREATED).entity(serviceResponse).build()
+        : notFound();
   }
 
   private Response notFound() {

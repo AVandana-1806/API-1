@@ -153,7 +153,7 @@ public class HOIScreeningService
     fetchDataFromCMS(hoiScreeningData);
   }
 
-  void fetchDataFromCMS(HOIScreeningData hsd) {
+  public void fetchDataFromCMS(HOIScreeningData hsd) {
     hsd.setStaffPersonMap(staffPersonDao.findByIds(hsd.getAssigneeStaffIds()));
   }
 

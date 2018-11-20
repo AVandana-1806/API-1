@@ -1,15 +1,16 @@
 package gov.ca.cwds.rest.services.hoi;
 
-import gov.ca.cwds.data.persistence.cms.StaffPerson;
-import gov.ca.cwds.data.persistence.ns.IntakeLOVCodeEntity;
-import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
-import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-class HOIScreeningData {
+import gov.ca.cwds.data.persistence.cms.StaffPerson;
+import gov.ca.cwds.data.persistence.ns.IntakeLOVCodeEntity;
+import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
+
+public class HOIScreeningData {
 
   private Collection<String> clientIds;
 
@@ -23,54 +24,54 @@ class HOIScreeningData {
 
   private Map<String, StaffPerson> staffPersonMap;
 
-  HOIScreeningData(Collection<String> clientIds) {
+  public HOIScreeningData(Collection<String> clientIds) {
     this.clientIds = clientIds;
   }
 
-  Collection<String> getClientIds() {
+  public Collection<String> getClientIds() {
     return clientIds;
   }
 
-  void setClientIds(Collection<String> clientIds) {
+  public void setClientIds(Collection<String> clientIds) {
     this.clientIds = clientIds;
   }
 
-  Set<ScreeningEntity> getScreeningEntities() {
+  public Set<ScreeningEntity> getScreeningEntities() {
     return screeningEntities;
   }
 
-  Map<String, IntakeLOVCodeEntity> getCountyIntakeLOVCodeEntityMap() {
+  public Map<String, IntakeLOVCodeEntity> getCountyIntakeLOVCodeEntityMap() {
     return countyIntakeLOVCodeEntityMap;
   }
 
-  void setCountyIntakeLOVCodeEntityMap(
+  public void setCountyIntakeLOVCodeEntityMap(
       Map<String, IntakeLOVCodeEntity> countyIntakeLOVCodeEntityMap) {
     this.countyIntakeLOVCodeEntityMap = countyIntakeLOVCodeEntityMap;
   }
 
-  Map<String, LegacyDescriptorEntity> getParticipantLegacyDescriptors() {
+  public Map<String, LegacyDescriptorEntity> getParticipantLegacyDescriptors() {
     return participantLegacyDescriptors;
   }
 
-  void setParticipantLegacyDescriptors(
+  public void setParticipantLegacyDescriptors(
       Map<String, LegacyDescriptorEntity> participantLegacyDescriptors) {
     this.participantLegacyDescriptors = participantLegacyDescriptors;
   }
 
-  Collection<String> getAssigneeStaffIds() {
+  public Collection<String> getAssigneeStaffIds() {
     return assigneeStaffIds;
   }
 
-  void setAssigneeStaffIds(Collection<String> assigneeStaffIds) {
+  public void setAssigneeStaffIds(Collection<String> assigneeStaffIds) {
     this.assigneeStaffIds = assigneeStaffIds;
   }
 
-  Map<String, StaffPerson> getStaffPersonMap() {
+  public Map<String, StaffPerson> getStaffPersonMap() {
     return staffPersonMap;
   }
 
-  void setStaffPersonMap(
-      Map<String, StaffPerson> staffPersonMap) {
+  public void setStaffPersonMap(Map<String, StaffPerson> staffPersonMap) {
     this.staffPersonMap = staffPersonMap;
   }
+
 }

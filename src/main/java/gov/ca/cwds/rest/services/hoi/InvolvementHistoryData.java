@@ -9,7 +9,12 @@ import gov.ca.cwds.rest.api.domain.hoi.HOICase;
 import gov.ca.cwds.rest.api.domain.hoi.HOIReferral;
 import gov.ca.cwds.rest.api.domain.hoi.HOIScreening;
 
-class InvolvementHistoryData {
+/**
+ * This class looks important but lacks any Javadoc comment, so it has one now. :-)
+ * 
+ * @author CWDS API Team
+ */
+public class InvolvementHistoryData {
 
   private String screeningId = null;
 
@@ -21,44 +26,44 @@ class InvolvementHistoryData {
 
   private List<HOIReferral> hoiReferrals = new ArrayList<>();
 
-  InvolvementHistoryData(String screeningId) {
+  public InvolvementHistoryData(String screeningId) {
     this.screeningId = screeningId;
     this.hoiScreeningData = new HOIScreeningData(new HashSet<>());
   }
 
-  InvolvementHistoryData(Collection<String> clientIds) {
+  public InvolvementHistoryData(Collection<String> clientIds) {
     this.hoiScreeningData = new HOIScreeningData(clientIds);
   }
 
-  String getScreeningId() {
+  public String getScreeningId() {
     return screeningId;
   }
 
-  HOIScreeningData getHoiScreeningData() {
+  public HOIScreeningData getHoiScreeningData() {
     return hoiScreeningData;
   }
 
-  List<HOIScreening> getHoiScreenings() {
+  public List<HOIScreening> getHoiScreenings() {
     return hoiScreenings;
   }
 
-  void setHoiScreenings(List<HOIScreening> hoiScreenings) {
+  public void setHoiScreenings(List<HOIScreening> hoiScreenings) {
     this.hoiScreenings = hoiScreenings;
   }
 
-  List<HOICase> getHoiCases() {
+  public List<HOICase> getHoiCases() {
     return hoiCases;
   }
 
-  void setHoiCases(List<HOICase> hoiCases) {
+  public void setHoiCases(List<HOICase> hoiCases) {
     this.hoiCases = hoiCases;
   }
 
-  List<HOIReferral> getHoiReferrals() {
+  public List<HOIReferral> getHoiReferrals() {
     return hoiReferrals;
   }
 
-  void setHoiReferrals(List<HOIReferral> hoiReferrals) {
+  public void setHoiReferrals(List<HOIReferral> hoiReferrals) {
     this.hoiReferrals = hoiReferrals;
   }
 
