@@ -91,7 +91,7 @@ public class LiveElasticClientResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
-  @ApiOperation(value = "Find history of involvement by client id's",
+  @ApiOperation(value = "Find live Elasticsearch results by client ids",
       response = LiveElasticClientResponse.class)
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The id's of the clients") final List<String> clientIds) {
