@@ -151,8 +151,11 @@ public class ResourcesModule extends AbstractModule {
   @Override
   protected void configure() {
     LOGGER.info("configure: start");
+
     bind(ApplicationResource.class);
     bind(SwaggerResource.class);
+
+    bind(LiveElasticClientResource.class);
     bind(AddressResource.class);
     bind(ParticipantResource.class);
     bind(PersonResource.class);
@@ -188,7 +191,7 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ContactIntakeResource.class);
     bind(IntakeLovResource.class);
-    bind(LiveElasticClientResource.class);
+
     LOGGER.info("configure: done");
   }
 

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.ReportingDomain;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 
@@ -18,7 +19,7 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel
 @JsonSnakeCase
-public class LiveElasticClientResponse implements Response {
+public class LiveElasticClientResponse extends ReportingDomain implements Response {
 
   /**
    * Base serialization version. Increment by class version.

@@ -1,6 +1,5 @@
 package gov.ca.cwds.data.es.transform;
 
-import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CLIENT;
 
 import java.util.List;
@@ -11,15 +10,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.inject.LiveElasticClientServiceResource;
 import gov.ca.cwds.rest.resources.TypedResourceDelegate;
-import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -91,16 +86,15 @@ public class LiveElasticClientResource {
    * @param clientIds client id list
    * @return the response
    */
-  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @GET
   @Path("/live_elastic_client")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
-  @ApiOperation(value = "Find live Elasticsearch person documents by client ids",
+  @ApiOperation(value = "Find history of involvement by client id's",
       response = LiveElasticClientResponse.class)
-  public Response get(@QueryParam("clientIds") @ApiParam(required = true, name = "clientIds",
-      value = "The client ids") final List<String> clientIds) {
+  public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
+      name = "clientIds", value = "The id's of the clients") final List<String> clientIds) {
     return resourceDelegate.get(clientIds.toArray(new String[0]));
   }
 

@@ -55,7 +55,7 @@ public class HoiUsingClientIdResource {
   /**
    * Finds history of involvement by client id.
    *
-   * @param clientIds the clientId
+   * @param clientIds list of client id's
    * @return the response
    */
   @GET

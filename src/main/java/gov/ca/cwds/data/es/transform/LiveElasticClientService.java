@@ -1,11 +1,15 @@
 package gov.ca.cwds.data.es.transform;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.TypedCrudsService;
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * Business service for live Elasticsearch client.
@@ -29,6 +33,7 @@ public class LiveElasticClientService
     return handleFind(req.getClientIds().toArray(new String[0]));
   }
 
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @Override
   protected LiveElasticClientResponse handleFind(String[] key) {
     // TODO: call LiveElasticClientHandler
