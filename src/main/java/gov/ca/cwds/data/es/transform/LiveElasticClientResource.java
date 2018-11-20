@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.rest.api.domain.hoi.InvolvementHistory;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,7 +56,7 @@ public class LiveElasticClientResource {
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
   @ApiOperation(value = "Find 'live' Elasticsearch person documents by client id's",
-      response = InvolvementHistory.class)
+      response = LiveElasticClientResponse.class)
   public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The clients' id's") final List<String> clientIds) {
     gov.ca.cwds.rest.api.Response clients = null;

@@ -3,8 +3,6 @@ package gov.ca.cwds.data.es.transform;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
-import gov.ca.cwds.rest.api.domain.cms.LegacyKeyRequest;
-import gov.ca.cwds.rest.api.domain.cms.LegacyKeyResponse;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 
 /**
@@ -13,7 +11,7 @@ import gov.ca.cwds.rest.resources.SimpleResourceService;
  * @author CWDS API Team
  */
 public class LiveElasticClientService
-    extends SimpleResourceService<String, LegacyKeyRequest, LegacyKeyResponse> {
+    extends SimpleResourceService<String, LiveElasticClientRequest, LiveElasticClientResponse> {
 
   /**
    * Constructor
@@ -24,13 +22,13 @@ public class LiveElasticClientService
   }
 
   @Override
-  protected LegacyKeyResponse handleRequest(LegacyKeyRequest req) {
+  protected LiveElasticClientResponse handleRequest(LiveElasticClientRequest req) {
     return handleFind(req.getLegacyKey());
   }
 
   @Override
-  protected LegacyKeyResponse handleFind(String key) {
-    return new LegacyKeyResponse(CmsKeyIdGenerator.getUIIdentifierFromKey(key));
+  protected LiveElasticClientResponse handleFind(String key) {
+    return new LiveElasticClientResponse(CmsKeyIdGenerator.getUIIdentifierFromKey(key));
   }
 
 }
