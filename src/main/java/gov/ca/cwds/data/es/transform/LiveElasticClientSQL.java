@@ -3,7 +3,7 @@ package gov.ca.cwds.data.es.transform;
 import gov.ca.cwds.data.std.ApiMarker;
 
 @SuppressWarnings({"squid:S1192", "findbugs:HSC_HUGE_SHARED_STRING_CONSTANT"})
-public class LiveElasticClientSQLResource implements ApiMarker {
+public class LiveElasticClientSQL implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
 

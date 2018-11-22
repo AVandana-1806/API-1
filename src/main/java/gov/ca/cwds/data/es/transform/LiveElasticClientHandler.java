@@ -1,17 +1,17 @@
 package gov.ca.cwds.data.es.transform;
 
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.INS_CLI_DUMMY;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.INS_CLI_LST_CHG;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_ADDR;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_AKA;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_CASE;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_CLI;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_CLI_ADDR;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_CLI_COUNTY;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_CSEC;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_ETHNIC;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_PLACE_ADDR;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQLResource.SEL_SAFETY;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.INS_CLI_DUMMY;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.INS_CLI_LST_CHG;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_ADDR;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_AKA;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CASE;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI_ADDR;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI_COUNTY;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CSEC;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_ETHNIC;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_PLACE_ADDR;
+import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_SAFETY;
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
 import static java.sql.ResultSet.TYPE_FORWARD_ONLY;
 
