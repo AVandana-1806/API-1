@@ -11,21 +11,15 @@ public class LiveElasticClientSQL implements ApiMarker {
   // Search, the next generation.
   // =================================
 
-  public static final String KEY_SOURCE = "FROM GT_ID   gt \n";
-
   //@formatter:off
-  public static final String SEL_OPTIMIZE =
-        "OPTIMIZE FOR 1000 ROWS \n"
-      + "FOR READ ONLY WITH UR ";
+  public static final String KEY_SOURCE = 
+      " IN (?) \n";
   //@formatter:on
 
   //@formatter:off
-  public static final String INS_CLI_RNG =
-        "INSERT INTO GT_ID (IDENTIFIER) \n"
-      + "SELECT x.IDENTIFIER \n"
-      + "FROM CLIENT_T x \n"
-      + "WHERE X.IDENTIFIER BETWEEN ? AND ? \n"
-      + "AND x.IBMSNAP_OPERATION IN ('I','U')";
+  public static final String SEL_OPTIMIZE =
+        "OPTIMIZE FOR 100 ROWS \n"
+      + "FOR READ ONLY WITH UR ";
   //@formatter:on
 
   /**
@@ -106,18 +100,16 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    clt.TRBA_CLT_B        AS CLT_TRBA_CLT_B, \n"
       + "    clt.TR_MBVRT_B        AS CLT_TR_MBVRT_B, \n"
       + "    clt.UNEMPLY_CD        AS CLT_UNEMPLY_CD, \n"
-      + "    clt.ZIPPY_IND         AS CLT_ZIPPY_IND, \n"
-      + "    clt.IBMSNAP_LOGMARKER AS CLT_IBMSNAP_LOGMARKER, \n"
-      + "    clt.IBMSNAP_OPERATION AS CLT_IBMSNAP_OPERATION \n"
-      + KEY_SOURCE
-      + "JOIN  CLIENT_T  clt ON clt.IDENTIFIER = gt.IDENTIFIER \n"
+      + "    clt.ZIPPY_IND         AS CLT_ZIPPY_IND \n"
+      + "FROM CLIENT_T clt \n"
+      + "WHERE clt.IDENTIFIER " + KEY_SOURCE
       + SEL_OPTIMIZE;
   //@formatter:on
 
   public static final String SEL_CLI_ADDR =
   //@formatter:off
         "SELECT \n"
-      + "     gt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
+      + "    cla.FKCLIENT_T        AS CLT_IDENTIFIER, \n"
       + "    cla.IDENTIFIER        AS CLA_IDENTIFIER, \n"
       + "    cla.LST_UPD_ID        AS CLA_LST_UPD_ID, \n"
       + "    cla.LST_UPD_TS        AS CLA_LST_UPD_TS, \n"
@@ -128,22 +120,18 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    cla.FKADDRS_T         AS CLA_FKADDRS_T, \n"
       + "    cla.FKCLIENT_T        AS CLA_FKCLIENT_T, \n"
       + "    cla.FKREFERL_T        AS CLA_FKREFERL_T, \n"
-      + "    cla.HOMLES_IND        AS CLA_HOMLES_IND, \n"
-      + "    cla.IBMSNAP_LOGMARKER AS CLA_IBMSNAP_LOGMARKER, \n"
-      + "    cla.IBMSNAP_OPERATION AS CLA_IBMSNAP_OPERATION \n"
-      + KEY_SOURCE
-      + "JOIN CL_ADDRT  cla ON  gt.IDENTIFIER = cla.FKCLIENT_T \n"
-      + "JOIN ADDRS_T   adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
-      + "WHERE cla.EFF_END_DT IS NULL \n"
-      + "  AND cla.IBMSNAP_OPERATION IN ('I','U') \n"
-      + "  AND adr.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    cla.HOMLES_IND        AS CLA_HOMLES_IND \n"
+      + "FROM CL_ADDRT cla \n"
+      + "JOIN ADDRS_T  adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
+      + "WHERE cla.FKCLIENT_T " + KEY_SOURCE
+      + "  AND cla.EFF_END_DT IS NULL \n"
       + SEL_OPTIMIZE;
   //@formatter:on
 
   //@formatter:off
   public static final String SEL_ADDR =
         "SELECT \n"
-      + "     gt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
+      + "    cla.FKCLIENT_T        AS CLT_IDENTIFIER, \n"
       + "    cla.IDENTIFIER        AS CLA_IDENTIFIER, \n"
       + "    adr.IDENTIFIER        AS ADR_IDENTIFIER, \n"
       + "    adr.LST_UPD_ID        AS ADR_LST_UPD_ID, \n"
@@ -168,15 +156,11 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    adr.UNT_DSGC          AS ADR_UNT_DSGC, \n"
       + "    TRIM(adr.UNIT_NO)     AS ADR_UNIT_NO, \n"
       + "    TRIM(adr.ZIP_NO)      AS ADR_ZIP_NO, \n"
-      + "    adr.ZIP_SFX_NO        AS ADR_ZIP_SFX_NO, \n"
-      + "    adr.IBMSNAP_LOGMARKER AS ADR_IBMSNAP_LOGMARKER, \n"
-      + "    adr.IBMSNAP_OPERATION AS ADR_IBMSNAP_OPERATION \n"
-      + KEY_SOURCE
-      + "JOIN CL_ADDRT  cla ON  gt.IDENTIFIER = cla.FKCLIENT_T \n"
-      + "JOIN ADDRS_T   adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
-      + "WHERE cla.EFF_END_DT IS NULL \n"
-      + "  AND cla.IBMSNAP_OPERATION IN ('I','U') \n"
-      + "  AND adr.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    adr.ZIP_SFX_NO        AS ADR_ZIP_SFX_NO \n"
+      + "FROM CL_ADDRT cla \n"
+      + "JOIN ADDRS_T  adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
+      + "WHERE cla.FKCLIENT_T " + KEY_SOURCE
+      + "  AND cla.EFF_END_DT IS NULL \n"
       + SEL_OPTIMIZE;
   //@formatter:on
 
@@ -188,8 +172,8 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    clc.LST_UPD_TS        AS CLC_LST_UPD_TS, \n"
       + "    clc.LST_UPD_OP        AS CLC_LST_UPD_OP, \n"
       + "    clc.CNTY_RULE         AS CLC_CNTY_RULE \n"
-      + KEY_SOURCE
-      + "JOIN CLIENT_CNTY clc ON gt.IDENTIFIER = clc.CLIENT_ID \n"
+      + "FROM CLIENT_CNTY clc \n"
+      + "WHERE clc.CLIENT_ID " + KEY_SOURCE
       + SEL_OPTIMIZE;
   //@formatter:on
 
@@ -198,13 +182,10 @@ public class LiveElasticClientSQL implements ApiMarker {
         "SELECT \n"
       + "    cas.FKCHLD_CLT        AS CLT_IDENTIFIER, \n"
       + "    cas.IDENTIFIER        AS CAS_IDENTIFIER, \n"
-      + "    cas.RSP_AGY_CD        AS CAS_RSP_AGY_CD, \n"
-      + "    cas.IBMSNAP_OPERATION AS CAS_IBMSNAP_OPERATION, \n"
-      + "    cas.IBMSNAP_LOGMARKER AS CAS_IBMSNAP_LOGMARKER \n"
-      + KEY_SOURCE
-      + "JOIN CASE_T cas ON cas.FKCHLD_CLT = gt.IDENTIFIER  \n"
-      + "WHERE cas.END_DT IS NULL \n"
-      + "  AND cas.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    cas.RSP_AGY_CD        AS CAS_RSP_AGY_CD \n"
+      + "FROM CASE_T cas \n"
+      + "WHERE cas.FKCHLD_CLT " + KEY_SOURCE
+      + "  AND cas.END_DT IS NULL \n"
       + SEL_OPTIMIZE;
   //@formatter:on
 
@@ -217,34 +198,28 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    csh.START_DT          AS CSH_START_DT, \n"
       + "    csh.END_DT            AS CSH_END_DT, \n"
       + "    csh.LST_UPD_ID        AS CSH_LST_UPD_ID, \n"
-      + "    csh.LST_UPD_TS        AS CSH_LST_UPD_TS, \n"
-      + "    csh.IBMSNAP_OPERATION AS CSH_IBMSNAP_OPERATION, \n"
-      + "    csh.IBMSNAP_LOGMARKER AS CSH_IBMSNAP_LOGMARKER \n"
-      + KEY_SOURCE
-      + "JOIN CSECHIST csh ON csh.FKCHLD_CLT = gt.IDENTIFIER  \n"
-      + "WHERE csh.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    csh.LST_UPD_TS        AS CSH_LST_UPD_TS \n"
+      + "FROM CSECHIST csh \n"
+      + "WHERE csh.FKCHLD_CLT " + KEY_SOURCE
       + SEL_OPTIMIZE;
   //@formatter:on
 
   //@formatter:off
   public static final String SEL_ETHNIC =
         "SELECT \n"
-      + "     gt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
+      + "    eth.FKCHLD_CLT        AS CLT_IDENTIFIER, \n"
       + "    eth.IDENTIFIER        AS ETH_IDENTIFIER, \n"
-      + "    eth.ETHNCTYC          AS ETHNICITY_CODE, \n"
-      + "    eth.IBMSNAP_LOGMARKER AS ETH_IBMSNAP_LOGMARKER, \n"
-      + "    eth.IBMSNAP_OPERATION AS ETH_IBMSNAP_OPERATION \n"
-      + KEY_SOURCE
-      + "JOIN CLSCP_ET eth ON gt.IDENTIFIER = eth.ESTBLSH_ID  \n"
+      + "    eth.ETHNCTYC          AS ETHNICITY_CODE \n"
+      + "FROM CLSCP_ET eth \n"
+      + "WHERE eth.FKCHLD_CLT " + KEY_SOURCE
       + "WHERE eth.ESTBLSH_CD = 'C' \n"
-      + "  AND eth.IBMSNAP_OPERATION IN ('I','U') \n"
       + SEL_OPTIMIZE;
   //@formatter:on
 
   //@formatter:off
   public static final String SEL_AKA =
         "SELECT \n"
-      + "     gt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
+      + "    onm.FKCLIENT_T        AS CLT_IDENTIFIER, \n"
       + "    onm.THIRD_ID          AS ONM_THIRD_ID, \n"
       + "    onm.FIRST_NM          AS ONM_FIRST_NM, \n"
       + "    onm.LAST_NM           AS ONM_LAST_NM, \n"
@@ -253,19 +228,16 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    onm.NAME_TPC          AS ONM_NAME_TPC, \n"
       + "    onm.SUFX_TLDSC        AS ONM_SUFX_TLDSC, \n"
       + "    onm.LST_UPD_ID        AS ONM_LST_UPD_ID, \n"
-      + "    onm.LST_UPD_TS        AS ONM_LST_UPD_TS, \n"
-      + "    onm.IBMSNAP_OPERATION AS ONM_IBMSNAP_OPERATION, \n"
-      + "    onm.IBMSNAP_LOGMARKER AS ONM_IBMSNAP_LOGMARKER \n"
-      + KEY_SOURCE
-      + "JOIN OCL_NM_T onm ON onm.FKCLIENT_T = gt.IDENTIFIER \n"
-      + "WHERE onm.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    onm.LST_UPD_TS        AS ONM_LST_UPD_TS \n"
+      + "FROM OCL_NM_T onm \n"
+      + "WHERE onm.FKCLIENT_T " + KEY_SOURCE
       + SEL_OPTIMIZE;
   //@formatter:on
 
   //@formatter:off
   public static final String SEL_SAFETY =
         "SELECT \n"
-      + "     gt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
+      + "    sal.FKCLIENT_T        AS CLT_IDENTIFIER, \n"
       + "    sal.THIRD_ID          AS SAL_THIRD_ID, \n"
       + "    sal.ACTV_RNC          AS SAL_ACTV_RNC, \n"
       + "    sal.ACTV_DT           AS SAL_ACTV_DT, \n"
@@ -275,12 +247,9 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    sal.DACT_GEC          AS SAL_DACT_GEC, \n"
       + "    sal.DACT_TXT          AS SAL_DACT_TXT, \n"
       + "    sal.LST_UPD_ID        AS SAL_LST_UPD_ID, \n"
-      + "    sal.LST_UPD_TS        AS SAL_LST_UPD_TS, \n"
-      + "    sal.IBMSNAP_LOGMARKER AS SAL_IBMSNAP_LOGMARKER, \n"
-      + "    sal.IBMSNAP_OPERATION AS SAL_IBMSNAP_OPERATION \n"
-      + KEY_SOURCE
-      + "JOIN SAF_ALRT sal ON sal.FKCLIENT_T = gt.IDENTIFIER \n"
-      + "WHERE sal.IBMSNAP_OPERATION IN ('I','U') \n"
+      + "    sal.LST_UPD_TS        AS SAL_LST_UPD_TS \n"
+      + "FROM SAF_ALRT sal \n"
+      + "WHERE sal.FKCLIENT_T " + KEY_SOURCE
       + SEL_OPTIMIZE;
   //@formatter:on
 
@@ -294,14 +263,11 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "     ph.IDENTIFIER     AS PH_ID, \n"
       + "     CURRENT TIMESTAMP AS MATERIALIZE_ME, \n"
       + "     DENSE_RANK() OVER (PARTITION BY pe.FKCLIENT_T ORDER BY ohp.START_DT, ohp.END_DT) AS RN \n"
-      + KEY_SOURCE
       + "   JOIN PLC_EPST pe  ON gt.IDENTIFIER  = pe.FKCLIENT_T \n"
       + "   JOIN O_HM_PLT ohp ON ohp.FKPLC_EPS0 = pe.THIRD_ID AND ohp.FKPLC_EPST = pe.FKCLIENT_T \n"
       + "   JOIN PLC_HM_T ph  ON ph.IDENTIFIER  = ohp.FKPLC_HM_T \n"
-      + "   WHERE DATE('LAST_RUN_END') BETWEEN OHP.START_DT AND NVL(OHP.END_DT, DATE('LAST_RUN_END')) \n"
-      + "     AND pe.IBMSNAP_OPERATION  IN ('I','U') \n"
-      + "     AND ohp.IBMSNAP_OPERATION IN ('I','U') \n"
-      + "     AND ph.IBMSNAP_OPERATION  IN ('I','U') \n"
+      + "   WHERE pe.FKCLIENT_T " + KEY_SOURCE
+      + "     AND DATE('LAST_RUN_END') BETWEEN OHP.START_DT AND NVL(OHP.END_DT, DATE('LAST_RUN_END')) \n"
       + "), \n"
       + "STEP2 AS ( \n"
       + "   SELECT DISTINCT s1.FKCLIENT_T, s1.THIRD_ID, s1.OHP_ID, s1.PH_ID \n"
@@ -332,87 +298,5 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "JOIN PLC_HM_T ph  ON  ph.IDENTIFIER = s2.PH_ID \n"
       + SEL_OPTIMIZE;
   //@formatter:on
-
-  //@formatter:off
-  public static final String INS_CLI_DUMMY =
-        "INSERT INTO GT_ID (IDENTIFIER) \n" 
-      + "SELECT '1234567abc' FROM SYSIBM.SYSDUMMY1 X WHERE 1=2";
-  //@formatter:on
-
-  //@formatter:off
-  public static final String INS_PLACE_CLI_FULL =
-        "INSERT INTO GT_ID (IDENTIFIER) \n" 
-      + "SELECT DISTINCT pe.FKCLIENT_T \n"
-      + "FROM PLC_EPST pe \n" 
-      + "WHERE pe.FKCLIENT_T BETWEEN ? AND ? AND pe.IBMSNAP_OPERATION IN ('I','U')";
-  //@formatter:on
-
-  //@formatter:off
-  public static final String BASE_CLI_IDS_LST_CHG =
-        "SELECT DISTINCT x.CLIENT_ID FROM ( \n"
-      + " SELECT s1.CLIENT_ID FROM ( \n"
-      + "      SELECT CLT.IDENTIFIER AS CLIENT_ID \n"
-      + "      FROM CLIENT_T clt \n"
-      + "      WHERE CLT.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT cla.FKCLIENT_T AS CLIENT_ID \n"
-      + "      FROM CL_ADDRT cla \n"
-      + "      WHERE CLA.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT cla.FKCLIENT_T AS CLIENT_ID \n"
-      + "      FROM CL_ADDRT cla \n"
-      + "      JOIN ADDRS_T  adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
-      + "      WHERE ADR.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT eth.ESTBLSH_ID AS CLIENT_ID \n"
-      + "      FROM CLSCP_ET eth \n"
-      + "      WHERE ETH.ESTBLSH_CD = 'C' \n"
-      + "      AND ETH.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT cc.CLIENT_ID\n"
-      + "      FROM CLIENT_CNTY cc\n"
-      + "      WHERE cc.LST_UPD_TS BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END'\n"
-      + "  UNION ALL SELECT sal.FKCLIENT_T AS CLIENT_ID\n"
-      + "      FROM SAF_ALRT sal\n"
-      + "      WHERE sal.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END'\n"
-      + "  UNION ALL SELECT csh.FKCHLD_CLT AS CLIENT_ID\n"
-      + "      FROM CSECHIST csh\n"
-      + "      WHERE csh.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END'\n"
-      + "  UNION ALL SELECT cas.FKCHLD_CLT AS CLIENT_ID\n"
-      + "      FROM CASE_T cas\n"
-      + "      WHERE cas.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END'\n"
-      + "  UNION ALL SELECT onm.FKCLIENT_T AS CLIENT_ID\n"
-      + "      FROM OCL_NM_T onm\n"
-      + "      WHERE onm.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END'\n"
-      + " ) s1 \n"
-      + " UNION ALL \n"
-      + " SELECT s2.CLIENT_ID FROM ( \n"
-      + "      SELECT pe.FKCLIENT_T AS CLIENT_ID \n"
-      + "      FROM PLC_EPST pe \n"
-      + "      WHERE pe.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT ohp.FKPLC_EPST AS CLIENT_ID \n"
-      + "      FROM O_HM_PLT ohp \n"
-      + "      JOIN PLC_HM_T ph ON ph.IDENTIFIER = ohp.FKPLC_HM_T \n"
-      + "      WHERE ph.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "      AND DATE('LAST_RUN_END') BETWEEN OHP.START_DT AND NVL(OHP.END_DT, DATE('LAST_RUN_END')) \n"
-      + "  UNION ALL SELECT ohp.FKPLC_EPST AS CLIENT_ID \n"
-      + "      FROM O_HM_PLT ohp \n"
-      + "      WHERE ohp.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + "  UNION ALL SELECT csh.FKCHLD_CLT AS CLIENT_ID \n"
-      + "      FROM CSECHIST csh \n"
-      + "      WHERE csh.IBMSNAP_LOGMARKER BETWEEN 'LAST_RUN_START' AND 'LAST_RUN_END' \n"
-      + " ) s2 \n"
-      + ") x \n";
-  //@formatter:on
-
-  //@formatter:off
-  public static final String SEL_CLI_IDS_LST_CHG =
-        BASE_CLI_IDS_LST_CHG
-      + SEL_OPTIMIZE;
-  //@formatter:on
-
-  //@formatter:off
-  public static final String INS_CLI_LST_CHG =
-        "INSERT INTO GT_ID (IDENTIFIER) \n"
-      + BASE_CLI_IDS_LST_CHG;
-  //@formatter:on
-
-  public static final String INS_LST_CHG_KEY_BUNDLE = "INSERT INTO GT_ID (IDENTIFIER) VALUES (?)";
 
 }

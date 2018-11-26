@@ -1,7 +1,5 @@
 package gov.ca.cwds.data.es.transform;
 
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.INS_CLI_DUMMY;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.INS_CLI_LST_CHG;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_ADDR;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_AKA;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CASE;
@@ -390,8 +388,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   @Override
   public void handleSecondaryJdbc(Connection con, Pair<String, String> range) throws SQLException {
     LOGGER.trace("handleSecondaryJdbc(): begin");
-    try (final PreparedStatement stmtInsClient = con.prepareStatement(INS_CLI_LST_CHG);
-        final PreparedStatement stmtInsClientPlaceHome = con.prepareStatement(INS_CLI_DUMMY);
+    try (
         final PreparedStatement stmtSelPlacementAddress =
             con.prepareStatement(SEL_PLACE_ADDR, TFO, CRO);
         final PreparedStatement stmtSelClient = con.prepareStatement(SEL_CLI, TFO, CRO);
@@ -404,9 +401,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         final PreparedStatement stmtSelEthnicity = con.prepareStatement(SEL_ETHNIC, TFO, CRO);
         final PreparedStatement stmtSelSafety = con.prepareStatement(SEL_SAFETY, TFO, CRO)) {
 
-      // Client keys for this bundle.
-      loadClientRange(con, stmtInsClient, range);
-
       LOGGER.info("Read client");
       read(stmtSelClient, rs -> readClient(rs));
 
@@ -417,7 +411,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       LOGGER.info("Read address");
       read(stmtSelAddress, rs -> readAddress(rs));
 
-      loadClientRange(con, stmtInsClient, range); // Set bundle client keys again.
       LOGGER.info("Read client county");
       read(stmtSelCliCnty, rs -> readClientCounty(rs));
 
@@ -436,10 +429,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       LOGGER.info("Read safety alert");
       read(stmtSelSafety, rs -> readSafetyAlert(rs));
       con.commit(); // free db resources again
-
-      LOGGER.info("Insert placement home clients");
-      loadClientRange(con, stmtInsClient, range);
-      prepPlacementClients(stmtInsClientPlaceHome, range);
 
       LOGGER.info("Read placement home address");
       readPlacementAddress(stmtSelPlacementAddress);
