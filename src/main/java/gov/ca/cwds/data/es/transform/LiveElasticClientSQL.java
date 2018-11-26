@@ -212,7 +212,7 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "    eth.ETHNCTYC          AS ETHNICITY_CODE \n"
       + "FROM CLSCP_ET eth \n"
       + "WHERE eth.FKCHLD_CLT " + KEY_SOURCE
-      + "WHERE eth.ESTBLSH_CD = 'C' \n"
+      + "  AND eth.ESTBLSH_CD = 'C' \n"
       + SEL_OPTIMIZE;
   //@formatter:on
 
