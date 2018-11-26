@@ -18,11 +18,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   protected static final Logger LOGGER = LoggerFactory.getLogger(LiveElasticClientHandler.class);
 
   public static final int LG_SZ = 10;
-  public static final int FULL_LOAD_SIZE = 13;
+  public static final int LOAD_SIZE = 13;
 
   protected static final int TFO = TYPE_FORWARD_ONLY;
   protected static final int CRO = CONCUR_READ_ONLY;
@@ -71,11 +70,11 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    */
   protected static final int FETCH_SIZE = 500;
 
-  private final CaresInterruptibleOperation rocket;
+  protected final CaresInterruptibleOperation interruptible;
+
+  protected final String[] keyList;
 
   protected boolean doneHandlerRetrieve = false;
-
-  protected transient Set<String> deletionResults = new HashSet<>();
 
   /**
    * key = client id. Single thread, non-thread-safe containers OK.
@@ -85,15 +84,16 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   /**
    * key = client id. Single thread, non-thread-safe containers OK.
    */
-  protected transient Map<String, RawClient> rawClients = new HashMap<>(FULL_LOAD_SIZE);
+  protected transient Map<String, RawClient> rawClients = new HashMap<>(LOAD_SIZE);
 
   /**
    * key = client id. Single thread, non-thread-safe containers OK.
    */
-  protected transient Map<String, ReplicatedClient> normalized = new HashMap<>(FULL_LOAD_SIZE);
+  protected transient Map<String, ReplicatedClient> normalized = new HashMap<>(LOAD_SIZE);
 
-  public LiveElasticClientHandler(CaresInterruptibleOperation rocket) {
-    this.rocket = rocket;
+  public LiveElasticClientHandler(CaresInterruptibleOperation interruptible, String[] keyList) {
+    this.interruptible = interruptible;
+    this.keyList = keyList;
   }
 
   // =================================
@@ -130,7 +130,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     T t;
 
     try {
-      while (rocket.isRunning() && rs.next() && (t = reader.read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (t = reader.read(rs)) != null) {
         // Find associated raw client, if any, and link.
         c = rawClients.get(t.getCltId());
         organizer.accept(c, t);
@@ -149,7 +149,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClient c = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (c = new RawClient().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (c = new RawClient().read(rs)) != null) {
         rawClients.put(c.getCltId(), c);
         CaresLog.logEvery(LOGGER, LG_SZ, ++counter, "read", "client");
       }
@@ -157,7 +157,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} client records.", counter);
+    LOGGER.debug("Fetched{} client records.", counter);
   }
 
   protected void readClientAddress(final ResultSet rs) {
@@ -167,7 +167,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClientAddress cla = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (cla = new RawClientAddress().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next()
+          && (cla = new RawClientAddress().read(rs)) != null) {
         c = rawClients.get(cla.getCltId());
         if (c != null) {
           c.addClientAddress(cla);
@@ -180,7 +181,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT ADDRESS! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} client address records.", counter);
+    LOGGER.debug("Fetched{} client address records.", counter);
   }
 
   protected void readAddress(final ResultSet rs) {
@@ -190,7 +191,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClient c = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (adr = new RawAddress().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (adr = new RawAddress().read(rs)) != null) {
         c = rawClients.get(adr.getCltId());
         if (c != null) {
           final Map<String, RawClientAddress> cla = c.getClientAddress();
@@ -210,7 +211,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ ADDRESS! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} address records.", counter);
+    LOGGER.debug("Fetched{} address records.", counter);
   }
 
   protected void readClientCounty(final ResultSet rs) {
@@ -220,7 +221,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClientCounty cc = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (cc = new RawClientCounty().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next()
+          && (cc = new RawClientCounty().read(rs)) != null) {
         c = rawClients.get(cc.getCltId());
         if (c != null) {
           c.addClientCounty(cc);
@@ -233,7 +235,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CLIENT COUNTY! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} client county records.", counter);
+    LOGGER.debug("Fetched{} client county records.", counter);
   }
 
   protected void readAka(final ResultSet rs) {
@@ -243,7 +245,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawAka aka = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (aka = new RawAka().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (aka = new RawAka().read(rs)) != null) {
         c = rawClients.get(aka.getCltId());
         if (c != null) {
           c.addAka(aka);
@@ -256,7 +258,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ AKA! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} aka records.", counter);
+    LOGGER.debug("Fetched{} aka records.", counter);
   }
 
   protected void readCase(final ResultSet rs) {
@@ -266,7 +268,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawCase cas = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (cas = new RawCase().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (cas = new RawCase().read(rs)) != null) {
         c = rawClients.get(cas.getCltId());
         if (c != null) {
           c.addCase(cas);
@@ -279,7 +281,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CASE! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} case records.", counter);
+    LOGGER.debug("Fetched{} case records.", counter);
   }
 
   protected void readCsec(final ResultSet rs) {
@@ -289,7 +291,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawCsec csec = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (csec = new RawCsec().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next() && (csec = new RawCsec().read(rs)) != null) {
         c = rawClients.get(csec.getCltId());
         if (c != null) {
           c.addCsec(csec);
@@ -302,7 +304,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ CSEC! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} CSEC records.", counter);
+    LOGGER.debug("Fetched{} CSEC records.", counter);
   }
 
   protected void readEthnicity(final ResultSet rs) {
@@ -312,7 +314,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawEthnicity eth = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (eth = new RawEthnicity().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next()
+          && (eth = new RawEthnicity().read(rs)) != null) {
         c = rawClients.get(eth.getCltId());
         if (c != null) {
           c.addEthnicity(eth);
@@ -326,7 +329,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ ETHNICITY! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} ethnicity records.", counter);
+    LOGGER.debug("Fetched{} ethnicity records.", counter);
   }
 
   protected void readSafetyAlert(final ResultSet rs) {
@@ -336,7 +339,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawSafetyAlert saf = null;
 
     try {
-      while (rocket.isRunning() && rs.next() && (saf = new RawSafetyAlert().read(rs)) != null) {
+      while (interruptible.isRunning() && rs.next()
+          && (saf = new RawSafetyAlert().read(rs)) != null) {
         c = rawClients.get(saf.getCltId());
         if (c != null) {
           c.addSafetyAlert(saf);
@@ -350,7 +354,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "FAILED TO READ SAFETY ALERT! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("Retrieved {} safety alert records.", counter);
+    LOGGER.debug("Fetched{} safety alert records.", counter);
   }
 
   protected void loadClientRange(Connection con, final PreparedStatement stmtInsClient,
@@ -374,6 +378,27 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     return true;
   }
 
+  protected PreparedStatement prepDate(Connection con, String sql) throws SQLException {
+    final String strCurTime = LiveElasticDateHelper.makeTimestampStringLookBack(new Date());
+    final String newSql =
+        sql.replaceAll("TGT_DT", strCurTime).replaceAll("LAST_RUN_DATE", strCurTime);
+    return prep(con, newSql);
+  }
+
+  protected PreparedStatement prep(Connection con, String sql) throws SQLException {
+    final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
+
+    String key;
+    final int maxSize = keyList.length;
+
+    for (int i = 1; i <= StringUtils.countMatches(sql, "?"); i++) {
+      key = i <= maxSize ? keyList[i - 1] : "0";
+      ret.setString(i, key);
+    }
+
+    return ret;
+  }
+
   /**
    * {@inheritDoc}
    * 
@@ -388,18 +413,16 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   @Override
   public void handleSecondaryJdbc(Connection con, Pair<String, String> range) throws SQLException {
     LOGGER.trace("handleSecondaryJdbc(): begin");
-    try (
-        final PreparedStatement stmtSelPlacementAddress =
-            con.prepareStatement(SEL_PLACE_ADDR, TFO, CRO);
-        final PreparedStatement stmtSelClient = con.prepareStatement(SEL_CLI, TFO, CRO);
-        final PreparedStatement stmtSelCliAddr = con.prepareStatement(SEL_CLI_ADDR, TFO, CRO);
-        final PreparedStatement stmtSelCliCnty = con.prepareStatement(SEL_CLI_COUNTY, TFO, CRO);
-        final PreparedStatement stmtSelAddress = con.prepareStatement(SEL_ADDR, TFO, CRO);
-        final PreparedStatement stmtSelAka = con.prepareStatement(SEL_AKA, TFO, CRO);
-        final PreparedStatement stmtSelCase = con.prepareStatement(SEL_CASE, TFO, CRO);
-        final PreparedStatement stmtSelCsec = con.prepareStatement(SEL_CSEC, TFO, CRO);
-        final PreparedStatement stmtSelEthnicity = con.prepareStatement(SEL_ETHNIC, TFO, CRO);
-        final PreparedStatement stmtSelSafety = con.prepareStatement(SEL_SAFETY, TFO, CRO)) {
+    try (final PreparedStatement stmtSelClient = prep(con, SEL_CLI);
+        final PreparedStatement stmtSelCliAddr = prep(con, SEL_CLI_ADDR);
+        final PreparedStatement stmtSelCliCnty = prep(con, SEL_CLI_COUNTY);
+        final PreparedStatement stmtSelAddress = prep(con, SEL_ADDR);
+        final PreparedStatement stmtSelAka = prep(con, SEL_AKA);
+        final PreparedStatement stmtSelCase = prep(con, SEL_CASE);
+        final PreparedStatement stmtSelCsec = prep(con, SEL_CSEC);
+        final PreparedStatement stmtSelEthnicity = prep(con, SEL_ETHNIC);
+        final PreparedStatement stmtSelSafety = prep(con, SEL_SAFETY);
+        final PreparedStatement stmtSelPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
 
       LOGGER.info("Read client");
       read(stmtSelClient, rs -> readClient(rs));
@@ -431,13 +454,13 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       con.commit(); // free db resources again
 
       LOGGER.info("Read placement home address");
-      readPlacementAddress(stmtSelPlacementAddress);
+      readPlacementAddress(stmtSelPlcmntAddr);
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
       LOGGER.error("handleSecondaryJdbc: BOOM!", e);
 
       try {
-        rocket.fail(); // Last change: fail the whole job!
+        interruptible.fail(); // Last change: fail the whole job!
         con.rollback();
       } catch (Exception e2) {
         LOGGER.trace("NESTED ROLLBACK EXCEPTION!", e2);
@@ -527,7 +550,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // According to the JDBC specification, you shouldn't close the ResultSet; closing its parent
     // statement should close the result set.
     try (final ResultSet rs = stmt.executeQuery()) {
-      while (rocket.isRunning() && rs.next()) {
+      while (interruptible.isRunning() && rs.next()) {
         CaresLog.logEvery(LOGGER, ++cntr, "Placement homes fetched", "recs");
         pha = new PlacementHomeAddress(rs);
         placementHomeAddresses.put(pha.getClientId(), pha);

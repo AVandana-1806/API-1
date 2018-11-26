@@ -54,7 +54,7 @@ public class LiveElasticWorkPrepareLastChange extends LiveElasticWorkTotalImpl {
     LiveElasticJdbcHelper.enableBatchSettings(con);
 
     final String strLastRunTime = LiveElasticDateHelper.makeTimestampStringLookBack(lastRunTime);
-    LOGGER.info("strLastRunTime: {}", strLastRunTime);
+    LOGGER.trace("strLastRunTime: {}", strLastRunTime);
 
     try (final PreparedStatement stmt = createPreparedStatement(con)) {
       for (int i = 1; i <= StringUtils.countMatches(sql, "?"); i++) {

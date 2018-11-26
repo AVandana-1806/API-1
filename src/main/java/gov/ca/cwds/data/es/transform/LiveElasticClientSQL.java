@@ -263,11 +263,11 @@ public class LiveElasticClientSQL implements ApiMarker {
       + "     ph.IDENTIFIER     AS PH_ID, \n"
       + "     CURRENT TIMESTAMP AS MATERIALIZE_ME, \n"
       + "     DENSE_RANK() OVER (PARTITION BY pe.FKCLIENT_T ORDER BY ohp.START_DT, ohp.END_DT) AS RN \n"
-      + "   JOIN PLC_EPST pe  ON gt.IDENTIFIER  = pe.FKCLIENT_T \n"
+      + "   FROM PLC_EPST pe \n"
       + "   JOIN O_HM_PLT ohp ON ohp.FKPLC_EPS0 = pe.THIRD_ID AND ohp.FKPLC_EPST = pe.FKCLIENT_T \n"
       + "   JOIN PLC_HM_T ph  ON ph.IDENTIFIER  = ohp.FKPLC_HM_T \n"
       + "   WHERE pe.FKCLIENT_T " + KEY_SOURCE
-      + "     AND DATE('LAST_RUN_END') BETWEEN OHP.START_DT AND NVL(OHP.END_DT, DATE('LAST_RUN_END')) \n"
+      + "     AND DATE('TGT_DT') BETWEEN OHP.START_DT AND NVL(OHP.END_DT, DATE('TGT_DT')) \n"
       + "), \n"
       + "STEP2 AS ( \n"
       + "   SELECT DISTINCT s1.FKCLIENT_T, s1.THIRD_ID, s1.OHP_ID, s1.PH_ID \n"
