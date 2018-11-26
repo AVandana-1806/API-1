@@ -5,7 +5,6 @@ import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_AKA;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CASE;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI_ADDR;
-import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CLI_COUNTY;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_CSEC;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_ETHNIC;
 import static gov.ca.cwds.data.es.transform.LiveElasticClientSQL.SEL_PLACE_ADDR;
@@ -357,25 +356,13 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     LOGGER.debug("Fetched{} safety alert records.", counter);
   }
 
-  protected void loadClientRange(Connection con, final PreparedStatement stmtInsClient,
-      Pair<String, String> range) throws SQLException {
-    LOGGER.trace("loadClientRange(): begin");
-    con.commit(); // free db resources
-
-    // Initial Load client ranges.
-    try {
-      stmtInsClient.setString(1, range.getLeft());
-      stmtInsClient.setString(2, range.getRight());
-    } catch (Exception e) {
-      LOGGER.trace("loadClientRange(): FAILED TO SET RANGES. Last change mode?", e);
-    }
-
-    final int clientCount = stmtInsClient.executeUpdate();
-    LOGGER.debug("Client count: {}", clientCount);
-  }
-
   protected boolean isInitialLoad() {
     return true;
+  }
+
+  protected PreparedStatement prepReplicated(Connection con, String sql) throws SQLException {
+    con.setSchema("CWSRS1");
+    return prep(con, sql);
   }
 
   protected PreparedStatement prepDate(Connection con, String sql) throws SQLException {
@@ -386,13 +373,15 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   protected PreparedStatement prep(Connection con, String sql) throws SQLException {
+    con.setSchema("CWSNS1");
     final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
+    final int maxSize = keyList.length;
+    final int numParams = StringUtils.countMatches(sql, '?');
+    LOGGER.debug("prep(): maxSize: {}, numParams: {}", maxSize, numParams);
 
     String key;
-    final int maxSize = keyList.length;
-
-    for (int i = 1; i <= StringUtils.countMatches(sql, "?"); i++) {
-      key = i <= maxSize ? keyList[i - 1] : "0";
+    for (int i = 1; i <= numParams; i++) {
+      key = i < maxSize ? keyList[i - 1] : "0";
       ret.setString(i, key);
     }
 
@@ -413,48 +402,49 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   @Override
   public void handleSecondaryJdbc(Connection con, Pair<String, String> range) throws SQLException {
     LOGGER.trace("handleSecondaryJdbc(): begin");
-    try (final PreparedStatement stmtSelClient = prep(con, SEL_CLI);
-        final PreparedStatement stmtSelCliAddr = prep(con, SEL_CLI_ADDR);
-        final PreparedStatement stmtSelCliCnty = prep(con, SEL_CLI_COUNTY);
-        final PreparedStatement stmtSelAddress = prep(con, SEL_ADDR);
-        final PreparedStatement stmtSelAka = prep(con, SEL_AKA);
-        final PreparedStatement stmtSelCase = prep(con, SEL_CASE);
-        final PreparedStatement stmtSelCsec = prep(con, SEL_CSEC);
-        final PreparedStatement stmtSelEthnicity = prep(con, SEL_ETHNIC);
-        final PreparedStatement stmtSelSafety = prep(con, SEL_SAFETY);
-        final PreparedStatement stmtSelPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
+    try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
+        final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
+        // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
+        final PreparedStatement stmtAddress = prep(con, SEL_ADDR);
+        final PreparedStatement stmtAka = prep(con, SEL_AKA);
+        final PreparedStatement stmtCase = prep(con, SEL_CASE);
+        final PreparedStatement stmtCsec = prep(con, SEL_CSEC);
+        final PreparedStatement stmtEthnicity = prep(con, SEL_ETHNIC);
+        final PreparedStatement stmtSafety = prep(con, SEL_SAFETY);
+        final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
 
       LOGGER.info("Read client");
-      read(stmtSelClient, rs -> readClient(rs));
+      read(stmtClient, rs -> readClient(rs));
 
       // SNAP-735: missing addresses.
       LOGGER.info("Read client address");
-      read(stmtSelCliAddr, rs -> readClientAddress(rs));
+      read(stmtCliAddr, rs -> readClientAddress(rs));
 
       LOGGER.info("Read address");
-      read(stmtSelAddress, rs -> readAddress(rs));
+      read(stmtAddress, rs -> readAddress(rs));
 
-      LOGGER.info("Read client county");
-      read(stmtSelCliCnty, rs -> readClientCounty(rs));
+      // LOGGER.info("Read client county");
+      // read(stmtCliCnty, rs -> readClientCounty(rs));
 
       LOGGER.info("Read aka");
-      read(stmtSelAka, rs -> readAka(rs));
+      read(stmtAka, rs -> readAka(rs));
+      con.commit(); // free db resources
 
       LOGGER.info("Read case");
-      read(stmtSelCase, rs -> readCase(rs));
+      read(stmtCase, rs -> readCase(rs));
 
       LOGGER.info("Read csec");
-      read(stmtSelCsec, rs -> readCsec(rs));
+      read(stmtCsec, rs -> readCsec(rs));
 
       LOGGER.info("Read ethnicity");
-      read(stmtSelEthnicity, rs -> readEthnicity(rs));
+      read(stmtEthnicity, rs -> readEthnicity(rs));
 
       LOGGER.info("Read safety alert");
-      read(stmtSelSafety, rs -> readSafetyAlert(rs));
+      read(stmtSafety, rs -> readSafetyAlert(rs));
       con.commit(); // free db resources again
 
       LOGGER.info("Read placement home address");
-      readPlacementAddress(stmtSelPlcmntAddr);
+      readPlacementAddress(stmtPlcmntAddr);
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
       LOGGER.error("handleSecondaryJdbc: BOOM!", e);

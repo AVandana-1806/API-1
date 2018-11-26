@@ -1,6 +1,7 @@
 package gov.ca.cwds.data.es.transform;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,8 @@ public class LiveElasticWorkConnectionStealer implements Work {
    * @return default CMS schema name
    */
   public static String getDBSchemaName() {
-    return System.getProperty("DB_CMS_SCHEMA");
+    return "CWSNS1";
+    // return System.getProperty("DB_CMS_SCHEMA");
   }
 
   /**
@@ -62,8 +64,10 @@ public class LiveElasticWorkConnectionStealer implements Work {
    * @throws SQLException connection error
    */
   public static void enableBatchSettings(Connection con) throws SQLException {
-    final String dbProductName = con.getMetaData().getDatabaseProductName();
+    final DatabaseMetaData metaData = con.getMetaData();
+    final String dbProductName = metaData.getDatabaseProductName();
     final String schema = LiveElasticWorkConnectionStealer.getDBSchemaName();
+
     if (StringUtils.isNotBlank(schema)) {
       con.setSchema(schema);
     }
