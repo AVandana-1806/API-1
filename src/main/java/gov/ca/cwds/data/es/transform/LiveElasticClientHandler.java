@@ -377,7 +377,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
 
     String key;
     for (int i = 1; i <= numParams; i++) {
-      key = i < maxSize ? keyList[i - 1] : "0";
+      key = i <= maxSize ? keyList[i - 1] : "0";
       LOGGER.info("set key: {}, position: {}", key, i);
       ret.setString(i, key);
     }
