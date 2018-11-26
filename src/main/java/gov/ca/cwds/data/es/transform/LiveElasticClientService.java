@@ -51,7 +51,7 @@ public class LiveElasticClientService
 
     try (final Session session = dao.grabSession()) {
       final Connection con = LiveElasticJdbcHelper.prepConnection(session);
-      handler.handleMainJdbc(con);
+      handler.handleMain(con);
       results = handler.handleJdbcDone();
     } catch (Exception e) {
       throw CaresLog.runtime(LOGGER, e, "LIVE CLIENT HANDLER FAILED! {}", e.getMessage(), e);

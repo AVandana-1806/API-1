@@ -25,7 +25,7 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
    * @param con database connection
    * @throws SQLException on database error
    */
-  default void handleMainJdbc(final Connection con) throws SQLException {
+  default void handleMain(final Connection con) throws SQLException {
     // Default is no-op.
   }
 

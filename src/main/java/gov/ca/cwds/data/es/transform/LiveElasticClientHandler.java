@@ -70,7 +70,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    */
   protected static final int FETCH_SIZE = 500;
 
-  protected final CaresInterruptibleOperation interruptible;
+  protected final CaresInterruptibleOperation monitor;
 
   protected final String[] keyList;
 
@@ -92,7 +92,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   protected transient Map<String, ReplicatedClient> normalized = new HashMap<>(LOAD_SIZE);
 
   public LiveElasticClientHandler(CaresInterruptibleOperation interruptible, String[] keyList) {
-    this.interruptible = interruptible;
+    this.monitor = interruptible;
     this.keyList = keyList;
   }
 
@@ -130,7 +130,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     T t;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (t = reader.read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (t = reader.read(rs)) != null) {
         // Find associated raw client, if any, and link.
         c = rawClients.get(t.getCltId());
         organizer.accept(c, t);
@@ -144,12 +144,11 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   protected void readClient(final ResultSet rs) {
-    LOGGER.trace("readClient(): begin");
     int counter = 0;
     RawClient c = null;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (c = new RawClient().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (c = new RawClient().read(rs)) != null) {
         rawClients.put(c.getCltId(), c);
         CaresLog.logEvery(LOGGER, LG_SZ, ++counter, "read", "client");
       }
@@ -167,8 +166,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClientAddress cla = null;
 
     try {
-      while (interruptible.isRunning() && rs.next()
-          && (cla = new RawClientAddress().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (cla = new RawClientAddress().read(rs)) != null) {
         c = rawClients.get(cla.getCltId());
         if (c != null) {
           c.addClientAddress(cla);
@@ -191,7 +189,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClient c = null;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (adr = new RawAddress().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (adr = new RawAddress().read(rs)) != null) {
         c = rawClients.get(adr.getCltId());
         if (c != null) {
           final Map<String, RawClientAddress> cla = c.getClientAddress();
@@ -221,8 +219,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawClientCounty cc = null;
 
     try {
-      while (interruptible.isRunning() && rs.next()
-          && (cc = new RawClientCounty().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (cc = new RawClientCounty().read(rs)) != null) {
         c = rawClients.get(cc.getCltId());
         if (c != null) {
           c.addClientCounty(cc);
@@ -245,7 +242,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawAka aka = null;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (aka = new RawAka().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (aka = new RawAka().read(rs)) != null) {
         c = rawClients.get(aka.getCltId());
         if (c != null) {
           c.addAka(aka);
@@ -268,7 +265,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawCase cas = null;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (cas = new RawCase().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (cas = new RawCase().read(rs)) != null) {
         c = rawClients.get(cas.getCltId());
         if (c != null) {
           c.addCase(cas);
@@ -291,7 +288,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawCsec csec = null;
 
     try {
-      while (interruptible.isRunning() && rs.next() && (csec = new RawCsec().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (csec = new RawCsec().read(rs)) != null) {
         c = rawClients.get(csec.getCltId());
         if (c != null) {
           c.addCsec(csec);
@@ -314,8 +311,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawEthnicity eth = null;
 
     try {
-      while (interruptible.isRunning() && rs.next()
-          && (eth = new RawEthnicity().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (eth = new RawEthnicity().read(rs)) != null) {
         c = rawClients.get(eth.getCltId());
         if (c != null) {
           c.addEthnicity(eth);
@@ -339,8 +335,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     RawSafetyAlert saf = null;
 
     try {
-      while (interruptible.isRunning() && rs.next()
-          && (saf = new RawSafetyAlert().read(rs)) != null) {
+      while (monitor.isRunning() && rs.next() && (saf = new RawSafetyAlert().read(rs)) != null) {
         c = rawClients.get(saf.getCltId());
         if (c != null) {
           c.addSafetyAlert(saf);
@@ -378,11 +373,12 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
     final int maxSize = keyList.length;
     final int numParams = StringUtils.countMatches(sql, '?');
-    LOGGER.debug("prep(): maxSize: {}, numParams: {}", maxSize, numParams);
+    LOGGER.info("prep(): maxSize: {}, numParams: {}", maxSize, numParams);
 
     String key;
     for (int i = 1; i <= numParams; i++) {
       key = i < maxSize ? keyList[i - 1] : "0";
+      LOGGER.info("set key: {}, position: {}", key, i);
       ret.setString(i, key);
     }
 
@@ -401,18 +397,19 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    * </p>
    */
   @Override
-  public void handleMainJdbc(Connection con) throws SQLException {
+  public void handleMain(Connection con) throws SQLException {
     LOGGER.trace("handleMainJdbc(): begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
-        // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
         final PreparedStatement stmtAddress = prep(con, SEL_ADDR);
         final PreparedStatement stmtAka = prep(con, SEL_AKA);
         final PreparedStatement stmtCase = prep(con, SEL_CASE);
         final PreparedStatement stmtCsec = prep(con, SEL_CSEC);
         final PreparedStatement stmtEthnicity = prep(con, SEL_ETHNIC);
         final PreparedStatement stmtSafety = prep(con, SEL_SAFETY);
-        final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
+        final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)
+    // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
+    ) {
 
       LOGGER.info("Read client");
       read(stmtClient, rs -> readClient(rs));
@@ -451,7 +448,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       LOGGER.error("handleSecondaryJdbc: BOOM!", e);
 
       try {
-        interruptible.fail();
+        monitor.fail();
         con.rollback();
       } catch (Exception e2) {
         LOGGER.trace("NESTED ROLLBACK EXCEPTION!", e2);
@@ -542,7 +539,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // According to the JDBC specification, you shouldn't close the ResultSet; closing its parent
     // statement should close the result set.
     try (final ResultSet rs = stmt.executeQuery()) {
-      while (interruptible.isRunning() && rs.next()) {
+      while (monitor.isRunning() && rs.next()) {
         CaresLog.logEvery(LOGGER, ++cntr, "Placement homes fetched", "recs");
         pha = new PlacementHomeAddress(rs);
         placementHomeAddresses.put(pha.getClientId(), pha);
