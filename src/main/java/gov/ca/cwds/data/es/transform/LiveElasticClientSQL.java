@@ -13,7 +13,7 @@ public class LiveElasticClientSQL implements ApiMarker {
 
   //@formatter:off
   public static final String KEY_SOURCE = 
-      " = (?) \n";
+      " IN (?) \n";
   //@formatter:on
 
   //@formatter:off

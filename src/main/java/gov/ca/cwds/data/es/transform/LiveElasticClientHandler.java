@@ -410,7 +410,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)
     // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
     ) {
-
       LOGGER.info("Read client");
       read(stmtClient, rs -> readClient(rs));
 
