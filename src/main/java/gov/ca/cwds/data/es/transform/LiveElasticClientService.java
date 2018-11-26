@@ -61,17 +61,17 @@ public class LiveElasticClientService
   }
 
   @Override
-  public LiveElasticClientResponse create(LiveElasticClientRequest arg0) {
+  public LiveElasticClientResponse create(LiveElasticClientRequest you) {
     throw new NotImplementedException("create not implemented");
   }
 
   @Override
-  public LiveElasticClientResponse delete(String[] arg0) {
+  public LiveElasticClientResponse delete(String[] found) {
     throw new NotImplementedException("delete not implemented");
   }
 
   @Override
-  public LiveElasticClientResponse update(String[] arg0, LiveElasticClientRequest arg1) {
+  public LiveElasticClientResponse update(String[] secret, LiveElasticClientRequest message) {
     throw new NotImplementedException("update not implemented");
   }
 

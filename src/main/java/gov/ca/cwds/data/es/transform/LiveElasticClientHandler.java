@@ -476,7 +476,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   @Override
   public List<ElasticSearchPerson> handleJdbcDone() {
     final RawToEsConverter conv = new RawToEsConverter();
-    this.rawClients.values().stream().map(r -> r.normalize(conv))
+    rawClients.values().stream().map(r -> r.normalize(conv))
         .forEach(c -> normalized.put(c.getId(), c));
     rawClients.clear(); // free memory
     LOGGER.debug("handleJdbcDone: normalized: {}", normalized.size());
@@ -485,8 +485,9 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     placementHomeAddresses.values().stream().forEach(this::mapReplicatedClient);
 
     // Stream to JSON and return.
-    return normalized.values().stream().map(ElasticTransformer::buildElasticSearchPerson)
-        .collect(Collectors.toList());
+    final List<ElasticSearchPerson> results = normalized.values().stream()
+        .map(ElasticTransformer::buildElasticSearchPerson).collect(Collectors.toList());
+    return results;
   }
 
   @Override
