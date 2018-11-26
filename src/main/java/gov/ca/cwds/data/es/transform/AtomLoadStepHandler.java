@@ -1,7 +1,6 @@
 package gov.ca.cwds.data.es.transform;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,25 +21,13 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 public interface AtomLoadStepHandler<N extends PersistentObject> {
 
   /**
-   * Process results sets from the main, original query (view or MQT). Default implementation is
-   * no-op.
-   * 
-   * @param rs result set for this key range
-   * @param con raw JDBC connection
-   * @throws SQLException on database error
-   */
-  default void handleMainResults(final ResultSet rs, Connection con) throws SQLException {
-    // Provide your own solution, for now.
-  }
-
-  /**
    * Execute arbitrary JDBC as needed on the same connection.
    * 
    * @param con database connection
    * @param range key range
    * @throws SQLException on database error
    */
-  default void handleSecondaryJdbc(final Connection con, Pair<String, String> range)
+  default void handleMainJdbc(final Connection con, Pair<String, String> range)
       throws SQLException {
     // Default is no-op.
   }

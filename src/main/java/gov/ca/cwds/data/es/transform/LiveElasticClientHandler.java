@@ -400,7 +400,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    * </p>
    */
   @Override
-  public void handleSecondaryJdbc(Connection con, Pair<String, String> range) throws SQLException {
+  public void handleMainJdbc(Connection con, Pair<String, String> range) throws SQLException {
     LOGGER.trace("handleSecondaryJdbc(): begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
