@@ -398,7 +398,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    */
   @Override
   public void handleMain(Connection con) throws SQLException {
-    LOGGER.trace("handleMainJdbc(): begin");
+    LOGGER.trace("handleMain(): begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
         final PreparedStatement stmtAddress = prep(con, SEL_ADDR);
@@ -444,7 +444,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       readPlacementAddress(stmtPlcmntAddr);
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
-      LOGGER.error("handleSecondaryJdbc: BOOM!", e);
+      LOGGER.error("handleMain: BOOM!", e);
 
       try {
         monitor.fail();
@@ -455,7 +455,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       throw CaresLog.runtime(LOGGER, e, "MAIN JDBC FAILED! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("handleMainJdbc(): DONE");
+    LOGGER.debug("handleMain(): DONE");
   }
 
   protected void mapReplicatedClient(PlacementHomeAddress pha) {
