@@ -31,18 +31,8 @@ public interface CaresInterruptibleOperation {
   void done();
 
   /**
-   * Mark Elasticsearch indexing complete.
-   */
-  void doneIndex();
-
-  /**
    * Mark the retrieval step done.
    */
   void doneRetrieve();
-
-  /**
-   * Mark the normalize/transform step done.
-   */
-  void doneTransform();
 
 }

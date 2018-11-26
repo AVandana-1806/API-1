@@ -2,11 +2,16 @@ package gov.ca.cwds.data.es.transform;
 
 import static gov.ca.cwds.rest.core.Api.DS_CMS;
 
+import java.sql.Connection;
+
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.FlushMode;
+import org.hibernate.Session;
 
 import com.google.inject.Inject;
 
+import gov.ca.cwds.data.cms.ClientRelationshipDao;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -20,12 +25,14 @@ public class LiveElasticClientService
     extends SimpleResourceService<String[], LiveElasticClientRequest, LiveElasticClientResponse>
     implements TypedCrudsService<String[], LiveElasticClientRequest, LiveElasticClientResponse> {
 
+  private ClientRelationshipDao dao;
+
   /**
    * Constructor
    */
   @Inject
-  public LiveElasticClientService() {
-    // Default, no-op.
+  public LiveElasticClientService(ClientRelationshipDao dao) {
+    this.dao = dao;
   }
 
   @Override
@@ -35,8 +42,17 @@ public class LiveElasticClientService
 
   @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @Override
-  protected LiveElasticClientResponse handleFind(String[] key) {
-    // TODO: call LiveElasticClientHandler
+  protected LiveElasticClientResponse handleFind(String[] keys) {
+    final SimpleCaresInterruptibleImpl interruptible = new SimpleCaresInterruptibleImpl();
+    final LiveElasticClientHandler handler = new LiveElasticClientHandler(interruptible, keys);
+
+    try (final Session session = dao.grabSession()) {
+      final Connection con = LiveElasticJdbcHelper.prepConnection(session);
+      handler.handleSecondaryJdbc(con, Pair.<String, String>of("a", "b"));
+    } catch (Exception e) {
+      throw CaresLog.runtime(LOGGER, e, "LiveElasticClientHandler FAILED! {}", e.getMessage(), e);
+    }
+
     return new LiveElasticClientResponse("placeholder");
   }
 
