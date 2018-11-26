@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
@@ -24,10 +22,9 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
    * Execute arbitrary JDBC as needed on the same connection.
    * 
    * @param con database connection
-   * @param range key range
    * @throws SQLException on database error
    */
-  default void handleMainJdbc(final Connection con, Pair<String, String> range)
+  default void handleMainJdbc(final Connection con)
       throws SQLException {
     // Default is no-op.
   }
@@ -35,31 +32,25 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
   /**
    * Begin step, before initial load key range processing begins. Allocate resources. Default
    * implementation is no-op.
-   * 
-   * @param range key range
    */
-  default void handleStartRange(final Pair<String, String> range) {
+  default void handleStart() {
     // Default is no-op.
   }
 
   /**
    * Terminal step, after after initial load key range processing completes. De-allocate resources.
    * Default implementation is no-op.
-   * 
-   * @param range key range
    */
-  default void handleFinishRange(final Pair<String, String> range) {
+  default void handleFinish() {
     // Default is no-op.
   }
 
   /**
    * Intermediate step, after {@link Connection#commit()} and before
-   * {@link #handleFinishRange(Pair)}. Process data, such as normalization. Default implementation
+   * {@link #handleFinish()}. Process data, such as normalization. Default implementation
    * is no-op.
-   * 
-   * @param range key range
    */
-  default void handleJdbcDone(final Pair<String, String> range) {
+  default void handleJdbcDone() {
     // Default is no-op.
   }
 

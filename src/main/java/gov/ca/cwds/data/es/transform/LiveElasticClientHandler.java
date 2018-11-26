@@ -361,7 +361,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   protected PreparedStatement prepReplicated(Connection con, String sql) throws SQLException {
-    con.setSchema("CWSRS1");
+    con.setSchema("CWSRS1"); // TODO: DON'T HARDCODE SCHEMA!
     return prep(con, sql);
   }
 
@@ -373,7 +373,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   protected PreparedStatement prep(Connection con, String sql) throws SQLException {
-    con.setSchema("CWSNS1");
+    con.setSchema("CWSNS1"); // TODO: DON'T HARDCODE SCHEMA!
     final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
     final int maxSize = keyList.length;
     final int numParams = StringUtils.countMatches(sql, '?');
@@ -400,8 +400,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    * </p>
    */
   @Override
-  public void handleMainJdbc(Connection con, Pair<String, String> range) throws SQLException {
-    LOGGER.trace("handleSecondaryJdbc(): begin");
+  public void handleMainJdbc(Connection con) throws SQLException {
+    LOGGER.trace("handleMainJdbc(): begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
         // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
@@ -450,15 +450,15 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       LOGGER.error("handleSecondaryJdbc: BOOM!", e);
 
       try {
-        interruptible.fail(); // Last change: fail the whole job!
+        interruptible.fail();
         con.rollback();
       } catch (Exception e2) {
         LOGGER.trace("NESTED ROLLBACK EXCEPTION!", e2);
       }
-      throw CaresLog.runtime(LOGGER, e, "SECONDARY JDBC FAILED! {}", e.getMessage(), e);
+      throw CaresLog.runtime(LOGGER, e, "MAIN JDBC FAILED! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("handleSecondaryJdbc(): DONE");
+    LOGGER.debug("handleMainJdbc(): DONE");
   }
 
   protected void mapReplicatedClient(PlacementHomeAddress pha) {
@@ -473,7 +473,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   @Override
-  public void handleJdbcDone(final Pair<String, String> range) {
+  public void handleJdbcDone() {
     final RawToEsConverter conv = new RawToEsConverter();
     this.rawClients.values().stream().map(r -> r.normalize(conv))
         .forEach(c -> normalized.put(c.getId(), c));
@@ -489,7 +489,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   @Override
-  public void handleFinishRange(Pair<String, String> range) {
+  public void handleFinish() {
     doneThreadRetrieve();
     clear();
   }
