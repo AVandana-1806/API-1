@@ -14,36 +14,31 @@ public class SimpleCaresInterruptibleImpl implements CaresInterruptibleOperation
   /**
    * Completion flag for data retrieval.
    */
-  private volatile boolean doneRetrieve = false;
+  private volatile boolean done = false;
 
   @Override
   public boolean isRunning() {
-    // TODO Auto-generated method stub
-    return false;
+    return !done && !fatalError;
   }
 
   @Override
   public boolean isFailed() {
-    // TODO Auto-generated method stub
-    return false;
+    return fatalError;
   }
 
   @Override
   public void fail() {
-    // TODO Auto-generated method stub
-
+    fatalError = true;
   }
 
   @Override
   public void done() {
-    // TODO Auto-generated method stub
-
+    done = true;
   }
 
   @Override
   public void doneRetrieve() {
-    // TODO Auto-generated method stub
-
+    done = true;
   }
 
 }
