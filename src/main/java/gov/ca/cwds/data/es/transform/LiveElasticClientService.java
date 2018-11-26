@@ -3,15 +3,17 @@ package gov.ca.cwds.data.es.transform;
 import static gov.ca.cwds.rest.core.Api.DS_CMS;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
+import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -45,17 +47,17 @@ public class LiveElasticClientService
   protected LiveElasticClientResponse handleFind(String[] keys) {
     final SimpleCaresInterruptibleImpl interruptible = new SimpleCaresInterruptibleImpl();
     final LiveElasticClientHandler handler = new LiveElasticClientHandler(interruptible, keys);
-    final Pair<String, String> dummyRange = Pair.<String, String>of("a", "b");
+    List<ElasticSearchPerson> results = new ArrayList<>();
 
     try (final Session session = dao.grabSession()) {
       final Connection con = LiveElasticJdbcHelper.prepConnection(session);
       handler.handleMainJdbc(con);
-      handler.handleJdbcDone();
+      results = handler.handleJdbcDone();
     } catch (Exception e) {
-      throw CaresLog.runtime(LOGGER, e, "LiveElasticClientHandler FAILED! {}", e.getMessage(), e);
+      throw CaresLog.runtime(LOGGER, e, "LIVE CLIENT HANDLER FAILED! {}", e.getMessage(), e);
     }
 
-    return new LiveElasticClientResponse("placeholder");
+    return new LiveElasticClientResponse(results);
   }
 
   @Override

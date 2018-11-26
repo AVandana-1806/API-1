@@ -261,8 +261,7 @@ public final class ElasticTransformer {
    * @return populated ElasticSearchPerson
    * @throws JsonProcessingException if unable to serialize JSON
    */
-  public static ElasticSearchPerson buildElasticSearchPerson(ApiPersonAware p)
-      throws JsonProcessingException {
+  public static ElasticSearchPerson buildElasticSearchPerson(ApiPersonAware p) {
     return ElasticTransformer.buildElasticSearchPersonDoc(p);
   }
 
@@ -457,11 +456,13 @@ public final class ElasticTransformer {
    * 
    * @param p ApiPersonAware persistence object
    * @return populated ElasticSearchPerson
-   * @throws JsonProcessingException if unable to serialize JSON
    */
-  public static ElasticSearchPerson buildElasticSearchPersonDoc(ApiPersonAware p)
-      throws JsonProcessingException {
-    return buildElasticSearchPersonDoc(mapper, p);
+  public static ElasticSearchPerson buildElasticSearchPersonDoc(ApiPersonAware p) {
+    try {
+      return buildElasticSearchPersonDoc(mapper, p);
+    } catch (Exception e) {
+      throw CaresLog.runtime(LOGGER, e, "FAILED TO JSONIFY! {}", e.getMessage(), e);
+    }
   }
 
   /**

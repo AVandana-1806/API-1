@@ -539,12 +539,12 @@ public class ReplicatedClient extends BaseClient implements ApiPersonAware,
 
   @Override
   public List<ElasticSearchSystemCode> getClientCounties() {
-    if (this.clientCounties.isEmpty()) {
+    if (clientCounties.isEmpty()) {
       return new ArrayList<>();
     }
 
-    final List<ElasticSearchSystemCode> ret = new ArrayList<>(this.clientCounties.size());
-    for (Short county : this.clientCounties) {
+    final List<ElasticSearchSystemCode> ret = new ArrayList<>(clientCounties.size());
+    for (Short county : clientCounties) {
       final ElasticSearchSystemCode countySysCode = new ElasticSearchSystemCode();
       countySysCode.setId(county.toString());
       countySysCode.setDescription(SystemCodeCache.global().getSystemCodeShortDescription(county));

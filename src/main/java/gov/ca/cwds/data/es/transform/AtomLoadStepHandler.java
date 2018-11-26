@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.data.persistence.PersistentObject;
 
 /**
@@ -24,8 +25,7 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
    * @param con database connection
    * @throws SQLException on database error
    */
-  default void handleMainJdbc(final Connection con)
-      throws SQLException {
+  default void handleMainJdbc(final Connection con) throws SQLException {
     // Default is no-op.
   }
 
@@ -46,12 +46,13 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
   }
 
   /**
-   * Intermediate step, after {@link Connection#commit()} and before
-   * {@link #handleFinish()}. Process data, such as normalization. Default implementation
-   * is no-op.
+   * Intermediate step, after {@link Connection#commit()} and before {@link #handleFinish()}.
+   * Process data, such as normalization. Default implementation is no-op.
+   * 
+   * @return List of ElasticSearchPerson objects
    */
-  default void handleJdbcDone() {
-    // Default is no-op.
+  default List<ElasticSearchPerson> handleJdbcDone() {
+    return new ArrayList<>();
   }
 
   /**

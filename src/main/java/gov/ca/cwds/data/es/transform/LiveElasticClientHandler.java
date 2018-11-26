@@ -30,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.data.std.ApiMarker;
 
 /**
@@ -473,7 +474,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   @Override
-  public void handleJdbcDone() {
+  public List<ElasticSearchPerson> handleJdbcDone() {
     final RawToEsConverter conv = new RawToEsConverter();
     this.rawClients.values().stream().map(r -> r.normalize(conv))
         .forEach(c -> normalized.put(c.getId(), c));
@@ -483,9 +484,9 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // Merge placement home addresses.
     placementHomeAddresses.values().stream().forEach(this::mapReplicatedClient);
 
-    // TODO: stream to JSON and return.
-    // normalized.values().stream().forEach(rocket::addToIndexQueue);
-    LOGGER.debug("handleJdbcDone: FINISHED");
+    // Stream to JSON and return.
+    return normalized.values().stream().map(ElasticTransformer::buildElasticSearchPerson)
+        .collect(Collectors.toList());
   }
 
   @Override

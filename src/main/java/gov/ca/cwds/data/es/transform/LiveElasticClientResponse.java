@@ -1,11 +1,13 @@
 package gov.ca.cwds.data.es.transform;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.ReportingDomain;
@@ -21,48 +23,18 @@ import io.swagger.annotations.ApiModel;
 @JsonSnakeCase
 public class LiveElasticClientResponse extends ReportingDomain implements Response {
 
-  /**
-   * Base serialization version. Increment by class version.
-   */
   private static final long serialVersionUID = 1L;
 
-  @JsonIgnore
-  @JsonProperty("ui_identifier")
-  private String uiIdentifier;
-
-  /**
-   * Disallow use of default constructor.
-   */
-  @SuppressWarnings("unused")
-  private LiveElasticClientResponse() {
-    // Default, no-op.
-  }
+  @JsonProperty("hits")
+  private final List<ElasticSearchPerson> hits;
 
   /**
    * Preferred constructor. Build from UI identifier.
    * 
    * @param uiIdentifier String of UI identifier
    */
-  public LiveElasticClientResponse(String uiIdentifier) {
-    this.uiIdentifier = uiIdentifier;
-  }
-
-  /**
-   * Getter for UI identifier.
-   * 
-   * @return formatted UI identifier
-   */
-  public String getUiIdentifier() {
-    return uiIdentifier;
-  }
-
-  /**
-   * Setter for UI identifier.
-   * 
-   * @param uiIdentifier formatted UI identifier
-   */
-  public void setUiIdentifier(String uiIdentifier) {
-    this.uiIdentifier = uiIdentifier;
+  public LiveElasticClientResponse(List<ElasticSearchPerson> hits) {
+    this.hits = hits;
   }
 
   @Override
