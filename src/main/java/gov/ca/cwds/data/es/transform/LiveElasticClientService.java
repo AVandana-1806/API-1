@@ -45,10 +45,12 @@ public class LiveElasticClientService
   protected LiveElasticClientResponse handleFind(String[] keys) {
     final SimpleCaresInterruptibleImpl interruptible = new SimpleCaresInterruptibleImpl();
     final LiveElasticClientHandler handler = new LiveElasticClientHandler(interruptible, keys);
+    final Pair<String, String> dummyRange = Pair.<String, String>of("a", "b");
 
     try (final Session session = dao.grabSession()) {
       final Connection con = LiveElasticJdbcHelper.prepConnection(session);
-      handler.handleSecondaryJdbc(con, Pair.<String, String>of("a", "b"));
+      handler.handleSecondaryJdbc(con, dummyRange);
+      handler.handleJdbcDone(dummyRange);
     } catch (Exception e) {
       throw CaresLog.runtime(LOGGER, e, "LiveElasticClientHandler FAILED! {}", e.getMessage(), e);
     }

@@ -63,7 +63,7 @@ public class LiveElasticWorkConnectionStealer implements Work {
    */
   public static void enableBatchSettings(Connection con) throws SQLException {
     final String dbProductName = con.getMetaData().getDatabaseProductName();
-    con.setSchema(getDBSchemaName());
+    con.setSchema(LiveElasticWorkConnectionStealer.getDBSchemaName());
     con.setAutoCommit(false);
 
     if (StringUtils.containsIgnoreCase(dbProductName, "db2")) {
