@@ -152,8 +152,9 @@ public final class LiveElasticTransformer {
     // Child classes may override these methods as needed. left = update, right = insert.
     Pair<String, String> json;
     try {
-      json = LiveElasticTransformer.prepareUpsertJson(docPrep, esp, t, docPrep.getOptionalElementName(),
-          docPrep.getOptionalCollection(esp, t), docPrep.keepCollections());
+      json = LiveElasticTransformer.prepareUpsertJson(docPrep, esp, t,
+          docPrep.getOptionalElementName(), docPrep.getOptionalCollection(esp, t),
+          docPrep.keepCollections());
     } catch (Exception e) {
       throw CaresLog.checked(LOGGER, e, "ERROR PREPARING UPSERT: {}", e.getMessage());
     }
@@ -259,7 +260,6 @@ public final class LiveElasticTransformer {
    * 
    * @param p ApiPersonAware persistence object
    * @return populated ElasticSearchPerson
-   * @throws JsonProcessingException if unable to serialize JSON
    */
   public static ElasticSearchPerson buildElasticSearchPerson(ApiPersonAware p) {
     return LiveElasticTransformer.buildElasticSearchPersonDoc(p);
@@ -302,6 +302,13 @@ public final class LiveElasticTransformer {
     return ret;
   }
 
+  protected static ElasticSearchPersonLanguage buildLanguageEntry(ApiLanguageAware p) {
+    final ApiLanguageAware lx = p;
+    final Integer languageId = lx.getLanguageSysId();
+    return new ElasticSearchPersonLanguage(languageId.toString(),
+        SystemCodeCache.global().getSystemCodeShortDescription(languageId), lx.getPrimary());
+  }
+
   protected static List<ElasticSearchPersonLanguage> buildLanguage(ApiPersonAware p) {
     List<ElasticSearchPersonLanguage> ret = null;
 
@@ -309,16 +316,11 @@ public final class LiveElasticTransformer {
       final ApiMultipleLanguagesAware mlx = (ApiMultipleLanguagesAware) p;
       ret = new ArrayList<>(mlx.getLanguages().length);
       for (ApiLanguageAware lx : mlx.getLanguages()) {
-        final Integer languageId = lx.getLanguageSysId();
-        ret.add(new ElasticSearchPersonLanguage(languageId.toString(),
-            SystemCodeCache.global().getSystemCodeShortDescription(languageId), lx.getPrimary()));
+        ret.add(buildLanguageEntry(lx));
       }
     } else if (p instanceof ApiLanguageAware) {
       ret = new ArrayList<>();
-      final ApiLanguageAware lx = (ApiLanguageAware) p;
-      final Integer languageId = lx.getLanguageSysId();
-      ret.add(new ElasticSearchPersonLanguage(languageId.toString(),
-          SystemCodeCache.global().getSystemCodeShortDescription(languageId), lx.getPrimary()));
+      ret.add(buildLanguageEntry((ApiLanguageAware) p));
     }
 
     return ret;
