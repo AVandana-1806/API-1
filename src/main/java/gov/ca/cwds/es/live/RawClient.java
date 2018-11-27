@@ -293,9 +293,6 @@ public class RawClient extends ClientReference implements LiveElasticJdbcReader<
     this.cltSoc158SealedClientIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_SOC158_IND.ordinal()));
     this.cltBirthDate = rs.getDate(ColumnPosition.CLT_BIRTH_DT.ordinal());
-    this.cltBirthStateCodeType = rs.getShort(ColumnPosition.CLT_B_STATE_C.ordinal());
-    this.cltChildClientIndicatorVar =
-        trimToNull(rs.getString(ColumnPosition.CLT_CHLD_CLT_B.ordinal()));
     this.cltClientIndexNumber = trimToNull(rs.getString(ColumnPosition.CLT_CL_INDX_NO.ordinal()));
     this.cltCommonFirstName = (rs.getString(ColumnPosition.CLT_COM_FST_NM.ordinal()));
     this.cltCommonLastName = trimToNull(rs.getString(ColumnPosition.CLT_COM_LST_NM.ordinal()));

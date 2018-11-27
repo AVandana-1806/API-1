@@ -42,8 +42,6 @@ public class LiveElasticClientSQL implements ApiMarker {
     + "  clt.LST_UPD_ID        AS CLT_LST_UPD_ID, \n"
     + "  clt.LST_UPD_TS        AS CLT_LST_UPD_TS, \n"
     + "  clt.BIRTH_DT          AS CLT_BIRTH_DT, \n"
-    + "  clt.B_STATE_C         AS CLT_B_STATE_C, \n"
-    + "  clt.CHLD_CLT_B        AS CLT_CHLD_CLT_B, \n"
     + "  clt.CL_INDX_NO        AS CLT_CL_INDX_NO, \n"
     + "  clt.COM_FST_NM        AS CLT_COM_FST_NM, \n"
     + "  clt.COM_LST_NM        AS CLT_COM_LST_NM, \n"
