@@ -11,7 +11,6 @@ import gov.ca.cwds.data.std.ApiMarker;
  * Shared features of all Elasticsearch indexer rockets.
  * 
  * @author CWDS API Team
- * @see NeutronThreadUtils
  */
 public interface AtomShared extends ApiMarker {
 
