@@ -38,7 +38,6 @@ public class LiveElasticClientSQL implements ApiMarker {
            + "    clt.IDENTIFIER        AS CLT_IDENTIFIER, \n"
            + "    clt.LST_UPD_ID        AS CLT_LST_UPD_ID, \n"
            + "    clt.LST_UPD_TS        AS CLT_LST_UPD_TS, \n"
-           + "    clt.BIRTH_CITY        AS CLT_BIRTH_CITY, \n"
            + "    clt.BIRTH_DT          AS CLT_BIRTH_DT, \n"
            + "    clt.B_STATE_C         AS CLT_B_STATE_C, \n"
            + "    clt.CHLD_CLT_B        AS CLT_CHLD_CLT_B, \n"
@@ -100,7 +99,7 @@ public class LiveElasticClientSQL implements ApiMarker {
     + "    cla.FKREFERL_T        AS CLA_FKREFERL_T, \n"
     + "    cla.HOMLES_IND        AS CLA_HOMLES_IND \n"
     + "FROM CL_ADDRT cla \n"
-    + "JOIN ADDRS_T  adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
+    + "JOIN ADDRS_T  adr ON cla.FKADDRS_T = adr.IDENTIFIER \n"
     + "WHERE cla.FKCLIENT_T " + KEY_SOURCE
     + "  AND cla.EFF_END_DT IS NULL \n"
     + SEL_OPTIMIZE;
@@ -136,7 +135,7 @@ public class LiveElasticClientSQL implements ApiMarker {
     + "    TRIM(adr.ZIP_NO)      AS ADR_ZIP_NO, \n"
     + "    adr.ZIP_SFX_NO        AS ADR_ZIP_SFX_NO \n"
     + "FROM CL_ADDRT cla \n"
-    + "JOIN ADDRS_T  adr ON cla.FKADDRS_T  = adr.IDENTIFIER \n"
+    + "JOIN ADDRS_T  adr ON cla.FKADDRS_T = adr.IDENTIFIER \n"
     + "WHERE cla.FKCLIENT_T " + KEY_SOURCE
     + "  AND cla.EFF_END_DT IS NULL \n"
     + SEL_OPTIMIZE;
