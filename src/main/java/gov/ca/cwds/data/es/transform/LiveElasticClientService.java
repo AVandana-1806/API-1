@@ -10,6 +10,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
@@ -33,8 +34,9 @@ public class LiveElasticClientService
    * Constructor
    */
   @Inject
-  public LiveElasticClientService(ClientRelationshipDao dao) {
+  public LiveElasticClientService(ClientRelationshipDao dao, ObjectMapper mapper) {
     this.dao = dao;
+    ElasticTransformer.setMapper(mapper);
   }
 
   @Override
