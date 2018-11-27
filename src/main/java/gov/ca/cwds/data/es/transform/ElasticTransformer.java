@@ -539,6 +539,7 @@ public final class ElasticTransformer {
 
     // Update time stamp
     ret.setIndexUpdateTime(DomainChef.cookStrictTimestamp(new Date()));
+    ret.setSource("");
 
     return ret;
   }
