@@ -539,19 +539,13 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
 
   protected void prepPlacementClients(final PreparedStatement stmt, final Pair<String, String> p)
       throws SQLException {
-    stmt.setMaxRows(0);
-    stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS); // SNAP-709
-    stmt.setFetchSize(FETCH_SIZE);
-
+    optimizeStatement(stmt);
     final int countInsClient = stmt.executeUpdate();
     LOGGER.info("Prepped placement home clients: {}", countInsClient);
   }
 
   protected void readPlacementAddress(final PreparedStatement stmt) throws SQLException {
-    stmt.setMaxRows(0);
-    stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS); // SNAP-709
-    stmt.setFetchSize(FETCH_SIZE);
-
+    optimizeStatement(stmt);
     int cntr = 0;
     PlacementHomeAddress pha;
 
