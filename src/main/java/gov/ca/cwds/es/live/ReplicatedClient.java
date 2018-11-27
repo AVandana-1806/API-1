@@ -457,7 +457,7 @@ public class ReplicatedClient extends BaseClient implements ApiPersonAware,
 
   @Override
   public ElasticSearchLegacyDescriptor getLegacyDescriptor() {
-    return ElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
+    return LiveElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
         LegacyTable.CLIENT);
   }
 

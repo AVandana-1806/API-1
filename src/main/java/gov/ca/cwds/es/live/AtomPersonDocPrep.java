@@ -31,7 +31,7 @@ public interface AtomPersonDocPrep<T extends PersistentObject> extends ApiMarker
    * </pre>
    * 
    * @param esp ES document, already prepared by
-   *        {@link ElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
+   *        {@link LiveElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
    * @param t target ApiPersonAware instance
    * @param list list of ES child objects
    */
@@ -79,18 +79,18 @@ public interface AtomPersonDocPrep<T extends PersistentObject> extends ApiMarker
    * @param elements elements to send
    * @param updateOnly update only, no upsert (i.e., don't create a new document)
    * @return upsert request
-   * @throws CaresCheckedException general error
+   * @throws CaresExceptionChecked general error
    * @param <E> Element type
    */
   default <E> UpdateRequest prepareUpdateRequest(ElasticSearchPerson esp, T p, List<E> elements,
-      boolean updateOnly) throws CaresCheckedException {
+      boolean updateOnly) throws CaresExceptionChecked {
     final StringBuilder buf = new StringBuilder();
     String insertJson;
     try {
       buf.append("{\"").append(getOptionalElementName()).append("\":[");
 
       if (!elements.isEmpty()) {
-        buf.append(elements.stream().map(ElasticTransformer::jsonify).sorted(String::compareTo)
+        buf.append(elements.stream().map(LiveElasticTransformer::jsonify).sorted(String::compareTo)
             .collect(Collectors.joining(",")));
       }
 
@@ -119,11 +119,11 @@ public interface AtomPersonDocPrep<T extends PersistentObject> extends ApiMarker
    * @param p normalized person doc
    * @param elements elements to send
    * @return upsert request
-   * @throws CaresCheckedException general error
+   * @throws CaresExceptionChecked general error
    * @param <E> Element type
    */
   default <E> UpdateRequest prepareUpsertRequest(ElasticSearchPerson esp, T p, List<E> elements)
-      throws CaresCheckedException {
+      throws CaresExceptionChecked {
     return prepareUpdateRequest(esp, p, elements, false);
   }
 

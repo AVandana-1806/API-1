@@ -51,13 +51,13 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
  * 
  * @author CWDS API Team
  */
-public final class ElasticTransformer {
+public final class LiveElasticTransformer {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ElasticTransformer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LiveElasticTransformer.class);
 
   private static ObjectMapper mapper;
 
-  private ElasticTransformer() {
+  private LiveElasticTransformer() {
     // Static methods, don't instantiate.
   }
 
@@ -119,15 +119,15 @@ public final class ElasticTransformer {
    * @param alias ES index alias
    * @param docType ES document type
    * @param esp ES document, already prepared by
-   *        {@link ElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
+   *        {@link LiveElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
    * @param t target ApiPersonAware instance
    * @return left = insert JSON, right = update JSON throws JsonProcessingException on JSON parse
    *         error
-   * @throws CaresCheckedException on Elasticsearch disconnect or JSON parse error
+   * @throws CaresExceptionChecked on Elasticsearch disconnect or JSON parse error
    */
   public static <T extends PersistentObject> UpdateRequest prepareUpsertRequest(
       AtomPersonDocPrep<T> docPrep, String alias, String docType, final ElasticSearchPerson esp,
-      T t) throws CaresCheckedException {
+      T t) throws CaresExceptionChecked {
     String id = esp.getId();
 
     // Set id and legacy id.
@@ -152,7 +152,7 @@ public final class ElasticTransformer {
     // Child classes may override these methods as needed. left = update, right = insert.
     Pair<String, String> json;
     try {
-      json = ElasticTransformer.prepareUpsertJson(docPrep, esp, t, docPrep.getOptionalElementName(),
+      json = LiveElasticTransformer.prepareUpsertJson(docPrep, esp, t, docPrep.getOptionalElementName(),
           docPrep.getOptionalCollection(esp, t), docPrep.keepCollections());
     } catch (Exception e) {
       throw CaresLog.checked(LOGGER, e, "ERROR PREPARING UPSERT: {}", e.getMessage());
@@ -169,7 +169,7 @@ public final class ElasticTransformer {
    * @param <T> normalized persistent type
    * @param docPrep optional handling to set collections before serializing JSON
    * @param esp ES document, already prepared by
-   *        {@link ElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
+   *        {@link LiveElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
    * @param t target ApiPersonAware instance
    * @param elementName target ES element for update
    * @param list list of ES child objects
@@ -192,7 +192,7 @@ public final class ElasticTransformer {
       buf.append("{\"").append(elementName).append("\":[");
 
       if (list != null && !list.isEmpty()) {
-        buf.append(list.stream().map(ElasticTransformer::jsonify).sorted(String::compareTo)
+        buf.append(list.stream().map(LiveElasticTransformer::jsonify).sorted(String::compareTo)
             .collect(Collectors.joining(",")));
       }
 
@@ -245,7 +245,7 @@ public final class ElasticTransformer {
       ret = new ElasticSearchPerson[persons.length];
       int i = 0;
       for (ApiPersonAware px : persons) {
-        ret[i++] = ElasticTransformer.buildElasticSearchPersonDoc(px);
+        ret[i++] = LiveElasticTransformer.buildElasticSearchPersonDoc(px);
       }
     } else {
       ret = new ElasticSearchPerson[] {buildElasticSearchPerson((ApiPersonAware) p)};
@@ -262,7 +262,7 @@ public final class ElasticTransformer {
    * @throws JsonProcessingException if unable to serialize JSON
    */
   public static ElasticSearchPerson buildElasticSearchPerson(ApiPersonAware p) {
-    return ElasticTransformer.buildElasticSearchPersonDoc(p);
+    return LiveElasticTransformer.buildElasticSearchPersonDoc(p);
   }
 
   /**
@@ -549,8 +549,8 @@ public final class ElasticTransformer {
   }
 
   public static synchronized void setMapper(final ObjectMapper mapper) {
-    if (ElasticTransformer.mapper == null) {
-      ElasticTransformer.mapper = mapper;
+    if (LiveElasticTransformer.mapper == null) {
+      LiveElasticTransformer.mapper = mapper;
     }
   }
 

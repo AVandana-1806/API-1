@@ -45,7 +45,7 @@ public class ReplicatedAddress extends BaseAddress implements CmsReplicatedEntit
 
   @Override
   public ElasticSearchLegacyDescriptor getLegacyDescriptor() {
-    return ElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
+    return LiveElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
         LegacyTable.ADDRESS);
   }
 

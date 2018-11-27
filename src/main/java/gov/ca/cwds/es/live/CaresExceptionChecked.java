@@ -1,34 +1,32 @@
 package gov.ca.cwds.es.live;
 
 /**
- * Base class for <strong>runtime</strong> exceptions. Specialized runtime exceptions should extend
- * this class.
+ * Base class for checked exceptions. Custom checked exceptions should extend this class.
  * 
  * @author CWDS API Team
- * @see CaresCheckedException
  */
 @SuppressWarnings("serial")
-public class CaresRuntimeException extends RuntimeException {
+public class CaresExceptionChecked extends Exception {
 
   /**
-   * Pointless constructor. Use another one. Thanks Java.
+   * Pointless constructor. Use another one.
    */
   @SuppressWarnings("unused")
-  private CaresRuntimeException() {
+  private CaresExceptionChecked() {
     // Default, no-op.
   }
 
   /**
    * @param message error message
    */
-  public CaresRuntimeException(String message) {
+  public CaresExceptionChecked(String message) {
     super(message);
   }
 
   /**
    * @param cause original Throwable
    */
-  public CaresRuntimeException(Throwable cause) {
+  public CaresExceptionChecked(Throwable cause) {
     super(cause);
   }
 
@@ -36,7 +34,7 @@ public class CaresRuntimeException extends RuntimeException {
    * @param message error message
    * @param cause original Throwable
    */
-  public CaresRuntimeException(String message, Throwable cause) {
+  public CaresExceptionChecked(String message, Throwable cause) {
     super(message, cause);
   }
 
@@ -46,7 +44,7 @@ public class CaresRuntimeException extends RuntimeException {
    * @param enableSuppression whether or not suppression is enabled or disabled
    * @param writableStackTrace whether or not the stack trace should be writable
    */
-  public CaresRuntimeException(String message, Throwable cause, boolean enableSuppression,
+  public CaresExceptionChecked(String message, Throwable cause, boolean enableSuppression,
       boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }

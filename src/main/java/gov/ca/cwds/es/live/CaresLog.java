@@ -17,11 +17,11 @@ import org.slf4j.Logger;
  * </tr>
  * <tr>
  * <td align="justify">{@link #checked(Logger, Throwable, String, Object...) checked}</td>
- * <td align="justify">Wrap Throwable and in {@link CaresCheckedException}</td>
+ * <td align="justify">Wrap Throwable and in {@link CaresExceptionChecked}</td>
  * </tr>
  * <tr>
  * <td align="justify">{@link #runtime(Logger, Throwable, String, Object...) runtime}</td>
- * <td align="justify">Wrap Throwable and in {@link CaresRuntimeException}</td>
+ * <td align="justify">Wrap Throwable and in {@link CaresExceptionRuntime}</td>
  * </tr>
  * <tr>
  * <td align="justify">{@link #logEvery(Logger, int, int, String, Object...) logEvery}</td>
@@ -91,7 +91,7 @@ public class CaresLog {
   }
 
   /**
-   * Format message and return a runtime {@link CaresRuntimeException}.
+   * Format message and return a runtime {@link CaresExceptionRuntime}.
    * 
    * @param log class logger
    * @param e any Throwable
@@ -99,9 +99,9 @@ public class CaresLog {
    * @param args error message, excluding throwable message
    * @return JobsException runtime exception
    */
-  public static CaresRuntimeException buildRuntimeException(final Logger log, Throwable e,
+  public static CaresExceptionRuntime buildRuntimeException(final Logger log, Throwable e,
       String pattern, Object... args) {
-    CaresRuntimeException ret;
+    CaresExceptionRuntime ret;
     final boolean hasArgs = args == null || args.length == 0;
     final boolean hasPattern = !StringUtils.isEmpty(pattern);
     final Logger logger = log != null ? log : LOGGER;
@@ -113,17 +113,17 @@ public class CaresLog {
 
     if (e != null) {
       logger.error(msg, e);
-      ret = new CaresRuntimeException(msg, e);
+      ret = new CaresExceptionRuntime(msg, e);
     } else {
       logger.error(msg);
-      ret = new CaresRuntimeException(msg);
+      ret = new CaresExceptionRuntime(msg);
     }
 
     return ret;
   }
 
   /**
-   * Format message and return a runtime {@link CaresCheckedException}.
+   * Format message and return a runtime {@link CaresExceptionChecked}.
    * 
    * @param log class logger
    * @param e any Throwable
@@ -131,9 +131,9 @@ public class CaresLog {
    * @param args error message, excluding throwable message
    * @return NeutronCheckedException checked exception
    */
-  public static CaresCheckedException buildCheckedException(final Logger log, Throwable e,
+  public static CaresExceptionChecked buildCheckedException(final Logger log, Throwable e,
       String pattern, Object... args) {
-    CaresCheckedException ret;
+    CaresExceptionChecked ret;
     final boolean hasArgs = args == null || args.length == 0;
     final boolean hasPattern = !StringUtils.isEmpty(pattern);
     final Logger logger = log != null ? log : LOGGER;
@@ -145,30 +145,30 @@ public class CaresLog {
 
     if (e != null) {
       logger.error(msg, e);
-      ret = new CaresCheckedException(msg, e);
+      ret = new CaresExceptionChecked(msg, e);
     } else {
       logger.error(msg);
-      ret = new CaresCheckedException(msg);
+      ret = new CaresExceptionChecked(msg);
     }
 
     return ret;
   }
 
-  public static CaresCheckedException checked(final Logger log, Throwable e, String pattern,
+  public static CaresExceptionChecked checked(final Logger log, Throwable e, String pattern,
       Object... args) {
     return buildCheckedException(log, e, pattern, args);
   }
 
-  public static CaresCheckedException checked(final Logger log, String pattern, Object... args) {
+  public static CaresExceptionChecked checked(final Logger log, String pattern, Object... args) {
     return buildCheckedException(log, null, pattern, args);
   }
 
-  public static CaresRuntimeException runtime(final Logger log, Throwable e, String pattern,
+  public static CaresExceptionRuntime runtime(final Logger log, Throwable e, String pattern,
       Object... args) {
     return buildRuntimeException(log, e, pattern, args);
   }
 
-  public static CaresRuntimeException runtime(final Logger log, String pattern, Object... args) {
+  public static CaresExceptionRuntime runtime(final Logger log, String pattern, Object... args) {
     return buildRuntimeException(log, null, pattern, args);
   }
 

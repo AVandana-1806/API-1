@@ -164,7 +164,7 @@ public class RawToEsConverter {
           SystemCodeCache.global().getSystemCodeShortDescription(rawCsec.getCsecCodeId()));
     }
 
-    csec.setLegacyDescriptor(ElasticTransformer.createLegacyDescriptor(rawCsec.getCsecId(),
+    csec.setLegacyDescriptor(LiveElasticTransformer.createLegacyDescriptor(rawCsec.getCsecId(),
         rawCsec.getCsecLastUpdatedTimestamp(), LegacyTable.CSEC_HISTORY));
 
     rc.addCsec(csec);
@@ -224,7 +224,7 @@ public class RawToEsConverter {
     deactivation.setDeactivationExplanation(rawSafetyAlert.getSafetyAlertDeactivationExplanation());
 
     alert.setLegacyDescriptor(
-        ElasticTransformer.createLegacyDescriptor(rawSafetyAlert.getSafetyAlertId(),
+        LiveElasticTransformer.createLegacyDescriptor(rawSafetyAlert.getSafetyAlertId(),
             rawSafetyAlert.getSafetyAlertLastUpdatedTimestamp(), LegacyTable.SAFETY_ALERT));
 
     rc.addSafetyAlert(alert);
@@ -268,7 +268,7 @@ public class RawToEsConverter {
           SystemCodeCache.global().getSystemCodeShortDescription(rawAka.getAkaNameType()));
     }
 
-    aka.setLegacyDescriptor(ElasticTransformer.createLegacyDescriptor(rawAka.getAkaId(),
+    aka.setLegacyDescriptor(LiveElasticTransformer.createLegacyDescriptor(rawAka.getAkaId(),
         rawAka.getAkaLastUpdatedTimestamp(), LegacyTable.ALIAS_OR_OTHER_CLIENT_NAME));
 
     rc.addAka(aka);

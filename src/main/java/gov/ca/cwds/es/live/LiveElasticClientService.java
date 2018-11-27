@@ -64,7 +64,7 @@ public class LiveElasticClientService
   @Inject
   public LiveElasticClientService(ClientRelationshipDao dao, ObjectMapper mapper) {
     this.dao = dao;
-    ElasticTransformer.setMapper(mapper);
+    LiveElasticTransformer.setMapper(mapper);
     setSysPropsFromEnvVars();
   }
 

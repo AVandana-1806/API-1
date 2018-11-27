@@ -9,7 +9,7 @@ public class ReplicatedPlacementHomeAddress extends ReplicatedAddress {
 
   @Override
   public ElasticSearchLegacyDescriptor getLegacyDescriptor() {
-    return ElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
+    return LiveElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
         LegacyTable.PLACEMENT_HOME);
   }
 

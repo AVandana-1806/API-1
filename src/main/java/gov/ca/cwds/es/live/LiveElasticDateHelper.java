@@ -44,7 +44,7 @@ public class LiveElasticDateHelper {
       try {
         return new SimpleDateFormat(LEGACY_TIMESTAMP_FORMAT.getFormat()).parse(trimTimestamp);
       } catch (Exception e) {
-        throw new CaresRuntimeException(e);
+        throw new CaresExceptionRuntime(e);
       }
     }
     return null;

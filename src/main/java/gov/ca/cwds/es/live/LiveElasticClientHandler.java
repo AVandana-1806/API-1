@@ -507,7 +507,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
 
     // Stream to JSON and return.
     final List<ElasticSearchPerson> results = normalized.values().stream()
-        .map(ElasticTransformer::buildElasticSearchPerson).collect(Collectors.toList());
+        .map(LiveElasticTransformer::buildElasticSearchPerson).collect(Collectors.toList());
     return results;
   }
 
