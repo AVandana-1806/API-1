@@ -27,6 +27,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
 
   private static final long serialVersionUID = 1L;
 
+  @JsonSnakeCase
   public static class LiveElasticClientHits implements ApiMarker {
 
     private static final long serialVersionUID = 1L;
@@ -45,6 +46,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
 
   }
 
+  @JsonSnakeCase
   public static class LiveElasticClientPerson extends ElasticSearchPerson {
 
     private static final long serialVersionUID = 1L;
@@ -54,10 +56,6 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
 
     public LiveElasticClientPerson(ElasticSearchPerson person) {
       this.person = person;
-    }
-
-    public ElasticSearchPerson getPerson() {
-      return person;
     }
 
   }
