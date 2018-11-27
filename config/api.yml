@@ -60,7 +60,7 @@ cmsDataSourceFactory:
       hibernate.jdbc.time_zone: America/Los_Angeles
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
       hibernate.format_sql: ${FERB_HIBERNATE_FORMAT_SQL:-true}
-      hibernate.use_sql_comments: true
+      hibernate.use_sql_comments: false
       hibernate.default_schema: ${DB_CMS_SCHEMA}
       hibernate.connection.autocommit: false
       hibernate.connection.isolation: 2

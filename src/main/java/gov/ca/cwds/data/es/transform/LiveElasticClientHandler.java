@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -111,6 +112,28 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       // Statement, not child ResultSet). The DB2 driver gets confused, if you just close parent
       // statement and session without closing the result set.
       try (final ResultSet rs = stmt.executeQuery()) {
+        consumer.accept(rs);
+      } finally {
+        // Auto-close result set.
+      }
+    } catch (Exception e) {
+      throw CaresLog.runtime(LOGGER, e, "SELECT FAILED! {}", e.getMessage(), e);
+    }
+
+    LOGGER.trace("read(): done");
+  }
+
+  protected void read(final Statement stmt, String sql, Consumer<ResultSet> consumer) {
+    LOGGER.trace("read(): begin");
+    try {
+      stmt.setMaxRows(0);
+      stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS);
+      stmt.setFetchSize(FETCH_SIZE);
+
+      // Close ResultSet for driver stability, despite the JDBC standard (i.e., close parent
+      // Statement, not child ResultSet). The DB2 driver gets confused, if you just close parent
+      // statement and session without closing the result set.
+      try (final ResultSet rs = stmt.executeQuery(sql)) {
         consumer.accept(rs);
       } finally {
         // Auto-close result set.
@@ -400,6 +423,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   public void handleMain(Connection con) throws SQLException {
     LOGGER.trace("handleMain(): begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
+        // final Statement stmtClient = con.createStatement();
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
         final PreparedStatement stmtAddress = prep(con, SEL_ADDR);
         final PreparedStatement stmtAka = prep(con, SEL_AKA);
@@ -411,7 +435,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
     ) {
       LOGGER.info("Read client");
-      read(stmtClient, rs -> readClient(rs));
+      read(stmtClient, SEL_CLI, rs -> readClient(rs));
 
       // SNAP-735: missing addresses.
       LOGGER.info("Read client address");
