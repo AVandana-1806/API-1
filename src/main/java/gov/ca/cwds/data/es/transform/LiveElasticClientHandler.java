@@ -435,7 +435,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
     ) {
       LOGGER.info("Read client");
-      read(stmtClient, SEL_CLI, rs -> readClient(rs));
+      // read(stmtClient, SEL_CLI, rs -> readClient(rs));
+      read(stmtClient, rs -> readClient(rs));
 
       // SNAP-735: missing addresses.
       LOGGER.info("Read client address");
