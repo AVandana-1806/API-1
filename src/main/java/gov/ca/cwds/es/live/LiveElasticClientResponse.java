@@ -27,24 +27,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
 
   private static final long serialVersionUID = 1L;
 
-  public static class LiveElasticClientHitsOuter implements ApiMarker {
-
-    private static final long serialVersionUID = 1L;
-
-    @JsonProperty("hits")
-    private final LiveElasticClientHitsInner hits;
-
-    public LiveElasticClientHitsOuter(LiveElasticClientHitsInner hits) {
-      this.hits = hits;
-    }
-
-    public LiveElasticClientHitsInner getHits() {
-      return hits;
-    }
-
-  }
-
-  public static class LiveElasticClientHitsInner implements ApiMarker {
+  public static class LiveElasticClientHits implements ApiMarker {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,7 +39,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
      * 
      * @param hits ElasticSearchPerson objects
      */
-    public LiveElasticClientHitsInner(List<LiveElasticClientPerson> hits) {
+    public LiveElasticClientHits(List<LiveElasticClientPerson> hits) {
       this.hits = hits;
     }
 
@@ -80,7 +63,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
   }
 
   @JsonProperty("hits")
-  private final LiveElasticClientHitsOuter hits;
+  private final LiveElasticClientHits hits;
 
   /**
    * Construct from ElasticSearchPerson hits.
@@ -88,8 +71,8 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
    * @param hits ElasticSearchPerson objects
    */
   public LiveElasticClientResponse(List<ElasticSearchPerson> hits) {
-    this.hits = new LiveElasticClientHitsOuter(new LiveElasticClientHitsInner(
-        hits.stream().map(LiveElasticClientPerson::new).collect(Collectors.toList())));
+    this.hits = new LiveElasticClientHits(
+        hits.stream().map(LiveElasticClientPerson::new).collect(Collectors.toList()));
   }
 
   @Override
