@@ -3,9 +3,7 @@ package gov.ca.cwds.es.live;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.data.persistence.PersistentObject;
@@ -60,19 +58,7 @@ public interface AtomLoadStepHandler<N extends PersistentObject> {
    * 
    * @return clean, normalized results
    */
-  default List<N> getResults() {
-    return new ArrayList<>();
-  }
-
-  /**
-   * Retrieve records from Hibernate, JDBC, or whatever.
-   * 
-   * @param lastRunDate last successful run date-time
-   * @param deletionResults sensitive records to delete, if any
-   * @return list of normalized records, ready for Elasticsearch
-   */
-  default List<N> fetchLastRunNormalizedResults(final Date lastRunDate,
-      final Set<String> deletionResults) {
+  default List<N> getNormalizedObjects() {
     return new ArrayList<>();
   }
 

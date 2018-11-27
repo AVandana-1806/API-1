@@ -101,13 +101,16 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   // Search, the next generation.
   // =================================
 
+  protected void optimizeStatement(final Statement stmt) throws SQLException {
+    stmt.setMaxRows(0);
+    stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS);
+    stmt.setFetchSize(FETCH_SIZE);
+  }
+
   protected void read(final PreparedStatement stmt, Consumer<ResultSet> consumer) {
     LOGGER.trace("read(): begin");
     try {
-      stmt.setMaxRows(0);
-      stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS);
-      stmt.setFetchSize(FETCH_SIZE);
-
+      optimizeStatement(stmt);
       // Close ResultSet for driver stability, despite the JDBC standard (i.e., close parent
       // Statement, not child ResultSet). The DB2 driver gets confused, if you just close parent
       // statement and session without closing the result set.
@@ -126,13 +129,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   protected void read(final Statement stmt, String sql, Consumer<ResultSet> consumer) {
     LOGGER.trace("read(): begin");
     try {
-      stmt.setMaxRows(0);
-      stmt.setQueryTimeout(QUERY_TIMEOUT_IN_SECONDS);
-      stmt.setFetchSize(FETCH_SIZE);
-
-      // Close ResultSet for driver stability, despite the JDBC standard (i.e., close parent
-      // Statement, not child ResultSet). The DB2 driver gets confused, if you just close parent
-      // statement and session without closing the result set.
+      optimizeStatement(stmt);
       try (final ResultSet rs = stmt.executeQuery(sql)) {
         consumer.accept(rs);
       } finally {
@@ -396,12 +393,12 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
     final int maxSize = keyList.length;
     final int numParams = StringUtils.countMatches(sql, '?');
-    LOGGER.info("prep(): maxSize: {}, numParams: {}", maxSize, numParams);
+    LOGGER.trace("prep(): maxSize: {}, numParams: {}", maxSize, numParams);
 
     String key;
     for (int i = 1; i <= numParams; i++) {
       key = i <= maxSize ? keyList[i - 1] : "0";
-      LOGGER.info("set key: {}, position: {}", key, i);
+      LOGGER.trace("set key: {}, position: {}", key, i);
       ret.setString(i, key);
     }
 
@@ -421,7 +418,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    */
   @Override
   public void handleMain(Connection con) throws SQLException {
-    LOGGER.trace("handleMain(): begin");
+    LOGGER.trace("begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         // final Statement stmtClient = con.createStatement();
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
@@ -435,7 +432,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
     ) {
       LOGGER.debug("Read client");
-      // read(stmtClient, SEL_CLI, rs -> readClient(rs));
       read(stmtClient, rs -> readClient(rs));
 
       // SNAP-735: missing addresses.
@@ -444,9 +440,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
 
       LOGGER.debug("Read address");
       read(stmtAddress, rs -> readAddress(rs));
-
-      // LOGGER.info("Read client county");
-      // read(stmtCliCnty, rs -> readClientCounty(rs));
 
       LOGGER.debug("Read aka");
       read(stmtAka, rs -> readAka(rs));
@@ -463,24 +456,28 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
 
       LOGGER.debug("Read safety alert");
       read(stmtSafety, rs -> readSafetyAlert(rs));
-      con.commit(); // free db resources again
 
       LOGGER.debug("Read placement home address");
       readPlacementAddress(stmtPlcmntAddr);
+
+      // Don't need for live clients but may need them for "live" search results.
+      // LOGGER.info("Read client county");
+      // read(stmtCliCnty, rs -> readClientCounty(rs));
+
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
-      LOGGER.error("handleMain: BOOM!", e);
+      LOGGER.error("FAILED TO RETRIEVE CLIENTS!", e);
 
       try {
         monitor.fail();
         con.rollback();
       } catch (Exception e2) {
-        LOGGER.trace("NESTED ROLLBACK EXCEPTION!", e2);
+        LOGGER.warn("NESTED ROLLBACK EXCEPTION!", e2);
       }
       throw CaresLog.runtime(LOGGER, e, "MAIN JDBC FAILED! {}", e.getMessage(), e);
     }
 
-    LOGGER.debug("handleMain(): DONE");
+    LOGGER.trace("DONE");
   }
 
   protected void mapReplicatedClient(PlacementHomeAddress pha) {
@@ -500,15 +497,14 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     rawClients.values().stream().map(r -> r.normalize(conv))
         .forEach(c -> normalized.put(c.getId(), c));
     rawClients.clear(); // free memory
-    LOGGER.debug("handleJdbcDone: normalized: {}", normalized.size());
+    LOGGER.trace("normalized: {}", normalized.size());
 
     // Merge placement home addresses.
     placementHomeAddresses.values().stream().forEach(this::mapReplicatedClient);
 
     // Stream to JSON and return.
-    final List<ElasticSearchPerson> results = normalized.values().stream()
-        .map(LiveElasticTransformer::buildElasticSearchPerson).collect(Collectors.toList());
-    return results;
+    return normalized.values().stream().map(LiveElasticTransformer::buildElasticSearchPerson)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -518,7 +514,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   @Override
-  public List<ReplicatedClient> getResults() {
+  public List<ReplicatedClient> getNormalizedObjects() {
     return normalized.values().stream().collect(Collectors.toList());
   }
 
