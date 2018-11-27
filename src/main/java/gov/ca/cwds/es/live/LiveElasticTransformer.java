@@ -509,7 +509,7 @@ public final class LiveElasticTransformer {
     // Set client counties
     final List<ElasticSearchSystemCode> clientCounties = buildClientCounties(p);
     ret.setClientCounties(clientCounties);
-    // this is only added for backward compatibility
+    // Added only for backward compatibility.
     if (!clientCounties.isEmpty()) {
       ret.setClientCounty(clientCounties.get(0));
     }
