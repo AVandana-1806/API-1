@@ -85,10 +85,6 @@ public class RawClientAddress extends ClientAddressReference
     this.claEffectiveEndDate = rs.getDate(ColumnPosition.CLA_EFF_END_DT.ordinal());
     this.claEffectiveStartDate = rs.getDate(ColumnPosition.CLA_EFF_STRTDT.ordinal());
 
-    this.setClaReplicationOperation(CmsReplicationOperation
-        .strToRepOp(rs.getString(ColumnPosition.CLA_IBMSNAP_OPERATION.ordinal())));
-    this.setClaReplicationDate(rs.getDate(ColumnPosition.CLA_IBMSNAP_LOGMARKER.ordinal()));
-
     return this;
   }
 

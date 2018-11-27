@@ -67,9 +67,6 @@ public class RawCsec extends ClientReference implements LiveElasticJdbcReader<Ra
     csecEndDate = rs.getDate(ColumnPosition.CSH_END_DT.ordinal());
     csecLastUpdatedId = rs.getString(ColumnPosition.CSH_LST_UPD_ID.ordinal());
     csecLastUpdatedTimestamp = rs.getTimestamp(ColumnPosition.CSH_LST_UPD_TS.ordinal());
-    csecLastUpdatedOperation = CmsReplicationOperation
-        .strToRepOp(rs.getString(ColumnPosition.CSH_IBMSNAP_OPERATION.ordinal()));
-    csecReplicationTimestamp = rs.getTimestamp(ColumnPosition.CSH_IBMSNAP_LOGMARKER.ordinal());
 
     return this;
   }

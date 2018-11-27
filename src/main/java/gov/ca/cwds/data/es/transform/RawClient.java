@@ -292,59 +292,31 @@ public class RawClient extends ClientReference implements LiveElasticJdbcReader<
         trimToNull(rs.getString(ColumnPosition.CLT_SENSTV_IND.ordinal()));
     this.cltSoc158SealedClientIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_SOC158_IND.ordinal()));
-    // this.cltAdjudicatedDelinquentIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_ADJDEL_IND.ordinal()));
-    // this.cltAdoptionStatusCode = rs.getString(ColumnPosition.CLT_ADPTN_STCD.ordinal());
-    // this.cltAlienRegistrationNumber =
-    // trimToNull(rs.getString(ColumnPosition.CLT_ALN_REG_NO.ordinal()));
     this.cltBirthCity = trimToNull(rs.getString(ColumnPosition.CLT_BIRTH_CITY.ordinal()));
-    // this.cltBirthCountryCodeType = rs.getShort(ColumnPosition.CLT_B_CNTRY_C.ordinal());
     this.cltBirthDate = rs.getDate(ColumnPosition.CLT_BIRTH_DT.ordinal());
-    // this.cltBirthFacilityName = trimToNull(rs.getString(ColumnPosition.CLT_BR_FAC_NM.ordinal()));
     this.cltBirthStateCodeType = rs.getShort(ColumnPosition.CLT_B_STATE_C.ordinal());
-    // this.cltBirthplaceVerifiedIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_BP_VER_IND.ordinal()));
     this.cltChildClientIndicatorVar =
         trimToNull(rs.getString(ColumnPosition.CLT_CHLD_CLT_B.ordinal()));
     this.cltClientIndexNumber = trimToNull(rs.getString(ColumnPosition.CLT_CL_INDX_NO.ordinal()));
-    // this.cltCommentDescription =
-    // trimToNull(rs.getString(ColumnPosition.CLT_COMMNT_DSC.ordinal()));
     this.cltCommonFirstName = (rs.getString(ColumnPosition.CLT_COM_FST_NM.ordinal()));
     this.cltCommonLastName = trimToNull(rs.getString(ColumnPosition.CLT_COM_LST_NM.ordinal()));
     this.cltCommonMiddleName = trimToNull(rs.getString(ColumnPosition.CLT_COM_MID_NM.ordinal()));
-    // this.cltConfidentialityActionDate = rs.getDate(ColumnPosition.CLT_CONF_ACTDT.ordinal());
-    // this.cltConfidentialityInEffectIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_CONF_EFIND.ordinal()));
     this.cltCreationDate = rs.getDate(ColumnPosition.CLT_CREATN_DT.ordinal());
     this.cltCurrCaChildrenServIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_CURRCA_IND.ordinal()));
-    // this.cltCurrentlyOtherDescription = rs.getString(ColumnPosition.CLT_COTH_DESC.ordinal());
-    // this.cltCurrentlyRegionalCenterIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_CURREG_IND.ordinal()));
     this.cltDeathDate = rs.getDate(ColumnPosition.CLT_DEATH_DT.ordinal());
     this.cltDeathDateVerifiedIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_DTH_DT_IND.ordinal()));
-    // this.cltDeathPlace = trimToNull(rs.getString(ColumnPosition.CLT_DEATH_PLC.ordinal()));
-    // this.cltDeathReasonText = trimToNull(rs.getString(ColumnPosition.CLT_DTH_RN_TXT.ordinal()));
     this.cltDriverLicenseNumber = trimToNull(rs.getString(ColumnPosition.CLT_DRV_LIC_NO.ordinal()));
     this.cltDriverLicenseStateCodeType = rs.getShort(ColumnPosition.CLT_D_STATE_C.ordinal());
     this.cltEmailAddress = trimToNull(rs.getString(ColumnPosition.CLT_EMAIL_ADDR.ordinal()));
-    // this.cltEstimatedDobCode = trimToNull(rs.getString(ColumnPosition.CLT_EST_DOB_CD.ordinal()));
     this.cltEthUnableToDetReasonCode =
         trimToNull(rs.getString(ColumnPosition.CLT_ETH_UD_CD.ordinal()));
-    // this.cltFatherParentalRightTermDate = rs.getDate(ColumnPosition.CLT_FTERM_DT.ordinal());
     this.cltGenderCode = trimToNull(rs.getString(ColumnPosition.CLT_GENDER_CD.ordinal()));
-    // this.cltHealthSummaryText =
-    // trimToNull(rs.getString(ColumnPosition.CLT_HEALTH_TXT.ordinal()));
     this.cltHispUnableToDetReasonCode =
         trimToNull(rs.getString(ColumnPosition.CLT_HISP_UD_CD.ordinal()));
     this.cltHispanicOriginCode = trimToNull(rs.getString(ColumnPosition.CLT_HISP_CD.ordinal()));
-    // this.cltImmigrationCountryCodeType = rs.getShort(ColumnPosition.CLT_I_CNTRY_C.ordinal());
     this.cltImmigrationStatusType = rs.getShort(ColumnPosition.CLT_IMGT_STC.ordinal());
-    // this.cltIncapacitatedParentCode =
-    // trimToNull(rs.getString(ColumnPosition.CLT_INCAPC_CD.ordinal()));
-    // this.cltIndividualHealthCarePlanIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_HCARE_IND.ordinal()));
     this.cltLimitationOnScpHealthIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_LIMIT_IND.ordinal()));
     this.cltLiterateCode = trimToNull(rs.getString(ColumnPosition.CLT_LITRATE_CD.ordinal()));
@@ -356,14 +328,6 @@ public class RawClient extends ClientReference implements LiveElasticJdbcReader<
     this.cltNamePrefixDescription =
         trimToNull(rs.getString(ColumnPosition.CLT_NMPRFX_DSC.ordinal()));
     this.cltNameType = rs.getShort(ColumnPosition.CLT_NAME_TPC.ordinal());
-    // this.cltOutstandingWarrantIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_OUTWRT_IND.ordinal()));
-    // this.cltPrevCaChildrenServIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_PREVCA_IND.ordinal()));
-    // this.cltPrevOtherDescription =
-    // trimToNull(rs.getString(ColumnPosition.CLT_POTH_DESC.ordinal()));
-    // this.cltPrevRegionalCenterIndicator =
-    // trimToNull(rs.getString(ColumnPosition.CLT_PREREG_IND.ordinal()));
     this.cltPrimaryEthnicityType = rs.getShort(ColumnPosition.CLT_P_ETHNCTYC.ordinal());
 
     this.cltPrimaryLanguageType = rs.getShort(ColumnPosition.CLT_P_LANG_TPC.ordinal());

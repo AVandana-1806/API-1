@@ -1,8 +1,6 @@
 package gov.ca.cwds.data.es.transform;
 
 import static gov.ca.cwds.rest.api.domain.DomainChef.freshDate;
-import static org.apache.commons.lang3.StringUtils.trimToNull;
-
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -18,7 +16,8 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
-public class RawSafetyAlert extends ClientReference implements LiveElasticJdbcReader<RawSafetyAlert> {
+public class RawSafetyAlert extends ClientReference
+    implements LiveElasticJdbcReader<RawSafetyAlert> {
 
   private static final long serialVersionUID = 1L;
 
@@ -89,10 +88,6 @@ public class RawSafetyAlert extends ClientReference implements LiveElasticJdbcRe
     safetyAlertDeactivationExplanation = rs.getString(ColumnPosition.SAL_DACT_TXT.ordinal());
     safetyAlertLastUpdatedId = rs.getString(ColumnPosition.SAL_LST_UPD_ID.ordinal());
     safetyAlertLastUpdatedTimestamp = rs.getTimestamp(ColumnPosition.SAL_LST_UPD_TS.ordinal());
-    safetyAlertLastUpdatedOperation = CmsReplicationOperation
-        .strToRepOp(rs.getString(ColumnPosition.SAL_IBMSNAP_OPERATION.ordinal()));
-    safetyAlertReplicationTimestamp =
-        rs.getTimestamp(ColumnPosition.SAL_IBMSNAP_LOGMARKER.ordinal());
 
     return this;
   }

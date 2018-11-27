@@ -80,9 +80,6 @@ public class RawAka extends ClientReference implements LiveElasticJdbcReader<Raw
     akaSuffixTitleDescription = trimToNull(rs.getString(ColumnPosition.ONM_SUFX_TLDSC.ordinal()));
     akaLastUpdatedId = rs.getString(ColumnPosition.ONM_LST_UPD_ID.ordinal());
     akaLastUpdatedTimestamp = rs.getTimestamp(ColumnPosition.ONM_LST_UPD_TS.ordinal());
-    akaLastUpdatedOperation = CmsReplicationOperation
-        .strToRepOp(rs.getString(ColumnPosition.ONM_IBMSNAP_OPERATION.ordinal()));
-    akaReplicationTimestamp = rs.getTimestamp(ColumnPosition.ONM_IBMSNAP_LOGMARKER.ordinal());
 
     return this;
   }
