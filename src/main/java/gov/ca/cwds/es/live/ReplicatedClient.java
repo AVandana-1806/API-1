@@ -1,0 +1,580 @@
+package gov.ca.cwds.es.live;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import gov.ca.cwds.common.NameSuffixTranslator;
+import gov.ca.cwds.data.es.ElasticSearchLegacyDescriptor;
+import gov.ca.cwds.data.es.ElasticSearchPersonAddress;
+import gov.ca.cwds.data.es.ElasticSearchPersonAka;
+import gov.ca.cwds.data.es.ElasticSearchPersonCsec;
+import gov.ca.cwds.data.es.ElasticSearchPersonPhone;
+import gov.ca.cwds.data.es.ElasticSearchRaceAndEthnicity;
+import gov.ca.cwds.data.es.ElasticSearchSafetyAlert;
+import gov.ca.cwds.data.es.ElasticSearchSystemCode;
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.persistence.cms.BaseClient;
+import gov.ca.cwds.data.std.ApiMultipleLanguagesAware;
+import gov.ca.cwds.data.std.ApiMultiplePhonesAware;
+import gov.ca.cwds.data.std.ApiPersonAware;
+import gov.ca.cwds.data.std.ApiPhoneAware;
+import gov.ca.cwds.data.std.ApiPhoneAware.PhoneType;
+import gov.ca.cwds.rest.api.domain.DomainChef;
+import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import gov.ca.cwds.rest.api.domain.cms.SystemCode;
+import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+
+/**
+ * {@link PersistentObject} representing a Client a {@link CmsReplicatedEntity} in the replicated
+ * schema.
+ *
+ * @author CWDS API Team
+ */
+@JsonPropertyOrder(alphabetic = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ReplicatedClient extends BaseClient implements ApiPersonAware,
+    ApiMultipleLanguagesAware, ApiMultipleClientAddressAware, ApiMultiplePhonesAware,
+    CmsReplicatedEntity, ApiClientCountyAware, ApiClientRaceAndEthnicityAware,
+    ApiClientSafetyAlertsAware, ApiOtherClientNamesAware, ApiClientCaseAware {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReplicatedClient.class);
+
+  private static final long serialVersionUID = 1L;
+
+  private static final String HISPANIC_CODE_OTHER_ID = "02";
+  private static final Short CARIBBEAN_RACE_CODE = 3162;
+
+  /**
+   * A client can have multiple active addresses, typically one active address per address type.
+   */
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "fkClient")
+  private Set<ReplicatedClientAddress> clientAddresses = new LinkedHashSet<>();
+
+  @Transient
+  private List<Short> clientRaces = new ArrayList<>();
+
+  @Transient
+  private Map<String, ElasticSearchPersonAka> akas = new HashMap<>();
+
+  @Transient
+  private Map<String, ElasticSearchPersonCsec> csecs = new HashMap<>();
+
+  @Transient
+  private Map<String, ElasticSearchSafetyAlert> safetyAlerts = new HashMap<>();
+
+  @Transient
+  private Set<Short> clientCounties = new HashSet<>();
+
+  @Transient
+  private String openCaseId;
+
+  @Transient
+  private String openCaseResponsibleAgencyCode;
+
+  @Transient
+  private PlacementHomeAddress activePlacementHomeAddress;
+
+  private EmbeddableCmsReplicatedEntity replicatedEntity = new EmbeddableCmsReplicatedEntity();
+
+  /**
+   * Default, no-op constructor
+   */
+  public ReplicatedClient() {
+    // Default, no-op.
+  }
+
+  /**
+   * Get client address linkages.
+   *
+   * @return client addresses
+   */
+  public Set<ReplicatedClientAddress> getClientAddresses() {
+    return clientAddresses;
+  }
+
+  /**
+   * Add a client address linkage.
+   *
+   * @param clientAddress client address
+   */
+  public void addClientAddress(ReplicatedClientAddress clientAddress) {
+    if (clientAddress != null) {
+      this.clientAddresses.add(clientAddress);
+    }
+  }
+
+  public void addClientCounty(Short clientCountyId) {
+    if (clientCountyId != null) {
+      this.clientCounties.add(clientCountyId);
+    }
+  }
+
+  public List<Short> getClientRaces() {
+    return clientRaces;
+  }
+
+  public void setClientRaces(List<Short> clientRaces) {
+    this.clientRaces = clientRaces;
+  }
+
+  public void addClientRace(Short clientRace) {
+    if (clientRace != null && !this.clientRaces.contains(clientRace)) {
+      this.clientRaces.add(clientRace);
+    }
+  }
+
+  public Map<String, ElasticSearchPersonAka> getAkas() {
+    return akas;
+  }
+
+  public void setAkas(Map<String, ElasticSearchPersonAka> akas) {
+    this.akas = akas;
+  }
+
+  public void addAka(ElasticSearchPersonAka aka) {
+    if (aka != null) {
+      akas.put(aka.getId(), aka);
+    }
+  }
+
+  public Map<String, ElasticSearchPersonCsec> getCsecs() {
+    return csecs;
+  }
+
+  public void setCsecs(Map<String, ElasticSearchPersonCsec> csecs) {
+    this.csecs = csecs;
+  }
+
+  public void addCsec(ElasticSearchPersonCsec csec) {
+    if (csec != null) {
+      csecs.put(csec.getId(), csec);
+    }
+  }
+
+  public Map<String, ElasticSearchSafetyAlert> getSafetyAlerts() {
+    return safetyAlerts;
+  }
+
+  public void setSafetyAlerts(Map<String, ElasticSearchSafetyAlert> safetyAlerts) {
+    if (safetyAlerts != null) {
+      this.safetyAlerts = safetyAlerts;
+    }
+  }
+
+  public void addSafetyAlert(ElasticSearchSafetyAlert safetyAlert) {
+    if (safetyAlert != null) {
+      safetyAlerts.put(safetyAlert.getId(), safetyAlert);
+    }
+  }
+
+  /**
+   * Get id of open case for this client
+   *
+   * @return Open case id if any
+   */
+  @Override
+  public String getOpenCaseId() {
+    return openCaseId;
+  }
+
+  /**
+   * Set id of open case for this client
+   *
+   * @param openCaseId Open case id if any
+   */
+  public void setOpenCaseId(String openCaseId) {
+    this.openCaseId = openCaseId;
+  }
+
+  /**
+   * Get responsible agency code for open case.
+   * 
+   * @return Responsible agency code for open case.
+   */
+  @Override
+  public String getOpenCaseResponsibleAgencyCode() {
+    return openCaseResponsibleAgencyCode;
+  }
+
+  /**
+   * Set responsible agency code for open case.
+   * 
+   * @param openCaseResponsibleAgencyCode Responsible agency code for open case.
+   */
+  public void setOpenCaseResponsibleAgencyCode(String openCaseResponsibleAgencyCode) {
+    this.openCaseResponsibleAgencyCode = openCaseResponsibleAgencyCode;
+  }
+
+  /**
+   * Override to substitute an alternative System Code implementation, such as a simple String or
+   * Short.
+   *
+   * @return ElasticSearchSystemCode instance
+   */
+  protected ElasticSearchSystemCode makeJsonAddressType() {
+    return new ElasticSearchSystemCode();
+  }
+
+  public PlacementHomeAddress getActivePlacementHomeAddress() {
+    return activePlacementHomeAddress;
+  }
+
+  public void setActivePlacementHomeAddress(PlacementHomeAddress activePlacementHomeAddress) {
+    this.activePlacementHomeAddress = activePlacementHomeAddress;
+  }
+
+  // =================================
+  // ApiMultipleClientAddressAware:
+  // =================================
+
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * HOT-1885: last known residence address (rule R-02294)
+   * </p>
+   */
+  @JsonIgnore
+  @Override
+  public List<ElasticSearchPersonAddress> getElasticSearchPersonAddresses() {
+    final Map<String, ElasticSearchPersonAddress> esClientAddresses = new LinkedHashMap<>();
+
+    // Sort addresses by start date in descending order.
+    // Last known address comes first.
+    final List<ReplicatedClientAddress> sortedClientAddresses = new ArrayList<>();
+
+    // Rule R - 02294 Client Abstract Most Recent Address
+    // Store all active addresses.
+    // Placement home first.
+    if (activePlacementHomeAddress != null) {
+      sortedClientAddresses.add(activePlacementHomeAddress.toReplicatedClientAddress());
+    }
+
+    // Sort by placement home, residence, and other types, and start date descending.
+    clientAddresses.stream().filter(ReplicatedClientAddress::isActive) // active only
+        .sorted(Comparator
+            .comparing(ReplicatedClientAddress::isResidence,
+                Comparator.nullsLast(Comparator.reverseOrder())) // residence first
+            .thenComparing(ReplicatedClientAddress::getEffStartDt, // start date, descending
+                Comparator.nullsLast(Comparator.reverseOrder())))
+        .forEach(sortedClientAddresses::add);
+
+    LOGGER.trace("counts: client addresses: {}, sorted addresses: {}", clientAddresses.size(),
+        sortedClientAddresses.size());
+
+    for (ReplicatedClientAddress repClientAddress : sortedClientAddresses) {
+      final String effectiveEndDate = DomainChef.cookDate(repClientAddress.getEffEndDt());
+      final boolean addressActive = StringUtils.isBlank(effectiveEndDate);
+
+      if (addressActive) {
+        // Choose appropriate system code type for index target index.
+        final ElasticSearchSystemCode addressType = makeJsonAddressType();
+        final SystemCode addressTypeSystemCode =
+            SystemCodeCache.global().getSystemCode(repClientAddress.getAddressType());
+
+        if (addressTypeSystemCode != null) {
+          addressType.setDescription(addressTypeSystemCode.getShortDescription());
+          addressType.setId(addressTypeSystemCode.getSystemId().toString());
+        }
+
+        for (ReplicatedAddress repAddress : repClientAddress.getAddresses()) {
+          final ElasticSearchPersonAddress esAddress = new ElasticSearchPersonAddress();
+          esClientAddresses.put(repAddress.getAddressId(), esAddress);
+
+          esAddress.setLegacyDescriptor(repAddress.getLegacyDescriptor());
+          esAddress.setId(repAddress.getAddressId());
+          esAddress.setCity(repAddress.getCity());
+          esAddress.setCounty(repAddress.getCounty());
+          esAddress.setState(repAddress.getState());
+          esAddress.setZip(repAddress.getZip());
+          esAddress.setZip4(repAddress.getApiAdrZip4());
+          esAddress.setStreetName(repAddress.getStreetName());
+          esAddress.setStreetNumber(repAddress.getStreetNumber());
+          esAddress.setUnitNumber(repAddress.getApiAdrUnitNumber());
+          esAddress.setEffectiveStartDate(DomainChef.cookDate(repClientAddress.getEffStartDt()));
+          esAddress.setEffectiveEndDate(effectiveEndDate);
+          esAddress.setType(addressType);
+          esAddress.setActive("true"); // String, not a boolean?
+
+          final ElasticSearchSystemCode stateCode = new ElasticSearchSystemCode();
+          esAddress.setStateSystemCode(stateCode);
+
+          final SystemCode stateSysCode =
+              SystemCodeCache.global().getSystemCode(repAddress.getStateCd());
+          if (stateSysCode != null) {
+            stateCode.setDescription(stateSysCode.getShortDescription());
+            stateCode.setId(stateSysCode.getSystemId().toString());
+            esAddress.setStateName(stateSysCode.getShortDescription());
+            esAddress.setStateCode(stateSysCode.getLogicalId());
+          }
+
+          final ElasticSearchSystemCode countyCode = new ElasticSearchSystemCode();
+          esAddress.setCountySystemCode(countyCode);
+
+          final SystemCode countySysCode =
+              SystemCodeCache.global().getSystemCode(repAddress.getGovernmentEntityCd());
+          if (countySysCode != null) {
+            countyCode.setDescription(countySysCode.getShortDescription());
+            countyCode.setId(countySysCode.getSystemId().toString());
+          }
+
+          final Short unitType = repAddress.getApiAdrUnitType();
+          if (unitType != null && unitType.intValue() != 0) {
+            esAddress.setUnitType(SystemCodeCache.global().getSystemCodeShortDescription(unitType));
+          }
+
+          // SNAP-46: last known phone numbers.
+          esAddress.setPhones(getPhones(repClientAddress, repAddress));
+        }
+      }
+    }
+
+    final List<ElasticSearchPersonAddress> sortedAddresses =
+        new ArrayList<>(esClientAddresses.values());
+    if (!sortedAddresses.isEmpty()) {
+      sortedAddresses.get(0).setLastKnown("true");
+    }
+
+    return sortedAddresses;
+  }
+
+  // ============================
+  // ApiMultiplePhonesAware:
+  // ============================
+
+  protected ElasticSearchPersonPhone toPhone(String phoneNumber, String phoneNumberExtension,
+      PhoneType phoneType) {
+    ElasticSearchPersonPhone ret = new ElasticSearchPersonPhone();
+
+    ret.setPhoneNumber(phoneNumber);
+    ret.setPhoneNumberExtension(phoneNumberExtension);
+    ret.setPhoneType(phoneType);
+
+    return ret;
+  }
+
+  protected boolean isNumberPopulated(Number n) {
+    return n != null && n.intValue() != 0;
+  }
+
+  public List<ElasticSearchPersonPhone> getPhones(ReplicatedClientAddress clientAddress,
+      ReplicatedAddress addr) {
+    final List<ElasticSearchPersonPhone> ret = new ArrayList<>();
+
+    if (isNumberPopulated(addr.getPrimaryNumber())) {
+      ApiPhoneAware.PhoneType phoneType = ApiPhoneAware.PhoneType.Other;
+      if (clientAddress.isResidence()) {
+        phoneType = ApiPhoneAware.PhoneType.Home;
+      } else if (clientAddress.isBusiness()) {
+        phoneType = ApiPhoneAware.PhoneType.Work;
+      }
+
+      ret.add(toPhone(String.valueOf(addr.getPrimaryNumber()),
+          addr.getPrimaryExtension() != null ? addr.getPrimaryExtension().toString() : null,
+          phoneType));
+    }
+
+    if (isNumberPopulated(addr.getMessageNumber())) {
+      ret.add(toPhone(String.valueOf(addr.getMessageNumber()),
+          addr.getMessageExtension() != null ? addr.getMessageExtension().toString() : null,
+          ApiPhoneAware.PhoneType.Cell));
+    }
+
+    if (isNumberPopulated(addr.getEmergencyNumber())) {
+      ret.add(toPhone(String.valueOf(addr.getEmergencyNumber()),
+          addr.getEmergencyExtension() != null ? addr.getEmergencyExtension().toString() : null,
+          ApiPhoneAware.PhoneType.Other));
+    }
+
+    return ret;
+  }
+
+  public List<ElasticSearchPersonPhone> getPhones(ReplicatedClientAddress ca) {
+    return ca.isActive()
+        ? ca.getAddresses().stream().filter(Objects::nonNull).map(a -> getPhones(ca, a))
+            .flatMap(List::stream).collect(Collectors.toList())
+        : new ArrayList<>();
+  }
+
+  @JsonIgnore
+  @Override
+  public ApiPhoneAware[] getPhones() {
+    final List<ReplicatedClientAddress> clientAddressesNew = new ArrayList<>();
+    if (Objects.nonNull(activePlacementHomeAddress)) {
+      clientAddressesNew.add(activePlacementHomeAddress.toReplicatedClientAddress());
+    }
+    if (Objects.nonNull(clientAddresses)) {
+      clientAddressesNew.addAll(clientAddresses);
+    }
+
+    return clientAddressesNew.isEmpty() ? new ApiPhoneAware[0]
+        : clientAddressesNew.stream().filter(Objects::nonNull)
+            .filter(ReplicatedClientAddress::isActive).map(this::getPhones)
+            .flatMap(Collection::stream).toArray(ApiPhoneAware[]::new);
+  }
+
+  // =======================
+  // CmsReplicatedEntity:
+  // =======================
+
+  @Override
+  public EmbeddableCmsReplicatedEntity getReplicatedEntity() {
+    return replicatedEntity;
+  }
+
+  // =======================
+  // ApiLegacyAware:
+  // =======================
+
+  @Override
+  public String getLegacyId() {
+    return getId();
+  }
+
+  @Override
+  public ElasticSearchLegacyDescriptor getLegacyDescriptor() {
+    return ElasticTransformer.createLegacyDescriptor(getId(), getLastUpdatedTime(),
+        LegacyTable.CLIENT);
+  }
+
+  // ==================================
+  // ApiOtherClientNamesAware:
+  // ==================================
+
+  @Override
+  public List<ElasticSearchPersonAka> getOtherClientNames() {
+    return new ArrayList<>(this.akas.values());
+  }
+
+  // ==================================
+  // ApiClientSafetyAlertsAware:
+  // ==================================
+
+  @Override
+  public List<ElasticSearchSafetyAlert> getClientSafetyAlerts() {
+    return new ArrayList<>(this.safetyAlerts.values());
+  }
+
+  // ==================================
+  // ApiClientRaceAndEthnicityAware:
+  // ==================================
+
+  @Override
+  public ElasticSearchRaceAndEthnicity getRaceAndEthnicity() {
+    final ElasticSearchRaceAndEthnicity racesEthnicity = new ElasticSearchRaceAndEthnicity();
+    racesEthnicity.setHispanicOriginCode(getHispanicOriginCode());
+    racesEthnicity.setHispanicUnableToDetermineCode(getHispUnableToDetReasonCode());
+    racesEthnicity.setUnableToDetermineCode(getEthUnableToDetReasonCode());
+
+    final List<ElasticSearchSystemCode> raceCodes = new ArrayList<>();
+    racesEthnicity.setRaceCodes(raceCodes);
+
+    final List<ElasticSearchSystemCode> hispanicCodes = new ArrayList<>();
+    racesEthnicity.setHispanicCodes(hispanicCodes);
+
+    // Add primary race
+    addRaceAndEthnicity(this.primaryEthnicityType, raceCodes, hispanicCodes);
+
+    // Add other races
+    for (Short raceCode : this.clientRaces) {
+      addRaceAndEthnicity(raceCode, raceCodes, hispanicCodes);
+    }
+
+    return racesEthnicity;
+  }
+
+  private static void addRaceAndEthnicity(Short codeId,
+      final List<ElasticSearchSystemCode> raceCodes,
+      final List<ElasticSearchSystemCode> hispanicCodes) {
+    if (codeId != null && codeId != 0) {
+      String description = null;
+      boolean isHispanicCode = false;
+
+      final SystemCode systemCode = SystemCodeCache.global().getSystemCode(codeId);
+      if (systemCode != null) {
+        description = systemCode.getShortDescription();
+        isHispanicCode = (HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
+            && (!CARIBBEAN_RACE_CODE.equals(codeId)));
+      }
+
+      final ElasticSearchSystemCode esCode = new ElasticSearchSystemCode();
+      esCode.setId(codeId.toString());
+      esCode.setDescription(description);
+
+      if (isHispanicCode) {
+        hispanicCodes.add(esCode);
+      } else {
+        raceCodes.add(esCode);
+      }
+    }
+  }
+
+  // ==================================
+  // ApiClientCountyAware:
+  // ==================================
+
+  @Override
+  public List<ElasticSearchSystemCode> getClientCounties() {
+    if (clientCounties.isEmpty()) {
+      return new ArrayList<>();
+    }
+
+    final List<ElasticSearchSystemCode> ret = new ArrayList<>(clientCounties.size());
+    for (Short county : clientCounties) {
+      final ElasticSearchSystemCode countySysCode = new ElasticSearchSystemCode();
+      countySysCode.setId(county.toString());
+      countySysCode.setDescription(SystemCodeCache.global().getSystemCodeShortDescription(county));
+      ret.add(countySysCode);
+    }
+
+    return ret;
+  }
+
+  // ==================================
+  // ApiPersonAware:
+  // ==================================
+
+  @Override
+  public String getNameSuffix() {
+    return NameSuffixTranslator.translate(super.getNameSuffix());
+  }
+
+  // ==================================
+  // IDENTITY:
+  // ==================================
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this, false);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj, false);
+  }
+
+}
