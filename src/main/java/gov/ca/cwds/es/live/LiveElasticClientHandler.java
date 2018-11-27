@@ -434,38 +434,38 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)
     // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
     ) {
-      LOGGER.info("Read client");
+      LOGGER.debug("Read client");
       // read(stmtClient, SEL_CLI, rs -> readClient(rs));
       read(stmtClient, rs -> readClient(rs));
 
       // SNAP-735: missing addresses.
-      LOGGER.info("Read client address");
+      LOGGER.debug("Read client address");
       read(stmtCliAddr, rs -> readClientAddress(rs));
 
-      LOGGER.info("Read address");
+      LOGGER.debug("Read address");
       read(stmtAddress, rs -> readAddress(rs));
 
       // LOGGER.info("Read client county");
       // read(stmtCliCnty, rs -> readClientCounty(rs));
 
-      LOGGER.info("Read aka");
+      LOGGER.debug("Read aka");
       read(stmtAka, rs -> readAka(rs));
       con.commit(); // free db resources
 
-      LOGGER.info("Read case");
+      LOGGER.debug("Read case");
       read(stmtCase, rs -> readCase(rs));
 
-      LOGGER.info("Read csec");
+      LOGGER.debug("Read csec");
       read(stmtCsec, rs -> readCsec(rs));
 
-      LOGGER.info("Read ethnicity");
+      LOGGER.debug("Read ethnicity");
       read(stmtEthnicity, rs -> readEthnicity(rs));
 
-      LOGGER.info("Read safety alert");
+      LOGGER.debug("Read safety alert");
       read(stmtSafety, rs -> readSafetyAlert(rs));
       con.commit(); // free db resources again
 
-      LOGGER.info("Read placement home address");
+      LOGGER.debug("Read placement home address");
       readPlacementAddress(stmtPlcmntAddr);
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
