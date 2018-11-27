@@ -19,7 +19,8 @@ import org.hibernate.annotations.Type;
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
 @SuppressWarnings({"squid:S1206"})
-public class RawAddress extends ClientAddressReference implements LiveElasticJdbcReader<RawAddress> {
+public class RawAddress extends ClientAddressReference
+    implements LiveElasticJdbcReader<RawAddress> {
 
   private static final long serialVersionUID = 1L;
 
@@ -145,10 +146,6 @@ public class RawAddress extends ClientAddressReference implements LiveElasticJdb
     this.adrUnitDesignationCd = rs.getShort(ColumnPosition.ADR_UNT_DSGC.ordinal());
     this.adrUnitNumber = trimToNull(rs.getString(ColumnPosition.ADR_UNIT_NO.ordinal()));
     this.adrLastUpdatedTime = rs.getTimestamp(ColumnPosition.ADR_LST_UPD_TS.ordinal());
-
-    this.adrReplicationOperation = CmsReplicationOperation
-        .strToRepOp(rs.getString(ColumnPosition.ADR_IBMSNAP_OPERATION.ordinal()));
-    this.adrReplicationDate = rs.getDate(ColumnPosition.ADR_IBMSNAP_LOGMARKER.ordinal());
 
     return this;
   }
