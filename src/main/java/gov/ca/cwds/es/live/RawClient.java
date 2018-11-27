@@ -301,8 +301,6 @@ public class RawClient extends ClientReference implements LiveElasticJdbcReader<
     this.cltCommonLastName = trimToNull(rs.getString(ColumnPosition.CLT_COM_LST_NM.ordinal()));
     this.cltCommonMiddleName = trimToNull(rs.getString(ColumnPosition.CLT_COM_MID_NM.ordinal()));
     this.cltCreationDate = rs.getDate(ColumnPosition.CLT_CREATN_DT.ordinal());
-    this.cltCurrCaChildrenServIndicator =
-        trimToNull(rs.getString(ColumnPosition.CLT_CURRCA_IND.ordinal()));
     this.cltDeathDate = rs.getDate(ColumnPosition.CLT_DEATH_DT.ordinal());
     this.cltDeathDateVerifiedIndicator =
         trimToNull(rs.getString(ColumnPosition.CLT_DTH_DT_IND.ordinal()));
@@ -316,14 +314,9 @@ public class RawClient extends ClientReference implements LiveElasticJdbcReader<
         trimToNull(rs.getString(ColumnPosition.CLT_HISP_UD_CD.ordinal()));
     this.cltHispanicOriginCode = trimToNull(rs.getString(ColumnPosition.CLT_HISP_CD.ordinal()));
     this.cltImmigrationStatusType = rs.getShort(ColumnPosition.CLT_IMGT_STC.ordinal());
-    this.cltLimitationOnScpHealthIndicator =
-        trimToNull(rs.getString(ColumnPosition.CLT_LIMIT_IND.ordinal()));
     this.cltLiterateCode = trimToNull(rs.getString(ColumnPosition.CLT_LITRATE_CD.ordinal()));
-    this.cltMaritalCohabitatnHstryIndicatorVar =
-        trimToNull(rs.getString(ColumnPosition.CLT_MAR_HIST_B.ordinal()));
     this.cltMaritalStatusType = rs.getShort(ColumnPosition.CLT_MRTL_STC.ordinal());
     this.cltMilitaryStatusCode = trimToNull(rs.getString(ColumnPosition.CLT_MILT_STACD.ordinal()));
-    this.cltMotherParentalRightTermDate = rs.getDate(ColumnPosition.CLT_MTERM_DT.ordinal());
     this.cltNamePrefixDescription =
         trimToNull(rs.getString(ColumnPosition.CLT_NMPRFX_DSC.ordinal()));
     this.cltNameType = rs.getShort(ColumnPosition.CLT_NAME_TPC.ordinal());

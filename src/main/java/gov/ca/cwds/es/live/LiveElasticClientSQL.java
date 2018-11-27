@@ -13,9 +13,12 @@ public class LiveElasticClientSQL implements ApiMarker {
   // Search, the next generation.
   // =================================
 
+  /**
+   * DB2 on z/OS does not support JDBC setArray() on prepared statements. Fake it with an IN clause.
+   */
   //@formatter:off
   public static final String KEY_SOURCE = 
-      " IN (?,?,?,?) \n";
+      " IN (?,?,?,?,?,?,?,?) \n";
   //@formatter:on
 
   //@formatter:off
@@ -46,7 +49,6 @@ public class LiveElasticClientSQL implements ApiMarker {
     + "  clt.COM_LST_NM        AS CLT_COM_LST_NM, \n"
     + "  clt.COM_MID_NM        AS CLT_COM_MID_NM, \n"
     + "  clt.CREATN_DT         AS CLT_CREATN_DT, \n"
-    + "  clt.CURRCA_IND        AS CLT_CURRCA_IND, \n"
     + "  clt.DEATH_DT          AS CLT_DEATH_DT, \n"
     + "  clt.DTH_DT_IND        AS CLT_DTH_DT_IND, \n"
     + "  clt.DRV_LIC_NO        AS CLT_DRV_LIC_NO, \n"
@@ -57,12 +59,9 @@ public class LiveElasticClientSQL implements ApiMarker {
     + "  clt.HISP_UD_CD        AS CLT_HISP_UD_CD, \n"
     + "  clt.HISP_CD           AS CLT_HISP_CD, \n"
     + "  clt.IMGT_STC          AS CLT_IMGT_STC, \n"
-    + "  clt.LIMIT_IND         AS CLT_LIMIT_IND, \n"
     + "  clt.LITRATE_CD        AS CLT_LITRATE_CD, \n"
-    + "  clt.MAR_HIST_B        AS CLT_MAR_HIST_B, \n"
     + "  clt.MRTL_STC          AS CLT_MRTL_STC, \n"
     + "  clt.MILT_STACD        AS CLT_MILT_STACD, \n"
-    + "  clt.MTERM_DT          AS CLT_MTERM_DT, \n"
     + "  TRIM(clt.NMPRFX_DSC)  AS CLT_NMPRFX_DSC, \n"
     + "  clt.NAME_TPC          AS CLT_NAME_TPC, \n"
     + "  clt.P_ETHNCTYC        AS CLT_P_ETHNCTYC, \n"
