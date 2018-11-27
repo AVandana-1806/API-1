@@ -25,9 +25,6 @@ import io.swagger.annotations.ApiModel;
 @JsonSnakeCase
 public class LiveElasticClientRequest implements Request {
 
-  /**
-   * Base serialization version. Increment by class version.
-   */
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("client_ids")
@@ -40,7 +37,7 @@ public class LiveElasticClientRequest implements Request {
   /**
    * JSON DropWizard Constructor. Takes solitary search term.
    * 
-   * @param key String search term.
+   * @param clientIds list of client ids to search
    */
   @JsonCreator
   public LiveElasticClientRequest(@Valid @NotNull @JsonProperty("key") List<String> clientIds) {

@@ -31,7 +31,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
   /**
    * Preferred constructor. Build from UI identifier.
    * 
-   * @param uiIdentifier String of UI identifier
+   * @param hits ElasticSearchPerson objects
    */
   public LiveElasticClientResponse(List<ElasticSearchPerson> hits) {
     this.hits = hits;

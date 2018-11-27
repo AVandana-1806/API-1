@@ -73,6 +73,7 @@ public class LiveElasticClientResource {
    * Preferred constructor.
    *
    * @param liveElasticClientService - LiveElasticClientService
+   * @param resourceDelegate request service handler
    */
   @Inject
   public LiveElasticClientResource(

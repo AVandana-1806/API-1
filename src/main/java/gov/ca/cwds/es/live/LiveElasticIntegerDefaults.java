@@ -51,7 +51,7 @@ public enum LiveElasticIntegerDefaults {
   /**
    * Log every N records.
    * 
-   * @see JobLogs
+   * @see CaresLog
    */
   LOG_EVERY(5000);
 

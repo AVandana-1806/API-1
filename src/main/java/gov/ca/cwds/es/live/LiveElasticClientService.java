@@ -57,6 +57,9 @@ public class LiveElasticClientService
 
   /**
    * Constructor
+   * 
+   * @param dao any CMS transactional schema DAO
+   * @param mapper configured Jackson ObjectMapper
    */
   @Inject
   public LiveElasticClientService(ClientRelationshipDao dao, ObjectMapper mapper) {

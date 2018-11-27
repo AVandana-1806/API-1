@@ -22,8 +22,6 @@ public abstract class LiveElasticWorkTotalImpl implements LiveElasticWorkTotal {
 
   /**
    * {@inheritDoc}
-   * 
-   * @see gov.ca.cwds.LiveElasticWorkTotal.util.jdbc.NeutronWorkTotal#getTotalProcessed()
    */
   @Override
   public int getTotalProcessed() {
