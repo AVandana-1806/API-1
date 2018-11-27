@@ -376,6 +376,11 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     return true;
   }
 
+  protected String getCurrentSchema() {
+    // return dao.getSessionFactory().getProperties().get("hibernate.default_schema");
+    return System.getProperty("DB_CMS_SCHEMA");
+  }
+
   protected PreparedStatement prepReplicated(Connection con, String sql) throws SQLException {
     con.setSchema("CWSRS1"); // TODO: DON'T HARDCODE SCHEMA!
     return prep(con, sql);
@@ -389,7 +394,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   }
 
   protected PreparedStatement prep(Connection con, String sql) throws SQLException {
-    con.setSchema("CWSNS1"); // TODO: DON'T HARDCODE SCHEMA!
+    con.setSchema(getCurrentSchema());
     final PreparedStatement ret = con.prepareStatement(sql, TFO, CRO);
     final int maxSize = keyList.length;
     final int numParams = StringUtils.countMatches(sql, '?');

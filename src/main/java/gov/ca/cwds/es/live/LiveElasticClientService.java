@@ -12,7 +12,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.cms.ClientRelationshipDao;
@@ -59,12 +58,11 @@ public class LiveElasticClientService
    * Constructor
    * 
    * @param dao any CMS transactional schema DAO
-   * @param mapper configured Jackson ObjectMapper
    */
   @Inject
-  public LiveElasticClientService(ClientRelationshipDao dao, ObjectMapper mapper) {
+  public LiveElasticClientService(ClientRelationshipDao dao) {
     this.dao = dao;
-    LiveElasticTransformer.setMapper(mapper);
+    LiveElasticTransformer.setMapper(ElasticSearchPerson.MAPPER);
     setSysPropsFromEnvVars();
   }
 
