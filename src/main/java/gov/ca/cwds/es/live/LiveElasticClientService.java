@@ -29,9 +29,8 @@ public class LiveElasticClientService
     extends SimpleResourceService<String[], LiveElasticClientRequest, LiveElasticClientResponse>
     implements TypedCrudsService<String[], LiveElasticClientRequest, LiveElasticClientResponse> {
 
-  protected static final List<String> DB_PROPERTY_LIST =
-      Collections.unmodifiableList(asList("DB_NS_USER", "DB_NS_PASSWORD", "DB_NS_JDBC_URL",
-          "DB_CMS_USER", "DB_CMS_PASSWORD", "DB_CMS_JDBC_URL", "DB_CMS_SCHEMA", "LAUNCH_DIR"));
+  protected static final List<String> DB_PROPERTY_LIST = Collections.unmodifiableList(
+      asList("DB_NS_USER", "DB_NS_JDBC_URL", "DB_CMS_USER", "DB_CMS_JDBC_URL", "DB_CMS_SCHEMA"));
 
   private ClientRelationshipDao dao;
 
