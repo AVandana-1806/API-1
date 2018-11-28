@@ -3,6 +3,11 @@ package gov.ca.cwds.es.live;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+/**
+ * Common date and timestamp formats for DB2 JDBC.
+ * 
+ * @author CWDS API Team
+ */
 public enum LiveElasticDateTimeFormat {
 
   /**
