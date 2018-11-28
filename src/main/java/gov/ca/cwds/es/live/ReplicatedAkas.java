@@ -16,7 +16,7 @@ import gov.ca.cwds.data.es.ElasticSearchPersonAka;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 public class ReplicatedAkas implements ReadablePerson {
 
   private static final long serialVersionUID = 1L;

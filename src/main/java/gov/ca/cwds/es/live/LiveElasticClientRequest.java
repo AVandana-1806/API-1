@@ -5,12 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.data.std.ApiObjectIdentity;
 import gov.ca.cwds.rest.api.Request;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
@@ -23,7 +21,9 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel
 @JsonSnakeCase
-public class LiveElasticClientRequest implements Request {
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
+public class LiveElasticClientRequest extends ApiObjectIdentity implements Request {
 
   private static final long serialVersionUID = 1L;
 
@@ -50,26 +50,6 @@ public class LiveElasticClientRequest implements Request {
 
   public void setClientIds(List<String> clientIds) {
     this.clientIds = clientIds;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public final int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, false);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public final boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, false);
   }
 
 }

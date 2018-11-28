@@ -27,6 +27,8 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel
 @JsonSnakeCase
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 public class LiveElasticClientResponse extends ReportingDomain implements Response {
 
   private static final long serialVersionUID = 1L;

@@ -47,7 +47,7 @@ import gov.ca.cwds.data.std.ApiMarker;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 public class LiveElasticClientHandler implements ApiMarker {
 
   private static final long serialVersionUID = 1L;

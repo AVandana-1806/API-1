@@ -55,7 +55,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReplicatedClient extends BaseClient implements ApiPersonAware,
