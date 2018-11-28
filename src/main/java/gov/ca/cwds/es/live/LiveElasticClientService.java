@@ -37,6 +37,18 @@ public class LiveElasticClientService
   private static boolean envVarsSet;
 
   /**
+   * Constructor
+   * 
+   * @param dao any CMS transactional schema DAO
+   */
+  @Inject
+  public LiveElasticClientService(ClientRelationshipDao dao) {
+    this.dao = dao;
+    LiveElasticTransformer.setMapper(ElasticSearchPerson.MAPPER);
+    setSysPropsFromEnvVars();
+  }
+
+  /**
    * Populates list of System properties from corresponding Env Variables. Will not create/update
    * property if null.
    */
@@ -51,18 +63,6 @@ public class LiveElasticClientService
       }
       envVarsSet = false;
     }
-  }
-
-  /**
-   * Constructor
-   * 
-   * @param dao any CMS transactional schema DAO
-   */
-  @Inject
-  public LiveElasticClientService(ClientRelationshipDao dao) {
-    this.dao = dao;
-    LiveElasticTransformer.setMapper(ElasticSearchPerson.MAPPER);
-    setSysPropsFromEnvVars();
   }
 
   @Override

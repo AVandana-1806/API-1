@@ -16,6 +16,8 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class RawClientAddress extends ClientAddressReference
     implements LiveElasticJdbcReader<RawClientAddress> {
 

@@ -1,5 +1,7 @@
 package gov.ca.cwds.es.live;
 
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
 public class SimpleCaresInterruptibleImpl implements CaresInterruptibleOperation {
 
   /**

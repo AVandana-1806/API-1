@@ -10,6 +10,8 @@ import javax.persistence.Column;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class RawCase extends ClientReference implements LiveElasticJdbcReader<RawCase> {
 
   private static final long serialVersionUID = 1L;

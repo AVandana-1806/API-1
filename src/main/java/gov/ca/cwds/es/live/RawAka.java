@@ -17,6 +17,8 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
 
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class RawAka extends ClientReference implements LiveElasticJdbcReader<RawAka> {
 
   private static final long serialVersionUID = 1L;

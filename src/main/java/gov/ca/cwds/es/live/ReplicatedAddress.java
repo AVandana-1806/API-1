@@ -20,7 +20,8 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
 @Entity
 @Table(name = "ADDRS_T")
 @JsonPropertyOrder(alphabetic = true)

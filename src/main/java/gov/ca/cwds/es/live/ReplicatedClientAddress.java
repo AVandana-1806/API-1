@@ -24,7 +24,8 @@ import gov.ca.cwds.data.persistence.cms.BaseClientAddress;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
 @Entity
 @Table(name = "CL_ADDRT")
 @JsonPropertyOrder(alphabetic = true)

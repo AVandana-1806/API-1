@@ -23,6 +23,8 @@ import org.hibernate.annotations.Type;
 
 import gov.ca.cwds.data.std.ApiGroupNormalizer;
 
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class RawClient extends ClientReference implements LiveElasticJdbcReader<RawClient>,
     ApiGroupNormalizer<ReplicatedClient>, Comparable<RawClient>, Comparator<RawClient> {
 

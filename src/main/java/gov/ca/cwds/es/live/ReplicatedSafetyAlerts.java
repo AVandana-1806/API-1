@@ -14,6 +14,8 @@ import gov.ca.cwds.data.es.ElasticSearchSafetyAlert;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial"})
 public class ReplicatedSafetyAlerts implements ReadablePerson {
 
   private static final long serialVersionUID = 8733181688462933133L;
