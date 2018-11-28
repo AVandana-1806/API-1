@@ -47,7 +47,7 @@ public class LiveElasticClientResponse extends ReportingDomain implements Respon
   }
 
   @JsonSnakeCase
-  public static class LiveElasticClientPerson extends ElasticSearchPerson {
+  public static class LiveElasticClientPerson implements ApiMarker {
 
     private static final long serialVersionUID = 1L;
 
