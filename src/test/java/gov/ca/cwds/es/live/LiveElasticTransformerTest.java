@@ -39,6 +39,7 @@ public class LiveElasticTransformerTest extends Doofenshmirtz<TestDenormalizedEn
   @Before
   public void setup() throws Exception {
     super.setup();
+    LiveElasticTransformer.setMapper(ElasticSearchPerson.MAPPER);
     dao = new TestNormalizedEntityDao(sessionFactory);
   }
 
@@ -110,7 +111,6 @@ public class LiveElasticTransformerTest extends Doofenshmirtz<TestDenormalizedEn
   }
 
   @Test
-  @Ignore
   public void jsonify_Args__Object() throws Exception {
     final TestNormalizedEntity t = new TestNormalizedEntity(DEFAULT_CLIENT_ID);
     final String actual = LiveElasticTransformer.jsonify(t);
