@@ -381,11 +381,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     return System.getProperty("DB_CMS_SCHEMA");
   }
 
-  protected PreparedStatement prepReplicated(Connection con, String sql) throws SQLException {
-    con.setSchema("CWSRS1"); // TODO: DON'T HARDCODE SCHEMA!
-    return prep(con, sql);
-  }
-
   protected PreparedStatement prepDate(Connection con, String sql) throws SQLException {
     final String strCurTime = LiveElasticDateHelper.makeTimestampStringLookBack(new Date());
     final String newSql =
