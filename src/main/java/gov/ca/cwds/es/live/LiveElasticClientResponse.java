@@ -10,14 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.data.std.ApiMarker;
-import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.ReportingDomain;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 
 /**
- * A domain API {@link Request} for Intake Person Auto-complete feature to Elasticsearch.
+ * A domain API {@link Response} to retrieve live Elasticsearch client results.
  * 
  * <p>
  * Intake Snapshot expects JSON elements nested in order of {@code hits => hits => _source},
