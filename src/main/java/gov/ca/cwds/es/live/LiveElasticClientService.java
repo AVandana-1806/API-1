@@ -24,6 +24,8 @@ import io.dropwizard.hibernate.UnitOfWork;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 public class LiveElasticClientService
     extends SimpleResourceService<String[], LiveElasticClientRequest, LiveElasticClientResponse>
     implements TypedCrudsService<String[], LiveElasticClientRequest, LiveElasticClientResponse> {

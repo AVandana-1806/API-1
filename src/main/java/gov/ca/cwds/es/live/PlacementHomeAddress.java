@@ -31,6 +31,8 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
  * 
  * @author CWDS API Team
  */
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
 public class PlacementHomeAddress extends ApiObjectIdentity
     implements PersistentObject, ApiGroupNormalizer<ReplicatedClientAddress> {
 

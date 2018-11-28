@@ -16,7 +16,8 @@ import gov.ca.cwds.data.std.ApiObjectIdentity;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S1206"})
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
 public abstract class ClientReference extends ApiObjectIdentity implements PersistentObject {
 
   private static final long serialVersionUID = 1L;

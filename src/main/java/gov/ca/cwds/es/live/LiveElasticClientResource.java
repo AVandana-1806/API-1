@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -87,15 +88,34 @@ public class LiveElasticClientResource {
    * @return the response
    */
   @GET
-  @Path("/live_elastic_client")
+  @Path("/any")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
       @ApiResponse(code = 406, message = "Accept Header not supported")})
   @ApiOperation(value = "Find live Elasticsearch results by client ids",
       response = LiveElasticClientResponse.class)
-  public javax.ws.rs.core.Response get(@QueryParam("clientIds") @ApiParam(required = true,
+  public javax.ws.rs.core.Response getClients(@QueryParam("clientIds") @ApiParam(required = true,
       name = "clientIds", value = "The id's of the clients") final List<String> clientIds) {
     return resourceDelegate.get(clientIds.toArray(new String[0]));
+  }
+
+  /**
+   * Finds live Elasticsearch-like search results for a single client id.
+   *
+   * @param clientIds client id list
+   * @return the response
+   */
+  @GET
+  @Path("/{id}")
+  @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
+      @ApiResponse(code = 404, message = "Not found"),
+      @ApiResponse(code = 406, message = "Accept Header not supported")})
+  @ApiOperation(value = "Find live client data by client id",
+      response = LiveElasticClientResponse.class)
+  public javax.ws.rs.core.Response get(@PathParam("id") @ApiParam(required = true, name = "id",
+      value = "The id of the client to find relationships for") String id) {
+    final String[] ids = {id};
+    return resourceDelegate.get(ids);
   }
 
 }
