@@ -4,7 +4,6 @@ import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static java.util.Arrays.asList;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -75,17 +74,14 @@ public class LiveElasticClientService
   protected LiveElasticClientResponse handleFind(String[] keys) {
     final SimpleCaresInterruptibleImpl interruptible = new SimpleCaresInterruptibleImpl();
     final LiveElasticClientHandler handler = new LiveElasticClientHandler(interruptible, keys);
-    List<ElasticSearchPerson> results = new ArrayList<>();
 
     try (final Session session = dao.grabSession()) {
       final Connection con = LiveElasticJdbcHelper.prepConnection(session);
       handler.handleMain(con);
-      results = handler.handleJdbcDone();
+      return new LiveElasticClientResponse(handler.handleJdbcDone());
     } catch (Exception e) {
       throw CaresLog.runtime(LOGGER, e, "LIVE CLIENT HANDLER FAILED! {}", e.getMessage(), e);
     }
-
-    return new LiveElasticClientResponse(results);
   }
 
   @Override

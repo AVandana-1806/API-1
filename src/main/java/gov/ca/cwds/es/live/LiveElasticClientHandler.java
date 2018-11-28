@@ -392,8 +392,7 @@ public class LiveElasticClientHandler implements ApiMarker {
    * Commit more often by re-inserting client id's into GT_ID.
    * </p>
    */
-  // @Override
-  public void handleMain(Connection con) throws SQLException {
+  public void handleMain(Connection con) {
     LOGGER.trace("begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
@@ -433,6 +432,8 @@ public class LiveElasticClientHandler implements ApiMarker {
       readPlacementAddress(stmtPlcmntAddr);
 
       con.commit(); // free db resources. Make DBA's happy.
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
       LOGGER.error("FAILED TO RETRIEVE CLIENTS!", e);
 
@@ -459,7 +460,6 @@ public class LiveElasticClientHandler implements ApiMarker {
     }
   }
 
-  // @Override
   public List<ElasticSearchPerson> handleJdbcDone() {
     final RawToEsConverter conv = new RawToEsConverter();
     rawClients.values().stream().map(r -> r.normalize(conv))
@@ -475,13 +475,11 @@ public class LiveElasticClientHandler implements ApiMarker {
         .collect(Collectors.toList());
   }
 
-  // @Override
   public void handleFinish() {
     doneThreadRetrieve();
     clear();
   }
 
-  // @Override
   public List<ReplicatedClient> getNormalizedObjects() {
     return normalized.values().stream().collect(Collectors.toList());
   }

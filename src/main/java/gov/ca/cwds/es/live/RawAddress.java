@@ -360,8 +360,7 @@ public class RawAddress extends ClientAddressReference
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + ((adrId == null) ? 0 : adrId.hashCode());
-    return result;
+    return prime * result + ((adrId == null) ? 0 : adrId.hashCode());
   }
 
 }
