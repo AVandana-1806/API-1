@@ -1,6 +1,8 @@
 package gov.ca.cwds.es.live;
 
-public interface CaresInterruptibleOperation {
+import gov.ca.cwds.data.std.ApiMarker;
+
+public interface CaresInterruptibleOperation extends ApiMarker {
 
   /**
    * Is the rocket still flying?

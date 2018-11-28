@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,10 +47,9 @@ import gov.ca.cwds.data.std.ApiMarker;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095"})
-public class LiveElasticClientHandler implements ApiMarker
-// , AtomLoadStepHandler<ReplicatedClient>
-{
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"})
+public class LiveElasticClientHandler implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
 
@@ -95,7 +95,7 @@ public class LiveElasticClientHandler implements ApiMarker
 
   public LiveElasticClientHandler(CaresInterruptibleOperation interruptible, String[] keyList) {
     this.monitor = interruptible;
-    this.keyList = keyList;
+    this.keyList = Arrays.copyOf(keyList, keyList.length);
   }
 
   // =================================
@@ -386,8 +386,6 @@ public class LiveElasticClientHandler implements ApiMarker
   }
 
   /**
-   * {@inheritDoc}
-   * 
    * <p>
    * Read placement home addresses per rule R-02294, Client Abstract Most Recent Address.
    * </p>
@@ -410,29 +408,30 @@ public class LiveElasticClientHandler implements ApiMarker
         final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
       LOGGER.debug("Read client");
       read(stmtClient, rs -> readClient(rs));
+      read(stmtClient, this::readClient);
 
       // SNAP-735: missing addresses.
       LOGGER.debug("Read client address");
-      read(stmtCliAddr, rs -> readClientAddress(rs));
+      read(stmtCliAddr, this::readClientAddress);
 
       LOGGER.debug("Read address");
-      read(stmtAddress, rs -> readAddress(rs));
+      read(stmtAddress, this::readAddress);
 
       LOGGER.debug("Read aka");
-      read(stmtAka, rs -> readAka(rs));
+      read(stmtAka, this::readAka);
       con.commit(); // free db resources
 
       LOGGER.debug("Read case");
-      read(stmtCase, rs -> readCase(rs));
+      read(stmtCase, this::readCase);
 
       LOGGER.debug("Read csec");
-      read(stmtCsec, rs -> readCsec(rs));
+      read(stmtCsec, this::readCsec);
 
       LOGGER.debug("Read ethnicity");
-      read(stmtEthnicity, rs -> readEthnicity(rs));
+      read(stmtEthnicity, this::readEthnicity);
 
       LOGGER.debug("Read safety alert");
-      read(stmtSafety, rs -> readSafetyAlert(rs));
+      read(stmtSafety, this::readSafetyAlert);
 
       LOGGER.debug("Read placement home address");
       readPlacementAddress(stmtPlcmntAddr);
