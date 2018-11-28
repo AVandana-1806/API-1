@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
@@ -76,7 +77,8 @@ public class RawToEsConverterTest extends Doofenshmirtz<RawClient> {
   @Test
   public void convertCsec_A$ReplicatedClient$RawClient$RawCsec() throws Exception {
     ReplicatedClient rc = new ReplicatedClient();
-    RawCsec rawCsec = new RawCsec();
+    RawCsec rawCsec = mock(RawCsec.class);
+    when(rawCsec.getCsecId()).thenReturn(DEFAULT_CLIENT_ID);
     target.convertCsec(rc, rawCsec);
   }
 
@@ -91,13 +93,13 @@ public class RawToEsConverterTest extends Doofenshmirtz<RawClient> {
   public void convertSafetyAlert_A$ReplicatedClient$RawClient$RawSafetyAlert() throws Exception {
     ReplicatedClient rc = new ReplicatedClient();
     RawSafetyAlert rawSafetyAlert = mock(RawSafetyAlert.class);
+    when(rawSafetyAlert.getSafetyAlertId()).thenReturn(DEFAULT_CLIENT_ID);
     target.convertSafetyAlert(rc, rawSafetyAlert);
   }
 
   @Test
   public void convertEthnicity_A$ReplicatedClient$RawClient$RawEthnicity() throws Exception {
     ReplicatedClient rc = new ReplicatedClient();
-    RawClient rawCli = new RawClient();
     RawEthnicity rawEthnicity = mock(RawEthnicity.class);
     target.convertEthnicity(rc, rawEthnicity);
   }
@@ -106,6 +108,7 @@ public class RawToEsConverterTest extends Doofenshmirtz<RawClient> {
   public void convertAka_A$ReplicatedClient$RawClient$RawAka() throws Exception {
     ReplicatedClient rc = new ReplicatedClient();
     RawAka rawAka = mock(RawAka.class);
+    when(rawAka.getAkaId()).thenReturn(DEFAULT_CLIENT_ID);
     target.convertAka(rc, rawAka);
   }
 
