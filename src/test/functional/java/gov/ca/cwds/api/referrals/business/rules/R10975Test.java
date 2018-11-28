@@ -22,13 +22,12 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.Participant;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.core.FerbConstants.ReportType;
-import io.restassured.response.Response;
 
 /**
  * @author CWDS API Team
- *
  */
 public class R10975Test extends FunctionalTest {
+
   String referralPath;
   private HttpRequestHandler httpRequestHandler;
 
@@ -43,7 +42,6 @@ public class R10975Test extends FunctionalTest {
 
   /**
    * Test to check the rules R-10975 when start date is greater then end date
-   * 
    */
   @Test
   public void testShouldReturn422WhenStartDateGreaterThanEndDate() {
@@ -53,7 +51,7 @@ public class R10975Test extends FunctionalTest {
 
     httpRequestHandler.postRequest(referral, referralPath, token).then()
         .body("issue_details.user_message[0]",
-            equalTo("CSEC endDate should be greater than or equal to startDate"))
+            equalTo("CSEC End Date must be greater than or equal to CSEC Start Date"))
         .and().statusCode(422);
   }
 
