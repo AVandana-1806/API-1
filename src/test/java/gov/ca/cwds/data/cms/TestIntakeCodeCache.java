@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.cms;
 
+import gov.ca.cwds.rest.api.domain.enums.AddressType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,8 +85,32 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
     if (1828 == systemCodeId.intValue()) {
       return "CA";
     }
-    if (32 == systemCodeId.intValue()) {
-      return "Residence";
+    if (AddressType.HOME.getCode() == systemCodeId.intValue()) {
+      return AddressType.HOME.getValue();
+    }
+    if (AddressType.DAY_CARE.getCode() == systemCodeId.intValue()) {
+      return AddressType.DAY_CARE.getValue();
+    }
+    if (AddressType.COMMON.getCode() == systemCodeId.intValue()) {
+      return AddressType.COMMON.getValue();
+    }
+    if (AddressType.HOMELESS.getCode() == systemCodeId.intValue()) {
+      return AddressType.HOMELESS.getValue();
+    }
+    if (AddressType.OTHER.getCode() == systemCodeId.intValue()) {
+      return AddressType.OTHER.getValue();
+    }
+    if (AddressType.PENAL_INSTITUTION.getCode() == systemCodeId.intValue()) {
+      return AddressType.PENAL_INSTITUTION.getValue();
+    }
+    if (AddressType.PERMANENT_MAILING_ADDRESS.getCode() == systemCodeId.intValue()) {
+      return AddressType.PERMANENT_MAILING_ADDRESS.getValue();
+    }
+    if (AddressType.RESIDENCE_2.getCode() == systemCodeId.intValue()) {
+      return AddressType.RESIDENCE_2.getValue();
+    }
+    if (AddressType.WORK.getCode() == systemCodeId.intValue()) {
+      return AddressType.WORK.getValue();
     }
     if (1248 == systemCodeId.intValue()) {
       return "American Sign Language";
