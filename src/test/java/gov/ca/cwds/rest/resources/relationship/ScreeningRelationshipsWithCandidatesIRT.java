@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -113,6 +114,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
   }
 
   @Test
+  @Ignore
   public void getRelationshipsWithLegacyDescriptor() throws IOException {
     final String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + "1106" + "/" + RELATIONSHIPS_WITH_CANDIDATES));
