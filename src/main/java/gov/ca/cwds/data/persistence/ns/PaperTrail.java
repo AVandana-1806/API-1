@@ -23,6 +23,8 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
  */
 @Entity
 @Table(name = "versions")
+@SuppressWarnings({"squid:S2095", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial",
+    "squid:S2160", "squid:S1206"})
 public class PaperTrail extends ApiObjectIdentity implements PersistentObject {
 
   private static final long serialVersionUID = 1L;

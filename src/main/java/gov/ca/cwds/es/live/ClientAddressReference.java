@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
-@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
+@SuppressWarnings({"squid:S2095", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "serial",
+    "squid:S2160", "squid:S1206"})
 public class ClientAddressReference extends ClientReference {
 
   private static final long serialVersionUID = 1L;
