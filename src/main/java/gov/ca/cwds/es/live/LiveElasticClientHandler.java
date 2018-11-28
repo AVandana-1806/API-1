@@ -34,7 +34,7 @@ import gov.ca.cwds.data.es.ElasticSearchPerson;
 import gov.ca.cwds.data.std.ApiMarker;
 
 /**
- * Originally from Neutron/jobs {@link AtomLoadStepHandler} for People Summary index, initial load.
+ * Originally from Neutron/jobs AtomLoadStepHandler for People Summary index, initial load.
  * 
  * <p>
  * Loads {@link RawClient} and {@link PlacementHomeAddress}, normalizes to {@link ReplicatedClient}.
