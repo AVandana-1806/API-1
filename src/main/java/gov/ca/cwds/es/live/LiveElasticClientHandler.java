@@ -47,7 +47,9 @@ import gov.ca.cwds.data.std.ApiMarker;
  * @author CWDS API Team
  */
 @SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095"})
-public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<ReplicatedClient> {
+public class LiveElasticClientHandler implements ApiMarker
+// , AtomLoadStepHandler<ReplicatedClient>
+{
 
   private static final long serialVersionUID = 1L;
 
@@ -394,7 +396,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
    * Commit more often by re-inserting client id's into GT_ID.
    * </p>
    */
-  @Override
+  // @Override
   public void handleMain(Connection con) throws SQLException {
     LOGGER.trace("begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
@@ -468,7 +470,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     }
   }
 
-  @Override
+  // @Override
   public List<ElasticSearchPerson> handleJdbcDone() {
     final RawToEsConverter conv = new RawToEsConverter();
     rawClients.values().stream().map(r -> r.normalize(conv))
@@ -484,13 +486,13 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         .collect(Collectors.toList());
   }
 
-  @Override
+  // @Override
   public void handleFinish() {
     doneThreadRetrieve();
     clear();
   }
 
-  @Override
+  // @Override
   public List<ReplicatedClient> getNormalizedObjects() {
     return normalized.values().stream().collect(Collectors.toList());
   }
