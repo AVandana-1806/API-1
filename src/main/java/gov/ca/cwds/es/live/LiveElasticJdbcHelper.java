@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.ca.cwds.data.BaseDaoImpl;
 import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
@@ -26,8 +28,7 @@ import gov.ca.cwds.data.persistence.xa.WorkFerbUserInfo;
  */
 public class LiveElasticJdbcHelper {
 
-  private static final ConditionalLogger LOGGER =
-      new CaresConditionalLoggerImpl(LiveElasticJdbcHelper.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(LiveElasticJdbcHelper.class);
 
   public static final String CURRENT_SCHEMA = "DB_CMS_SCHEMA";
 

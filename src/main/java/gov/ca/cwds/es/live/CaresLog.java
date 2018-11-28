@@ -5,9 +5,10 @@ import java.text.MessageFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Neutron logging utilities.
+ * Common CARES logging utilities.
  * 
  * <strong>Features</strong>
  * <table summary="Featured Methods">
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
  */
 public class CaresLog {
 
-  private static final ConditionalLogger LOGGER = new CaresConditionalLoggerImpl(CaresLog.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(CaresLog.class);
 
   public static final int DEFAULT_LOG_EVERY = 100;
 
