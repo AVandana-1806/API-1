@@ -27,7 +27,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -357,7 +356,6 @@ public class LiveElasticClientHandler implements ApiMarker {
   }
 
   protected String getCurrentSchema() {
-    // return dao.getSessionFactory().getProperties().get("hibernate.default_schema");
     return System.getProperty("DB_CMS_SCHEMA");
   }
 
@@ -407,7 +405,6 @@ public class LiveElasticClientHandler implements ApiMarker {
         final PreparedStatement stmtSafety = prep(con, SEL_SAFETY);
         final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
       LOGGER.debug("Read client");
-      read(stmtClient, rs -> readClient(rs));
       read(stmtClient, this::readClient);
 
       // SNAP-735: missing addresses.
@@ -419,7 +416,6 @@ public class LiveElasticClientHandler implements ApiMarker {
 
       LOGGER.debug("Read aka");
       read(stmtAka, this::readAka);
-      con.commit(); // free db resources
 
       LOGGER.debug("Read case");
       read(stmtCase, this::readCase);
@@ -435,12 +431,6 @@ public class LiveElasticClientHandler implements ApiMarker {
 
       LOGGER.debug("Read placement home address");
       readPlacementAddress(stmtPlcmntAddr);
-
-      // Don't need for live clients but may need them for "live" search results.
-      // Besides, the county client table lives in the replicated schema.
-      // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
-      // LOGGER.info("Read client county");
-      // read(stmtCliCnty, rs -> readClientCounty(rs));
 
       con.commit(); // free db resources. Make DBA's happy.
     } catch (Exception e) {
@@ -515,8 +505,7 @@ public class LiveElasticClientHandler implements ApiMarker {
     placementHomeAddresses.clear();
   }
 
-  protected void prepPlacementClients(final PreparedStatement stmt, final Pair<String, String> p)
-      throws SQLException {
+  protected void prepPlacementClients(final PreparedStatement stmt) throws SQLException {
     optimizeStatement(stmt);
     final int countInsClient = stmt.executeUpdate();
     LOGGER.info("Prepped placement home clients: {}", countInsClient);

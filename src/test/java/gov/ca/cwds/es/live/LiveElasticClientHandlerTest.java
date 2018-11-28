@@ -89,14 +89,14 @@ public class LiveElasticClientHandlerTest extends Doofenshmirtz<RawClient> {
   @Test
   public void prepAffectedClients_A$PreparedStatement$Pair() throws Exception {
     Pair<String, String> p = pair;
-    target.prepPlacementClients(prepStmt, p);
+    target.prepPlacementClients(prepStmt);
   }
 
   @Test(expected = SQLException.class)
   public void prepAffectedClients_A$PreparedStatement$Pair_T$SQLException() throws Exception {
     bombResultSet();
     Pair<String, String> p = pair;
-    target.prepPlacementClients(prepStmt, p);
+    target.prepPlacementClients(prepStmt);
   }
 
   @Test
@@ -195,13 +195,13 @@ public class LiveElasticClientHandlerTest extends Doofenshmirtz<RawClient> {
   @Test
   public void prepPlacementClients_A$PreparedStatement$Pair() throws Exception {
     PreparedStatement stmt = mock(PreparedStatement.class);
-    target.prepPlacementClients(stmt, pair);
+    target.prepPlacementClients(stmt);
   }
 
   @Test(expected = SQLException.class)
   public void prepPlacementClients_A$PreparedStatement$Pair_T$SQLException() throws Exception {
     bombResultSet();
-    target.prepPlacementClients(prepStmt, pair);
+    target.prepPlacementClients(prepStmt);
   }
 
   @Test
