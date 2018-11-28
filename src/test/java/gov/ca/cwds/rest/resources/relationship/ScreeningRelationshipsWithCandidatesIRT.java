@@ -137,7 +137,7 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
     assertNotNull(one.getRelatedTo().iterator().next().getLegacyDescriptor());
     assertEquals("0000000008", one.getRelatedTo().iterator().next().getLegacyDescriptor().getId());
 
-    final ScreeningRelationshipsWithCandidates two = fromResponse.get(1);
+    final ScreeningRelationshipsWithCandidates two = fromResponse.get(2);
     assertNotNull(two.getRelatedCandidatesTo());
     assertEquals(1, two.getRelatedCandidatesTo().size());
     assertNotNull(two.getRelatedTo());
@@ -150,29 +150,27 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
 
   @Test
   public void getRelationshipsWithCandidateWithEstimatedDob() throws IOException {
-    String actualJson = getStringResponse(
+    final String actualJson = getStringResponse(
         doGetCall(SCREENING_PATH + "/" + SCREENING_ID_14 + "/" + RELATIONSHIPS_WITH_CANDIDATES));
     System.out.println(actualJson);
-    List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper.readValue(actualJson,
-        new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {});
+    final List<ScreeningRelationshipsWithCandidates> fromResponse = objectMapper
+        .readValue(actualJson, new TypeReference<List<ScreeningRelationshipsWithCandidates>>() {});
     assertNotNull(fromResponse);
     assertEquals(1, fromResponse.size());
-    assertEquals("N", fromResponse.get(0).getEstimatedDobCode());
-    assertEquals("1944-01-30", fromResponse.get(0).getDateOfBirth());
-    assertNull(fromResponse.get(0).getEstimatedDob());
-    assertNotNull(fromResponse.get(0).getRelatedTo());
-    assertEquals(2, fromResponse.get(0).getRelatedTo().size());
 
-    final Iterator<RelatedTo> setIterator = fromResponse.get(0).getRelatedTo().iterator();
+    final ScreeningRelationshipsWithCandidates zero = fromResponse.get(0);
+    assertEquals("N", zero.getEstimatedDobCode());
+    assertEquals("1944-01-30", zero.getDateOfBirth());
+    assertNull(zero.getEstimatedDob());
+    assertNotNull(zero.getRelatedTo());
+    assertEquals(2, zero.getRelatedTo().size());
+
+    final Iterator<RelatedTo> setIterator = zero.getRelatedTo().iterator();
     RelatedTo relatedTo1 = setIterator.next();
     RelatedTo relatedTo2 = setIterator.next();
 
-    RelatedTo relatedTo;
-    if ("Y".equals(relatedTo1.getEstimatedDobCode())) {
-      relatedTo = relatedTo1;
-    } else {
-      relatedTo = relatedTo2;
-    }
+    final RelatedTo relatedTo =
+        ("Y".equals(relatedTo1.getEstimatedDobCode())) ? relatedTo1 : relatedTo2;
 
     assertEquals("Y", relatedTo.getEstimatedDobCode());
     assertEquals("1944-01-30", relatedTo.getEstimatedDob());
