@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.api.domain.es;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import gov.ca.cwds.rest.api.Response;
 
@@ -35,7 +36,7 @@ public class ESPersons implements Response, Serializable {
    * @param persons array of {@link ESPerson}.
    */
   public ESPersons(ESPerson[] persons) {
-    this.persons = persons;
+    this.persons = Arrays.copyOf(persons, persons.length);
   }
 
   /**
@@ -44,7 +45,7 @@ public class ESPersons implements Response, Serializable {
    * @return immutable array of {@link ESPerson}
    */
   public final ESPerson[] getPersons() {
-    return persons;
+    return Arrays.copyOf(persons, persons.length);
   }
 
 }
