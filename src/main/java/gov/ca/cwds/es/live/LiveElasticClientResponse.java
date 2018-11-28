@@ -19,6 +19,11 @@ import io.swagger.annotations.ApiModel;
 /**
  * A domain API {@link Request} for Intake Person Auto-complete feature to Elasticsearch.
  * 
+ * <p>
+ * Intake Snapshot expects JSON elements nested in order of {@code hits => hits => _source},
+ * implemented by child classes {@link LiveElasticClientHits} and {@link LiveElasticClientPerson}.
+ * </p>
+ * 
  * @author CWDS API Team
  */
 @ApiModel
