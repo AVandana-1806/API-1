@@ -391,6 +391,8 @@ public class LiveElasticClientHandler implements ApiMarker {
    * <p>
    * Commit more often by re-inserting client id's into GT_ID.
    * </p>
+   * 
+   * @param con database connection
    */
   public void handleMain(Connection con) {
     LOGGER.trace("begin");

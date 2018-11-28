@@ -102,7 +102,7 @@ public class LiveElasticClientResource {
   /**
    * Finds live Elasticsearch-like search results for a single client id.
    *
-   * @param clientIds client id list
+   * @param id client id to pull
    * @return the response
    */
   @GET
