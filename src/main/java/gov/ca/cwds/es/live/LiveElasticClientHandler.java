@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -140,27 +139,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
     }
 
     LOGGER.trace("read(): done");
-  }
-
-  protected <T extends ClientReference> void readAny(final ResultSet rs,
-      LiveElasticJdbcReader<T> reader, BiConsumer<ClientReference, T> organizer, String msg) {
-    LOGGER.trace("readAny(): begin");
-    int counter = 0;
-    RawClient c = null;
-    T t;
-
-    try {
-      while (monitor.isRunning() && rs.next() && (t = reader.read(rs)) != null) {
-        // Find associated raw client, if any, and link.
-        c = rawClients.get(t.getCltId());
-        organizer.accept(c, t);
-        CaresLog.logEvery(LOGGER, LG_SZ, ++counter, "read", msg);
-      }
-    } catch (Exception e) {
-      throw CaresLog.runtime(LOGGER, e, "FAILED TO READ DATA! {}", e.getMessage(), e);
-    }
-
-    LOGGER.debug("{} {} recs retrieved", msg, counter);
   }
 
   protected void readClient(final ResultSet rs) {
@@ -420,7 +398,6 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
   public void handleMain(Connection con) throws SQLException {
     LOGGER.trace("begin");
     try (final PreparedStatement stmtClient = prep(con, SEL_CLI);
-        // final Statement stmtClient = con.createStatement();
         final PreparedStatement stmtCliAddr = prep(con, SEL_CLI_ADDR);
         final PreparedStatement stmtAddress = prep(con, SEL_ADDR);
         final PreparedStatement stmtAka = prep(con, SEL_AKA);
@@ -428,9 +405,7 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
         final PreparedStatement stmtCsec = prep(con, SEL_CSEC);
         final PreparedStatement stmtEthnicity = prep(con, SEL_ETHNIC);
         final PreparedStatement stmtSafety = prep(con, SEL_SAFETY);
-        final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)
-    // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
-    ) {
+        final PreparedStatement stmtPlcmntAddr = prepDate(con, SEL_PLACE_ADDR)) {
       LOGGER.debug("Read client");
       read(stmtClient, rs -> readClient(rs));
 
@@ -461,6 +436,8 @@ public class LiveElasticClientHandler implements ApiMarker, AtomLoadStepHandler<
       readPlacementAddress(stmtPlcmntAddr);
 
       // Don't need for live clients but may need them for "live" search results.
+      // Besides, the county client table lives in the replicated schema.
+      // final PreparedStatement stmtCliCnty = prepReplicated(con, SEL_CLI_COUNTY);
       // LOGGER.info("Read client county");
       // read(stmtCliCnty, rs -> readClientCounty(rs));
 
