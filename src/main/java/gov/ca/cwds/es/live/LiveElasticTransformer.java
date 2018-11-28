@@ -235,10 +235,8 @@ public final class LiveElasticTransformer {
    * 
    * @param p instance of type T
    * @return array of person documents
-   * @throws JsonProcessingException on parse error
    */
-  public static ElasticSearchPerson[] buildElasticSearchPersons(final PersistentObject p)
-      throws JsonProcessingException {
+  public static ElasticSearchPerson[] buildElasticSearchPersons(final PersistentObject p) {
     ElasticSearchPerson[] ret;
 
     if (p instanceof ApiMultiplePersonAware) {
@@ -546,7 +544,7 @@ public final class LiveElasticTransformer {
     return ret;
   }
 
-  public static ObjectMapper getMapper() {
+  public static synchronized ObjectMapper getMapper() {
     return mapper;
   }
 

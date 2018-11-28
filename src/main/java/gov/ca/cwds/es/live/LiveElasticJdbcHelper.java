@@ -1,10 +1,7 @@
 package gov.ca.cwds.es.live;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.CacheMode;
@@ -55,42 +52,6 @@ public class LiveElasticJdbcHelper {
     final LiveElasticWorkConnectionStealer work = new LiveElasticWorkConnectionStealer();
     doWork(session, work);
     return work.getConnection();
-  }
-
-  public static int runStatementInsertLastChangeKeys(final Session session, final Date lastRunTime,
-      final String sql, final Function<Connection, PreparedStatement> func) {
-    final LiveElasticWorkTotalImpl work =
-        new LiveElasticWorkPrepareLastChange(lastRunTime, sql, func);
-    doWork(session, work);
-    return work.getTotalProcessed();
-  }
-
-  public static int runStatementInsertRownumBundle(final Session session, int start, int end,
-      final Function<Connection, PreparedStatement> func) {
-    final LiveElasticWorkTotalImpl work = new LiveElasticWorkPrepareRownumBundle(start, end, func);
-    doWork(session, work);
-    return work.getTotalProcessed();
-  }
-
-  /**
-   * Prepare a statement through a Java Function to avoid vulnerability to SQL injection.
-   * 
-   * <p>
-   * Thanks a lot, SonarQube. Boo! Hiss!
-   * </p>
-   * 
-   * @param sql SQL statement to prepare
-   * @return Java Function to execute the prepared statement
-   */
-  public static Function<Connection, PreparedStatement> getPreparedStatementMaker(String sql) {
-    return c -> {
-      try {
-        LOGGER.trace("PREPARE STATEMENT:\n\n{}\n", sql);
-        return c.prepareStatement(sql);
-      } catch (SQLException e) {
-        throw CaresLog.runtime(LOGGER, e, "FAILED TO PREPARE STATEMENT! SQL: {}", sql);
-      }
-    };
   }
 
   /**
