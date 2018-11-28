@@ -5,14 +5,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.junit.Test;
 
 import gov.ca.cwds.data.persistence.cms.VarargPrimaryKey;
+import gov.ca.cwds.es.live.ClientAddressReference.ColumnPosition;
 import gov.ca.cwds.rest.util.Doofenshmirtz;
 
 public class RawClientAddressTest extends Doofenshmirtz<RawClient> {
@@ -23,6 +27,27 @@ public class RawClientAddressTest extends Doofenshmirtz<RawClient> {
   public void setup() throws Exception {
     super.setup();
     target = new RawClientAddress();
+  }
+
+  public static void prepResultSetGood(ResultSet rs) throws SQLException {
+    when(rs.getString(ColumnPosition.CLT_IDENTIFIER.ordinal())).thenReturn(DEFAULT_CLIENT_ID);
+    when(rs.getString(ColumnPosition.CLA_LST_UPD_ID.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_IDENTIFIER.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_FKADDRS_T.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_FKCLIENT_T.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_FKREFERL_T.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_HOMLES_IND.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_BK_INMT_ID.ordinal())).thenReturn("");
+
+    when(rs.getShort(ColumnPosition.CLA_ADDR_TPC.ordinal())).thenReturn((short) 32);
+
+    Date date = new Date();
+    when(rs.getTimestamp(ColumnPosition.CLA_LST_UPD_TS.ordinal()))
+        .thenReturn(new Timestamp(date.getTime()));
+
+    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+    when(rs.getDate(ColumnPosition.CLA_EFF_END_DT.ordinal())).thenReturn(sqlDate);
+    when(rs.getDate(ColumnPosition.CLA_EFF_STRTDT.ordinal())).thenReturn(sqlDate);
   }
 
   @Test

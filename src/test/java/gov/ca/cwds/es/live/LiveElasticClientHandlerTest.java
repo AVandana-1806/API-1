@@ -145,6 +145,7 @@ public class LiveElasticClientHandlerTest extends Doofenshmirtz<RawClient> {
 
   @Test
   public void readClientAddress_A$ResultSet() throws Exception {
+    RawClientAddressTest.prepResultSetGood(rs);
     target.readClientAddress(rs);
   }
 
