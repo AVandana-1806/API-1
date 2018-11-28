@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,6 +141,19 @@ public class LiveElasticTransformerTest extends Doofenshmirtz<TestDenormalizedEn
   public void buildElasticSearchPersons_Args__PersistentObject() throws Exception {
     final TestNormalizedEntity p = new TestNormalizedEntity(DEFAULT_CLIENT_ID);
     p.addEntry(new TestNormalizedEntry("xyz1234567", "crap"));
+    final ElasticSearchPerson[] actual = LiveElasticTransformer.buildElasticSearchPersons(p);
+    assertThat(actual, is(notNullValue()));
+  }
+
+  @Test
+  public void buildElasticSearchPersons_Args__multiple() throws Exception {
+    final ApiMultiplePersonAware m = mock(ApiMultiplePersonAware.class);
+    final TestNormalizedEntity p = new TestNormalizedEntity(DEFAULT_CLIENT_ID);
+    p.addEntry(new TestNormalizedEntry("xyz1234567", "crap"));
+
+    final ApiPersonAware[] persons = {p};
+    when(m.getPersons()).thenReturn(persons);
+
     final ElasticSearchPerson[] actual = LiveElasticTransformer.buildElasticSearchPersons(p);
     assertThat(actual, is(notNullValue()));
   }

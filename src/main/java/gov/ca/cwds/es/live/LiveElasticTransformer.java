@@ -8,13 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,109 +96,6 @@ public final class LiveElasticTransformer {
     final String id = l.getPrimaryKey().toString();
     esp.setLegacyId(id);
     return id;
-  }
-
-  /**
-   * Prepare sections of a document for update. Elasticsearch automatically updates the provided
-   * sections. Some rockets only write sub-documents, such as screenings or allegations, from a new
-   * data source, like Intake PostgreSQL, but should NOT overwrite document details from legacy.
-   * 
-   * <p>
-   * Default handler just serializes the whole ElasticSearchPerson instance to JSON and returns the
-   * same JSON for both insert and update. Child classes should override this method and null out
-   * any fields that should not be updated.
-   * </p>
-   * 
-   * @param <T> normalized persistent type
-   * @param docPrep document handler
-   * @param alias ES index alias
-   * @param docType ES document type
-   * @param esp ES document, already prepared by
-   *        {@link LiveElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
-   * @param t target ApiPersonAware instance
-   * @return left = insert JSON, right = update JSON throws JsonProcessingException on JSON parse
-   *         error
-   * @throws CaresExceptionChecked on Elasticsearch disconnect or JSON parse error
-   */
-  public static <T extends PersistentObject> UpdateRequest prepareUpsertRequest(
-      AtomPersonDocPrep<T> docPrep, String alias, String docType, final ElasticSearchPerson esp,
-      T t) throws CaresExceptionChecked {
-    String id = esp.getId();
-
-    // Set id and legacy id.
-    if (t instanceof ApiLegacyAware) {
-      final ApiLegacyAware l = (ApiLegacyAware) t;
-      final String tempId = StringUtils.isNotBlank(l.getLegacyId()) ? l.getLegacyId().trim() : null;
-      final boolean hasLegacyId = tempId != null && tempId.length() == CMS_ID_LEN;
-
-      if (hasLegacyId) {
-        id = l.getLegacyId();
-        esp.setLegacyId(id);
-      } else {
-        id = esp.getId();
-      }
-    } else if (t instanceof CmsReplicatedEntity) {
-      esp.setLegacyId(t.getPrimaryKey().toString());
-    }
-
-    esp.setSource(""); // Clear out obsolete "source" element.
-    esp.setSourceJson(""); // Ditto.
-
-    // Child classes may override these methods as needed. left = update, right = insert.
-    Pair<String, String> json;
-    try {
-      json = LiveElasticTransformer.prepareUpsertJson(docPrep, esp, t,
-          docPrep.getOptionalElementName(), docPrep.getOptionalCollection(esp, t),
-          docPrep.keepCollections());
-    } catch (Exception e) {
-      throw CaresLog.checked(LOGGER, e, "ERROR PREPARING UPSERT: {}", e.getMessage());
-    }
-
-    // "Upsert": update if doc exists, insert if it does not.
-    return new UpdateRequest(alias, docType, id).doc(json.getLeft(), XContentType.JSON)
-        .upsert(new IndexRequest(alias, docType, id).source(json.getRight(), XContentType.JSON));
-  }
-
-  /**
-   * Prepare "upsert" JSON (update and insert). Child classes do not normally override this method.
-   * 
-   * @param <T> normalized persistent type
-   * @param docPrep optional handling to set collections before serializing JSON
-   * @param esp ES document, already prepared by
-   *        {@link LiveElasticTransformer#buildElasticSearchPersonDoc(ApiPersonAware)}
-   * @param t target ApiPersonAware instance
-   * @param elementName target ES element for update
-   * @param list list of ES child objects
-   * @param keep ES sections to keep
-   * @return Pair of JSON, left = update, right = insert
-   * @throws JsonProcessingException on JSON processing error
-   */
-  public static <T extends PersistentObject> Pair<String, String> prepareUpsertJson(
-      AtomPersonDocPrep<T> docPrep, ElasticSearchPerson esp, T t, String elementName,
-      List<? extends ApiTypedIdentifier<String>> list, ESOptionalCollection... keep)
-      throws JsonProcessingException {
-
-    // Child classes: Set optional collections before serializing the insert JSON.
-    prepareInsertCollections(docPrep, esp, t, list, keep);
-    final String insertJson = mapper.writeValueAsString(esp);
-
-    String updateJson;
-    if (StringUtils.isNotBlank(elementName)) {
-      final StringBuilder buf = new StringBuilder();
-      buf.append("{\"").append(elementName).append("\":[");
-
-      if (list != null && !list.isEmpty()) {
-        buf.append(list.stream().map(LiveElasticTransformer::jsonify).sorted(String::compareTo)
-            .collect(Collectors.joining(",")));
-      }
-
-      buf.append("]}");
-      updateJson = buf.toString();
-    } else {
-      updateJson = insertJson;
-    }
-
-    return Pair.of(updateJson, insertJson);
   }
 
   /**
