@@ -31,13 +31,13 @@ public class RawClientAddressTest extends Doofenshmirtz<RawClient> {
 
   public static void prepResultSetGood(ResultSet rs) throws SQLException {
     when(rs.getString(ColumnPosition.CLT_IDENTIFIER.ordinal())).thenReturn(DEFAULT_CLIENT_ID);
-    when(rs.getString(ColumnPosition.CLA_LST_UPD_ID.ordinal())).thenReturn("");
-    when(rs.getString(ColumnPosition.CLA_IDENTIFIER.ordinal())).thenReturn("");
-    when(rs.getString(ColumnPosition.CLA_FKADDRS_T.ordinal())).thenReturn("");
-    when(rs.getString(ColumnPosition.CLA_FKCLIENT_T.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_LST_UPD_ID.ordinal())).thenReturn("0x5");
+    when(rs.getString(ColumnPosition.CLA_IDENTIFIER.ordinal())).thenReturn(DEFAULT_CLIENT_ID);
+    when(rs.getString(ColumnPosition.CLA_FKADDRS_T.ordinal())).thenReturn(DEFAULT_CLIENT_ID);
+    when(rs.getString(ColumnPosition.CLA_FKCLIENT_T.ordinal())).thenReturn(DEFAULT_CLIENT_ID);
     when(rs.getString(ColumnPosition.CLA_FKREFERL_T.ordinal())).thenReturn("");
-    when(rs.getString(ColumnPosition.CLA_HOMLES_IND.ordinal())).thenReturn("");
-    when(rs.getString(ColumnPosition.CLA_BK_INMT_ID.ordinal())).thenReturn("");
+    when(rs.getString(ColumnPosition.CLA_HOMLES_IND.ordinal())).thenReturn("N");
+    when(rs.getString(ColumnPosition.CLA_BK_INMT_ID.ordinal())).thenReturn("N");
 
     when(rs.getShort(ColumnPosition.CLA_ADDR_TPC.ordinal())).thenReturn((short) 32);
 
