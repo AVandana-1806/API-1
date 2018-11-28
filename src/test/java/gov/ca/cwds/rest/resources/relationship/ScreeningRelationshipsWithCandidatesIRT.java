@@ -1,21 +1,18 @@
 package gov.ca.cwds.rest.resources.relationship;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import gov.ca.cwds.IntakeBaseTest;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates;
-import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.CandidateTo;
 import gov.ca.cwds.rest.api.domain.ScreeningRelationshipsWithCandidates.RelatedTo;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -134,8 +131,14 @@ public class ScreeningRelationshipsWithCandidatesIRT extends RelationshipsBaseTe
     assertNotNull(fromResponse.get(1).getRelatedCandidatesTo());
     assertEquals(0, fromResponse.get(1).getRelatedCandidatesTo().size());
     assertEquals(2, fromResponse.get(1).getRelatedTo().size());
-    assertNotNull(fromResponse.get(1).getRelatedTo().iterator().next().getLegacyDescriptor());
-    assertEquals("0000000008", fromResponse.get(1).getRelatedTo().iterator().next().getLegacyDescriptor().getId());
+
+    List<RelatedTo>  candidate = fromResponse.get(1).getRelatedTo().stream()
+        .filter(candidateTo -> candidateTo.getLegacyDescriptor() != null)
+        .filter(candidateTo -> candidateTo.getLegacyDescriptor().getId().equals("0000000008"))
+        .collect(Collectors.toList());
+
+    assertTrue(candidate.size() == 1);
+    assertEquals("0000000008", candidate.get(0).getLegacyDescriptor().getId());
 
     assertNotNull(fromResponse.get(2).getRelatedCandidatesTo());
     assertEquals(1, fromResponse.get(2).getRelatedCandidatesTo().size());

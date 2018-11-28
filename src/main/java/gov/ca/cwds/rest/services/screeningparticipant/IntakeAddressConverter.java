@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
+import gov.ca.cwds.rest.api.domain.enums.AddressType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -36,7 +37,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 public class IntakeAddressConverter {
 
   public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
-  private static final Short RESIDENCE = 32;
+  private static final Short RESIDENCE = AddressType.HOME.getCode();
 
   /**
    * @param client - client
@@ -47,7 +48,6 @@ public class IntakeAddressConverter {
     if (client.getClientAddress() != null) {
       Set<ClientAddress> clientAddresses = client.getClientAddress().stream()
           .filter(clientAddress -> clientAddress.getEffEndDt() == null)
-          .filter(clientAddress -> RESIDENCE.equals(clientAddress.getAddressType()))
           .collect(Collectors.toSet());
       Comparator<ClientAddress> clientAddressComparator = (ClientAddress c1, ClientAddress c2) -> c2
           .getLastUpdatedTime().compareTo(c1.getLastUpdatedTime());
