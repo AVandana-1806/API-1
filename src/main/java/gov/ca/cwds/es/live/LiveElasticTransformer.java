@@ -16,10 +16,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.ca.cwds.data.ApiTypedIdentifier;
 import gov.ca.cwds.data.es.ElasticSearchLegacyDescriptor;
 import gov.ca.cwds.data.es.ElasticSearchPerson;
-import gov.ca.cwds.data.es.ElasticSearchPerson.ESOptionalCollection;
 import gov.ca.cwds.data.es.ElasticSearchPersonAddress;
 import gov.ca.cwds.data.es.ElasticSearchPersonAka;
 import gov.ca.cwds.data.es.ElasticSearchPersonCsec;
@@ -96,29 +94,6 @@ public final class LiveElasticTransformer {
     final String id = l.getPrimaryKey().toString();
     esp.setLegacyId(id);
     return id;
-  }
-
-  /**
-   * Set optional ES person collections to null so that they are not overwritten by accident. Child
-   * classes do not normally override this method.
-   * 
-   * @param <T> normalized persistent type
-   * @param docPrep optional handling to set collections before serializing JSON
-   * @param esp ES document, already prepared by
-   *        {@link #buildElasticSearchPersonDoc(ApiPersonAware)}
-   * @param t target ApiPersonAware instance
-   * @param list list of ES child objects
-   * @param keep ES sections to keep
-   */
-  public static <T extends PersistentObject> void prepareInsertCollections(
-      AtomPersonDocPrep<T> docPrep, ElasticSearchPerson esp, T t,
-      List<? extends ApiTypedIdentifier<String>> list, ESOptionalCollection... keep) {
-
-    // Clear out optional collections for updates.
-    esp.clearOptionalCollections(keep);
-
-    // Child classes: Set optional collections before serializing the insert JSON.
-    docPrep.setInsertCollections(esp, t, list);
   }
 
   /**
