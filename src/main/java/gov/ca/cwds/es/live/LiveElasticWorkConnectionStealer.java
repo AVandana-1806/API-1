@@ -16,7 +16,7 @@ import gov.ca.cwds.data.persistence.xa.CaresWorkConnectionStealer;
  * Steal a connection from a Hibernate session and make it available to the caller.
  * 
  * <p>
- * Facilities direct JDBC in a Hibernate environment.
+ * Facilitates direct JDBC in a Hibernate environment.
  * </p>
  * 
  * @author CWDS API Team
@@ -50,14 +50,6 @@ public class LiveElasticWorkConnectionStealer implements Work {
   }
 
   /**
-   * @return default CMS schema name
-   */
-  public static String getDBSchemaName() {
-    return "CWSNS1";
-    // return System.getProperty("DB_CMS_SCHEMA");
-  }
-
-  /**
    * Enable DB2 parallelism. Ignored for other databases.
    * 
    * @param con connection
@@ -66,7 +58,7 @@ public class LiveElasticWorkConnectionStealer implements Work {
   public static void enableBatchSettings(Connection con) throws SQLException {
     final DatabaseMetaData metaData = con.getMetaData();
     final String dbProductName = metaData.getDatabaseProductName();
-    final String schema = LiveElasticWorkConnectionStealer.getDBSchemaName();
+    final String schema = LiveElasticJdbcHelper.getDBSchemaName();
 
     if (StringUtils.isNotBlank(schema)) {
       con.setSchema(schema);
