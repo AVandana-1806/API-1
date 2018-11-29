@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-utils') _
+
 DOCKER_REGISTRY_CREDENTIALS_ID = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
 
 def notifyBuild(String buildStatus, Exception e){
