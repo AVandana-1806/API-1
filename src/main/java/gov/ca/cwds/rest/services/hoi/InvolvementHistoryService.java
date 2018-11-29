@@ -48,8 +48,6 @@ public class InvolvementHistoryService
 
   /**
    * {@inheritDoc}
-   *
-   * @see gov.ca.cwds.rest.services.CrudsService#create(gov.ca.cwds.rest.api.Request)
    */
   @Override
   public Response find(String screeningId) {

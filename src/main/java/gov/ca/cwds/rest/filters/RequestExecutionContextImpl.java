@@ -17,12 +17,18 @@ import gov.ca.cwds.rest.services.cms.StaffPersonIdRetriever;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"squid:S1948"})
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED",
+    "serial", "squid:S2095", "squid:S2160", "squid:S1206", "squid:S1948"})
 class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestExecutionContext {
 
   private static final long serialVersionUID = 1L;
 
   private static final PerryUserIdentity DEFAULT_IDENTITY;
+
+  /**
+   * Context parameters. Not thread-safe, because it runs on a single thread.
+   */
+  private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
 
   // Build default user identity.
   static {
@@ -36,9 +42,20 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
   }
 
   /**
-   * Context parameters. Not thread-safe, because it runs on a single thread.
+   * Private constructor
+   * 
+   * @param userIdentity User identity
    */
-  private final Map<Parameter, Object> contextParameters = new EnumMap<>(Parameter.class);
+  protected RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
+    put(Parameter.REQUEST_START_TIME, new Date());
+    put(Parameter.USER_IDENTITY, userIdentity);
+    put(Parameter.SEQUENCE_EXTERNAL_TABLE, Integer.valueOf(0));
+    put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
+    put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
+    put(Parameter.XA_TRANSACTION, Boolean.FALSE);
+    put(Parameter.NON_HTTP_REQUEST, Boolean.FALSE);
+    put(Parameter.THREAD_ID, Thread.currentThread().getId());
+  }
 
   /**
    * Servlet filter marks the start of a web or non-HTTP request. This method is only accessible by
@@ -57,22 +74,6 @@ class RequestExecutionContextImpl extends ApiObjectIdentity implements RequestEx
    */
   static void stopRequest() {
     RequestExecutionContextRegistry.remove();
-  }
-
-  /**
-   * Private constructor
-   * 
-   * @param userIdentity User identity
-   */
-  protected RequestExecutionContextImpl(PerryUserIdentity userIdentity) {
-    put(Parameter.REQUEST_START_TIME, new Date());
-    put(Parameter.USER_IDENTITY, userIdentity);
-    put(Parameter.SEQUENCE_EXTERNAL_TABLE, Integer.valueOf(0));
-    put(Parameter.MESSAGE_BUILDER, new MessageBuilder());
-    put(Parameter.RESOURCE_READ_ONLY, Boolean.TRUE);
-    put(Parameter.XA_TRANSACTION, Boolean.FALSE);
-    put(Parameter.NON_HTTP_REQUEST, Boolean.FALSE);
-    put(Parameter.THREAD_ID, Thread.currentThread().getId());
   }
 
   /**

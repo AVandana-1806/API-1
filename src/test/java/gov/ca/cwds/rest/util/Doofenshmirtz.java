@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.util;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.CacheMode;
@@ -88,8 +91,8 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
   public static final String DEFAULT_CLIENT_ID = "Jtq8ab8H3N";
   public static final String DEFAULT_PARTICIPANT_ID = "10";
 
-  private static Validator validator;
-  private static SystemCodeCache systemCodeCache;
+  public static Validator validator;
+  public static SystemCodeCache systemCodeCache;
 
   public SessionFactoryImplementor sessionFactoryImplementor;
   public org.hibernate.SessionFactory sessionFactory;
@@ -106,16 +109,17 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
   public NativeQuery<T> nq;
   public ProcedureCall proc;
   public Settings settings;
-  PreparedStatement prepStmt;
+  public PreparedStatement prepStmt;
 
   public SystemCodeDao systemCodeDao;
   public SystemMetaDao systemMetaDao;
 
   public Query query;
 
-  Subject mockSubject;
-  PrincipalCollection principalCollection;
-  RequestExecutionContext ctx;
+  public Subject mockSubject;
+  public PrincipalCollection principalCollection;
+  public RequestExecutionContext ctx;
+  public Pair<String, String> pair;
 
   @BeforeClass
   public static void setupClass() {
@@ -235,7 +239,14 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
 
     prepStmt = mock(PreparedStatement.class);
     when(con.prepareStatement(any(String.class))).thenReturn(prepStmt);
-    when(prepStmt.executeUpdate()).thenReturn(10);
+    when(con.prepareStatement(any(String.class), any(Integer.class), any(Integer.class)))
+        .thenReturn(prepStmt);
+    when(con.prepareStatement(any())).thenReturn(prepStmt);
+    when(con.prepareStatement(any(String.class), any(int[].class))).thenReturn(prepStmt);
+
+    when(prepStmt.executeQuery()).thenReturn(rs);
+    when(prepStmt.executeQuery(any())).thenReturn(rs);
+    when(prepStmt.executeUpdate()).thenReturn(1);
 
     when(transaction.getStatus()).thenReturn(TransactionStatus.MARKED_ROLLBACK);
 
@@ -294,6 +305,17 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
 
     new TestingRequestExecutionContext("02f");
     SystemCodeCache.global().getAllSystemCodes();
+
+    pair = Pair.of("aaaaaaaaaa", "9999999999");
+  }
+
+  protected void bombResultSet() throws SQLException {
+    doThrow(SQLException.class).when(con).commit();
+    when(prepStmt.executeUpdate()).thenThrow(SQLException.class);
+    when(prepStmt.executeQuery()).thenThrow(SQLException.class);
+    when(rs.next()).thenThrow(SQLException.class);
+    when(rs.getString(any(String.class))).thenThrow(SQLException.class);
+    when(rs.getString(any(Integer.class))).thenThrow(SQLException.class);
   }
 
   /**

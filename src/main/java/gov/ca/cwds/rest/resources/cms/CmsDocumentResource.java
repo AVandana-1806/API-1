@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CMS_DOCUMENT;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
@@ -28,7 +30,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.hibernate.FlushMode;
 
 /**
  * A resource providing a RESTful interface for {@link CmsDocument}. It delegates functions to
@@ -69,7 +70,7 @@ public class CmsDocumentResource {
    * 
    * @return the response
    */
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
@@ -89,7 +90,7 @@ public class CmsDocumentResource {
    * 
    * @return {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DS_CMS)
   @DELETE
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized")})
@@ -106,7 +107,7 @@ public class CmsDocumentResource {
    * 
    * @return The {@link CmsDocument}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DS_CMS)
   @POST
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
       @ApiResponse(code = 401, message = "Not Authorized"),
@@ -129,7 +130,7 @@ public class CmsDocumentResource {
    *
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(DS_CMS)
   @PUT
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

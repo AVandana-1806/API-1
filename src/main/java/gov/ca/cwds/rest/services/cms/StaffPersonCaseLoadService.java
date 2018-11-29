@@ -14,7 +14,7 @@ import gov.ca.cwds.rest.services.TypedCrudsService;
  * 
  * @author CWDS API Team
  */
-public class SaffPersonCaseLoadService
+public class StaffPersonCaseLoadService
     implements TypedCrudsService<String, StaffPersonCaseLoad, StaffPersonCaseLoad> {
 
   private StaffPersonCaseLoadDao staffPersonCaseLoadDao;
@@ -25,7 +25,7 @@ public class SaffPersonCaseLoadService
    *        {@link gov.ca.cwds.data.persistence.cms.StaffPersonCaseLoad} objects.
    */
   @Inject
-  public SaffPersonCaseLoadService(StaffPersonCaseLoadDao staffPersonCaseLoadDao) {
+  public StaffPersonCaseLoadService(StaffPersonCaseLoadDao staffPersonCaseLoadDao) {
     this.staffPersonCaseLoadDao = staffPersonCaseLoadDao;
   }
 

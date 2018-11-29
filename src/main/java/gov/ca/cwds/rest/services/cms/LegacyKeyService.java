@@ -8,7 +8,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyKeyResponse;
 import gov.ca.cwds.rest.resources.SimpleResourceService;
 
 /**
- * Business service for for {@link CmsKeyIdGenerator}.
+ * Business service for {@link CmsKeyIdGenerator}.
  * 
  * @author CWDS API Team
  */

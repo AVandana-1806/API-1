@@ -4,22 +4,25 @@ import java.io.File;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
+
 import javax.servlet.DispatcherType;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.codahale.metrics.servlets.AdminServlet;
 import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+
 import gov.ca.cwds.data.ns.PaperTrailDao;
 import gov.ca.cwds.health.AuthHealthCheck;
 import gov.ca.cwds.health.IntakeCodeCacheHealthCheck;
 import gov.ca.cwds.health.LovHealthCheck;
 import gov.ca.cwds.health.MQTHealthCheck;
 import gov.ca.cwds.health.SpGenclncntyHealthCheck;
-import gov.ca.cwds.health.SpSpssaname3HealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
 import gov.ca.cwds.health.SystemCodeCacheHealthCheck;
 import gov.ca.cwds.health.SystemCodeHealthCheck;
@@ -29,7 +32,6 @@ import gov.ca.cwds.health.resource.AuthServer;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
 import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
-import gov.ca.cwds.health.resource.SpSpssaname3ExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
 import gov.ca.cwds.health.resource.TriggerExistCheck;
@@ -176,7 +178,7 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
 
     LOGGER.info("Finished Upgrading INTAKE_NS DB");
   }
-  
+
   private void registerHealthChecks(final Injector injector, final Environment environment) {
     final AuthHealthCheck authHealthCheck =
         new AuthHealthCheck(injector.getInstance(AuthServer.class));
@@ -212,15 +214,6 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         new SpGenclncntyHealthCheck(injector.getInstance(SpGenclncntyExistCheck.class));
     environment.healthChecks().register(Api.HealthCheck.SP_GENCLNCNTY_STATUS,
         spGenclncntyHealthCheck);
-
-    //
-    // SP_SPSSANAME3_STATUS is disabled to fix this Jira:
-    // https://osi-cwds.atlassian.net/browse/DS-1427
-    //
-//    final SpSpssaname3HealthCheck spSpssaname3HealthCheck =
-//        new SpSpssaname3HealthCheck(injector.getInstance(SpSpssaname3ExistCheck.class));
-//    environment.healthChecks().register(Api.HealthCheck.SP_SPSSANAME3_STATUS,
-//        spSpssaname3HealthCheck);
 
     final SwaggerHealthCheck swaggerHealthCheck =
         new SwaggerHealthCheck(injector.getInstance(SwaggerEndpoint.class));

@@ -10,7 +10,8 @@ import gov.ca.cwds.rest.api.domain.LimitedAccessType;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS"})
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED",
+    "serial", "squid:S2095", "squid:S2160", "squid:S1206"})
 public class HOIPerpetrator extends HOIPerson {
 
   private static final long serialVersionUID = 1L;

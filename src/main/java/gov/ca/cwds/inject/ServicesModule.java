@@ -33,6 +33,7 @@ import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAspect;
 import gov.ca.cwds.data.persistence.xa.XAUnitOfWorkAwareProxyFactory;
 import gov.ca.cwds.data.persistence.xa.XaCmsRsHibernateBundle;
 import gov.ca.cwds.drools.DroolsService;
+import gov.ca.cwds.es.live.LiveElasticClientService;
 import gov.ca.cwds.rest.ApiConfiguration;
 import gov.ca.cwds.rest.SystemCodeCacheConfiguration;
 import gov.ca.cwds.rest.api.domain.Id;
@@ -209,6 +210,7 @@ public class ServicesModule extends AbstractModule {
     bind(TickleService.class);
     bind(DroolsService.class);
     bind(RelationshipFacade.class).to(RelationshipFacadeLegacyAndNewDB.class);
+    bind(LiveElasticClientService.class);
 
     LOGGER.info("configure: point 2");
 

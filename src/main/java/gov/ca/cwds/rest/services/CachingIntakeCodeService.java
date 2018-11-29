@@ -23,7 +23,8 @@ import io.dropwizard.hibernate.UnitOfWork;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("squid:S2160")
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED",
+    "serial", "squid:S2095", "squid:S2160", "squid:S1206", "squid:S1948"})
 public class CachingIntakeCodeService implements IntakeCodeCache {
 
   private static final long serialVersionUID = 1L;
@@ -95,8 +96,8 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
   public Short getLegacySystemCodeForIntakeCode(String metaId, String intakeCode) {
     Short sysCodeId = null;
 
-    List<IntakeLov> intakeLovs = getAllLegacySystemCodesForMeta(metaId);
-    for (IntakeLov lov : intakeLovs) {
+    final List<IntakeLov> theLovs = getAllLegacySystemCodesForMeta(metaId);
+    for (IntakeLov lov : theLovs) {
       if (StringUtils.equalsIgnoreCase(intakeCode, lov.getIntakeCode())) {
         sysCodeId = lov.getLegacySystemCodeId().shortValue();
         break;
@@ -114,9 +115,9 @@ public class CachingIntakeCodeService implements IntakeCodeCache {
     }
 
     Short systemCodeIdShort = systemCodeId.shortValue();
-    List<IntakeLov> intakeLovs = mapBySystemCodeId.get(systemCodeIdShort);
-    if (intakeLovs != null) {
-      for (IntakeLov lov : intakeLovs) {
+    final List<IntakeLov> theLovs = mapBySystemCodeId.get(systemCodeIdShort);
+    if (theLovs != null) {
+      for (IntakeLov lov : theLovs) {
         if (StringUtils.equalsIgnoreCase(intakeType, lov.getIntakeType())) {
           intakeCodeId = lov.getIntakeCode();
           break;

@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 import gov.ca.cwds.rest.api.domain.investigation.Relationship;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import gov.ca.cwds.rest.services.RelationshipsService;
-
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +26,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * A resource providing a RESTful interface for {@link Resource}. It delegates functions to {@link
- * RelationshipsService}.
+ * A resource providing a RESTful interface for {@link Resource}. It delegates functions to
+ * {@link RelationshipsService}.
  * <a href= "https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X">Swagger
  * Annotations</a> and
  * <a href="https://jersey.java.net/documentation/latest/user-guide.html#jaxrs-resources">Jersey
@@ -47,7 +46,7 @@ public class ClientRelationshipResource {
   /**
    * Constructor
    *
-   * @param relationshipsService The service to delgate to
+   * @param relationshipsService The service to delegate to
    */
   @Inject
   public ClientRelationshipResource(RelationshipsService relationshipsService) {
