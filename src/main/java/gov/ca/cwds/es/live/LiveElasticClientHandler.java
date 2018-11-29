@@ -415,9 +415,6 @@ public class LiveElasticClientHandler implements ApiMarker {
       LOGGER.debug("Read address");
       read(stmtAddress, this::readAddress);
 
-      LOGGER.debug("Read aka");
-      read(stmtAka, this::readAka);
-
       LOGGER.debug("Read case");
       read(stmtCase, this::readCase);
 
@@ -427,11 +424,16 @@ public class LiveElasticClientHandler implements ApiMarker {
       LOGGER.debug("Read ethnicity");
       read(stmtEthnicity, this::readEthnicity);
 
-      LOGGER.debug("Read safety alert");
-      read(stmtSafety, this::readSafetyAlert);
-
       LOGGER.debug("Read placement home address");
       readPlacementAddress(stmtPlcmntAddr);
+
+      // NOT YET USED.
+      // LOGGER.debug("Read aka");
+      // read(stmtAka, this::readAka);
+
+      // NOT YET USED.
+      // LOGGER.debug("Read safety alert");
+      // read(stmtSafety, this::readSafetyAlert);
 
       con.commit(); // free db resources. Make DBA's happy.
     } catch (RuntimeException e) {
