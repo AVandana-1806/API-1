@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-utils') _
+
 DOCKER_REGISTRY_CREDENTIALS_ID = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
 
 def notifyBuild(String buildStatus, Exception e){
@@ -54,6 +56,11 @@ node ('tpt4-slave'){
     stage('Build'){
 	    def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar -D build=${BUILD_NUMBER}'
     }
+    
+    stage('Verify SemVer Label'){
+        checkForLabel("API")
+    }
+
     stage('Functional Tests'){
       withDockerRegistry([credentialsId: DOCKER_REGISTRY_CREDENTIALS_ID]) {
         sh "docker ps -q -f status=exited"
