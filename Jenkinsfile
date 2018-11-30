@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-utils') _
+
 def notifyBuild(String buildStatus, Exception e) {
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
@@ -15,16 +17,15 @@ def notifyBuild(String buildStatus, Exception e) {
   } else if (buildStatus == 'SUCCESSFUL') {
     color = 'GREEN'
     colorCode = '#00FF00'
+    summary = "${pipelineStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' in stage '${curStage}' for branch '${branch}' (${env.BUILD_URL})"
   } else {
     color = 'RED'
     colorCode = '#FF0000'
     details +="<p>Error message ${e.message}, stacktrace: ${e}</p>"
     summary +="\nError message ${e.message}, stacktrace: ${e}"
   }
-
-  // Send notifications
-
-//  slackSend channel: "#cals-api", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
+  //
+  slackSend channel: "#team-oncore", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
   emailext(
       subject: subject,
       body: details,
@@ -34,11 +35,12 @@ def notifyBuild(String buildStatus, Exception e) {
     )
 }
 
-
-
 node ('tpt4-slave'){
    def serverArti = Artifactory.server 'CWDS_DEV'
    def rtGradle = Artifactory.newGradleBuild()
+   def docker_credentials_id = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
+   def github_credentials_id = '433ac100-b3c2-4519-b4d6-207c029a103b'
+   newTag = '';
    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
    parameters([
       string(defaultValue: 'master', description: '', name: 'branch'),
@@ -47,6 +49,7 @@ node ('tpt4-slave'){
   try {
    stage('Preparation') {
 		  git branch: '$branch', credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/API.git'
+		  newTag = newSemVer()
 		  rtGradle.tool = "Gradle_35"
 		  rtGradle.resolver repo:'repo', server: serverArti
 		  rtGradle.useWrapper = false
@@ -69,27 +72,30 @@ node ('tpt4-slave'){
 			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info -D build=${BUILD_NUMBER}', tasks: 'sonarqube'
         }
     }
-
+	
 	stage ('Push to artifactory'){
       //rtGradle.deployer repo:'libs-snapshot', server: serverArti
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		//buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -D build=${BUILD_NUMBER}'
+		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -D build=${newTag}'
 		rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
-	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -D build=${BUILD_NUMBER}'
+	   tagRepo(newTag)
+	   withDockerRegistry([credentialsId: docker_credentials_id]) {
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -D build=${newTag}'
        }
 	}
-  stage('Tag Git') {
-       // git the git repository
-        def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'pushGitTag -D build=${BUILD_NUMBER}'
-  }
+	
+    stage('Tag Git') {
+        tagGithubRepo(VERSION, github_credentials_id)
+    }
+    
 	stage('Clean Workspace') {
 		cleanWs()
 	}
+	
 	stage('Deploy Application') {
 		build job: 'tpt4-api-deploy-app', parameters: [string(name: 'version', value: 'latest'), string(name: 'inventory', value: 'inventories/development/hosts.yml')], propagate: false
 	}
