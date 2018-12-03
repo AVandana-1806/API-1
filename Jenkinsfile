@@ -113,7 +113,7 @@ node ('tpt4-slave'){
  def updateGradleApiVersion(newTag) {
  	 debug("updateGradleApiVersion( newTag: ${newTag} )")
  	 def source = readFile file: 'build.gradle'
- 	 source = source.replace('projectVersion = \''+newTag+'\'')
+ 	 source = source.replace('apiVersion = \''+newTag+'\'')
  	 writeFile file:'build.gradle', text: "$source"
  }
  
