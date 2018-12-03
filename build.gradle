@@ -62,7 +62,7 @@ compileJava {
     ]
 }
 
-def dockerTag = apiVersion + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+def dockerTag = apiVersion
 version = apiVersion
 mainClassName = mainclass
 
@@ -97,8 +97,6 @@ shadowJar {
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
-        attributes 'Api-Version': apiVersion
-        attributes 'Api-Build': (System.getenv("BUILD_NUMBER") ?: "IDE")
     }
 }
 
@@ -108,7 +106,7 @@ publishing {
       from components.java
       groupId 'gov.ca.cwds.api'
       artifactId 'api'
-        version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+        version version
     }
   }
   repositories {
