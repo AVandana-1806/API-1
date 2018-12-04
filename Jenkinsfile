@@ -55,8 +55,7 @@ node ('tpt4-slave'){
    }
    stage('Build'){
        newTag = newSemVer()
-       updateGradleApiVersion(newTag)
-	   def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
+	   def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -DnewTag=$newTag"
    }
    stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: '--stacktrace -D build=${BUILD_NUMBER}'
@@ -108,13 +107,6 @@ node ('tpt4-slave'){
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        cleanWs()
- }
- 
- def updateGradleApiVersion(newTag) {
- 	 debug("updateGradleApiVersion( newTag: ${newTag} )")
- 	 def source = readFile file: 'build.gradle'
- 	 source = source.replace('apiVersion = \''+newTag+'\'')
- 	 writeFile file:'build.gradle', text: "$source"
  }
  
 }

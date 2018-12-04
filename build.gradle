@@ -62,8 +62,8 @@ compileJava {
     ]
 }
 
-def dockerTag = apiVersion
-version = apiVersion
+def dockerTag = System.getProperty($newTag)
+version = System.getProperty($newTag)
 mainClassName = mainclass
 
 repositories {
@@ -97,6 +97,8 @@ shadowJar {
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
+        attributes 'Api-Version': System.getProperty($newTag)	
+        attributes 'Api-Build': (System.getenv("BUILD_NUMBER") ?: "IDE")
     }
 }
 
