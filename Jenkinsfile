@@ -25,7 +25,7 @@ def notifyBuild(String buildStatus, Exception e) {
     summary +="\nError message ${e.message}, stacktrace: ${e}"
   }
   //
-  slackSend channel: "#team-oncore", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
+  slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
   emailext(
       subject: subject,
       body: details,
@@ -54,9 +54,9 @@ node ('tpt4-slave'){
 		  rtGradle.useWrapper = false
    }
    stage('Build'){
-        newTag = newSemVer()
-        updateGradleApiVersion(newTag)
-		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
+       newTag = newSemVer()
+       updateGradleApiVersion(newTag)
+	   def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
    }
    stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: '--stacktrace -D build=${BUILD_NUMBER}'
