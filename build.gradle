@@ -62,8 +62,13 @@ compileJava {
     ]
 }
 
-def dockerTag = apiVersion + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
-version = apiVersion
+  if (System.getProperty('newVersion')) {
+      def newVersion = "${System.getProperty('newVersion')}.${System.getProperty('build')}"
+      version = newVersion
+  } else {
+      version = apiVersion
+  }
+def dockerTag = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 mainClassName = mainclass
 
 repositories {
@@ -97,7 +102,7 @@ shadowJar {
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
-        attributes 'Api-Version': apiVersion
+        attributes 'Api-Version': version	
         attributes 'Api-Build': (System.getenv("BUILD_NUMBER") ?: "IDE")
     }
 }

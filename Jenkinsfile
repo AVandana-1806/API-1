@@ -25,13 +25,13 @@ def notifyBuild(String buildStatus, Exception e) {
     summary +="\nError message ${e.message}, stacktrace: ${e}"
   }
   //
-  slackSend channel: "#team-oncore", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
+  slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
   emailext(
       subject: subject,
       body: details,
       attachLog: true,
       recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-      to: "tom.parker@osi.ca.gov"
+      to: "tom.parker@osi.ca.gov, adarsh.vandana@osi.ca.gov"
     )
 }
 
@@ -49,13 +49,13 @@ node ('tpt4-slave'){
   try {
    stage('Preparation') {
 		  git branch: '$branch', credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/API.git'
-		  newTag = newSemVer()
 		  rtGradle.tool = "Gradle_35"
 		  rtGradle.resolver repo:'repo', server: serverArti
 		  rtGradle.useWrapper = false
    }
    stage('Build'){
-		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar -D build=${BUILD_NUMBER}'
+       newTag = newSemVer()
+       def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}"
    }
    stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: '--stacktrace -D build=${BUILD_NUMBER}'
@@ -69,7 +69,7 @@ node ('tpt4-slave'){
 	}
    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
-			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info -D build=${BUILD_NUMBER}', tasks: 'sonarqube'
+			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info', tasks: 'sonarqube'
         }
     }
 	
@@ -78,13 +78,12 @@ node ('tpt4-slave'){
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		//buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -D build=${newTag}'
+		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish'
 		rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
-	   tagRepo(newTag)
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -D build=${newTag}'
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker'
        }
 	}
 	
@@ -109,5 +108,6 @@ node ('tpt4-slave'){
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        cleanWs()
  }
+ 
 }
 
