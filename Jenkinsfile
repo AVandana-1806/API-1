@@ -55,7 +55,7 @@ node ('tpt4-slave'){
    }
    stage('Build'){
        newTag = newSemVer()
-	   def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}"
+       def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}"
    }
    stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: '--stacktrace -D build=${BUILD_NUMBER}'
