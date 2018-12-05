@@ -68,7 +68,7 @@ if (System.getProperty('newVersion')) {
 } else {
  version = apiVersion
 }
-def dockerTag = apiVersion + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+def dockerTag = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 mainClassName = mainclass
 
 repositories {
@@ -113,7 +113,7 @@ publishing {
       from components.java
       groupId 'gov.ca.cwds.api'
       artifactId 'api'
-        version version
+        version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
     }
   }
   repositories {
