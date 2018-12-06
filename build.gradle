@@ -65,8 +65,10 @@ compileJava {
   if (System.getProperty('newVersion')) {
       def newVersion = "${System.getProperty('newVersion')}.${System.getProperty('build')}"
       version = newVersion
+      echo version + "With newTag"
   } else {
       version = apiVersion
+      echo version + "WithOut newTag"
   }
 def dockerTag = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 mainClassName = mainclass
