@@ -25,7 +25,7 @@ def notifyBuild(String buildStatus, Exception e) {
     summary +="\nError message ${e.message}, stacktrace: ${e}"
   }
   //
-  slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
+  // slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
   emailext(
       subject: subject,
       body: details,
@@ -70,7 +70,7 @@ node ('tpt4-slave'){
 	}
    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
-			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info', tasks: 'sonarqube'
+			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info  -D build=${BUILD_NUMBER}', tasks: 'sonarqube'
         }
     }
 	
@@ -79,12 +79,12 @@ node ('tpt4-slave'){
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		//buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish'
+		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -D build=${BUILD_NUMBER}'
 		rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker'
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -D build=${BUILD_NUMBER}'
        }
 	}
 	
