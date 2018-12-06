@@ -64,18 +64,18 @@ node ('tpt4-slave'){
    }
 
    stage('Tests') {
-       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: '--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}'
+       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
    }
    stage('Integration Tests'){
          withEnv(['APP_STD_PORT=8088']) {
-            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: '--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}'
+            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        }
 	}
    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
-			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info  -D build=${BUILD_NUMBER} -DnewVersion=${newTag}', tasks: 'sonarqube'
+			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: "--info  -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString(), tasks: 'sonarqube'
         }
     }
 	
@@ -84,12 +84,12 @@ node ('tpt4-slave'){
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		//buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -D build=${BUILD_NUMBER} -DnewVersion=${newTag}'
+		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publish -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
 		rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -D build=${BUILD_NUMBER} -DnewVersion=${newTag}'
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publishDocker -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
        }
 	}
 	
