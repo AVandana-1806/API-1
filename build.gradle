@@ -63,7 +63,7 @@ compileJava {
 }
 
   if (System.getProperty('newVersion')) {
-      def newVersion = "${System.getProperty('newVersion')}.${System.getProperty('build')}"
+      def newVersion = "${System.getProperty('newVersion')}"
       version = newVersion
       print version + " With newTag"
   } else {

@@ -94,7 +94,8 @@ node ('tpt4-slave'){
 	}
 	
     stage('Tag Git') {
-        tagGithubRepo(newTag +"."+ ${BUILD_NUMBER}, github_credentials_id)
+        def buildNumber = "${env.BUILD_NUMBER}"
+        tagGithubRepo(newTag +"."+ buildNumber, github_credentials_id)
     }
     
 	stage('Clean Workspace') {
