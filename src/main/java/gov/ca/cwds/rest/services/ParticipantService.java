@@ -1,0 +1,34 @@
+package gov.ca.cwds.rest.services;
+
+import com.google.inject.Inject;
+import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
+import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.services.screening.participant.ParticipantTransformer;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ParticipantService {
+  ParticipantTransformer participantTransformer;
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantService.class);
+
+  @Inject
+  public ParticipantService(ParticipantTransformer participantTransformer){
+    this.participantTransformer = participantTransformer;
+  }
+
+  public ParticipantIntakeApi findByLegacyId(String legacyId){
+    if (StringUtils.isBlank(legacyId)) {
+      throw new ServiceException("NULL argument for CREATE participant");
+    }
+    LegacyDescriptor legacyDescriptor = new LegacyDescriptor();
+    legacyDescriptor.setId(legacyId);
+    legacyDescriptor.setTableName("CLIENT_T");
+
+    ParticipantIntakeApi queryParticipant = new ParticipantIntakeApi();
+    queryParticipant.setLegacyDescriptor(legacyDescriptor);
+    ParticipantIntakeApi foundParticipant = participantTransformer.loadParticipant(queryParticipant);
+
+    return foundParticipant;
+  }
+}

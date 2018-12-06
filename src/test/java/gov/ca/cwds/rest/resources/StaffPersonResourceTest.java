@@ -53,5 +53,4 @@ public class StaffPersonResourceTest {
         .get();
     verify(typedResourceDelegate).get("abc");
   }
-
 }

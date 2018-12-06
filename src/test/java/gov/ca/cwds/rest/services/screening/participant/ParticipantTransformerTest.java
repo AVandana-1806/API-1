@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
+import static junit.framework.TestCase.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -134,11 +135,18 @@ public class ParticipantTransformerTest {
         is(equalTo("Screeening is already Submitted")));
   }
 
-  @Test(expected = ServiceException.class)
-  public void shouldThrowExceptionWhenParticipantDoesNotExist() {
+  @Test
+  public void shouldNotTryToBuildParticipantWhenParticipantDoesNotExist() {
     when(crudsDaoObject.find(any(String.class))).thenReturn(null);
     participantTransformer.prepareParticipantObject(participantIntakeApi);
     verify(csecHistoryService, never()).findByClientId(participantIntakeApi.getLegacyDescriptor().getId());
+  }
+
+  @Test
+  public void shouldReturnNullWhenParticipantDoesNotExist() {
+    when(crudsDaoObject.find(any(String.class))).thenReturn(null);
+    ParticipantIntakeApi participant = participantTransformer.prepareParticipantObject(participantIntakeApi);
+    assertNull(participant);
   }
 
   @Test

@@ -115,7 +115,7 @@
   "family_awareness" : false,
   "filed_with_law_enforcement" : false,
   "responsible_agency" : "C",
-  "limited_access_code" : "S",
+  "limited_access_code" : "N",
   "limited_access_description" : "",
   "limited_access_agency" : "23",
   "limited_access_date" : null,

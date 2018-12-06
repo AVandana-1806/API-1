@@ -1,13 +1,9 @@
 package gov.ca.cwds.inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
-
 import gov.ca.cwds.es.live.LiveElasticClientRequest;
 import gov.ca.cwds.es.live.LiveElasticClientResource;
 import gov.ca.cwds.es.live.LiveElasticClientService;
@@ -86,7 +82,6 @@ import gov.ca.cwds.rest.resources.investigation.PeopleResource;
 import gov.ca.cwds.rest.resources.investigation.RelationshipListResource;
 import gov.ca.cwds.rest.resources.investigation.SafetyAlertsResource;
 import gov.ca.cwds.rest.resources.parameter.ParticipantResourceParameters;
-import gov.ca.cwds.rest.resources.screening.participant.ParticipantResource;
 import gov.ca.cwds.rest.resources.submit.ScreeningSubmitResource;
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.ContactIntakeApiService;
@@ -128,8 +123,9 @@ import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Identifies all CWDS API domain resource classes (REST endpoints) and supporting service classes
@@ -157,7 +153,8 @@ public class ResourcesModule extends AbstractModule {
 
     bind(LiveElasticClientResource.class);
     bind(AddressResource.class);
-    bind(ParticipantResource.class);
+    bind(gov.ca.cwds.rest.resources.screening.participant.ParticipantResource.class);
+    bind(gov.ca.cwds.rest.resources.ParticipantResource.class);
     bind(PersonResource.class);
     bind(ScreeningResource.class);
     bind(ScreeningIntakeResource.class);
@@ -396,10 +393,17 @@ public class ResourcesModule extends AbstractModule {
   }
 
   @Provides
-  @ParticipantServiceBackedResource
-  public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> participantServiceBackedResource(
+  @ClientParticipantServiceBackedResource
+  public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> clientParticipantServiceBackedResource(
       Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(ParticipantService.class));
+    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(gov.ca.cwds.rest.services.screening.participant.ParticipantService.class));
+  }
+
+  @Provides
+  @ParticipantServiceBackedResource
+  public gov.ca.cwds.rest.services.ParticipantService participantServiceBackedResource(
+      Injector injector) {
+    return injector.getInstance(gov.ca.cwds.rest.services.ParticipantService.class);
   }
 
   @Provides

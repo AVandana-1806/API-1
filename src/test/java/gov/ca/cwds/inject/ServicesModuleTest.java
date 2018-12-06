@@ -120,5 +120,4 @@ public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
     CmsSystemCodeSerializer actual = target.provideCmsSystemCodeSerializer(systemCodeCache);
     assertThat(actual, is(notNullValue()));
   }
-
 }

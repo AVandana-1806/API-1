@@ -1,5 +1,6 @@
 package gov.ca.cwds.inject;
 
+import gov.ca.cwds.rest.services.ParticipantService;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
@@ -196,6 +197,7 @@ public class ServicesModule extends AbstractModule {
     bind(OtherCaseReferralDrmsDocumentService.class);
     bind(ParticipantDaoFactoryImpl.class);
     bind(ParticipantMapperFactoryImpl.class);
+    bind(ParticipantService.class);
     bind(PersonService.class);
     bind(ReferralClientService.class);
     bind(ReferralService.class);

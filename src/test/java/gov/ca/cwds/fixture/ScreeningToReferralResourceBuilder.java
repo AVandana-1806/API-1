@@ -48,7 +48,7 @@ public class ScreeningToReferralResourceBuilder {
   private boolean filedWithLawEnforcement = false;
   private String responsibleAgency = "C";
   private Short injuryHarmCategory = 2178;
-  private String limitedAccessCode = "S";
+  private String limitedAccessCode = "N";
   private String limitedAccessDescription = "";
   private String limitedAccessAgency = "23";
   private Date limitedAccessDate = null;

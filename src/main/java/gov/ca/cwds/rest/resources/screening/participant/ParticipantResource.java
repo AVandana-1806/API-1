@@ -22,7 +22,7 @@ import org.apache.http.HttpStatus;
 
 import com.google.inject.Inject;
 
-import gov.ca.cwds.inject.ParticipantServiceBackedResource;
+import gov.ca.cwds.inject.ClientParticipantServiceBackedResource;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.core.Api.ResponseMessage;
 import gov.ca.cwds.rest.resources.TypedResourceDelegate;
@@ -49,7 +49,7 @@ import io.swagger.annotations.ApiResponses;
 public class ParticipantResource {
 
   @Inject
-  @ParticipantServiceBackedResource
+  @ClientParticipantServiceBackedResource
   private TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> resourceDelegate;
 
   /**

@@ -3,11 +3,7 @@ package gov.ca.cwds.inject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.inject.Injector;
-
 import gov.ca.cwds.rest.services.AddressService;
 import gov.ca.cwds.rest.services.PersonService;
 import gov.ca.cwds.rest.services.ScreeningRelationshipService;
@@ -43,7 +39,8 @@ import gov.ca.cwds.rest.services.investigation.CrossReportListService;
 import gov.ca.cwds.rest.services.investigation.HistoryOfInvolvementService;
 import gov.ca.cwds.rest.services.investigation.InvestigationService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
-import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ResourcesModuleTest {
   ResourcesModule resourceModule;
@@ -189,9 +186,15 @@ public class ResourcesModuleTest {
   }
 
   @Test
+  public void clientParticipantServiceBackedResourceShouldRetrieveServiceFromInjector() {
+    resourceModule.clientParticipantServiceBackedResource(injector);
+    verify(injector).getInstance(gov.ca.cwds.rest.services.screening.participant.ParticipantService.class);
+  }
+
+  @Test
   public void participantServiceBackedResourceShouldRetrieveServiceFromInjector() {
     resourceModule.participantServiceBackedResource(injector);
-    verify(injector).getInstance(ParticipantService.class);
+    verify(injector).getInstance(gov.ca.cwds.rest.services.ParticipantService.class);
   }
 
   @Test

@@ -66,25 +66,24 @@ public class ParticipantTransformer {
       throw new ServiceException("Screening is required to create the particpant");
     }
     ensureScreeningExistsAndOpen(incomingParticipantIntakeApi);
-    ParticipantIntakeApi participantIntakeApi = null;
-    LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
-
-    if (legacyDescriptor != null && StringUtils.isNotBlank(legacyDescriptor.getId())
-        && StringUtils.isNotBlank(legacyDescriptor.getTableName())) {
-      participantIntakeApi =
-          buildParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
-      participantIntakeApi.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
-      participantIntakeApi.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
-      participantIntakeApi.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
-      return participantIntakeApi;
-    } else {
-      return incomingParticipantIntakeApi;
-    }
+    return loadParticipant(incomingParticipantIntakeApi);
   }
 
-  private ParticipantIntakeApi buildParticipant(String id, String tableName) {
-    ParticipantIntakeApi participant = findParticipant(id, tableName);
-    addCsecTo(participant);
+  public ParticipantIntakeApi loadParticipant( ParticipantIntakeApi incomingParticipantIntakeApi) {
+    LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
+    if (legacyDescriptor == null || StringUtils.isBlank(legacyDescriptor.getId())
+        || StringUtils.isBlank(legacyDescriptor.getTableName())) {
+      return incomingParticipantIntakeApi;
+    }
+
+    ParticipantIntakeApi participant =
+        findParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
+    if (participant != null){
+      addCsecTo(participant);
+      participant.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
+      participant.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
+      participant.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
+    }
     return participant;
   }
 
@@ -100,13 +99,14 @@ public class ParticipantTransformer {
     CmsPersistentObject persistentObject;
     ParticipantMapper<CmsPersistentObject> participantMapper;
     CrudsDao<CmsPersistentObject> crudsDaoObject = participantDaoFactory.create(tableName);
+    ParticipantIntakeApi participant = null;
     if ((persistentObject = crudsDaoObject.find(id)) != null) {
       participantMapper = participantMapperFactoryImpl.create(tableName);
-      return participantMapper.tranform(persistentObject);
+      participant = participantMapper.tranform(persistentObject);
     } else {
       LOGGER.error("Object is not found with the given identifier {}", id);
-      throw new ServiceException("");
     }
+    return participant;
   }
 
   private void ensureScreeningExistsAndOpen(ParticipantIntakeApi participantIntakeApi) {

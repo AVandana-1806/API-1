@@ -64,6 +64,7 @@ services:
       DB_NS_USER: postgres_data
       DB_NS_PASSWORD: postgres_data
       DB_NS_JDBC_URL: jdbc:postgresql://db:5432/postgres_data?currentSchema=intakens
+      UPGRADE_DB_ON_START: 'true'
       SHOW_SWAGGER: 'true'
       ES_CLUSTER_PEOPLE: elasticsearchintake
       ES_CLUSTER_SCREENINGS: elasticsearchintake
