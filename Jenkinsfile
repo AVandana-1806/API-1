@@ -53,8 +53,13 @@ node ('tpt4-slave'){
 		  rtGradle.resolver repo:'repo', server: serverArti
 		  rtGradle.useWrapper = false
    }
-   stage('Build'){
+   
+   stage('Increment Tag'){
        newTag = newSemVer()
+       echo newTag
+   }
+
+   stage('Build'){
        def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
    }
 
@@ -89,7 +94,7 @@ node ('tpt4-slave'){
 	}
 	
     stage('Tag Git') {
-        tagGithubRepo(VERSION, github_credentials_id)
+        tagGithubRepo(newTag, github_credentials_id)
     }
     
 	stage('Clean Workspace') {
