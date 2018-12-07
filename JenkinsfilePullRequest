@@ -44,31 +44,20 @@ node ('tpt4-slave'){
     [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
       disableConcurrentBuilds(),
       [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-      triggers {
-         genericTrigger {
-           genericVariables {
-             genericVariable {
-               key("pull_request_action")
-               value("action")
-               expressionType("JSONPath")
-             }
-             genericVariable {
-               key("pull_request_merged")
-               value("pull_request.merged")
-               expressionType("JSONPath") 
-             }
-			 genericVariable {
-               key("pull_request_event")
-               value("pull_request")
-               expressionType("JSONPath") 
-             }
-           }
-         }
-           token('ferb-api-master')
-           causeString('Triggered by a PR merge')
-           regexpFilterText("^closed:true\$")
-           regexpFilterExpression("$pull_request_action:$pull_request_merged")
-       }
+      pipelineTriggers ([
+       [$class: 'GenericTrigger',
+        genericVariables: [
+          [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
+          [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
+          [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
+          ],
+        causeString: 'Triggered by a PR merge',
+        token: 'ferb-api-master',
+        regexpFilterText: '^closed:true$',
+        regexpFilterExpression: '$pull_request_action:$pull_request_merged'
+        ] 
+       ]
+      )
     ]
   )
   try {
