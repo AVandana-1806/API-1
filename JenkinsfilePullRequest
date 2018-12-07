@@ -41,7 +41,7 @@ node ('tpt4-slave'){
   def serverArti = Artifactory.server 'CWDS_DEV'
   def rtGradle = Artifactory.newGradleBuild()
   properties(
-    [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
+    [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '20')),
       disableConcurrentBuilds(),
       [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
       pipelineTriggers ([
