@@ -41,23 +41,9 @@ node ('tpt4-slave'){
   def serverArti = Artifactory.server 'CWDS_DEV'
   def rtGradle = Artifactory.newGradleBuild()
   properties(
-    [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '20')),
+    [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
       disableConcurrentBuilds(),
-      [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-      pipelineTriggers ([
-       [$class: 'GenericTrigger',
-        genericVariables: [
-          [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
-          [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
-          [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
-          ],
-        causeString: 'Triggered by a PR merge',
-        token: 'ferb-api-master',
-        regexpFilterText: '^closed:true$',
-        regexpFilterExpression: '$pull_request_action:$pull_request_merged'
-        ] 
-       ]
-      )
+      [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]
     ]
   )
   try {

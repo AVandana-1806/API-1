@@ -42,36 +42,26 @@ node ('tpt4-slave'){
    def github_credentials_id = '433ac100-b3c2-4519-b4d6-207c029a103b'
    newTag = '';
    properties(
-     [buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+     [  buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), 
+        disableConcurrentBuilds(), 
+        [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
        parameters([
          string(defaultValue: 'master', description: '', name: 'branch'),
          booleanParam(defaultValue: true, description: '', name: 'USE_NEWRELIC')
        ]),
-       triggers {
-         genericTrigger {
-           genericVariables {
-             genericVariable {
-               key("pull_request_action")
-               value("action")
-               expressionType("JSONPath")
-             }
-             genericVariable {
-               key("pull_request_merged")
-               value("pull_request.merged")
-               expressionType("JSONPath") 
-             }
-			 genericVariable {
-               key("pull_request_event")
-               value("pull_request")
-               expressionType("JSONPath") 
-             }
-           }
-         }
-           token('ferb-api-master')
-           causeString('Triggered by a PR merge')
-           regexpFilterText("^closed:true\$")
-           regexpFilterExpression("$pull_request_action:$pull_request_merged")
-       },
+       pipelineTriggers([
+       [$class: 'GenericTrigger',
+        genericVariables: [
+          [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
+          [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
+          [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
+          ],
+        causeString: 'Triggered by a PR merge',
+        token: 'ferb-api-master',
+        regexpFilterText: '^closed:true$',
+        regexpFilterExpression: '$pull_request_action:$pull_request_merged'
+        ] 
+       ]),
          pipelineTriggers([pollSCM('H/5 * * * *')])
          
      ]
