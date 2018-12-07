@@ -25,7 +25,7 @@ def notifyBuild(String buildStatus, Exception e) {
     summary +="\nError message ${e.message}, stacktrace: ${e}"
   }
   //
-  slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
+  //slackSend channel: "#tech-intake", baseUrl: 'https://hooks.slack.com/services/', tokenCredentialId: 'slackmessagetpt2', color: colorCode, message: summary
   emailext(
       subject: subject,
       body: details,
@@ -41,7 +41,6 @@ node ('tpt4-slave'){
    def docker_credentials_id = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
    def github_credentials_id = '433ac100-b3c2-4519-b4d6-207c029a103b'
    newTag = '';
-   properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]])
    try {
    stage('Preparation') {
 		  git branch: '$branch', credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/API.git'
@@ -52,7 +51,6 @@ node ('tpt4-slave'){
    
    stage('Increment Tag'){
        newTag = newSemVer()
-       echo newTag
    }
 
    stage('Build'){
