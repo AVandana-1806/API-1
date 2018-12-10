@@ -81,23 +81,25 @@ node ('tpt4-slave'){
        def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
    }
 
-   stage('Tests') {
+    stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
    }
-   stage('Integration Tests'){
+   
+    stage('Integration Tests'){
          withEnv(['APP_STD_PORT=8088']) {
             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        }
 	}
-   stage('SonarQube analysis'){
+	
+    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
 			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: "--info  -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString(), tasks: 'sonarqube'
         }
     }
 	
-	stage ('Push to artifactory'){
+    stage ('Push to artifactory'){
       //rtGradle.deployer repo:'libs-snapshot', server: serverArti
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
@@ -105,7 +107,8 @@ node ('tpt4-slave'){
 		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publish -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
 		rtGradle.deployer.deployArtifacts = false
 	}
-	stage ('Build Docker'){
+	
+    stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publishDocker -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
        }
@@ -116,13 +119,25 @@ node ('tpt4-slave'){
         tagGithubRepo(newTag +"."+ buildNumber, github_credentials_id)
     }
     
-	stage('Clean Workspace') {
+    stage('Clean Workspace') {
 		cleanWs()
 	}
-	
-	stage('Deploy Application') {
+
+    stage('Deploy Application') {
 		build job: 'tpt4-api-deploy-app', parameters: [string(name: 'version', value: 'latest'), string(name: 'inventory', value: 'inventories/development/hosts.yml')], propagate: false
 	}
+	
+    stage('Deploy to Pre-int') {
+	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag} +"."+ ${BUILD_NUMBER}'"                                                                                                               
+       }
+	}
+
+    stage('Update Pre-int Manifest') {
+        def newVersion = newTag +"."+ buildNumber
+        updateManifest("api", "preint", github_credentials_id, newVersion)
+	}
+
  } catch (Exception e)    {
  	   errorcode = e
   	   currentBuild.result = "FAIL"
