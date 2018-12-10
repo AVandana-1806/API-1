@@ -132,10 +132,6 @@ node ('tpt4-slave'){
 	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
        }
 	}
-	
-    stage('Pre-int Smoke Test') {
-        
-    }
 
     stage('Update Pre-int Manifest') {
         def newVersion = newTag +"."+ buildNumber
