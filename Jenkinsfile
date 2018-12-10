@@ -119,10 +119,22 @@ node ('tpt4-slave'){
 	stage('Clean Workspace') {
 		cleanWs()
 	}
-	
+
 	stage('Deploy Application') {
 		build job: 'tpt4-api-deploy-app', parameters: [string(name: 'version', value: 'latest'), string(name: 'inventory', value: 'inventories/development/hosts.yml')], propagate: false
 	}
+	
+	stage('Deploy to Pre-int') {
+	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag} +"."+ ${BUILD_NUMBER}'"                                                                                                               
+       }
+	}
+
+	stage('Update Pre-int Manifest') {
+		def newVersion = newTag +"."+ buildNumber
+	    updateManifest("api", "preint", github_credentials_id, newVersion)
+	}
+
  } catch (Exception e)    {
  	   errorcode = e
   	   currentBuild.result = "FAIL"
