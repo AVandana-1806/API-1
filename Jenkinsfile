@@ -105,7 +105,8 @@ node ('tpt4-slave'){
 		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publish -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
 		rtGradle.deployer.deployArtifacts = false
 	}
-	stage ('Build Docker'){
+	
+    stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publishDocker -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
        }
@@ -130,9 +131,9 @@ node ('tpt4-slave'){
        }
 	}
 
-	stage('Update Pre-int Manifest') {
-		def newVersion = newTag +"."+ buildNumber
-	    updateManifest("api", "preint", github_credentials_id, newVersion)
+    stage('Update Pre-int Manifest') {
+        def newVersion = newTag +"."+ buildNumber
+        updateManifest("api", "preint", github_credentials_id, newVersion)
 	}
 
  } catch (Exception e)    {
