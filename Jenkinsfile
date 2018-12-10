@@ -50,20 +50,19 @@ node ('tpt4-slave'){
          booleanParam(defaultValue: true, description: '', name: 'USE_NEWRELIC')
        ]),
        pipelineTriggers([
-       [$class: 'GenericTrigger',
-        genericVariables: [
-          [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
-          [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
-          [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
-          ],
-        causeString: 'Triggered by a PR merge',
-        token: 'ferb-api-master',
-        regexpFilterText: '^closed:true$',
-        regexpFilterExpression: '$pull_request_action:$pull_request_merged'
-        ] 
-       ]),
-         pipelineTriggers([pollSCM('H/5 * * * *')])
-         
+        [$class: 'GenericTrigger',
+         genericVariables: [
+           [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
+           [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
+           [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
+           ],
+         causeString: 'Triggered by a PR merge',
+         token: 'ferb-api-master',
+         regexpFilterText: '^closed:true$',
+         regexpFilterExpression: '$pull_request_action:$pull_request_merged'
+         ] 
+        ]),
+        pipelineTriggers([pollSCM('H/5 * * * *')])
      ]
    )
    try {
