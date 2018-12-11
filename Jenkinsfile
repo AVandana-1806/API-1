@@ -129,7 +129,7 @@ node ('tpt4-slave'){
 	
     stage('Deploy to Pre-int') {
 	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag} +"."+ ${BUILD_NUMBER}'"                                                                                                               
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
        }
 	}
 
