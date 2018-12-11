@@ -134,7 +134,7 @@ node ('tpt4-slave'){
 	}
 
     stage('Update Pre-int Manifest') {
-        def newVersion = newTag +"."+ buildNumber
+        def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
         updateManifest("api", "preint", github_credentials_id, newVersion)
 	}
 
