@@ -134,7 +134,7 @@ node ('tpt4-slave'){
 	}
 	
     stage('Pre-int Smoke Test') {
-        sleep 400000
+        sleep 250
         def healthCheck = sh(returnStdout: true, script: 'curl -s https://ferbapi.preint.cwds.io/system-information')
         def healthCheckJson = readJSON healthCheck
         assert healthCheckJson.health_status == true
