@@ -56,8 +56,6 @@ node ('tpt4-slave'){
            [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
            [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
            ],
-         genericRequestVariables: [ 
-           [key: 'trigger_key', regexpFilter: ''] ],
          causeString: 'Triggered by a PR merge',
          token: 'ferb-api-master',
          regexpFilterText: '$pull_request_action:$pull_request_merged',
@@ -134,6 +132,13 @@ node ('tpt4-slave'){
 	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
        }
 	}
+	
+    stage('Pre-int Smoke Test') {
+        sleep 400000
+        def healthCheck = sh(returnStdout: true, script: 'curl -s https://ferbapi.preint.cwds.io/system-information')
+        def healthCheckJson = readJSON healthCheck
+        assert healthCheckJson.health_status == true
+    }
 
     stage('Update Pre-int Manifest') {
         def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
