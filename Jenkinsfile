@@ -133,16 +133,6 @@ node ('tpt4-slave'){
        }
 	}
 	
-    stage('Pre-int Smoke Test') {
-        sleep 250
-        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          def healthCheck = sh(returnStdout: true, script: 'curl -u $jenkinsauth https://ferbapi.preint.cwds.io/system-information')
-          echo healthCheck
-          def healthCheckJson = readJSON healthCheck
-          assert healthCheckJson.health_status == true
-        }
-    }
-
     stage('Update Pre-int Manifest') {
         def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
         updateManifest("api", "preint", github_credentials_id, newVersion)
