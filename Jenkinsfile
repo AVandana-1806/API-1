@@ -133,6 +133,7 @@ node ('tpt4-slave'){
        }
 	}
 	
+	// due to some access issue from dev Jenkins to pre-int this stage has been disabled
 	if(env.SMOKE_TEST_URL) {
 	    stage('Pre-int Smoke Test') {
             sleep 250
