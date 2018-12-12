@@ -133,15 +133,17 @@ node ('tpt4-slave'){
        }
 	}
 	
-    stage('Pre-int Smoke Test') {
-        sleep 250
-        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          def healthCheck = sh(returnStdout: true, script: 'curl -u $jenkinsauth https://ferbapi.preint.cwds.io/system-information')
-          echo healthCheck
-          def healthCheckJson = readJSON healthCheck
-          assert healthCheckJson.health_status == true
+	// due to some access issue from dev Jenkins to pre-int this stage has been disabled
+	if(env.SMOKE_TEST_URL) {
+	    stage('Pre-int Smoke Test') {
+            sleep 250
+            withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
+                def healthCheck = sh(returnStdout: true, script: 'curl -u $jenkinsauth ${env.SMOKE_TEST_URL}')
+                def healthCheckJson = readJSON healthCheck
+                assert healthCheckJson.health_status == true
+            }
         }
-    }
+	}
 
     stage('Update Pre-int Manifest') {
         def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
