@@ -93,15 +93,15 @@ node ('tpt4-slave'){
        }
 	}
 	
-	stage('Functional Tests'){
-      withDockerRegistry([credentialsId: docker_credentials_id]) {
-        sh "docker ps -q -f status=exited"
-        sh "docker ps -q "
-        sh "if [[ \$(docker ps -q -f status=exited) ]]; then docker rm \$(docker ps -q -f status=exited); fi"
-        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishFunctionalTests', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
-        sh "docker-compose -f docker/docker-compose.functional-test-env.yml down && docker-compose -f docker/docker-compose.functional-test-env.yml pull && docker-compose -f docker/docker-compose.functional-test-env.yml up --abort-on-container-exit --build"
-      }
-      publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'docker/ferb-test/reports/functional-test', reportFiles: 'index.html', reportName: 'Functional/Acceptance Report', reportTitles: 'Acceptance tests summary'])
+    stage('Functional Tests'){
+        withDockerRegistry([credentialsId: docker_credentials_id]) {
+            sh "docker ps -q -f status=exited"
+            sh "docker ps -q "
+            sh "if [[ \$(docker ps -q -f status=exited) ]]; then docker rm \$(docker ps -q -f status=exited); fi"
+            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishFunctionalTests', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+            sh "docker-compose -f docker/docker-compose.functional-test-env.yml down && docker-compose -f docker/docker-compose.functional-test-env.yml pull && docker-compose -f docker/docker-compose.functional-test-env.yml up --abort-on-container-exit --build"
+        }
+        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'docker/ferb-test/reports/functional-test', reportFiles: 'index.html', reportName: 'Functional/Acceptance Report', reportTitles: 'Acceptance tests summary'])
     }
 	
     stage('SonarQube analysis'){
