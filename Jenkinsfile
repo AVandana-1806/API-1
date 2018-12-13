@@ -149,6 +149,17 @@ node ('tpt4-slave'){
         def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
         updateManifest("api", "preint", github_credentials_id, newVersion)
 	}
+	
+    stage('Deploy to Integration') {
+	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/Integration%20Environment/job/deploy-ferb-api/buildWithParameters?token=deployFerbToIntegration&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
+       }
+	}
+	
+	stage('Update Integration Manifest') {
+        def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
+        updateManifest("api", "integration", github_credentials_id, newVersion)
+	}
 
  } catch (Exception e)    {
  	   errorcode = e
