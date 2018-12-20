@@ -105,9 +105,7 @@ node ('tpt4-slave'){
     }
 	
     stage('SonarQube analysis'){
-		withSonarQubeEnv('Core-SonarQube') {
-			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: "--info  -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString(), tasks: 'sonarqube'
-        }
+        lint(rtGradle)
     }
 	
     stage ('Push to artifactory'){
