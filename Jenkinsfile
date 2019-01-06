@@ -1,4 +1,4 @@
-@Library('jenkins-pipeline-utils@FIT-376-Remove-Trigger-Key') _
+@Library('jenkins-pipeline-utils') _
 
 def notifyBuild(String buildStatus, Exception e) {
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
