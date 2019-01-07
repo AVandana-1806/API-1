@@ -41,28 +41,15 @@ node ('tpt4-slave'){
    def docker_credentials_id = '6ba8d05c-ca13-4818-8329-15d41a089ec0'
    def github_credentials_id = '433ac100-b3c2-4519-b4d6-207c029a103b'
    newTag = '';
+   triggerProperties = pullRequestMergedTriggerProperties('ferb-api-master')
    properties(
-     [  buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), 
+     [pipelineTriggers([triggerProperties]), buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')), 
         disableConcurrentBuilds(), 
         [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
        parameters([
          string(defaultValue: 'master', description: '', name: 'branch'),
          booleanParam(defaultValue: true, description: '', name: 'USE_NEWRELIC')
-       ]),
-       pipelineTriggers([
-        [$class: 'GenericTrigger',
-         genericVariables: [
-           [key: 'pull_request_action', value: 'action', expressionType: 'JSONPath'],
-           [key: 'pull_request_merged', value: 'pull_request.merged', expressionType: 'JSONPath'],
-           [key: 'pull_request_event', value: 'pull_request', expressionType: 'JSONPath']
-           ],
-         causeString: 'Triggered by a PR merge',
-         token: 'ferb-api-master',
-         regexpFilterText: '$pull_request_action:$pull_request_merged',
-         regexpFilterExpression: '^closed:true$'
-         ] 
-        ]),
-        pipelineTriggers([pollSCM('H/5 * * * *')])
+       ])
      ]
    )
    try {
