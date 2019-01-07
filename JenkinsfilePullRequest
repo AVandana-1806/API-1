@@ -44,9 +44,9 @@ node ('tpt4-slave'){
   properties(
     [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
       disableConcurrentBuilds(),
-      [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]
-    ],
-    pipelineTriggers([triggerProperties])
+      [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+      pipelineTriggers([triggerProperties])
+    ]
   )
   try {
     stage('Preparation'){
