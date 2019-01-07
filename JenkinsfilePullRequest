@@ -40,11 +40,13 @@ def notifyBuild(String buildStatus, Exception e){
 node ('tpt4-slave'){
   def serverArti = Artifactory.server 'CWDS_DEV'
   def rtGradle = Artifactory.newGradleBuild()
+  def triggerProperties = githubPullRequestBuilderTriggerProperties()
   properties(
     [ buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
       disableConcurrentBuilds(),
       [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false]
-    ]
+    ],
+    pipelineTriggers([triggerProperties])
   )
   try {
     stage('Preparation'){
