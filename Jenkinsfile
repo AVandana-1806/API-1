@@ -65,17 +65,17 @@ node ('tpt4-slave'){
    }
 
    stage('Build'){
-       def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+       def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -DnewVersion=${newTag}".toString()
    }
 
     stage('Tests') {
-       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: "--stacktrace -DnewVersion=${newTag}".toString()
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
    }
    
     stage('Integration Tests'){
          withEnv(['APP_STD_PORT=8088']) {
-            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: "--stacktrace -DnewVersion=${newTag}".toString()
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        }
 	}
@@ -85,7 +85,7 @@ node ('tpt4-slave'){
             sh "docker ps -q -f status=exited"
             sh "docker ps -q "
             sh "if [[ \$(docker ps -q -f status=exited) ]]; then docker rm \$(docker ps -q -f status=exited); fi"
-            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishFunctionalTests', switches: "--stacktrace -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishFunctionalTests', switches: "--stacktrace -DnewVersion=${newTag}".toString()
             sh "docker-compose -f docker/docker-compose.functional-test-env.yml down && docker-compose -f docker/docker-compose.functional-test-env.yml pull && docker-compose -f docker/docker-compose.functional-test-env.yml up --abort-on-container-exit --build"
         }
         publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'docker/ferb-test/reports/functional-test', reportFiles: 'index.html', reportName: 'Functional/Acceptance Report', reportTitles: 'Acceptance tests summary'])
@@ -100,19 +100,18 @@ node ('tpt4-slave'){
 	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		//buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publish -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publish -DnewVersion=${newTag}".toString()
 		rtGradle.deployer.deployArtifacts = false
 	}
 	
     stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: docker_credentials_id]) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publishDocker -D build=${BUILD_NUMBER} -DnewVersion=${newTag}".toString()
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "publishDocker -DnewVersion=${newTag}".toString()
        }
 	}
 	
     stage('Tag Git') {
-        def buildNumber = "${env.BUILD_NUMBER}"
-        tagGithubRepo(newTag +"."+ buildNumber, github_credentials_id)
+        tagGithubRepo(newTag, github_credentials_id)
     }
     
     stage('Clean Workspace') {
@@ -125,7 +124,7 @@ node ('tpt4-slave'){
 	
     stage('Deploy to Pre-int') {
 	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}'"
        }
 	}
 	
@@ -142,19 +141,17 @@ node ('tpt4-slave'){
 	}
 
     stage('Update Pre-int Manifest') {
-        def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
-        updateManifest("api", "preint", github_credentials_id, newVersion)
+        updateManifest("api", "preint", github_credentials_id, newTag)
 	}
 	
     stage('Deploy to Integration') {
 	    withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/Integration%20Environment/job/deploy-ferb-api/buildWithParameters?token=deployFerbToIntegration&version=${newTag}.${BUILD_NUMBER}'"                                                                                             
-       }
+	      sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/Integration%20Environment/job/deploy-ferb-api/buildWithParameters?token=deployFerbToIntegration&version=${newTag}'"
+         }
 	}
 	
 	stage('Update Integration Manifest') {
-        def newVersion = newTag +"."+ "${env.BUILD_NUMBER}"
-        updateManifest("api", "integration", github_credentials_id, newVersion)
+        updateManifest("api", "integration", github_credentials_id, newTag)
 	}
 
  } catch (Exception e)    {
