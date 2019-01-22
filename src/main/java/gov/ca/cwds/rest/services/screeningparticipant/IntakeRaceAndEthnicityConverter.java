@@ -1,29 +1,25 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.services.ServiceException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Transforms the Legacy race and ethnicity values for an existing people into valid
- * {@link ParticipantIntakeApi} race and hispanic.
- * 
- * @author CWDS API Team
+ * Transforms the Legacy race and ethnicity values for an existing people into valid {@link
+ * ParticipantIntakeApi} race and hispanic.
  *
+ * @author CWDS API Team
  */
 public class IntakeRaceAndEthnicityConverter {
+
   private static final Logger LOGGER =
       LoggerFactory.getLogger(IntakeRaceAndEthnicityConverter.class);
 
@@ -52,7 +48,7 @@ public class IntakeRaceAndEthnicityConverter {
       final gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode =
           SystemCodeCache.global().getSystemCode(id);
       if (systemCode != null && !(HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
-          && (!CARIBBEAN_RACE_CODE.equals(id)))) {
+          && !CARIBBEAN_RACE_CODE.equals(id))) {
         String shortDescrption = systemCode.getShortDescription();
         if (StringUtils.isNotBlank(shortDescrption)) {
           String race =
@@ -80,18 +76,21 @@ public class IntakeRaceAndEthnicityConverter {
     List<IntakeEthnicity> intakeHispanicList = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     String stringHispanic = null;
-
-    final gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode =
-        SystemCodeCache.global().getSystemCode(client.getPrimaryEthnicityType());
-    if (systemCode != null && HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
-        && (!CARIBBEAN_RACE_CODE.equals(client.getPrimaryEthnicityType()))) {
-      if (YES.equals(client.getHispanicOriginCode())) {
-        intakeHispanicList
-            .add(new IntakeEthnicity("Yes", Arrays.asList(systemCode.getShortDescription())));
+    List<Short> systemIds = new ArrayList<>();
+    systemIds.add(client.getPrimaryEthnicityType());
+    client.getClientScpEthnicities().forEach(race -> systemIds.add(race.getEthnicity()));
+    List<String> hispanicDetails = new ArrayList<>();
+    for (Short id : systemIds) {
+      final gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode =
+          SystemCodeCache.global().getSystemCode(id);
+      if (systemCode != null && (HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
+          && (!CARIBBEAN_RACE_CODE.equals(id)))) {
+        hispanicDetails.add(systemCode.getShortDescription());
       }
-    } else {
-      buildOtherHispanicCodes(client, intakeHispanicList);
     }
+    intakeHispanicList
+        .add(new IntakeEthnicity(translateHispanicOriginCodes(client.getHispanicOriginCode()),
+            hispanicDetails));
     try {
       stringHispanic = mapper.writeValueAsString(intakeHispanicList);
     } catch (JsonProcessingException e) {
@@ -101,19 +100,19 @@ public class IntakeRaceAndEthnicityConverter {
     return stringHispanic;
   }
 
-  private void buildOtherHispanicCodes(Client client, List<IntakeEthnicity> intakeHispanicList) {
-    if (client.getPrimaryEthnicityType() == 0 && YES.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeEthnicity("Yes", Arrays.asList()));
-    } else if (NO.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeEthnicity("No", Arrays.asList()));
-    } else if (UNKNOWN.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeEthnicity("Unknown", Arrays.asList()));
-    } else if (ABANDONED.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeEthnicity("Abandoned", Arrays.asList()));
-    } else if (DECLINED_TO_ANSWER.equals(client.getHispanicOriginCode())) {
-      intakeHispanicList.add(new IntakeEthnicity("Declined to answer", Arrays.asList()));
+  private String translateHispanicOriginCodes(String code) {
+    if (YES.equals(code)) {
+      return "Yes";
+    } else if (NO.equals(code)) {
+      return "No";
+    } else if (UNKNOWN.equals(code)) {
+      return "Unknown";
+    } else if (ABANDONED.equals(code)) {
+      return "Abandoned";
+    } else if (DECLINED_TO_ANSWER.equals(code)) {
+      return "Declined to answer";
     } else {
-      intakeHispanicList.add(new IntakeEthnicity(null, Arrays.asList()));
+      return null;
     }
   }
 }
