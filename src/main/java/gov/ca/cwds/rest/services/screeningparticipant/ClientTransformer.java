@@ -5,20 +5,7 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-
 import com.google.inject.Inject;
-
 import gov.ca.cwds.data.legacy.cms.dao.PlacementEpisodeDao;
 import gov.ca.cwds.data.legacy.cms.entity.PlacementEpisode;
 import gov.ca.cwds.data.persistence.cms.Client;
@@ -27,9 +14,21 @@ import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.IntakeLovType;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.services.auth.AuthorizationService;
 import gov.ca.cwds.rest.services.submit.Gender;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 /**
  * @author CWDS API Team
@@ -67,6 +66,11 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     String hispanic = intakeRaceAndEthnicityConverter.createHispanic(client);
     addresses.addAll(intakeAddressConverter.convert(client));
 
+    IntakePhoneConverter intakePhoneConverter = new IntakePhoneConverter();
+    Set<PhoneNumber> phones = new HashSet<>();
+    phones.addAll(intakePhoneConverter.getPlacementHomePhones(placementEpisodes));
+    phones.addAll(intakePhoneConverter.convert(client));
+
     Date clientDob = client.getBirthDate();
     String approxAge = null;
     String approxAgeUnits = null;
@@ -81,7 +85,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, client.getFirstName(),
         client.getMiddleName(), client.getLastName(), client.getNameSuffix(), gender, approxAge,
         approxAgeUnits, convertSSN(client), clientDob, client.getDeathDate(), languages,
-        races, hispanic, null, new HashSet<>(), addresses, null,
+        races, hispanic, null, new HashSet<>(), addresses, phones,
         getSealedIndicator(client), getSensitivieIndicator(client));
   }
 
