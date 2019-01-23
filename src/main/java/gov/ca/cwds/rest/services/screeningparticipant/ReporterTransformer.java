@@ -39,7 +39,7 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(null, reporter.getPrimaryPhoneNumber().toString(), null)));
+        Arrays.asList(new PhoneNumber(reporter.getPrimaryPhoneNumber().toString(), null)));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, reporter.getFirstName(),
         reporter.getMiddleInitialName(), reporter.getLastName(),

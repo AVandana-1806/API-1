@@ -55,7 +55,7 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
         ? collateralIndividual.getPrimaryPhoneNo().toString()
         : null;
     Set<PhoneNumber> phoneNumbers =
-        new HashSet<>(Arrays.asList(new PhoneNumber(null, phone, null)));
+        new HashSet<>(Arrays.asList(new PhoneNumber(phone, null)));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         collateralIndividual.getFirstName(), collateralIndividual.getMiddleInitialName(),

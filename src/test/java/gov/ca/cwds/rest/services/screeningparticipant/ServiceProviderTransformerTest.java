@@ -95,7 +95,7 @@ public class ServiceProviderTransformerTest {
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999", null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers =
-        new HashSet<>(Arrays.asList(new PhoneNumber(null, "999", null)));
+        new HashSet<>(Arrays.asList(new PhoneNumber("999", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Horacio", null, "G",
             "suffixTitleDescription", null, null, null, null, null, null, new LinkedList<>(), null,

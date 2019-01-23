@@ -43,7 +43,7 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
     String phoneType =
         serviceProvider.getPhoneType() != null ? serviceProvider.getPhoneType().name() : null;
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(null, serviceProvider.getPhoneNumber(), phoneType)));
+        Arrays.asList(new PhoneNumber(serviceProvider.getPhoneNumber(), phoneType)));
     String sensitivityIndicator = serviceProvider.getSensitivityIndicator() != null
         ? serviceProvider.getSensitivityIndicator()
         : "";

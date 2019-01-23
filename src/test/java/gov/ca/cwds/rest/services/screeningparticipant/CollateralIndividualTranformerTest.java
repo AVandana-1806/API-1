@@ -92,7 +92,7 @@ public class CollateralIndividualTranformerTest {
         LegacyTable.COLLATERAL_INDIVIDUAL.getDescription());
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "2751 West River", "Sacramento", "CA", "95833", null, legacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "1", null)));
+    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber("1", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "firstName", "middleName",
             "lastName", "Jr", "male", null, null, null, new Date(), new Date(), new LinkedList<>(),

@@ -63,7 +63,7 @@ public class EducationProviderContactTransformer
             getZip(educationProvider), null, educationProviderLegacyDescriptor));
 
     Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(null, educationProviderContact.getPhoneNumber(), null)));
+        Arrays.asList(new PhoneNumber(educationProviderContact.getPhoneNumber(), null)));
 
 
     return new ParticipantIntakeApi(null, null, null, educationProviderContactLegacyDescriptor,
