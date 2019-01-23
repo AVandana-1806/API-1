@@ -91,7 +91,7 @@ public class EducationProviderContactTransformerTest {
         new LegacyDescriptor("fk12345678", null, lastUpdated, "ED_PVDRT", "Education Provider");
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber(null, "0", null)));
+    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber("0", null)));
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Firstname", "Middle",
             "Lastname", "Esq", null, null, null, null, null, null, new LinkedList<>(), null, null,

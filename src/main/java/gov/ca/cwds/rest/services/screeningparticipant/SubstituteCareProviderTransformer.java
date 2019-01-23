@@ -48,7 +48,7 @@ public class SubstituteCareProviderTransformer
         : "";
 
     Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(
-        new PhoneNumber(null, substituteCareProvider.getAdditionalPhoneNumber().toString(), null)));
+        new PhoneNumber(substituteCareProvider.getAdditionalPhoneNumber().toString(), null)));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         substituteCareProvider.getFirstName(), substituteCareProvider.getMiddleName(),

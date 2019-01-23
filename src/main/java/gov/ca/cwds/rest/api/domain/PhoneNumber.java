@@ -31,6 +31,11 @@ public class PhoneNumber extends ReportingDomain implements Request, Response {
   @Size(max = 50)
   String number;
 
+  @JsonProperty("extension")
+  @ApiModelProperty(example = "1234567890")
+  @Size(max = 10)
+  String extension;
+
   @JsonProperty("type")
   @ApiModelProperty(example = "Cell")
   @Size(max = 50)
@@ -63,16 +68,30 @@ public class PhoneNumber extends ReportingDomain implements Request, Response {
    * @param number - phone number
    * @param type - phone number type
    */
-  public PhoneNumber(@JsonProperty("id") Long id, @JsonProperty("number") String number,
-      @JsonProperty("type") String type) {
+  public PhoneNumber(Long id, String number, String type) {
     super();
     this.id = id;
     this.number = number;
     this.type = type;
   }
 
+  public PhoneNumber(@JsonProperty("id") Long id, @JsonProperty("number") String number,
+      @JsonProperty("extension") String extension, @JsonProperty("type") String type) {
+    super();
+    this.id = id;
+    this.number = number;
+    this.extension = extension;
+    this.type = type;
+  }
+
   public PhoneNumber(String number, String type) {
     this.number = number;
+    this.type = type;
+  }
+
+  public PhoneNumber(String number, String extension, String type) {
+    this.number = number;
+    this.extension = extension;
     this.type = type;
   }
 
@@ -89,6 +108,14 @@ public class PhoneNumber extends ReportingDomain implements Request, Response {
    */
   public String getNumber() {
     return number;
+  }
+
+  /**
+   *
+   * @return - phone extension
+   */
+  public String getExtension() {
+    return extension;
   }
 
   /**

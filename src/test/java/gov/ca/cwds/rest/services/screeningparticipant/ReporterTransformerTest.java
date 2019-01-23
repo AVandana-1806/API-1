@@ -83,7 +83,7 @@ public class ReporterTransformerTest {
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "2751 First Street", "Sacramento", "CA", "95833", null, legacyDescriptor));
     Set<PhoneNumber> phoneNumbers =
-        new HashSet<>(Arrays.asList(new PhoneNumber(null, "6199221167", null)));
+        new HashSet<>(Arrays.asList(new PhoneNumber("6199221167", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "Fred", "W", "Reporter", "", null, null, null, null, null, null, new LinkedList<>(), null,
         null, null, new HashSet<>(), addresses, phoneNumbers, false, false);

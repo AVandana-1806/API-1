@@ -83,14 +83,10 @@ public class IntakePhoneConverter {
     return phones;
   }
 
-  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension,
-      String phoneType) {
-    return new PhoneNumber(
-        phoneNumber.trim()
-            + (phoneExtension == null || phoneExtension.isEmpty() || phoneExtension.trim() == "0"
-            ? ""
-            : " Ext. " + phoneExtension.trim()),
-        phoneType);
+  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension, String phoneType) {
+    return phoneExtension == null || phoneExtension.isEmpty() || "0".equals(phoneExtension.trim())
+        ? new PhoneNumber(phoneNumber.trim(), phoneType)
+        : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType);
   }
 
   private List<PhoneNumber> getPhones(ClientAddress clientAddress) {
