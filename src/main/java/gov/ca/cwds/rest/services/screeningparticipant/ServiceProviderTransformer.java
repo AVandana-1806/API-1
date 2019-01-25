@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 
@@ -42,8 +41,7 @@ public class ServiceProviderTransformer implements ParticipantMapper<ServiceProv
             serviceProvider.getCity(), state, getZip(serviceProvider), null, legacyDescriptor));
     String phoneType =
         serviceProvider.getPhoneType() != null ? serviceProvider.getPhoneType().name() : null;
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(serviceProvider.getPhoneNumber(), phoneType)));
+    List<PhoneNumber> phoneNumbers = Arrays.asList(new PhoneNumber(serviceProvider.getPhoneNumber(), phoneType));
     String sensitivityIndicator = serviceProvider.getSensitivityIndicator() != null
         ? serviceProvider.getSensitivityIndicator()
         : "";

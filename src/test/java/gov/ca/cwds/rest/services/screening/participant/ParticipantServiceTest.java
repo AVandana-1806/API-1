@@ -236,7 +236,7 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
 
     PhoneNumber phoneNumber1 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber2 = new PhoneNumber(phoneNumbers2);
-    expected.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber1, phoneNumber2)));
+    expected.addPhoneNumbers((Arrays.asList(phoneNumber1, phoneNumber2)));
     expected.setSafelySurenderedBabies(null);
 
     ParticipantIntakeApi found =
@@ -296,8 +296,8 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     PhoneNumber phoneNumber11 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber2 = new PhoneNumber(phoneNumbers2);
     PhoneNumber phoneNumber22 = new PhoneNumber(phoneNumbers2);
-    expected.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber1, phoneNumber2)));
-    expected00.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber11, phoneNumber22)));
+    expected.addPhoneNumbers((Arrays.asList(phoneNumber1, phoneNumber2)));
+    expected00.addPhoneNumbers((Arrays.asList(phoneNumber11, phoneNumber22)));
 
     ParticipantIntakeApi found = participantService.create(expected);
     assertThat(found, is(expected00));
@@ -549,8 +549,8 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     PhoneNumber phoneNumber11 = new PhoneNumber(phoneNumbers1);
     PhoneNumber phoneNumber3 = new PhoneNumber(phoneNumbers3new);
     PhoneNumber phoneNumber33 = new PhoneNumber(phoneNumbers3new);
-    expected.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber1, phoneNumber3)));
-    expected00.addPhoneNumbers(new HashSet<>(Arrays.asList(phoneNumber11, phoneNumber33)));
+    expected.addPhoneNumbers((Arrays.asList(phoneNumber1, phoneNumber3)));
+    expected00.addPhoneNumbers((Arrays.asList(phoneNumber11, phoneNumber33)));
     expected00.setScreeningId("-1");
 
     ParticipantIntakeApi found =
