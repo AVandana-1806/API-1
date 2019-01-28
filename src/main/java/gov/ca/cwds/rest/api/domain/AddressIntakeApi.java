@@ -2,6 +2,8 @@ package gov.ca.cwds.rest.api.domain;
 
 import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
@@ -66,6 +68,11 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
   @Valid
   private LegacyDescriptor legacyDescriptor;
 
+  @Valid
+  @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.PhoneNumber]")
+  @JsonProperty("phone_numbers")
+  private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+
   /**
    * Default Constructor.
    */
@@ -97,6 +104,34 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
     this.zip = zip;
     this.type = type;
     this.legacyDescriptor = legacyDescriptor;
+  }
+
+  /**
+   * Constructor
+   *
+   * @param legacySourceTable - the legacy source table name
+   * @param addressId - legacy Id
+   * @param streetAddress - street address
+   * @param city - city
+   * @param state - state
+   * @param zip - zip code
+   * @param type the address type
+   * @param legacyDescriptor - legacyDescriptor
+   * @param phoneNumbers - phones list
+   */
+  @SuppressWarnings("squid:S00107")
+  public AddressIntakeApi(String legacySourceTable, String addressId, String streetAddress,
+      String city, String state, String zip, String type, LegacyDescriptor legacyDescriptor, List<PhoneNumber> phoneNumbers) {
+    super();
+    this.legacySourceTable = legacySourceTable;
+    this.legacyId = addressId;
+    this.streetAddress = streetAddress;
+    this.city = city;
+    this.state = state;
+    this.zip = zip;
+    this.type = type;
+    this.legacyDescriptor = legacyDescriptor;
+    this.phoneNumbers = phoneNumbers;
   }
 
   /**
@@ -218,6 +253,25 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
    */
   public String getZip() {
     return zip;
+  }
+
+  /**
+   *
+   * @return phones list
+   */
+  public List<PhoneNumber> getPhoneNumbers() {
+    if (phoneNumbers == null) {
+      phoneNumbers = new ArrayList<>();
+    }
+    return phoneNumbers;
+  }
+
+  /**
+   *
+   * @param phoneNumbers - phoneNumber's list
+   */
+  public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
+    this.phoneNumbers = phoneNumbers;
   }
 
   /**

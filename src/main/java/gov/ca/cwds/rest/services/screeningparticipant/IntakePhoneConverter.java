@@ -73,11 +73,7 @@ public class IntakePhoneConverter {
           .collect(Collectors.toList());
 
       for (OutOfHomePlacement outOfHomePlacement : outOfHomePlacements) {
-        PlacementHome placementHome = outOfHomePlacement.getPlacementHome();
-        if (!placementHome.getPrmTelNo().isEmpty()) {
-          phones.add(
-              toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), TYPE_HOME));
-        }
+        phones.addAll(getPhones(outOfHomePlacement.getPlacementHome()));
       }
     });
     return phones;
@@ -89,7 +85,16 @@ public class IntakePhoneConverter {
         : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType);
   }
 
-  private List<PhoneNumber> getPhones(ClientAddress clientAddress) {
+  List<PhoneNumber> getPhones(PlacementHome placementHome) {
+    List<PhoneNumber> phones = new ArrayList<>();
+    if (!(placementHome == null || placementHome.getPrmTelNo().isEmpty())) {
+      phones.add(
+          toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), TYPE_HOME));
+    }
+    return phones;
+  }
+
+  List<PhoneNumber> getPhones(ClientAddress clientAddress) {
     Address address = clientAddress.getAddresses();
     final List<PhoneNumber> ret = new ArrayList<>();
 

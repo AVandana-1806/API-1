@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
+import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.enums.AddressType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,6 +65,7 @@ public class IntakeAddressConverter {
    */
   public List<AddressIntakeApi> getPlacementHomeAddresses(
       List<PlacementEpisode> placementEpisodes) {
+    IntakePhoneConverter intakePhoneConverter = new IntakePhoneConverter();
     List<AddressIntakeApi> addresses = new ArrayList<>();
 
     LocalDate now = LocalDate.now();
@@ -94,6 +96,7 @@ public class IntakeAddressConverter {
             null, new DateTime(1000 * lastUpdateTime.toEpochSecond(zoneOffset)),
             LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
         addressIntakeApi.setLegacyDescriptor(legacyDescriptor);
+        addressIntakeApi.getPhoneNumbers().addAll(intakePhoneConverter.getPhones(placementHome));
 
         addresses.add(addressIntakeApi);
       }
@@ -111,8 +114,10 @@ public class IntakeAddressConverter {
         IntakeLovType.US_STATE.getValue());
     String type = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
         clientAddress.getAddressType(), IntakeLovType.ADDRESS_TYPE.getValue());
+    IntakePhoneConverter intakePhoneConverter = new IntakePhoneConverter();
+    List<PhoneNumber> phones = intakePhoneConverter.getPhones(clientAddress);
     return new AddressIntakeApi(null, null, streetAddress, address.getCity(), state,
-        getZip(address), type, legacyDescriptor);
+        getZip(address), type, legacyDescriptor, phones);
   }
 
   private String getZip(ApiAddressAware address) {
