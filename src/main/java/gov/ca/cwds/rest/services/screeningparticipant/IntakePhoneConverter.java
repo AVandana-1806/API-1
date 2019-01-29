@@ -87,7 +87,8 @@ public class IntakePhoneConverter {
 
   List<PhoneNumber> getPhones(PlacementHome placementHome) {
     List<PhoneNumber> phones = new ArrayList<>();
-    if (!(placementHome == null || placementHome.getPrmTelNo().isEmpty())) {
+    if (!(placementHome == null || placementHome.getPrmTelNo() == null || placementHome
+        .getPrmTelNo().isEmpty())) {
       phones.add(
           toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), TYPE_HOME));
     }
