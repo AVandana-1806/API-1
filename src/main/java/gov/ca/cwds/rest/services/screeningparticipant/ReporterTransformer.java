@@ -1,14 +1,5 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-
 import gov.ca.cwds.data.persistence.cms.Reporter;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
@@ -17,6 +8,12 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Business layer object to transform a {@link Reporter} to an {@link ParticipantIntakeApi}
@@ -38,8 +35,8 @@ public class ReporterTransformer implements ParticipantMapper<Reporter> {
     String streetAddress = reporter.getStreetNumber() + " " + reporter.getStreetName();
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         streetAddress, reporter.getCity(), state, getZip(reporter), null, legacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(reporter.getPrimaryPhoneNumber().toString(), null)));
+    List<PhoneNumber> phoneNumbers = Arrays
+        .asList(new PhoneNumber(reporter.getPrimaryPhoneNumber().toString(), null));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor, reporter.getFirstName(),
         reporter.getMiddleInitialName(), reporter.getLastName(),

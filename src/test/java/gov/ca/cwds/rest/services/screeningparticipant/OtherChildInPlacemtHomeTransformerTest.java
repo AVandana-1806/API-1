@@ -119,7 +119,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
 
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = null;
+    List<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "aaa", null, "bbb", null, "male", null, null, null, new Date(), null, new LinkedList<>(),
         null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);

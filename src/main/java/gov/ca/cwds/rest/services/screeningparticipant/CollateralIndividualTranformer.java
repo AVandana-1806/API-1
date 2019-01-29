@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -54,8 +53,7 @@ public class CollateralIndividualTranformer implements ParticipantMapper<Collate
     String phone = collateralIndividual.getPrimaryPhoneNo() != null
         ? collateralIndividual.getPrimaryPhoneNo().toString()
         : null;
-    Set<PhoneNumber> phoneNumbers =
-        new HashSet<>(Arrays.asList(new PhoneNumber(phone, null)));
+    List<PhoneNumber> phoneNumbers = Arrays.asList(new PhoneNumber(phone, null));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         collateralIndividual.getFirstName(), collateralIndividual.getMiddleInitialName(),

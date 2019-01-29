@@ -82,8 +82,7 @@ public class ReporterTransformerTest {
         LegacyTable.REPORTER.getName(), LegacyTable.REPORTER.getDescription());
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "2751 First Street", "Sacramento", "CA", "95833", null, legacyDescriptor));
-    Set<PhoneNumber> phoneNumbers =
-        new HashSet<>(Arrays.asList(new PhoneNumber("6199221167", null)));
+    List<PhoneNumber> phoneNumbers = (Arrays.asList(new PhoneNumber("6199221167", null)));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "Fred", "W", "Reporter", "", null, null, null, null, null, null, new LinkedList<>(), null,
         null, null, new HashSet<>(), addresses, phoneNumbers, false, false);

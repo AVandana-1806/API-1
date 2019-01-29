@@ -104,7 +104,7 @@ public class OtherAdultInPlacemtHomeTransformerTest {
 
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "streetNumber streetName", "Sacramento", "CA", "99999", null, addressLegacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = null;
+    List<PhoneNumber> phoneNumbers = null;
     ParticipantIntakeApi expected =
         new ParticipantIntakeApi(null, null, null, legacyDescriptor, "Karen", null, "Q", null, "M",
             null, null, null, validOtherAdultInPlacemtHome().getBirthDate(),

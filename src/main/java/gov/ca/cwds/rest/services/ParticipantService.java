@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 public class ParticipantService {
   ParticipantTransformer participantTransformer;
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantService.class);
 
   @Inject
   public ParticipantService(ParticipantTransformer participantTransformer){
@@ -27,8 +26,6 @@ public class ParticipantService {
 
     ParticipantIntakeApi queryParticipant = new ParticipantIntakeApi();
     queryParticipant.setLegacyDescriptor(legacyDescriptor);
-    ParticipantIntakeApi foundParticipant = participantTransformer.loadParticipant(queryParticipant);
-
-    return foundParticipant;
+    return participantTransformer.loadParticipant(queryParticipant);
   }
 }

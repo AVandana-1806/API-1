@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -269,13 +267,13 @@ public class ParticipantService implements
     List<AddressIntakeApi> addressIntakeApiList =
         createParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
-    Set<PhoneNumber> phoneSet =
+    List<PhoneNumber> phoneList =
         createParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
     ParticipantIntakeApi participantIntakeApiPosted =
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.addAddresses(addressIntakeApiList);
-    participantIntakeApiPosted.addPhoneNumbers(phoneSet);
+    participantIntakeApiPosted.addPhoneNumbers(phoneList);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
 
     SafelySurrenderedBabiesIntakeApi createdSsb =
@@ -338,7 +336,7 @@ public class ParticipantService implements
     List<AddressIntakeApi> addressIntakeApiList =
         updateParticipantAddresses(participant.getAddresses(), participantEntityManaged);
 
-    Set<PhoneNumber> phoneSet =
+    List<PhoneNumber> phoneList =
         updateParticipantPhoneNumbers(participant.getPhoneNumbers(), participantEntityManaged);
 
     LegacyDescriptorEntity foundDescriptor =
@@ -350,7 +348,7 @@ public class ParticipantService implements
         new ParticipantIntakeApi(participantEntityManaged);
     participantIntakeApiPosted.setLegacyDescriptor(discriptor);
     participantIntakeApiPosted.addAddresses(addressIntakeApiList);
-    participantIntakeApiPosted.addPhoneNumbers(phoneSet);
+    participantIntakeApiPosted.addPhoneNumbers(phoneList);
     participantIntakeApiPosted.setCsecs(participant.getCsecs());
     participantIntakeApiPosted.setSafelySurenderedBabies(
         safelySurrenderedBabiesMapper.map(participantEntityManaged.getSafelySurrenderedBabies()));
@@ -533,9 +531,9 @@ public class ParticipantService implements
     return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
   }
 
-  private Set<PhoneNumber> createParticipantPhoneNumbers(Set<PhoneNumber> phoneSet,
+  private List<PhoneNumber> createParticipantPhoneNumbers(List<PhoneNumber> phoneSet,
       ParticipantEntity participantEntityManaged) {
-    Set<PhoneNumber> phoneSetPosted = new HashSet<>();
+    List<PhoneNumber> phoneListPosted = new ArrayList<>();
 
     for (PhoneNumber phoneNumber : phoneSet) {
 
@@ -549,7 +547,7 @@ public class ParticipantService implements
         phoneNumbersEntityManaged = phoneNumbersDao.create(new PhoneNumbers(phoneNumber));
         phoneNumber = new PhoneNumber(phoneNumbersEntityManaged);
       }
-      phoneSetPosted.add(phoneNumber);
+      phoneListPosted.add(phoneNumber);
 
       ParticipantPhoneNumbers participantPhoneNumbers =
           new ParticipantPhoneNumbers(participantEntityManaged, phoneNumbersEntityManaged);
@@ -558,12 +556,12 @@ public class ParticipantService implements
       participantPhoneNumbersDao.create(participantPhoneNumbers);
 
     }
-    return phoneSetPosted;
+    return phoneListPosted;
   }
 
-  private Set<PhoneNumber> updateParticipantPhoneNumbers(Set<PhoneNumber> phoneSet,
+  private List<PhoneNumber> updateParticipantPhoneNumbers(List<PhoneNumber> phoneSet,
       ParticipantEntity participantEntityManaged) {
-    Set<PhoneNumber> phoneSetPosted = new HashSet<>();
+    List<PhoneNumber> phoneListPosted = new ArrayList<>();
 
     Map<String, ParticipantPhoneNumbers> participantPhoneNumbersOldMap = new HashMap<>();
     participantPhoneNumbersDao.findByParticipantId(participantEntityManaged.getId())
@@ -583,7 +581,7 @@ public class ParticipantService implements
         phoneNumber = new PhoneNumber(phoneNumbersEntityManaged);
       }
 
-      phoneSetPosted.add(phoneNumber);
+      phoneListPosted.add(phoneNumber);
 
       // See if we had this ParticipantPhoneNumber entity before. Otherwise create
       ParticipantPhoneNumbers participantPhoneNumbers =
@@ -602,7 +600,7 @@ public class ParticipantService implements
         .forEach(participantPhoneNumbers -> participantPhoneNumbersDao
             .delete(participantPhoneNumbers.getId()));
 
-    return phoneSetPosted;
+    return phoneListPosted;
   }
 
   void setCsecMapper(CsecMapper csecMapper) {

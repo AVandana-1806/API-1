@@ -96,7 +96,7 @@ public class SubstituteCareProviderTransformerTest {
         LegacyTable.SUBSTITUTE_CARE_PROVIDER.getDescription());
     List<AddressIntakeApi> addresses = Collections.singletonList(new AddressIntakeApi(null, null,
         "Number 5th St", "Sacramento", "CA", "95814", null, legacyDescriptor));
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(new PhoneNumber("0", null)));
+    List<PhoneNumber> phoneNumbers = Arrays.asList(new PhoneNumber("0", null));
     ParticipantIntakeApi expected = new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         "Fish", "N", "Tuna", "Description", null, null, null, "000994415",
         validSubstituteCareProvider().getBirthDate(), validSubstituteCareProvider().getDeathDate(),

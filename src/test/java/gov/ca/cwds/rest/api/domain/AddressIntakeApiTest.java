@@ -4,6 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 import gov.ca.cwds.data.persistence.ns.Addresses;
 
@@ -18,6 +22,7 @@ public class AddressIntakeApiTest {
   String zip = "93838";
   String type = "school";
   LegacyDescriptor legacyDescriptor;
+  List<PhoneNumber> phones = Arrays.asList(new PhoneNumber("1112223333","Home"));
   String newId = "654321";
   String newLegacySourceTable = "CLIENT_T";
   String newLegacyId = "2345678ABC";
@@ -36,6 +41,18 @@ public class AddressIntakeApiTest {
     assertThat(domain.getType(), is(equalTo(type)));
     assertThat(domain.getLegacyDescriptor(), is(equalTo(legacyDescriptor)));
     
+    domain = new AddressIntakeApi(legacySourceTable, legacyId, streetAddress, city, state, zip, type,
+        legacyDescriptor, phones);
+    assertThat(domain.getLegacySourceTable(), is(equalTo(legacySourceTable)));
+    assertThat(domain.getLegacyId(), is(equalTo(legacyId)));
+    assertThat(domain.getStreetAddress(), is(equalTo(streetAddress)));
+    assertThat(domain.getCity(), is(equalTo(city)));
+    assertThat(domain.getState(), is(equalTo(state)));
+    assertThat(domain.getZip(), is(equalTo(zip)));
+    assertThat(domain.getType(), is(equalTo(type)));
+    assertThat(domain.getLegacyDescriptor(), is(equalTo(legacyDescriptor)));
+    assertThat(domain.getPhoneNumbers(), is(equalTo(phones)));
+
   }
   
   @Test

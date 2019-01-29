@@ -1,5 +1,6 @@
 package gov.ca.cwds.fixture;
 
+import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class ParticipantIntakeApiResourceBuilder {
   String screeningId = "12345";
   Set<String> roles = new HashSet<>(Arrays.asList("Victim"));
   List<AddressIntakeApi> addresses = new ArrayList<>();
-  Set<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers = new HashSet<>();
+  List<PhoneNumber> phoneNumbers = new ArrayList<>();
   Boolean sealed = false;
   Boolean sensitive = false;
   LegacyDescriptor legacyDescriptor = new LegacyDescriptor();;
@@ -234,7 +235,7 @@ public class ParticipantIntakeApiResourceBuilder {
    * @return the phoneNumbers
    */
   public ParticipantIntakeApiResourceBuilder setPhoneNumbers(
-      Set<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers) {
+      List<PhoneNumber> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
     return this;
   }

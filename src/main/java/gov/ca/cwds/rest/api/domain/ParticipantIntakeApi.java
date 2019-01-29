@@ -145,7 +145,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   @Valid
   @ApiModelProperty(dataType = "List[gov.ca.cwds.rest.api.domain.PhoneNumber]")
   @JsonProperty("phone_numbers")
-  private Set<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers = new HashSet<>();
+  private List<gov.ca.cwds.rest.api.domain.PhoneNumber> phoneNumbers = new ArrayList<>();
 
   @JsonProperty("sealed")
   @ApiModelProperty(value = "sealed", example = "true")
@@ -213,7 +213,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
       String nameSuffix, String gender, String approximateAge, String approximateAgeUnits,
       String ssn, Date dateOfBirth, Date dateOfDeath, List<String> languages, String races,
       String ethnicity, String screeningId, Set<String> roles, List<AddressIntakeApi> addresses,
-      Set<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
+      List<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
 
     super();
     this.id = id;
@@ -542,9 +542,9 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @return phone numbers
    */
-  public Set<PhoneNumber> getPhoneNumbers() {
+  public List<PhoneNumber> getPhoneNumbers() {
     if (phoneNumbers == null) {
-      phoneNumbers = new HashSet<>();
+      phoneNumbers = new ArrayList<>();
     }
     return phoneNumbers;
   }
@@ -552,7 +552,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   /**
    * @param phoneNumbers - domain addresses
    */
-  public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+  public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
   }
 
@@ -561,7 +561,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    *
    * @param phoneNumbers - domain addresses
    */
-  public void addPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+  public void addPhoneNumbers(List<PhoneNumber> phoneNumbers) {
     if (phoneNumbers == null) {
       return;
     }

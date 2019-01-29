@@ -1,14 +1,5 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-
 import gov.ca.cwds.data.persistence.cms.EducationProvider;
 import gov.ca.cwds.data.persistence.cms.EducationProviderContact;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
@@ -18,6 +9,12 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Business layer object to transform a {@link EducationProviderContact} to an
@@ -62,9 +59,8 @@ public class EducationProviderContactTransformer
         new AddressIntakeApi(null, null, streetAddress, educationProvider.getCityName(), state,
             getZip(educationProvider), null, educationProviderLegacyDescriptor));
 
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(
-        Arrays.asList(new PhoneNumber(educationProviderContact.getPhoneNumber(), null)));
-
+    List<PhoneNumber> phoneNumbers = Arrays
+        .asList(new PhoneNumber(educationProviderContact.getPhoneNumber(), null));
 
     return new ParticipantIntakeApi(null, null, null, educationProviderContactLegacyDescriptor,
         firstName, middleName, lastName, suffixTitle, educationProviderContact.getGender(), null,

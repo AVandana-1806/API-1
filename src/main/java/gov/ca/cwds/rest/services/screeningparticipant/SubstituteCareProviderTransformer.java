@@ -1,14 +1,5 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-
 import gov.ca.cwds.data.persistence.cms.SubstituteCareProvider;
 import gov.ca.cwds.rest.api.domain.AddressIntakeApi;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
@@ -17,6 +8,12 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Business layer object to transform a {@link SubstituteCareProvider} to an
@@ -47,8 +44,8 @@ public class SubstituteCareProviderTransformer
         ? substituteCareProvider.getSensitivityIndicator()
         : "";
 
-    Set<PhoneNumber> phoneNumbers = new HashSet<>(Arrays.asList(
-        new PhoneNumber(substituteCareProvider.getAdditionalPhoneNumber().toString(), null)));
+    List<PhoneNumber> phoneNumbers = Arrays.asList(
+        new PhoneNumber(substituteCareProvider.getAdditionalPhoneNumber().toString(), null));
 
     return new ParticipantIntakeApi(null, null, null, legacyDescriptor,
         substituteCareProvider.getFirstName(), substituteCareProvider.getMiddleName(),

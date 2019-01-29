@@ -28,7 +28,8 @@
         "legacy_last_updated": "2005-12-09T16:20:43.320-0800",
         "legacy_table_name": "ADDRS_T",
         "legacy_table_description": "Address"
-      }
+      },
+      "phone_numbers" : [ ]
     },
     {
       "messages": [],
@@ -37,7 +38,8 @@
       "street_address": "123 Main",
       "city": "Sacramento",
       "state": "CA",
-      "zip": "95757"
+      "zip": "95757",
+      "phone_numbers" : [ ]
     }
   ],
   "races": [
