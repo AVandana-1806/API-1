@@ -58,7 +58,8 @@
     "type": "Homeless",
     "city": "Sacramento",
     "state": "CA",
-    "zip": "95833"
+    "zip": "95833",
+    "phone_numbers" : [ ]
   },
   "allegations": [],
   "participants": [
@@ -85,7 +86,8 @@
           "street_address": "erfsgd101",
           "city": "Sacramento",
           "state": "CA",
-          "zip": "95833"
+          "zip": "95833",
+          "phone_numbers" : [ ]
         }
       ],
       "races": [
