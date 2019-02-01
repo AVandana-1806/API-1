@@ -68,6 +68,7 @@ public final class Api {
 
   public static class HealthCheck {
 
+    public static final String DEADLOCKS = "deadlocks";
     public static final String AUTH_STATUS = "auth";
     public static final String SWAGGER_STATUS = "swagger";
     public static final String LOV_STATUS = "lov";

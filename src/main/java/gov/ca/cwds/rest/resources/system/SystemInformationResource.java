@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * Display Ferb version and health checks.
- * 
+ *
  * @author CWDS API Team
  */
 @Api(value = RESOURCE_SYSTEM_INFORMATION)
@@ -59,6 +59,7 @@ public class SystemInformationResource extends AbstractSystemInformationResource
     value = manifestProperties.getValue(API_BUILD);
     this.buildNumber = StringUtils.isBlank(value) ? N_A : value;
     super.gitCommitHash = N_A;
+    super.systemHealthStatusStrategy = new FerbSystemHealthStatusStrategy();
   }
 
   /**
