@@ -20,4 +20,3 @@ public class FerbSystemHealthStatusStrategy implements SystemHealthStatusStrateg
         .allMatch(e -> e.getValue().isHealthy());
   }
 }
-
