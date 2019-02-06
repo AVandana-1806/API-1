@@ -95,7 +95,7 @@ xaCmsDataSourceFactory:
   minIdleTime: 1 minute
   maxConnectionAge: ${DB_CMSXA_MAX_AGE:-30s}
   removeAbandoned: ${DB_CMSXA_REMOVE_ABANDONED:-false}
-  removeAbandonedTimeout: ${DB_CMSXA_REMOVE_ABANDONED_TIMEOUT:-60}
+  removeAbandonedTimeout: ${DB_CMSXA_REMOVE_ABANDONED_TIMEOUT:-60s}
   commitOnReturn: ${DB_CMSXA_COMMIT_ON_RETURN:-false}
   checkConnectionWhileIdle: ${DB_CMSXA_CHECK_CONNECTION_WHILE_IDLE:-true}
   checkConnectionOnBorrow: ${DB_CMSXA_CHECK_CONNECTION_ON_BORROW:-false}
