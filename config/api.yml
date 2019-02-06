@@ -55,7 +55,7 @@ cmsDataSourceFactory:
   minSize: ${DB_CMS_CP_MIN_SIZE:-2}
   maxSize: ${DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
-  maxConnectionAge: ${DB_CMS_MAX_AGE}
+  maxConnectionAge: ${DB_CMS_MAX_AGE:-30s}
   removeAbandoned: ${DB_CMS_REMOVE_ABANDONED:-false}
   removeAbandonedTimeout: ${DB_CMS_REMOVE_ABANDONED_TIMEOUT:-60}
   commitOnReturn: ${DB_CMS_COMMIT_ON_RETURN:-false}
@@ -87,7 +87,7 @@ rsDataSourceFactory:
   minSize: ${DB_CWSRS_CP_MIN_SIZE:-2}
   maxSize: ${DB_CWSRS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
-  maxConnectionAge: ${DB_CWSRS_MAX_AGE}
+  maxConnectionAge: ${DB_CWSRS_MAX_AGE:-30s}
   removeAbandoned: ${DB_CWSRS_REMOVE_ABANDONED:-false}
   removeAbandonedTimeout: ${DB_CWSRS_REMOVE_ABANDONED_TIMEOUT:-60}
   commitOnReturn: ${DB_CWSRS_COMMIT_ON_RETURN:-false}
@@ -120,7 +120,7 @@ xaCmsDataSourceFactory:
   minSize: ${DB_CMSXA_CP_MIN_SIZE:-2}
   maxSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
-  maxConnectionAge: ${DB_CMSXA_MAX_AGE}
+  maxConnectionAge: ${DB_CMSXA_MAX_AGE:-30s}
   removeAbandoned: ${DB_CMS_REMOVE_ABANDONED:-false}
   removeAbandonedTimeout: ${DB_CMSXA_REMOVE_ABANDONED_TIMEOUT:-60}
   commitOnReturn: ${DB_CMSXA_COMMIT_ON_RETURN:-false}
@@ -165,7 +165,7 @@ xaCmsRsDataSourceFactory:
   minSize: ${DB_CWSRSXA_CP_MIN_SIZE:-2}
   maxSize: ${DB_CWSRSXA_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
-  maxConnectionAge: ${DB_CWSRSXA_MAX_AGE}
+  maxConnectionAge: ${DB_CWSRSXA_MAX_AGE:-30s}
   removeAbandoned: ${DB_CWSRSXA_REMOVE_ABANDONED:-false}
   removeAbandonedTimeout: ${DB_CWSRSXA_REMOVE_ABANDONED_TIMEOUT:-60}
   commitOnReturn: ${DB_CWSRSXA_COMMIT_ON_RETURN:-false}
