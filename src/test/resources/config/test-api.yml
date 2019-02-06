@@ -21,7 +21,7 @@ nsDataSourceFactory:
   driverClass: org.h2.Driver
   user: sa
   password:
-  url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens       
+  url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
   validationQuery: "/* MyService Health Check */ SELECT 1"
   logValidationErrors: true
   initialSize: ${DB_NS_CP_INITIAL_SIZE:-2}
@@ -87,12 +87,18 @@ xaCmsDataSourceFactory:
   password:
   url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
-  validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
+  validationQuery:
   logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: ${DB_CMS_CP_MAX_SIZE:-8}
+  initialSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+  minSize: ${DB_CMSXA_CP_MIN_SIZE:-2}
+  maxSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
+  maxConnectionAge: ${DB_CMSXA_MAX_AGE:-30s}
+  removeAbandoned: ${DB_CMSXA_REMOVE_ABANDONED:-false}
+  removeAbandonedTimeout: ${DB_CMSXA_REMOVE_ABANDONED_TIMEOUT:-1200s}
+  commitOnReturn: ${DB_CMSXA_COMMIT_ON_RETURN:-false}
+  checkConnectionWhileIdle: ${DB_CMSXA_CHECK_CONNECTION_WHILE_IDLE:-true}
+  checkConnectionOnBorrow: ${DB_CMSXA_CHECK_CONNECTION_ON_BORROW:-false}
   properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}

@@ -49,12 +49,18 @@ cmsDataSourceFactory:
   user: ${DB_CMS_USER}
   password: ${DB_CMS_PASSWORD}
   url: ${DB_CMS_JDBC_URL}
-  validationQuery: "/* CMS DB2 Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
+  validationQuery:
   logValidationErrors: true
   initialSize: ${DB_CMS_CP_INITIAL_SIZE:-2}
   minSize: ${DB_CMS_CP_MIN_SIZE:-2}
   maxSize: ${DB_CMS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
+  maxConnectionAge: ${DB_CMS_MAX_AGE:-30s}
+  removeAbandoned: ${DB_CMS_REMOVE_ABANDONED:-false}
+  removeAbandonedTimeout: ${DB_CMS_REMOVE_ABANDONED_TIMEOUT:-1200s}
+  commitOnReturn: ${DB_CMS_COMMIT_ON_RETURN:-false}
+  checkConnectionWhileIdle: ${DB_CMS_CHECK_CONNECTION_WHILE_IDLE:-true}
+  checkConnectionOnBorrow: ${DB_CMS_CHECK_CONNECTION_ON_BORROW:-false}
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
@@ -75,12 +81,18 @@ rsDataSourceFactory:
   user: ${DB_CWSRS_USER}
   password: ${DB_CWSRS_PASSWORD}
   url: ${DB_CWSRS_JDBC_URL}
-  validationQuery: "/* RS DB2 Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
+  validationQuery:
   logValidationErrors: true
   initialSize: ${DB_CWSRS_CP_INITIAL_SIZE:-2}
   minSize: ${DB_CWSRS_CP_MIN_SIZE:-2}
   maxSize: ${DB_CWSRS_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
+  maxConnectionAge: ${DB_CWSRS_MAX_AGE:-30s}
+  removeAbandoned: ${DB_CWSRS_REMOVE_ABANDONED:-false}
+  removeAbandonedTimeout: ${DB_CWSRS_REMOVE_ABANDONED_TIMEOUT:-1200s}
+  commitOnReturn: ${DB_CWSRS_COMMIT_ON_RETURN:-false}
+  checkConnectionWhileIdle: ${DB_CWSRS_CHECK_CONNECTION_WHILE_IDLE:-true}
+  checkConnectionOnBorrow: ${DB_CWSRS_CHECK_CONNECTION_ON_BORROW:-false}
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.jdbc.time_zone: America/Los_Angeles
@@ -102,12 +114,18 @@ xaCmsDataSourceFactory:
   password: ${DB_CMS_PASSWORD}
   url: ${DB_CMS_JDBC_URL}
   xaDataSourceClassName: com.ibm.db2.jcc.DB2XADataSource
-  validationQuery: "/* XA/CMS Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
+  validationQuery:
   logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
+  initialSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+  minSize: ${DB_CMSXA_CP_MIN_SIZE:-2}
+  maxSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
+  maxConnectionAge: ${DB_CMSXA_MAX_AGE:-30s}
+  removeAbandoned: ${DB_CMS_REMOVE_ABANDONED:-false}
+  removeAbandonedTimeout: ${DB_CMSXA_REMOVE_ABANDONED_TIMEOUT:-1200s}
+  commitOnReturn: ${DB_CMSXA_COMMIT_ON_RETURN:-false}
+  checkConnectionWhileIdle: ${DB_CMSXA_CHECK_CONNECTION_WHILE_IDLE:-true}
+  checkConnectionOnBorrow: ${DB_CMSXA_CHECK_CONNECTION_ON_BORROW:-false}
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
@@ -141,12 +159,18 @@ xaCmsRsDataSourceFactory:
   password: ${DB_CWSRS_PASSWORD}
   url: ${DB_CWSRS_JDBC_URL}
   xaDataSourceClassName: com.ibm.db2.jcc.DB2XADataSource
-  validationQuery: "/* XA/CMS Health Check */ SELECT 1 FROM SYSIBM.SYSDUMMY1 FOR READ ONLY WITH UR"
+  validationQuery:
   logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: ${XA_DB_CMS_CP_MAX_SIZE:-20}
+  initialSize: ${DB_CWSRSXA_CP_INITIAL_SIZE:-2}
+  minSize: ${DB_CWSRSXA_CP_MIN_SIZE:-2}
+  maxSize: ${DB_CWSRSXA_CP_MAX_SIZE:-20}
   minIdleTime: 1 minute
+  maxConnectionAge: ${DB_CWSRSXA_MAX_AGE:-30s}
+  removeAbandoned: ${DB_CWSRSXA_REMOVE_ABANDONED:-false}
+  removeAbandonedTimeout: ${DB_CWSRSXA_REMOVE_ABANDONED_TIMEOUT:-1200s}
+  commitOnReturn: ${DB_CWSRSXA_COMMIT_ON_RETURN:-false}
+  checkConnectionWhileIdle: ${DB_CWSRSXA_CHECK_CONNECTION_WHILE_IDLE:-true}
+  checkConnectionOnBorrow: ${DB_CWSRSXA_CHECK_CONNECTION_ON_BORROW:-false}
   properties:
       hibernate.dialect: org.hibernate.dialect.DB2Dialect
       hibernate.show_sql: ${FERB_HIBERNATE_SHOW_SQL:-false}
