@@ -87,7 +87,7 @@ xaCmsDataSourceFactory:
   password:
   url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
   xaDataSourceClassName: org.h2.jdbcx.JdbcDataSource
-  validationQuery:
+  validationQuery: "/* MyService Health Check */ SELECT 1 FOR READ ONLY"
   logValidationErrors: true
   initialSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
   minSize: ${DB_CMSXA_CP_MIN_SIZE:-2}
