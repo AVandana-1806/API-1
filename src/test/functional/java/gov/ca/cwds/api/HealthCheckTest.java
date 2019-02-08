@@ -29,7 +29,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void tesAuthIsAvailable() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("auth.healthy",
         equalTo(true));
@@ -39,7 +38,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testSwaggerIsAvailable() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("swagger.healthy",
         equalTo(true));
@@ -49,7 +47,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testPostgresConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("ns.healthy",
         equalTo(true));
@@ -59,7 +56,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testCmsConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("cms.healthy",
         equalTo(true));
@@ -69,7 +65,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testRsConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("rs.healthy",
         equalTo(true));
@@ -79,7 +74,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testXsForNSConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_ns.healthy",
         equalTo(true));
@@ -89,7 +83,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testXaForCmsRsConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms_rs.healthy",
         equalTo(true));
@@ -99,7 +92,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testXaForCmsConnectionIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("xa_cms.healthy",
         equalTo(true));
@@ -119,7 +111,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testDeadLocksIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("deadlocks.healthy",
         equalTo(true));
@@ -129,7 +120,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testSystemCodeCacheIsOK() {
     given().queryParam("token", token).when().get(healthCheckPath).then()
         .body("system_code_cache.healthy", equalTo(true));
@@ -139,7 +129,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testViewsIsOk() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("views.healthy",
         equalTo(true));
@@ -149,7 +138,6 @@ public class HealthCheckTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore
   public void testTriggersIsOk() {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("triggers.healthy",
         equalTo(true));
