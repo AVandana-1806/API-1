@@ -11,7 +11,7 @@ import gov.ca.cwds.api.ScreeningToReferralTest;
  *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ScreeningToReferralTest.class})
+@Suite.SuiteClasses({HealthCheckTest.class, ScreeningToReferralTest.class})
 public class SmokeTestSuite {
 
 }
