@@ -25,16 +25,11 @@ import org.apache.commons.lang3.ObjectUtils;
  *
  * @author CWDS API Team
  */
-public class IntakePhoneConverter {
+public class IntakePhoneConverter extends IntakeConverter {
 
-  public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
   private static final Short RESIDENCE = AddressType.HOME.getCode();
   private static final Short RESIDENCE_2 = AddressType.RESIDENCE_2.getCode();
   private static final Short BUSINESS = AddressType.WORK.getCode();
-  private static final String TYPE_HOME = "Home";
-  private static final String TYPE_WORK = "Work";
-  private static final String TYPE_CELL = "Cell";
-  private static final String TYPE_OTHER = "Other";
 
   /**
    * @param client - client
@@ -43,13 +38,7 @@ public class IntakePhoneConverter {
   public List<PhoneNumber> convert(Client client) {
     List<PhoneNumber> phones = new ArrayList<>();
     if (client.getClientAddress() != null) {
-      Set<ClientAddress> clientAddresses = client.getClientAddress().stream()
-          .filter(clientAddress -> clientAddress.getEffEndDt() == null)
-          .collect(Collectors.toSet());
-      Comparator<ClientAddress> clientAddressComparator = (ClientAddress c1, ClientAddress c2) -> c2
-          .getLastUpdatedTime().compareTo(c1.getLastUpdatedTime());
-      List<ClientAddress> clientAddressList = new ArrayList<>(clientAddresses);
-      Collections.sort(clientAddressList, clientAddressComparator);
+      List<ClientAddress> clientAddressList = convertPersonalData(client);
       clientAddressList.forEach(clientAddress -> phones.addAll(getPhones(clientAddress)));
     }
     return phones;
@@ -79,10 +68,10 @@ public class IntakePhoneConverter {
     return phones;
   }
 
-  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension, String phoneType) {
+  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension, PhoneType phoneType) {
     return phoneExtension == null || phoneExtension.isEmpty() || "0".equals(phoneExtension.trim())
-        ? new PhoneNumber(phoneNumber.trim(), phoneType)
-        : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType);
+        ? new PhoneNumber(phoneNumber.trim(), phoneType.name())
+        : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType.name());
   }
 
   List<PhoneNumber> getPhones(PlacementHome placementHome) {
@@ -90,7 +79,7 @@ public class IntakePhoneConverter {
     if (!(placementHome == null || placementHome.getPrmTelNo() == null || placementHome
         .getPrmTelNo().isEmpty())) {
       phones.add(
-          toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), TYPE_HOME));
+          toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), PhoneType.Home));
     }
     return phones;
   }
@@ -100,12 +89,12 @@ public class IntakePhoneConverter {
     final List<PhoneNumber> ret = new ArrayList<>();
 
     if (isNumberPopulated(address.getPrimaryNumber())) {
-      String phoneType = TYPE_OTHER;
+      PhoneType phoneType = PhoneType.Emergency;
       if (RESIDENCE.equals(clientAddress.getAddressType())
           || RESIDENCE_2.equals(clientAddress.getAddressType())) {
-        phoneType = TYPE_HOME;
+        phoneType = PhoneType.Home;
       } else if (BUSINESS.equals(clientAddress.getAddressType())) {
-        phoneType = TYPE_WORK;
+        phoneType = PhoneType.Work;
       }
       ret.add(toPhoneNumber(String.valueOf(address.getPrimaryNumber()),
           isNumberPopulated(address.getPrimaryExtension()) ? address.getPrimaryExtension()
@@ -116,14 +105,14 @@ public class IntakePhoneConverter {
       ret.add(toPhoneNumber(String.valueOf(address.getMessageNumber()),
           isNumberPopulated(address.getMessageExtension()) ? address.getMessageExtension()
               .toString() : null,
-          TYPE_CELL));
+          PhoneType.Cell));
     }
     if (isNumberPopulated(address.getEmergencyNumber())) {
       ret.add(toPhoneNumber(String.valueOf(address.getEmergencyNumber()),
           isNumberPopulated(address.getEmergencyExtension()) ? address.getEmergencyExtension()
               .toString()
               : null,
-          TYPE_OTHER));
+          PhoneType.Emergency));
     }
     return ret;
   }

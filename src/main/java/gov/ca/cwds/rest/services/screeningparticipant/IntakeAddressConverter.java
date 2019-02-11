@@ -35,7 +35,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
  * 
  * @author CWDS API Team
  */
-public class IntakeAddressConverter {
+public class IntakeAddressConverter extends IntakeConverter {
 
   public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
   private static final Short RESIDENCE = AddressType.HOME.getCode();
@@ -47,13 +47,7 @@ public class IntakeAddressConverter {
   public List<AddressIntakeApi> convert(Client client) {
     List<AddressIntakeApi> addresses = new ArrayList<>();
     if (client.getClientAddress() != null) {
-      Set<ClientAddress> clientAddresses = client.getClientAddress().stream()
-          .filter(clientAddress -> clientAddress.getEffEndDt() == null)
-          .collect(Collectors.toSet());
-      Comparator<ClientAddress> clientAddressComparator = (ClientAddress c1, ClientAddress c2) -> c2
-          .getLastUpdatedTime().compareTo(c1.getLastUpdatedTime());
-      List<ClientAddress> clientAddressList = new ArrayList<>(clientAddresses);
-      Collections.sort(clientAddressList, clientAddressComparator);
+      List<ClientAddress> clientAddressList = convertPersonalData(client);
       clientAddressList.forEach(clientAddress -> addresses.add(convertToAddress(clientAddress)));
     }
     return addresses;
