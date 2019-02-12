@@ -71,8 +71,8 @@ public class IntakePhoneConverter extends IntakeConverter {
   private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension,
       PhoneType phoneType) {
     return phoneExtension == null || phoneExtension.isEmpty() || "0".equals(phoneExtension.trim())
-        ? new PhoneNumber(phoneNumber.trim(), phoneType.name())
-        : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType.name());
+        ? new PhoneNumber(phoneNumber.trim(), phoneType.toString())
+        : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType.toString());
   }
 
   List<PhoneNumber> getPhones(PlacementHome placementHome) {
@@ -80,7 +80,7 @@ public class IntakePhoneConverter extends IntakeConverter {
     if (!(placementHome == null || placementHome.getPrmTelNo() == null || placementHome
         .getPrmTelNo().isEmpty())) {
       phones.add(
-          toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), PhoneType.Home));
+          toPhoneNumber(placementHome.getPrmTelNo(), placementHome.getPrmExtNo(), PhoneType.HOME));
     }
     return phones;
   }
@@ -90,12 +90,12 @@ public class IntakePhoneConverter extends IntakeConverter {
     final List<PhoneNumber> ret = new ArrayList<>();
 
     if (isNumberPopulated(address.getPrimaryNumber())) {
-      PhoneType phoneType = PhoneType.Emergency;
+      PhoneType phoneType = PhoneType.EMERGENCY;
       if (RESIDENCE.equals(clientAddress.getAddressType())
           || RESIDENCE_2.equals(clientAddress.getAddressType())) {
-        phoneType = PhoneType.Home;
+        phoneType = PhoneType.HOME;
       } else if (BUSINESS.equals(clientAddress.getAddressType())) {
-        phoneType = PhoneType.Work;
+        phoneType = PhoneType.WORK;
       }
       ret.add(toPhoneNumber(String.valueOf(address.getPrimaryNumber()),
           isNumberPopulated(address.getPrimaryExtension()) ? address.getPrimaryExtension()
@@ -106,14 +106,14 @@ public class IntakePhoneConverter extends IntakeConverter {
       ret.add(toPhoneNumber(String.valueOf(address.getMessageNumber()),
           isNumberPopulated(address.getMessageExtension()) ? address.getMessageExtension()
               .toString() : null,
-          PhoneType.Cell));
+          PhoneType.CELL));
     }
     if (isNumberPopulated(address.getEmergencyNumber())) {
       ret.add(toPhoneNumber(String.valueOf(address.getEmergencyNumber()),
           isNumberPopulated(address.getEmergencyExtension()) ? address.getEmergencyExtension()
               .toString()
               : null,
-          PhoneType.Emergency));
+          PhoneType.EMERGENCY));
     }
     return ret;
   }
