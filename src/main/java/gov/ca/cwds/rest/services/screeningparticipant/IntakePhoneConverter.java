@@ -68,7 +68,8 @@ public class IntakePhoneConverter extends IntakeConverter {
     return phones;
   }
 
-  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension, PhoneType phoneType) {
+  private PhoneNumber toPhoneNumber(String phoneNumber, String phoneExtension,
+      PhoneType phoneType) {
     return phoneExtension == null || phoneExtension.isEmpty() || "0".equals(phoneExtension.trim())
         ? new PhoneNumber(phoneNumber.trim(), phoneType.name())
         : new PhoneNumber(phoneNumber.trim(), phoneExtension.trim(), phoneType.name());

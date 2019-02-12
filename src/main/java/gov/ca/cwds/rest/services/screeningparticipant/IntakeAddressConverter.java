@@ -29,10 +29,10 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
- * Intake Address Converter transforms the legacy {@link Address} into a intake
- * {@link AddressIntakeApi}, From legacy find the recent open address residence and placement home
- * for the client.
- * 
+ * Intake Address Converter transforms the legacy {@link Address} into a intake {@link
+ * AddressIntakeApi}, From legacy find the recent open address residence and placement home for the
+ * client.
+ *
  * @author CWDS API Team
  */
 public class IntakeAddressConverter extends IntakeConverter {
@@ -118,7 +118,7 @@ public class IntakeAddressConverter extends IntakeConverter {
     return address.getZip();
     /**
      * This line can be added once the referrals started accepting zip suffix
-     * 
+     *
      * if (address.getZip4() != null) { return address.getZip() + "-" + address.getZip4(); } return
      * zip;
      */
