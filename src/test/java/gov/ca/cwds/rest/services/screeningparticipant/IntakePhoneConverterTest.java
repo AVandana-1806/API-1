@@ -123,7 +123,7 @@ public class IntakePhoneConverterTest {
     assertEquals(phoneNumber.getType(), "Cell");
     phoneNumber = phoneNumbers.get(2);
     assertEquals(phoneNumber.getNumber(), "10101010101");
-    assertEquals(phoneNumber.getType(), "Other");
+    assertEquals(phoneNumber.getType(), "Emergency");
   }
 
   @Test
@@ -159,7 +159,7 @@ public class IntakePhoneConverterTest {
     client.setClientAddress(allClientAddresses);
     List<PhoneNumber> phoneNumbers = phoneConverter.convert(client);
 
-    List other = collectPhoneTypes(phoneNumbers, "Other");
+    List other = collectPhoneTypes(phoneNumbers, "Emergency");
     assertEquals(3, other.size());
   }
 

@@ -89,7 +89,7 @@ public class IntakeCodeConverter {
     private final String race;
     private final String raceDetail;
 
-    private IntakeRaceCode(String legacyValue, String race, String raceDetail) {
+    IntakeRaceCode(String legacyValue, String race, String raceDetail) {
       this.legacyValue = legacyValue;
       this.race = race;
       this.raceDetail = raceDetail;

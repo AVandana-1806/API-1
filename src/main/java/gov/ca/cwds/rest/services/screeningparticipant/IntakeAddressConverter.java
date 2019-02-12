@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,13 +26,13 @@ import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
- * Intake Address Converter transforms the legacy {@link Address} into a intake
- * {@link AddressIntakeApi}, From legacy find the recent open address residence and placement home
- * for the client.
- * 
+ * Intake Address Converter transforms the legacy {@link Address} into a intake {@link
+ * AddressIntakeApi}, From legacy find the recent open address residence and placement home for the
+ * client.
+ *
  * @author CWDS API Team
  */
-public class IntakeAddressConverter {
+public class IntakeAddressConverter extends IntakeConverter {
 
   public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
   private static final Short RESIDENCE = AddressType.HOME.getCode();
@@ -47,13 +44,7 @@ public class IntakeAddressConverter {
   public List<AddressIntakeApi> convert(Client client) {
     List<AddressIntakeApi> addresses = new ArrayList<>();
     if (client.getClientAddress() != null) {
-      Set<ClientAddress> clientAddresses = client.getClientAddress().stream()
-          .filter(clientAddress -> clientAddress.getEffEndDt() == null)
-          .collect(Collectors.toSet());
-      Comparator<ClientAddress> clientAddressComparator = (ClientAddress c1, ClientAddress c2) -> c2
-          .getLastUpdatedTime().compareTo(c1.getLastUpdatedTime());
-      List<ClientAddress> clientAddressList = new ArrayList<>(clientAddresses);
-      Collections.sort(clientAddressList, clientAddressComparator);
+      List<ClientAddress> clientAddressList = convertPersonalData(client);
       clientAddressList.forEach(clientAddress -> addresses.add(convertToAddress(clientAddress)));
     }
     return addresses;
@@ -124,7 +115,7 @@ public class IntakeAddressConverter {
     return address.getZip();
     /**
      * This line can be added once the referrals started accepting zip suffix
-     * 
+     *
      * if (address.getZip4() != null) { return address.getZip() + "-" + address.getZip4(); } return
      * zip;
      */
