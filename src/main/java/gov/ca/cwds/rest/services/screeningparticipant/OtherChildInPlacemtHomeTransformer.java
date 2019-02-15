@@ -30,7 +30,7 @@ public class OtherChildInPlacemtHomeTransformer
     implements ParticipantMapper<OtherChildInPlacemtHome> {
 
   @Override
-  public ParticipantIntakeApi tranform(OtherChildInPlacemtHome otherChildInPlacemtHome) {
+  public ParticipantIntakeApi transform(OtherChildInPlacemtHome otherChildInPlacemtHome) {
 
     LegacyDescriptor otherChildLegacyDescriptor =
         new LegacyDescriptor(otherChildInPlacemtHome.getId(), null,

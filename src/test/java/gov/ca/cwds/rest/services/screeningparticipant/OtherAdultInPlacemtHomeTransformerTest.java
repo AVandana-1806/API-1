@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class OtherAdultInPlacemtHomeTransformerTest {
   public void testTranformIsNotNull() throws Exception {
     OtherAdultInPlacemtHome otherAdultInPlacemtHome = validOtherAdultInPlacemtHome();
     ParticipantIntakeApi participantIntakeApi =
-        otherAdultInPlacemtHomeTransformer.tranform(otherAdultInPlacemtHome);
+        otherAdultInPlacemtHomeTransformer.transform(otherAdultInPlacemtHome);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -72,7 +71,7 @@ public class OtherAdultInPlacemtHomeTransformerTest {
   public void testLegacyDescriptorNotNull() throws Exception {
     OtherAdultInPlacemtHome otherAdultInPlacemtHome = validOtherAdultInPlacemtHome();
     ParticipantIntakeApi participantIntakeApi =
-        otherAdultInPlacemtHomeTransformer.tranform(otherAdultInPlacemtHome);
+        otherAdultInPlacemtHomeTransformer.transform(otherAdultInPlacemtHome);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.ADULT_IN_PLACEMENT_HOME.getName())));
@@ -86,7 +85,7 @@ public class OtherAdultInPlacemtHomeTransformerTest {
   public void testAddressIsSet() throws Exception {
     OtherAdultInPlacemtHome otherAdultInPlacemtHome = validOtherAdultInPlacemtHome();
     ParticipantIntakeApi participantIntakeApi =
-        otherAdultInPlacemtHomeTransformer.tranform(otherAdultInPlacemtHome);
+        otherAdultInPlacemtHomeTransformer.transform(otherAdultInPlacemtHome);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -112,7 +111,7 @@ public class OtherAdultInPlacemtHomeTransformerTest {
             new HashSet<>(), addresses, phoneNumbers, false, false);
     OtherAdultInPlacemtHome otherAdultInPlacemtHome = validOtherAdultInPlacemtHome();
     ParticipantIntakeApi actual =
-        otherAdultInPlacemtHomeTransformer.tranform(otherAdultInPlacemtHome);
+        otherAdultInPlacemtHomeTransformer.transform(otherAdultInPlacemtHome);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     actual.getAddresses().stream().findFirst().get().getLegacyDescriptor()
         .setLastUpdated(lastUpdated);

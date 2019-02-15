@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -69,7 +68,7 @@ public class ParticipantTransformer {
     return loadParticipant(incomingParticipantIntakeApi);
   }
 
-  public ParticipantIntakeApi loadParticipant( ParticipantIntakeApi incomingParticipantIntakeApi) {
+  public ParticipantIntakeApi loadParticipant(ParticipantIntakeApi incomingParticipantIntakeApi) {
     LegacyDescriptor legacyDescriptor = incomingParticipantIntakeApi.getLegacyDescriptor();
     if (legacyDescriptor == null || StringUtils.isBlank(legacyDescriptor.getId())
         || StringUtils.isBlank(legacyDescriptor.getTableName())) {
@@ -78,7 +77,7 @@ public class ParticipantTransformer {
 
     ParticipantIntakeApi participant =
         findParticipant(legacyDescriptor.getId(), legacyDescriptor.getTableName());
-    if (participant != null){
+    if (participant != null) {
       addCsecTo(participant);
       participant.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participant.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
@@ -88,7 +87,7 @@ public class ParticipantTransformer {
   }
 
   private void addCsecTo(ParticipantIntakeApi participant) {
-    List<CsecHistory> csecHistory = new ArrayList<>();
+    List<CsecHistory> csecHistory;
     if (participant != null && participant.getLegacyDescriptor() != null) {
       csecHistory = csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId());
       participant.setCsecs(csecMapper.toDomain(csecHistory));
@@ -102,7 +101,7 @@ public class ParticipantTransformer {
     ParticipantIntakeApi participant = null;
     if ((persistentObject = crudsDaoObject.find(id)) != null) {
       participantMapper = participantMapperFactoryImpl.create(tableName);
-      participant = participantMapper.tranform(persistentObject);
+      participant = participantMapper.transform(persistentObject);
     } else {
       LOGGER.error("Object is not found with the given identifier {}", id);
     }
@@ -156,7 +155,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the CSEC service for processing CSEC.
-   * 
+   *
    * @param csecHistoryService - csecHistoryService
    */
   public void setCsecHistoryService(CsecHistoryService csecHistoryService) {
@@ -165,7 +164,7 @@ public class ParticipantTransformer {
 
   /**
    * Set the mapper to convert CSEC entity to CSEC domain object
-   * 
+   *
    * @param csecMapper - csecMapper
    */
   public void setCsecMapper(CsecMapper csecMapper) {

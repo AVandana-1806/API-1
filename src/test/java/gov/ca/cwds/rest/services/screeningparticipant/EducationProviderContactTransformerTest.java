@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -50,7 +49,7 @@ public class EducationProviderContactTransformerTest {
   public void testTranformIsNotNull() throws Exception {
     EducationProviderContact educationProviderContact = validEducationProviderContact();
     ParticipantIntakeApi participantIntakeApi =
-        educationProviderContactTransformer.tranform(educationProviderContact);
+        educationProviderContactTransformer.transform(educationProviderContact);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -62,7 +61,7 @@ public class EducationProviderContactTransformerTest {
   public void testLegacyDescriptorNotNull() throws Exception {
     EducationProviderContact educationProviderContact = validEducationProviderContact();
     ParticipantIntakeApi participantIntakeApi =
-        educationProviderContactTransformer.tranform(educationProviderContact);
+        educationProviderContactTransformer.transform(educationProviderContact);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(), is(equalTo("EDPRVCNT")));
     assertThat(participantIntakeApi.getLegacyDescriptor().getId(), is(equalTo("1234567ABC")));
@@ -75,7 +74,7 @@ public class EducationProviderContactTransformerTest {
   public void testAddressIsSet() throws Exception {
     EducationProviderContact educationProviderContact = validEducationProviderContact();
     ParticipantIntakeApi participantIntakeApi =
-        educationProviderContactTransformer.tranform(educationProviderContact);
+        educationProviderContactTransformer.transform(educationProviderContact);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -98,7 +97,7 @@ public class EducationProviderContactTransformerTest {
             null, new HashSet<>(), addresses, phoneNumbers, false, false);
     EducationProviderContact educationProviderContact = validEducationProviderContact();
     ParticipantIntakeApi actual =
-        educationProviderContactTransformer.tranform(educationProviderContact);
+        educationProviderContactTransformer.transform(educationProviderContact);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     actual.getAddresses().stream().findFirst().get().getLegacyDescriptor()
         .setLastUpdated(lastUpdated);

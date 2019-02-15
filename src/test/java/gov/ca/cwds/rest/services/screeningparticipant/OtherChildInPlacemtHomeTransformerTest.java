@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -72,7 +71,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);
     ParticipantIntakeApi participantIntakeApi =
-        otherChildInPlacemtHomeTransformer.tranform(otherChildInPlacemtHome);
+        otherChildInPlacemtHomeTransformer.transform(otherChildInPlacemtHome);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -86,7 +85,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);
     ParticipantIntakeApi participantIntakeApi =
-        otherChildInPlacemtHomeTransformer.tranform(otherChildInPlacemtHome);
+        otherChildInPlacemtHomeTransformer.transform(otherChildInPlacemtHome);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.CHILD_IN_PLACEMENT_HOME.getName())));
@@ -102,7 +101,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);
     ParticipantIntakeApi participantIntakeApi =
-        otherChildInPlacemtHomeTransformer.tranform(otherChildInPlacemtHome);
+        otherChildInPlacemtHomeTransformer.transform(otherChildInPlacemtHome);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -127,7 +126,7 @@ public class OtherChildInPlacemtHomeTransformerTest {
         new OtherChildInPlacemtHomeEntityBuilder().build();
     otherChildInPlacemtHome.setPlacementHome(placementHome);
     ParticipantIntakeApi actual =
-        otherChildInPlacemtHomeTransformer.tranform(otherChildInPlacemtHome);
+        otherChildInPlacemtHomeTransformer.transform(otherChildInPlacemtHome);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     actual.getAddresses().stream().findFirst().get().getLegacyDescriptor()
         .setLastUpdated(lastUpdated);

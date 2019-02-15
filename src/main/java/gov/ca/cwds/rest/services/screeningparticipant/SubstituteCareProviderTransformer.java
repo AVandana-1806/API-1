@@ -26,7 +26,7 @@ public class SubstituteCareProviderTransformer
     implements ParticipantMapper<SubstituteCareProvider> {
 
   @Override
-  public ParticipantIntakeApi tranform(SubstituteCareProvider substituteCareProvider) {
+  public ParticipantIntakeApi transform(SubstituteCareProvider substituteCareProvider) {
 
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor(substituteCareProvider.getId(), null,
         new DateTime(substituteCareProvider.getLastUpdatedTime()),

@@ -547,7 +547,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   }
 
   private ParticipantEntity createParticipant(Client client, String screeningId) {
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     participantIntakeApi.setRelatedScreeningId(screeningId);
 
     ParticipantEntity entity = participantDao

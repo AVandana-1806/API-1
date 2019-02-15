@@ -140,7 +140,7 @@ public class IntakeRaceAndEthnicityConverterTest {
     Client client = new ClientEntityBuilder().setHispanicOriginCode("Z").build();
     String IntakeHispanic = raceAndEthnicityConverter.createHispanic(client);
     assertThat(IntakeHispanic,
-        is(equalTo("[{\"hispanic_latino_origin\":\"Abandoned\",\"ethnicity_detail\":[]}]")));
+        is(equalTo("[{\"hispanic_latino_origin\":\"Unknown\",\"ethnicity_detail\":[]}]")));
   }
 
   /**

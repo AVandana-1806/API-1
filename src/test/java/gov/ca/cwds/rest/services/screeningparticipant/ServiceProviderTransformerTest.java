@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class ServiceProviderTransformerTest {
   public void testTranformIsNotNull() throws Exception {
     ServiceProvider serviceProvider = validServiceProvider();
     ParticipantIntakeApi participantIntakeApi =
-        serviceProviderTransformer.tranform(serviceProvider);
+        serviceProviderTransformer.transform(serviceProvider);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -66,7 +65,7 @@ public class ServiceProviderTransformerTest {
   public void testLegacyDescriptorNotNull() throws Exception {
     ServiceProvider serviceProvider = validServiceProvider();
     ParticipantIntakeApi participantIntakeApi =
-        serviceProviderTransformer.tranform(serviceProvider);
+        serviceProviderTransformer.transform(serviceProvider);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.SERVICE_PROVIDER.getName())));
@@ -80,7 +79,7 @@ public class ServiceProviderTransformerTest {
   public void testAddressIsSet() throws Exception {
     ServiceProvider serviceProvider = validServiceProvider();
     ParticipantIntakeApi participantIntakeApi =
-        serviceProviderTransformer.tranform(serviceProvider);
+        serviceProviderTransformer.transform(serviceProvider);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -100,7 +99,7 @@ public class ServiceProviderTransformerTest {
             "suffixTitleDescription", null, null, null, null, null, null, new LinkedList<>(), null,
             null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     ServiceProvider serviceProvider = validServiceProvider();
-    ParticipantIntakeApi actual = serviceProviderTransformer.tranform(serviceProvider);
+    ParticipantIntakeApi actual = serviceProviderTransformer.transform(serviceProvider);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     assertEquals(expected, actual);
   }
