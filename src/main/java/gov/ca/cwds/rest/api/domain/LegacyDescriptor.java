@@ -28,28 +28,28 @@ public class LegacyDescriptor extends DomainObject {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("legacy_id")
-  @ApiModelProperty(required = false, readOnly = false, value = "CWS/CMS Id",
+  @ApiModelProperty(value = "CWS/CMS Id",
       example = "1234567ABC")
   private String id;
 
-  @ApiModelProperty(required = false, readOnly = false, value = "CWS/CMS user interface Id",
+  @ApiModelProperty(value = "CWS/CMS user interface Id",
       example = "1111-2222-3333-4444555")
   @JsonProperty("legacy_ui_id")
   private String uiId;
 
   @JsonProperty("legacy_last_updated")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
-  @ApiModelProperty(required = false, readOnly = false, value = "CWS/CMS Last Updated Time",
+  @ApiModelProperty(value = "CWS/CMS Last Updated Time",
       example = "2010-10-01T15:26:42.000-0700")
   private DateTime lastUpdated;
 
   @JsonProperty("legacy_table_name")
-  @ApiModelProperty(required = false, readOnly = false, value = "CWS/CMS Table Name",
+  @ApiModelProperty(value = "CWS/CMS Table Name",
       example = "CLIENT_T")
   private String tableName;
 
   @JsonProperty("legacy_table_description")
-  @ApiModelProperty(required = false, readOnly = false, value = "CWS/CMS Table Description",
+  @ApiModelProperty(value = "CWS/CMS Table Description",
       example = "Client")
   private String tableDescription;
 
