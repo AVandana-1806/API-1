@@ -29,7 +29,7 @@ import gov.ca.cwds.rest.services.submit.Gender;
 public class CollateralIndividualTranformer implements ParticipantMapper<CollateralIndividual> {
 
   @Override
-  public ParticipantIntakeApi tranform(CollateralIndividual collateralIndividual) {
+  public ParticipantIntakeApi transform(CollateralIndividual collateralIndividual) {
 
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor(collateralIndividual.getId(), null,
         new DateTime(collateralIndividual.getLastUpdatedTime()),

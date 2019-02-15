@@ -29,7 +29,7 @@ public class OtherAdultInPlacemtHomeTransformer
     implements ParticipantMapper<OtherAdultInPlacemtHome> {
 
   @Override
-  public ParticipantIntakeApi tranform(OtherAdultInPlacemtHome otherAdultInPlacemtHome) {
+  public ParticipantIntakeApi transform(OtherAdultInPlacemtHome otherAdultInPlacemtHome) {
 
     LegacyDescriptor otherAdultLegacyDescriptor =
         new LegacyDescriptor(otherAdultInPlacemtHome.getId(), null,

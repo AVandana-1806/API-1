@@ -27,7 +27,7 @@ public class EducationProviderContactTransformer
     implements ParticipantMapper<EducationProviderContact> {
 
   @Override
-  public ParticipantIntakeApi tranform(EducationProviderContact educationProviderContact) {
+  public ParticipantIntakeApi transform(EducationProviderContact educationProviderContact) {
 
     LegacyDescriptor educationProviderContactLegacyDescriptor =
         new LegacyDescriptor(educationProviderContact.getId(), null,

@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * {@link DomainObject} representing an ethnicity
- * 
+ *
  * @author CWDS API Team
  */
 @JsonSnakeCase
@@ -35,7 +35,7 @@ public class Ethnicity extends ReportingDomain implements Request, Response {
 
   /**
    * Construct from persistence class
-   * 
+   *
    * @param ethnicity persistence level ethnicity object
    */
   public Ethnicity(gov.ca.cwds.data.persistence.ns.Ethnicity ethnicity) {
@@ -88,5 +88,4 @@ public class Ethnicity extends ReportingDomain implements Request, Response {
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, false);
   }
-
 }

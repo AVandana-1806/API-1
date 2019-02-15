@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.persistence.PersistenceException;
 import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +40,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.cms.PostedClient;
 import gov.ca.cwds.rest.api.domain.cms.ReferralClient;
 import gov.ca.cwds.rest.api.domain.cms.Reporter;
-import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparator;
-import gov.ca.cwds.rest.api.domain.comparator.DateTimeComparatorInterface;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import gov.ca.cwds.rest.business.rules.CommercialSexualExploitationHistoryDroolsConfiguration;
@@ -181,7 +181,7 @@ public class ParticipantToLegacyClient {
   private boolean isReporter(String role, Participant incomingParticipant) {
     return ParticipantValidator.roleIsReporterType(role)
         && (!ParticipantValidator.roleIsAnonymousReporter(role)
-            && !ParticipantValidator.selfReported(incomingParticipant));
+        && !ParticipantValidator.selfReported(incomingParticipant));
   }
 
   private boolean isClient(String role) {
@@ -276,11 +276,11 @@ public class ParticipantToLegacyClient {
 
   /**
    * <blockquote>
-   * 
+   *
    * <pre>
    * BUSINESS RULE: R - 06195 Do Not Update Approval Status Type
-   * 
-   *  When creating the REFERRAL_CLIENT entity, set the Approval Status Type = 'Request Not Submitted'. 
+   *
+   *  When creating the REFERRAL_CLIENT entity, set the Approval Status Type = 'Request Not Submitted'.
    *  master:src/main/java/gov/ca/cwds/rest/services/ParticipantToLegacyClient.java
    * </blockquote>
    * </pre>
@@ -346,8 +346,7 @@ public class ParticipantToLegacyClient {
 
   private void updateClient(ScreeningToReferral screeningToReferral, MessageBuilder messageBuilder,
       Participant incomingParticipant, Client foundClient) {
-    DateTimeComparatorInterface comparator = new DateTimeComparator();
-    if (okToUpdateClient(incomingParticipant, foundClient, comparator)) {
+    if (okToUpdateClient(incomingParticipant, foundClient)) {
       List<Short> allRaceCodes = getAllRaceCodes(incomingParticipant.getRaceAndEthnicity());
       Short primaryRaceCode = getPrimaryRaceCode(allRaceCodes);
       List<Short> otherRaceCodes = getOtherRaceCodes(allRaceCodes, primaryRaceCode);
@@ -383,10 +382,26 @@ public class ParticipantToLegacyClient {
     }
   }
 
-  private boolean okToUpdateClient(Participant incomingParticipant, Client foundClient,
-      DateTimeComparatorInterface comparator) {
-    return comparator.compare(incomingParticipant.getLegacyDescriptor().getLastUpdated(),
-        foundClient.getLastUpdatedTime());
+  private boolean okToUpdateClient(Participant incomingParticipant, Client foundClient) {
+
+    DateTime timeIncomingParticipant = incomingParticipant.getLegacyDescriptor().getLastUpdated();
+    DateTime timeFoundClient = foundClient.getLastUpdatedTime();
+
+    LocalDateTime localIncomingDateTime = LocalDateTime
+        .of(timeIncomingParticipant.getYear(),
+            timeIncomingParticipant.getMonthOfYear(),
+            timeIncomingParticipant.getDayOfMonth(),
+            timeIncomingParticipant.getHourOfDay(),
+            timeIncomingParticipant.getMinuteOfHour(),
+            timeIncomingParticipant.getSecondOfMinute());
+    LocalDateTime localSavedDateTime = LocalDateTime
+        .of(timeFoundClient.getYear(),
+            timeFoundClient.getMonthOfYear(),
+            timeFoundClient.getDayOfMonth(),
+            timeFoundClient.getHourOfDay(),
+            timeFoundClient.getMinuteOfHour(),
+            timeFoundClient.getSecondOfMinute());
+    return localIncomingDateTime.isEqual(localSavedDateTime);
   }
 
   private void update(MessageBuilder messageBuilder, Participant incomingParticipant,
@@ -471,7 +486,7 @@ public class ParticipantToLegacyClient {
         FerbConstants.ReportType.SSB.equals(screeningToReferral.getReportType());
     final boolean csecReportType =
         FerbConstants.ReportType.CSEC.equals(screeningToReferral.getReportType());
-    
+
     if (exsistingChild == null) {
       final ChildClient childClient = ChildClient.createWithDefaults(clientId);
       childClient.setSafelySurrendedBabiesIndicatorVar(ssbReportType);
@@ -495,7 +510,7 @@ public class ParticipantToLegacyClient {
   }
 
   private boolean isValidCsecs(List<Csec> csecs, MessageBuilder messageBuilder) {
-    
+
     if (csecs == null || csecs.isEmpty()) {
       messageBuilder.addError("CSEC data is empty", ErrorMessage.ErrorType.VALIDATION);
       return false;
@@ -511,7 +526,8 @@ public class ParticipantToLegacyClient {
     final List<IntakeLov> intakeLovs = IntakeCodeCache.global().getAllLegacySystemCodesForMeta(
         SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN);
     for (IntakeLov intakeLov : intakeLovs) {
-      if (csecs.stream().filter(c -> intakeLov.getLegacySystemCodeId().toString().equals(c.getCsecCodeId()))
+      if (csecs.stream()
+          .filter(c -> intakeLov.getLegacySystemCodeId().toString().equals(c.getCsecCodeId()))
           .count() > 1) {
         messageBuilder.addError("CSEC duplication for code: " + intakeLov.getLegacySystemCodeId(),
             ErrorMessage.ErrorType.VALIDATION);
@@ -565,7 +581,7 @@ public class ParticipantToLegacyClient {
           if (!detailsSet.isEmpty()) {
             messageBuilder.addIssueDetails(detailsSet, ErrorType.BUSINESS);
           } else {
-            csecHistories.add(csecHistory);            
+            csecHistories.add(csecHistory);
           }
         }
       }

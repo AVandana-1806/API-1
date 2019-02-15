@@ -26,7 +26,7 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 public class ServiceProviderTransformer implements ParticipantMapper<ServiceProvider> {
 
   @Override
-  public ParticipantIntakeApi tranform(ServiceProvider serviceProvider) {
+  public ParticipantIntakeApi transform(ServiceProvider serviceProvider) {
 
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor(serviceProvider.getId(), null,
         new DateTime(serviceProvider.getLastUpdatedTime()), LegacyTable.SERVICE_PROVIDER.getName(),

@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class SubstituteCareProviderTransformerTest {
   public void testTranformIsNotNull() throws Exception {
     SubstituteCareProvider substituteCareProvider = validSubstituteCareProvider();
     ParticipantIntakeApi participantIntakeApi =
-        substituteCareProviderTransformer.tranform(substituteCareProvider);
+        substituteCareProviderTransformer.transform(substituteCareProvider);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -67,7 +66,7 @@ public class SubstituteCareProviderTransformerTest {
   public void testLegacyDescriptorNotNull() throws Exception {
     SubstituteCareProvider substituteCareProvider = validSubstituteCareProvider();
     ParticipantIntakeApi participantIntakeApi =
-        substituteCareProviderTransformer.tranform(substituteCareProvider);
+        substituteCareProviderTransformer.transform(substituteCareProvider);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.SUBSTITUTE_CARE_PROVIDER.getName())));
@@ -81,7 +80,7 @@ public class SubstituteCareProviderTransformerTest {
   public void testAddressIsSet() throws Exception {
     SubstituteCareProvider substituteCareProvider = validSubstituteCareProvider();
     ParticipantIntakeApi participantIntakeApi =
-        substituteCareProviderTransformer.tranform(substituteCareProvider);
+        substituteCareProviderTransformer.transform(substituteCareProvider);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -104,7 +103,7 @@ public class SubstituteCareProviderTransformerTest {
         false);
     SubstituteCareProvider substituteCareProvider = validSubstituteCareProvider();
     ParticipantIntakeApi actual =
-        substituteCareProviderTransformer.tranform(substituteCareProvider);
+        substituteCareProviderTransformer.transform(substituteCareProvider);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     assertEquals(expected, actual);
   }

@@ -42,7 +42,7 @@ public class ClientTransformer implements ParticipantMapper<Client> {
   private PlacementEpisodeDao placementEpisodeDao;
 
   @Override
-  public ParticipantIntakeApi tranform(Client client) {
+  public ParticipantIntakeApi transform(Client client) {
     // Ensure Client are authorized
     String clientId = client.getId();
     authorizationService.ensureClientAccessAuthorized(clientId);

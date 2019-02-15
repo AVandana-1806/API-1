@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class ReporterTransformerTest {
   @Test
   public void testTranformIsNotNull() {
     Reporter reporter = new ReporterEntityBuilder().build();
-    ParticipantIntakeApi participantIntakeApi = reporterTransformer.tranform(reporter);
+    ParticipantIntakeApi participantIntakeApi = reporterTransformer.transform(reporter);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -55,7 +54,7 @@ public class ReporterTransformerTest {
   @Test
   public void testLegacyDescriptorNotNull() {
     Reporter reporter = new ReporterEntityBuilder().build();
-    ParticipantIntakeApi participantIntakeApi = reporterTransformer.tranform(reporter);
+    ParticipantIntakeApi participantIntakeApi = reporterTransformer.transform(reporter);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.REPORTER.getName())));
@@ -68,7 +67,7 @@ public class ReporterTransformerTest {
   @Test
   public void testAddressIsSet() {
     Reporter reporter = new ReporterEntityBuilder().build();
-    ParticipantIntakeApi participantIntakeApi = reporterTransformer.tranform(reporter);
+    ParticipantIntakeApi participantIntakeApi = reporterTransformer.transform(reporter);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -87,7 +86,7 @@ public class ReporterTransformerTest {
         "Fred", "W", "Reporter", "", null, null, null, null, null, null, new LinkedList<>(), null,
         null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     Reporter reporter = new ReporterEntityBuilder().build();
-    ParticipantIntakeApi actual = reporterTransformer.tranform(reporter);
+    ParticipantIntakeApi actual = reporterTransformer.transform(reporter);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     assertEquals(expected, actual);
   }

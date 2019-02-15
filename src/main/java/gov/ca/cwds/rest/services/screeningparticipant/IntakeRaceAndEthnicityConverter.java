@@ -101,18 +101,22 @@ public class IntakeRaceAndEthnicityConverter {
   }
 
   private String translateHispanicOriginCodes(String code) {
-    if (YES.equals(code)) {
-      return "Yes";
-    } else if (NO.equals(code)) {
-      return "No";
-    } else if (UNKNOWN.equals(code)) {
-      return "Unknown";
-    } else if (ABANDONED.equals(code)) {
-      return "Abandoned";
-    } else if (DECLINED_TO_ANSWER.equals(code)) {
-      return "Declined to answer";
-    } else {
+    if (StringUtils.isEmpty(code)) {
       return null;
+    }
+
+    switch (code) {
+      case UNKNOWN:
+      case ABANDONED:
+        return "Unknown";
+      case YES:
+        return "Yes";
+      case NO:
+        return "No";
+      case DECLINED_TO_ANSWER:
+        return "Declined to answer";
+        default:
+          return null;
     }
   }
 }

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class CollateralIndividualTranformerTest {
   public void testTranformIsNotNull() {
     CollateralIndividual collateralIndividual = new CollateralIndividualEntityBuilder().build();
     ParticipantIntakeApi participantIntakeApi =
-        collateralIndividualTranformer.tranform(collateralIndividual);
+        collateralIndividualTranformer.transform(collateralIndividual);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -61,7 +60,7 @@ public class CollateralIndividualTranformerTest {
   public void testLegacyDescriptorNotNull() {
     CollateralIndividual collateralIndividual = new CollateralIndividualEntityBuilder().build();
     ParticipantIntakeApi participantIntakeApi =
-        collateralIndividualTranformer.tranform(collateralIndividual);
+        collateralIndividualTranformer.transform(collateralIndividual);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.COLLATERAL_INDIVIDUAL.getName())));
@@ -75,7 +74,7 @@ public class CollateralIndividualTranformerTest {
   public void testAddressIsSet() {
     CollateralIndividual collateralIndividual = new CollateralIndividualEntityBuilder().build();
     ParticipantIntakeApi participantIntakeApi =
-        collateralIndividualTranformer.tranform(collateralIndividual);
+        collateralIndividualTranformer.transform(collateralIndividual);
     assertThat(participantIntakeApi.getAddresses(), is(notNullValue()));
   }
 
@@ -98,7 +97,7 @@ public class CollateralIndividualTranformerTest {
             "lastName", "Jr", "male", null, null, null, new Date(), new Date(), new LinkedList<>(),
             null, null, null, new HashSet<>(), addresses, phoneNumbers, false, false);
     CollateralIndividual collateralIndividual = new CollateralIndividualEntityBuilder().build();
-    ParticipantIntakeApi actual = collateralIndividualTranformer.tranform(collateralIndividual);
+    ParticipantIntakeApi actual = collateralIndividualTranformer.transform(collateralIndividual);
     actual.getLegacyDescriptor().setLastUpdated(lastUpdated);
     assertThat(expected.getFirstName(), is(equalTo(actual.getFirstName())));
     assertThat(expected.getGender(), is(equalTo(actual.getGender())));

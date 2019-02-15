@@ -16,6 +16,6 @@ public interface ParticipantMapper<P extends CmsPersistentObject> {
    * @param object - object
    * @return the object
    */
-  ParticipantIntakeApi tranform(P object);
+  ParticipantIntakeApi transform(P object);
 
 }

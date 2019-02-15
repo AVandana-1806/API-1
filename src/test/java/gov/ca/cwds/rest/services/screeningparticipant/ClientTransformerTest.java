@@ -57,7 +57,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformIsNotNull() {
     Client client = new ClientEntityBuilder().build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi, is(notNullValue()));
   }
 
@@ -67,7 +67,7 @@ public class ClientTransformerTest {
   @Test
   public void testLegacyDescriptorNotNull() {
     Client client = new ClientEntityBuilder().setId("Abc0987654").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getLegacyDescriptor(), is(notNullValue()));
     assertThat(participantIntakeApi.getLegacyDescriptor().getTableName(),
         is(equalTo(LegacyTable.CLIENT.getName())));
@@ -80,7 +80,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformTheGender() {
     Client client = new ClientEntityBuilder().setGenderCode("F").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getGender(), is(equalTo("female")));
   }
 
@@ -91,7 +91,7 @@ public class ClientTransformerTest {
   public void testTranformPrimaryAndSecondayLanguage() {
     Client client = new ClientEntityBuilder().setPrimaryLanguageType((short) 1248)
         .setSecondaryLanguageType((short) 1253).build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getLanguages(),
         containsInAnyOrder("English", "American Sign Language"));
   }
@@ -102,7 +102,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformSsnCorrectly() {
     Client client = new ClientEntityBuilder().setSocialSecurityNumber("345674389").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getSsn(), is(equalTo("345-67-4389")));
   }
 
@@ -112,7 +112,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformSsnWhen0() {
     Client client = new ClientEntityBuilder().setSocialSecurityNumber("0").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getSsn(), is(equalTo("0")));
   }
 
@@ -122,7 +122,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformSsnWhenNull() {
     Client client = new ClientEntityBuilder().setSocialSecurityNumber(null).build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getSsn(), is(equalTo("")));
   }
 
@@ -133,7 +133,7 @@ public class ClientTransformerTest {
   public void testTranformWhenOnlyPrimatyLanguageSet() {
     Client client = new ClientEntityBuilder().setPrimaryLanguageType((short) 1248)
         .setSecondaryLanguageType((short) 0).build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getLanguages(), containsInAnyOrder("American Sign Language"));
   }
 
@@ -144,7 +144,7 @@ public class ClientTransformerTest {
   public void testTranformWhenLanguages0() {
     Client client = new ClientEntityBuilder().setPrimaryLanguageType((short) 0)
         .setSecondaryLanguageType((short) 0).build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getLanguages().isEmpty(), is(equalTo(true)));
   }
 
@@ -154,7 +154,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformSensitiveIndicator() {
     Client client = new ClientEntityBuilder().setSensitivityIndicator("S").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getSensitive(), is(equalTo(true)));
   }
 
@@ -164,7 +164,7 @@ public class ClientTransformerTest {
   @Test
   public void testTranformSealedIndicator() {
     Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getSealed(), is(equalTo(true)));
   }
 
@@ -177,7 +177,7 @@ public class ClientTransformerTest {
         .ensureClientAccessAuthorized(anyString());
     clientTransformer.setAuthorizationService(authorizationService);
     Client client = new ClientEntityBuilder().setSensitivityIndicator("R").build();
-    clientTransformer.tranform(client);
+    clientTransformer.transform(client);
   }
 
   @Test
@@ -187,25 +187,25 @@ public class ClientTransformerTest {
 
     client.setBirthDate(
         Date.from(today.minusDays(4).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    ParticipantIntakeApi participantIntakeApi = clientTransformer.tranform(client);
+    ParticipantIntakeApi participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("4")));
     assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("days")));
 
     client.setBirthDate(
         Date.from(today.minusWeeks(7).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    participantIntakeApi = clientTransformer.tranform(client);
+    participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("7")));
     assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("weeks")));
 
     client.setBirthDate(
         Date.from(today.minusWeeks(14).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    participantIntakeApi = clientTransformer.tranform(client);
+    participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("3")));
     assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("months")));
 
     client.setBirthDate(
         Date.from(today.minusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    participantIntakeApi = clientTransformer.tranform(client);
+    participantIntakeApi = clientTransformer.transform(client);
     assertThat(participantIntakeApi.getApproximateAge(), is(equalTo("5")));
     assertThat(participantIntakeApi.getApproximateAgeUnits(), is(equalTo("years")));
   }

@@ -24,7 +24,7 @@ import org.joda.time.DateTime;
 public class ReporterTransformer implements ParticipantMapper<Reporter> {
 
   @Override
-  public ParticipantIntakeApi tranform(Reporter reporter) {
+  public ParticipantIntakeApi transform(Reporter reporter) {
 
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor(reporter.getReferralId(), null,
         new DateTime(reporter.getLastUpdatedTime()), LegacyTable.REPORTER.getName(),
