@@ -34,9 +34,11 @@ public class ServicesModuleTest extends Doofenshmirtz<SystemCode> {
 
     private ServicesModule servicesModule;
     private MappingModule mappingModule = new MappingModule();
+    private DataAccessServicesModule dataAccessServicesModule = new DataAccessServicesModule();
 
     @Override
     protected void configure() {
+      install(dataAccessServicesModule);
       install(servicesModule);
       install(mappingModule);
     }
