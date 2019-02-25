@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 
-import gov.ca.cwds.cms.data.access.mapper.ClientMapper;
-import gov.ca.cwds.cms.data.access.mapper.ClientMapperImpl;
 import gov.ca.cwds.rest.services.mapper.AddressMapper;
 import gov.ca.cwds.rest.services.mapper.AgencyMapper;
 import gov.ca.cwds.rest.services.mapper.AllegationMapper;
@@ -34,7 +32,6 @@ public class MappingModule extends AbstractModule {
     bind(AllegationMapper.class).to(AllegationMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(AllegationTypeMapper.class).to(AllegationTypeMapper.INSTANCE.getClass())
         .asEagerSingleton();
-    bind(ClientMapper.class).to(ClientMapperImpl.INSTANCE.getClass()).asEagerSingleton();
     bind(ContactIntakeMapper.class).to(ContactIntakeMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(CsecMapper.class).to(CsecMapper.INSTANCE.getClass()).asEagerSingleton();
     bind(gov.ca.cwds.rest.services.mapper.cms.CsecMapper.class).to(gov.ca.cwds.rest.services.mapper.cms.CsecMapper.INSTANCE.getClass()).asEagerSingleton();
