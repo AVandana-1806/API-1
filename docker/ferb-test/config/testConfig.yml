@@ -1,4 +1,4 @@
-authenticationMode: TEST
+authenticationMode: ${AUTH_MODE:-TEST}
 testUrl:
    baseUrl: ${BASE_URL}
    perryLoginUrl: ${PERRY_LOGIN_URL}

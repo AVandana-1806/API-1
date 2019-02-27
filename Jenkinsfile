@@ -153,6 +153,12 @@ node ('tpt4-slave'){
 	stage('Update Integration Manifest') {
         updateManifest("api", "integration", github_credentials_id, newTag)
 	}
+	
+    stage('Deploy to PreInt-Integration') {
+        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
+          sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/PreInt-Integration/job/deploy-ferb/buildWithParameters?token=trigger-ferb-deploy&version=${newTag}'"
+       }
+    }
 
  } catch (Exception e)    {
  	   errorcode = e
