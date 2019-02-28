@@ -61,9 +61,9 @@ def miniIntegrationTestStage() {
   stage('Smoke Test') {
     if (environment == 'integration') {
      withCredentials([
-         string(credentialsId: 'cals-app-smoke-email', variable: 'SMOKE_TEST_USER'),
-         string(credentialsId: 'cals-app-smoke-password', variable: 'SMOKE_TEST_PASSWORD'),
-         string(credentialsId: 'cals-app-smoke-verification-code', variable: 'SMOKE_VERIFICATION_CODE')
+         string(credentialsId: 'c24b6659-fd2c-4d31-8433-835528fce0d7', variable: 'SMOKE_TEST_USER'),
+         string(credentialsId: '48619eb9-4a74-4c84-bc25-81557ed9dd7d', variable: 'SMOKE_TEST_PASSWORD'),
+         string(credentialsId: 'f75da5fa-b2c8-4ca5-896a-b8a85fa30572', variable: 'SMOKE_VERIFICATION_CODE')
        ]){
       sh "docker run \
         -e SMOKE_TEST_USER=$SMOKE_TEST_USER  \
@@ -79,22 +79,15 @@ def miniIntegrationTestStage() {
            testferb:latest"
         }
      } else {
-       environment {
-            TEST_FILE_PATH=/api/docker/ferb-test/config/testConfig.yml
-            AUTH_MODE=TEST
-            BASE_URL="https://ferbapi.preint.cwds.io"
-            PERRY_LOGIN_URL="https://web.preint.cwds.io/perry/login"
-            AUTH_LOGIN_URL="https://web.preint.cwds.io/perry/authn/login"
-            TOKEN_URL="https://web.preint.cwds.io/perry/authn/token"
-            VALIDATE_URL="https://web.preint.cwds.io/perry/authn/validate"
-        }
-        def serverArti = Artifactory.newServer url: 'http://pr.dev.cwds.io/artifactory'
-        def rtGradle = Artifactory.newGradleBuild()
-        rtGradle.tool = "Gradle_35"
-        rtGradle.resolver server: serverArti
-        rtGradle.useWrapper = true
-        def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean smokeTest'
-        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'Pre Integration Test Report', reportTitles: ''])
+       sh "docker run \
+        -e TEST_FILE_PATH=/api/docker/ferb-test/config/testConfigPreInt.yml \
+        -e AUTH_MODE=TEST \
+        -e BASE_URL=https://ferbapi.preint.cwds.io \
+        -e PERRY_LOGIN_URL=https://web.preint.cwds.io/perry/login \
+        -e AUTH_LOGIN_URL=https://web.preint.cwds.io/perry/authn/login \
+        -e TOKEN_URL=https://web.preint.cwds.io/perry/authn/token \
+        -e VALIDATE_URL=https://web.preint.cwds.io/perry/authn/validate \
+          testferb:latest"
         }
     }
  }
