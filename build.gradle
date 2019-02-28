@@ -82,9 +82,6 @@ repositories {
     maven {
         url "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
     }
-    maven {
-        url "https://artifacts.elastic.co/maven"
-    }
 }
 
 shadowJar {

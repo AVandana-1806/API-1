@@ -57,7 +57,7 @@ def buildDockerImageForTestStage() {
         }
 }
 
-def miniIntegrationTestStage() {
+def miniIntegrationTestStage(environment) {
   stage('Smoke Test') {
     if (environment == 'integration') {
      withCredentials([
@@ -80,7 +80,7 @@ def miniIntegrationTestStage() {
         }
      } else {
        sh "docker run \
-        -e TEST_FILE_PATH=/api/docker/ferb-test/config/testConfigPreInt.yml \
+        -e TEST_FILE_PATH=/api/docker/ferb-test/config/testConfig.yml \
         -e AUTH_MODE=TEST \
         -e BASE_URL=https://ferbapi.preint.cwds.io \
         -e PERRY_LOGIN_URL=https://web.preint.cwds.io/perry/login \
