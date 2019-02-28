@@ -72,16 +72,11 @@ def dockerTag = version + ((System.properties.getProperty('build') != null ) ? '
 mainClassName = mainclass
 
 repositories {
-    mavenLocal()
-    maven {
-        url "http://sonar.dev.cwds.io:8081/artifactory/repo"}
+   mavenLocal()
     maven {
         url "http://sonar.dev.cwds.io:8081/artifactory/repo"
-        // url "https://plugins.gradle.org/m2/"
     }
-    maven {
-        url "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
-    }
+    mavenCentral()
 }
 
 shadowJar {
