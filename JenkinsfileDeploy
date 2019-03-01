@@ -46,7 +46,7 @@ def deployToStage(environment, version) {
 }
 
 def updateManifestStage(environment, version) {
-  stage('Update Manifest Version $environment') {
+  stage("Update Manifest Version $environment") {
     updateManifest("api", environment, githubCredentialsId, version)
   }
 }
@@ -58,7 +58,7 @@ def buildDockerImageForTestStage() {
 }
 
 def miniIntegrationTestStage(environment) {
-  stage('Smoke Test') {
+  stage("Smoke Test $environment") {
     if (environment == 'integration') {
      withCredentials([
          string(credentialsId: 'c24b6659-fd2c-4d31-8433-835528fce0d7', variable: 'SMOKE_TEST_USER'),
