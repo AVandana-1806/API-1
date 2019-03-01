@@ -31,7 +31,7 @@ def deployWithSmoke(environment) {
     deployToStage(environment, env.version)
     updateManifestStage(environment, env.version)
     buildDockerImageForTestStage()
-    miniIntegrationTestStage()
+    miniIntegrationTestStage(environment)
     cleanWs()
   }
 }
