@@ -121,39 +121,7 @@ node ('tpt4-slave'){
     stage('Deploy Application') {
 		build job: 'tpt4-api-deploy-app', parameters: [string(name: 'version', value: 'latest'), string(name: 'inventory', value: 'inventories/development/hosts.yml')], propagate: false
 	}
-    
-    stage('Deploy to Pre-int') {
-        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/preint/job/deploy-ferb-api/buildWithParameters?token=deployFerbToPreint&version=${newTag}'"
-       }
-    }
-    
-    // due to some access issue from dev Jenkins to pre-int this stage has been disabled
-    if(env.SMOKE_TEST_URL) {
-        stage('Pre-int Smoke Test') {
-            sleep 250
-            withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-                def healthCheck = sh(returnStdout: true, script: 'curl -u $jenkinsauth ${env.SMOKE_TEST_URL}')
-                def healthCheckJson = readJSON healthCheck
-                assert healthCheckJson.health_status == true
-            }
-        }
-    }
 
-    stage('Update Pre-int Manifest') {
-        updateManifest("api", "preint", github_credentials_id, newTag)
-    }
-    
-    stage('Deploy to Integration') {
-        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/Integration%20Environment/job/deploy-ferb-api/buildWithParameters?token=deployFerbToIntegration&version=${newTag}'"
-         }
-    }
-    
-    stage('Update Integration Manifest') {
-        updateManifest("api", "integration", github_credentials_id, newTag)
-    }
-    
     stage('Deploy to PreInt-Integration') {
         withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
           sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/PreInt-Integration/job/deploy-ferb/buildWithParameters?token=trigger-ferb-deploy&version=${newTag}'"
