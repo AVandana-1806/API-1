@@ -53,7 +53,6 @@ import gov.ca.cwds.rest.resources.ScreeningToReferralResource;
 import io.dropwizard.jackson.Jackson;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
-@SuppressWarnings("javadoc")
 public class ScreeningToReferralTest {
 
   private static final String ROOT_RESOURCE = "/" + Api.RESOURCE_REFERRALS + "/";;

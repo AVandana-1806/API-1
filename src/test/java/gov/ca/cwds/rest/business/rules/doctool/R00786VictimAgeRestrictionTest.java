@@ -176,7 +176,7 @@ public class R00786VictimAgeRestrictionTest {
         .setParticipants(participants).createScreeningToReferral();
     Set<ConstraintViolation<ScreeningToReferral>> constraintViolations =
         validator.validate(screeningToReferral);
-    assertEquals(0, constraintViolations.size());
+    assertEquals(1, constraintViolations.size());
   }
 
   /**
@@ -192,7 +192,7 @@ public class R00786VictimAgeRestrictionTest {
         .setParticipants(participants).createScreeningToReferral();
     Set<ConstraintViolation<ScreeningToReferral>> constraintViolations =
         validator.validate(screeningToReferral);
-    assertEquals(0, constraintViolations.size());
+    assertEquals(1, constraintViolations.size());
   }
 
   /**
@@ -208,7 +208,7 @@ public class R00786VictimAgeRestrictionTest {
         .setParticipants(participants).createScreeningToReferral();
     Set<ConstraintViolation<ScreeningToReferral>> constraintViolations =
         validator.validate(screeningToReferral);
-    assertEquals(1, constraintViolations.size());
+    assertEquals(2, constraintViolations.size());
   }
 
   private Set<Participant> buildPerpAndReporter(Participant victim) {
