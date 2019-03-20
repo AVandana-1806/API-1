@@ -16,7 +16,7 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   private static final long serialVersionUID = 1L;
 
-  private static final SystemCode[] ETHNICITY_CODES = {
+  public static final SystemCode[] ETHNICITY_CODES = {
       new SystemCode((short) 820, null, "N", "05", "Alaskan Native*", "05", null, "ETHNCTYC",
           "American Indian or Alaskan Native"),
       new SystemCode((short) 821, null, "N", "05", "American Indian*", "06", null, "ETHNCTYC",

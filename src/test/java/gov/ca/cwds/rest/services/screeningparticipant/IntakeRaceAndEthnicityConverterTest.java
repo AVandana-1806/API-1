@@ -16,10 +16,10 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientScpEthnicity;
 import gov.ca.cwds.fixture.ClientEntityBuilder;
 import gov.ca.cwds.fixture.ClientScpEthnicityEntityBuilder;
+import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 
 /**
  * @author CWDS API Team
- *
  */
 public class IntakeRaceAndEthnicityConverterTest {
 
@@ -32,7 +32,6 @@ public class IntakeRaceAndEthnicityConverterTest {
   private TestSystemCodeCache testSystemCodeCache = new TestSystemCodeCache();
 
   public void lookupAndVerify(short sysId, String shortDesc) {
-    // Test system cache doesn't load all ethnicities. Test fails.
     final Client client = new ClientEntityBuilder().setPrimaryEthnicityType(sysId).build();
     final String race = raceAndEthnicityConverter.createRace(client);
     assertThat(race, is(notNullValue()));
@@ -41,6 +40,10 @@ public class IntakeRaceAndEthnicityConverterTest {
   @Test
   public void testCreateRace__prod_codes() {
     lookupAndVerify((short) 820, "Alaskan Native*");
+
+    for (SystemCode sc : TestSystemCodeCache.ETHNICITY_CODES) {
+      lookupAndVerify(sc.getSystemId(), sc.getShortDescription());
+    }
   }
 
   /**
