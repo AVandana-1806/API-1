@@ -1,20 +1,24 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.ca.cwds.data.persistence.cms.Client;
-import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
-import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
-import gov.ca.cwds.rest.services.ServiceException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
+import gov.ca.cwds.rest.services.ServiceException;
+import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter.IntakeRaceCode;
+
 /**
- * Transforms the Legacy race and ethnicity values for an existing people into valid {@link
- * ParticipantIntakeApi} race and hispanic.
+ * Transforms the Legacy race and ethnicity values for an existing people into valid
+ * {@link ParticipantIntakeApi} race and hispanic.
  *
  * @author CWDS API Team
  */
@@ -32,13 +36,15 @@ public class IntakeRaceAndEthnicityConverter {
   private static final String NO = "N";
 
   /**
+   * Look up ethnicity by client id.
+   * 
    * @param client - client
    * @return the intake race
    */
   public String createRace(Client client) {
-    List<IntakeRace> intakeRaceList = new ArrayList<>();
-    List<Short> systemIds = new ArrayList<>();
-    ObjectMapper mapper = new ObjectMapper();
+    final List<IntakeRace> intakeRaceList = new ArrayList<>();
+    final List<Short> systemIds = new ArrayList<>();
+    final ObjectMapper mapper = new ObjectMapper();
     String stringRace = null;
 
     systemIds.add(client.getPrimaryEthnicityType());
@@ -49,16 +55,19 @@ public class IntakeRaceAndEthnicityConverter {
           SystemCodeCache.global().getSystemCode(id);
       if (systemCode != null && !(HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
           && !CARIBBEAN_RACE_CODE.equals(id))) {
-        String shortDescrption = systemCode.getShortDescription();
+        final String shortDescrption = systemCode.getShortDescription();
+
         if (StringUtils.isNotBlank(shortDescrption)) {
-          String race =
-              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption).getRace();
-          String raceDetail =
-              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption).getRaceDetail();
-          intakeRaceList.add(new IntakeRace(race, raceDetail));
+          // SNAP-1004: NPE on "Other Race Unknown"
+          final IntakeRaceCode raceCd =
+              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption);
+          if (raceCd != null) {
+            intakeRaceList.add(new IntakeRace(raceCd.getRace(), raceCd.getRaceDetail()));
+          }
         }
       }
     }
+
     try {
       stringRace = mapper.writeValueAsString(intakeRaceList);
     } catch (JsonProcessingException e) {
@@ -88,9 +97,8 @@ public class IntakeRaceAndEthnicityConverter {
         hispanicDetails.add(systemCode.getShortDescription());
       }
     }
-    intakeHispanicList
-        .add(new IntakeEthnicity(translateHispanicOriginCodes(client.getHispanicOriginCode()),
-            hispanicDetails));
+    intakeHispanicList.add(new IntakeEthnicity(
+        translateHispanicOriginCodes(client.getHispanicOriginCode()), hispanicDetails));
     try {
       stringHispanic = mapper.writeValueAsString(intakeHispanicList);
     } catch (JsonProcessingException e) {
@@ -115,8 +123,8 @@ public class IntakeRaceAndEthnicityConverter {
         return "No";
       case DECLINED_TO_ANSWER:
         return "Declined to answer";
-        default:
-          return null;
+      default:
+        return null;
     }
   }
 }

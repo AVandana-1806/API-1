@@ -23,12 +23,25 @@ import gov.ca.cwds.fixture.ClientScpEthnicityEntityBuilder;
  */
 public class IntakeRaceAndEthnicityConverterTest {
 
-  private IntakeRaceAndEthnicityConverter raceAndEthnicityConverter = new IntakeRaceAndEthnicityConverter();
+  private IntakeRaceAndEthnicityConverter raceAndEthnicityConverter =
+      new IntakeRaceAndEthnicityConverter();
 
   /**
    * Initialize intake code cache
    */
   private TestSystemCodeCache testSystemCodeCache = new TestSystemCodeCache();
+
+  public void lookupAndVerify(short sysId, String shortDesc) {
+    // Test system cache doesn't load all ethnicities. Test fails.
+    final Client client = new ClientEntityBuilder().setPrimaryEthnicityType(sysId).build();
+    final String race = raceAndEthnicityConverter.createRace(client);
+    assertThat(race, is(notNullValue()));
+  }
+
+  @Test
+  public void testCreateRace__prod_codes() {
+    lookupAndVerify((short) 820, "Alaskan Native*");
+  }
 
   /**
    * 

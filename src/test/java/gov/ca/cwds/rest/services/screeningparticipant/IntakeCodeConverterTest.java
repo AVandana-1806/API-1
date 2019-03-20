@@ -45,6 +45,22 @@ public class IntakeCodeConverterTest {
     assertThat(race, is(equalTo(expected)));
   }
 
+  @Test
+  public void getLegacyValue__Other_Race_Unknown() {
+    IntakeRaceCode target = IntakeRaceCode.OTHER_RACE_UNKNOWN;
+    String race = target.getLegacyValue();
+    String expected = "Other Race Unknown";
+    assertThat(race, is(equalTo(expected)));
+  }
+
+  @Test
+  public void getLegacyValue__desc_Other_Race_Unknown() {
+    IntakeRaceCode target = IntakeRaceCode.OTHER_RACE_UNKNOWN;
+    String race = target.getLegacyValue();
+    String expected = "Other Race Unknown";
+    assertThat(race, is(equalTo(expected)));
+  }
+
   /**
    * 
    */
