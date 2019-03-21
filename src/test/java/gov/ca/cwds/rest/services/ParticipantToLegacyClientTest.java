@@ -55,6 +55,7 @@ import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
+import gov.ca.cwds.rest.api.domain.ParticipantTest;
 import gov.ca.cwds.rest.api.domain.Role;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
@@ -84,6 +85,7 @@ import gov.ca.cwds.rest.services.cms.SpecialProjectReferralService;
  * @author CWDS API Team
  */
 public class ParticipantToLegacyClientTest {
+
   private ParticipantToLegacyClient participantToLegacyClient;
 
   private Participant defaultVictim;
@@ -253,7 +255,6 @@ public class ParticipantToLegacyClientTest {
     when(clientService.update(any(), any())).thenReturn(savedClient);
     when(clientService.find(any())).thenReturn(savedClient);
 
-
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
 
@@ -320,11 +321,9 @@ public class ParticipantToLegacyClientTest {
   }
 
   @Test
-//  @Ignore
   public void shouldFailWhenDuplicateCsecCodeIds() {
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
-    victimParticipant.getCsecs().add(new CsecBuilder()
-        .build());
+    victimParticipant.getCsecs().add(new CsecBuilder().build());
 
     Set<Participant> participants =
         new HashSet<>(Arrays.asList(defaultReporter, victimParticipant));
@@ -336,7 +335,7 @@ public class ParticipantToLegacyClientTest {
         .setLastUpdateTime(modifiedLastUpdateDate).build();
     when(clientService.find(any())).thenReturn(foundClient);
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
-        messageBuilder);    
+        messageBuilder);
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList()).contains("CSEC duplication for code: 6867"));
@@ -360,7 +359,6 @@ public class ParticipantToLegacyClientTest {
             .setParticipants(participants).createScreeningToReferral();
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
-
 
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
@@ -390,13 +388,12 @@ public class ParticipantToLegacyClientTest {
   }
 
   /**
-   * Test the drools implementation of "commercial-sexual-exploitation-agenda" ParticipantToLegacy class
+   * Test the drools implementation of "commercial-sexual-exploitation-agenda" ParticipantToLegacy
+   * class
    */
   @Test
   public void shouldFailIfCsecTypeVictimWhileAbsentFromPlacementWithNullEndDate() {
-    Csec csec = new CsecBuilder()
-        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
-        .setEndDate(null)
+    Csec csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT).setEndDate(null)
         .build();
     List<Csec> csecs = new ArrayList<Csec>();
     csecs.add(csec);
@@ -412,7 +409,7 @@ public class ParticipantToLegacyClientTest {
     Client foundClient = new ClientResourceBuilder().setBirthDate(null)
         .setLastUpdateTime(modifiedLastUpdateDate).build();
     SexualExploitationType sexualExploitationType = new SexualExploitationType();
-    sexualExploitationType.setSystemId((short)6871);
+    sexualExploitationType.setSystemId((short) 6871);
     sexualExploitationType.setFkMeta("CSEC_TPC");
     sexualExploitationType.setShortDescription("Victim while Absent from Placement");
 
@@ -427,18 +424,16 @@ public class ParticipantToLegacyClientTest {
   }
 
   /**
-   * Test the drools implementation of "commercial-sexual-exploitation-agenda" in ParticipantToLegacy class
+   * Test the drools implementation of "commercial-sexual-exploitation-agenda" in
+   * ParticipantToLegacy class
    */
   @Test
   public void shouldFailWhenCsecEndDateBeforeStartDate() {
     LocalDate startDate = LocalDate.parse("2018-09-29");
     LocalDate endDate = LocalDate.parse("2018-09-28");
 
-    Csec csec = new CsecBuilder()
-        .setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
-        .setEndDate(endDate)
-        .setStartDate(startDate)
-        .build();
+    Csec csec = new CsecBuilder().setCsecCodeId(VICTIM_WHILE_ABSENT_FROM_PLACEMENT)
+        .setEndDate(endDate).setStartDate(startDate).build();
     List<Csec> csecs = new ArrayList<Csec>();
     csecs.add(csec);
     Participant victimParticipant = new ParticipantResourceBuilder().createVictimParticipant();
@@ -453,7 +448,7 @@ public class ParticipantToLegacyClientTest {
     Client foundClient = new ClientResourceBuilder().setBirthDate(null)
         .setLastUpdateTime(modifiedLastUpdateDate).build();
     SexualExploitationType sexualExploitationType = new SexualExploitationType();
-    sexualExploitationType.setSystemId((short)6871);
+    sexualExploitationType.setSystemId((short) 6871);
     sexualExploitationType.setFkMeta("CSEC_TPC");
     sexualExploitationType.setShortDescription("Victim while Absent from Placement");
 
@@ -465,9 +460,8 @@ public class ParticipantToLegacyClientTest {
     assertTrue(messageBuilder.getMessages().stream().map(message -> message.getMessage())
         .collect(Collectors.toList())
         .contains("CSEC End Date must be greater than or equal to CSEC Start Date"));
-    
   }
-  @SuppressWarnings("javadoc")
+
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_MandatedNonMandatedFail()
       throws Exception {
@@ -494,7 +488,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   // R - 00831
   public void shouldFailCreateWhenReporterRolesAreIncompatable_AnonymousSelfReporter()
@@ -523,7 +516,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   @Ignore
   public void shouldUpdateClientWhenClientIdIsPresent() throws Exception {
@@ -562,8 +554,6 @@ public class ParticipantToLegacyClientTest {
     verify(clientService, times(4)).update(any(), any());
   }
 
-
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenVictimHasIncompatiableRoles_AnonymousVictim() throws Exception {
     gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
@@ -594,7 +584,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldNotUpdateClientWhenClientRecordHasBeenModifiedInLegacyDb() throws Exception {
     DateTime modifiedLastUpdateDate = DateTimeFormat.forPattern("yyyy-MM-dd-HH.mm.ss.SSS")
@@ -634,7 +623,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenVictimIsIncompatiableRoles_VictimPerpetrator() throws Exception {
     Participant perpVictim = new ParticipantResourceBuilder()
@@ -655,7 +643,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldFailWhenReporterHasIncompatiableRoles_AnonymousReporterFail() throws Exception {
     Participant anonymousNonMandatedReporter = new ParticipantResourceBuilder()
@@ -680,7 +667,6 @@ public class ParticipantToLegacyClientTest {
         expectedErrorMessage, message);
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void testClientDoesNotExistFail() throws Exception {
     LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
@@ -714,7 +700,6 @@ public class ParticipantToLegacyClientTest {
     verify(clientService, never()).update(eq(badLegacyId), any());
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldSaveReporterIfAddressIsNull() throws Exception {
     gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
@@ -739,7 +724,6 @@ public class ParticipantToLegacyClientTest {
     assertEquals("Expected no error to have been recorded", 0, messageBuilder.getMessages().size());
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void testMultipleVictimSuccess() throws Exception {
     Participant victim1 = new ParticipantResourceBuilder().setFirstName("Sally").setLegacyId("")
@@ -786,10 +770,8 @@ public class ParticipantToLegacyClientTest {
 
     verify(clientService, times(1)).find(any());
     verify(clientService, times(1)).create(any());
-
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldNotProcessAnonymousReporter() {
     Set<String> roles = new HashSet<>();
@@ -811,10 +793,8 @@ public class ParticipantToLegacyClientTest {
     assertEquals("Expected to have in compatible role error",
         messageBuilder.getMessages().get(0).getMessage().trim(),
         "Participant contains incompatible roles");
-
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldUpdatePerpetratorWhenAlreadyExists() throws Exception {
     String victimId = "VICTIM__ID";
@@ -862,14 +842,12 @@ public class ParticipantToLegacyClientTest {
     participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
         messageBuilder);
     verify(foundVictim, times(1)).update("Barney", "middlestone", "Rubble", "", "M", "123456789",
-        (short) 841, "A", "A", "X", "2001-03-15");
+        (short) 841, "A", "A", "X", ParticipantTest.COMMON_TEST_BIRTH_DATE);
     verify(foundPerp, times(1)).update("Fred", "Finnigan", "Flintsone", "", "M", "123456789",
-        (short) 841, "A", "A", "X", "2001-03-15");
+        (short) 841, "A", "A", "X", ParticipantTest.COMMON_TEST_BIRTH_DATE);
     verify(clientService, times(2)).update(eq(existingPerpId), any());
-
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldReturnErrorMessageWhenUnableToSaveClient() throws Exception {
     String existingPerpId = "1234567ABC";
@@ -1035,10 +1013,8 @@ public class ParticipantToLegacyClientTest {
         }));
   }
 
-  @SuppressWarnings("javadoc")
   @Test
   public void shouldReportExceptionWhenUpdateClientThrowsPersistenceException() {
-
     LegacyDescriptor descriptor =
         new LegacyDescriptor("ABC123DSAF", "", lastUpdateDate, LegacyTable.CLIENT.getName(), "");
     Participant victim =

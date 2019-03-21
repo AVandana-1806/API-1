@@ -14,7 +14,6 @@ import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
- * 
  * @author CWDS API Team
  */
 public class ScreeningToReferralResourceBuilder {

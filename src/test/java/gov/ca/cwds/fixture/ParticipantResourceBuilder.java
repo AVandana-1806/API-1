@@ -11,12 +11,12 @@ import org.joda.time.DateTime;
 import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
+import gov.ca.cwds.rest.api.domain.ParticipantTest;
 import gov.ca.cwds.rest.api.domain.RaceAndEthnicity;
 import gov.ca.cwds.rest.api.domain.SafelySurrenderedBabies;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
- * 
  * @author CWDS API Team
  */
 public class ParticipantResourceBuilder {
@@ -32,7 +32,7 @@ public class ParticipantResourceBuilder {
   String lastName = "Smith";
   String suffix = "";
   String gender = "M";
-  String dateOfBirth = "2001-03-15";
+  String dateOfBirth = ParticipantTest.COMMON_TEST_BIRTH_DATE;
   String ssn = "123456789";
   Short primaryLanguage = 1253;
   Short secondaryLanguage = 1271;
@@ -328,4 +328,5 @@ public class ParticipantResourceBuilder {
         addresses, raceAndEthnicity, csecs, safelySurrenderedBabies);
     return participant;
   }
+
 }

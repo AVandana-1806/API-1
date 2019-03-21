@@ -129,7 +129,6 @@ public class ScreeningToReferralTest {
    */
   @Test
   public void shouldSerializeToJSON() throws Exception {
-
     Address address = new AddressResourceBuilder().createAddress();
     DateTime dateTime = DateTime.parse("2018-06-11T11:47:07.524-07:00");
     DateTime dateTimeUTC = dateTime.withZone(DateTimeZone.UTC);
@@ -606,7 +605,6 @@ public class ScreeningToReferralTest {
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setLimitedAccessCode("R").createScreeningToReferral();
     assertTrue("Expected access to be limited", screeningToReferral.isAccessLimited());
-
   }
 
   @Test
@@ -614,7 +612,6 @@ public class ScreeningToReferralTest {
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setLimitedAccessCode("N").createScreeningToReferral();
     assertFalse("Expected access to not be limited", screeningToReferral.isAccessLimited());
-
   }
 
   @Test
@@ -622,7 +619,6 @@ public class ScreeningToReferralTest {
     ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
         .setLimitedAccessCode(null).createScreeningToReferral();
     assertFalse("Expected access to not be limited", screeningToReferral.isAccessLimited());
-
   }
 
   private Participant validParticipant() {
@@ -643,4 +639,5 @@ public class ScreeningToReferralTest {
       return null;
     }
   }
+
 }
