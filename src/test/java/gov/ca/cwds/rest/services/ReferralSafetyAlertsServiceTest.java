@@ -40,7 +40,6 @@ import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ReferralSafetyAlertsServiceTest {
 
@@ -65,6 +64,7 @@ public class ReferralSafetyAlertsServiceTest {
     countiesDao = mock(CountiesDao.class);
     safetyAlertService = mock(SafetyAlertService.class);
     safetyAlertActivationReasonTypeDao = mock(SafetyAlertActivationReasonTypeDao.class);
+    referralSafetyAlertsService = new ReferralSafetyAlertsService();
   }
 
   /**

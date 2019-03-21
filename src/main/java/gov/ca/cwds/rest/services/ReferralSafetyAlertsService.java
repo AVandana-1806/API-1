@@ -25,7 +25,6 @@ import gov.ca.cwds.rest.util.ParticipantUtils;
  * later once we start saving it {@link SafetyAlert} table.
  * 
  * @author CWDS API Team
- *
  */
 public class ReferralSafetyAlertsService {
 

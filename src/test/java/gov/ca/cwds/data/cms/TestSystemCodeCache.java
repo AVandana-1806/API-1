@@ -78,13 +78,25 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   public static final Map<Short, SystemCode> ethnicityMap;
 
+  public static final Map<Short, SystemCode> countyMap;
+
+
   static {
-    final Map<Short, SystemCode> map = new HashMap<>();
+    // Ethnicity:
+    Map<Short, SystemCode> map = new HashMap<>();
     for (SystemCode sc : ETHNICITY_CODES) {
       map.put(sc.getSystemId(), sc);
     }
 
     ethnicityMap = Collections.unmodifiableMap(map);
+
+    // County:
+    map = new HashMap<>();
+    final short sysCode = 1101;
+    SystemCode sacramento =
+        new SystemCode(sysCode, null, "N", null, "Sacramento", "34", null, null, null);
+    map.put(sysCode, sacramento);
+    countyMap = Collections.unmodifiableMap(map);
   }
 
   public TestSystemCodeCache() {
@@ -103,29 +115,16 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   @Override
   public SystemCode getSystemCode(Number systemCodeId) {
-    return ethnicityMap.get(systemCodeId.shortValue());
+    SystemCode ret = null;
 
-    // if (1828 == systemCodeId.intValue()) {
-    // return new SystemCode(systemCodeId.shortValue(), null, null, null, "California", "CA", null,
-    // null, null);
-    // }
-    // if (1101 == systemCodeId.intValue()) {
-    // return new SystemCode(systemCodeId.shortValue(), null, null, null, "Sacramento", "34", null,
-    // null, null);
-    // }
-    // if (821 == systemCodeId.intValue()) {
-    // return new SystemCode(systemCodeId.shortValue(), null, null, "05", "American Indian*", null,
-    // null, null, null);
-    // }
-    // if (3164 == systemCodeId.intValue()) {
-    // return new SystemCode(systemCodeId.shortValue(), null, null, "02", "Mexican", null, null,
-    // null, null);
-    // }
-    // if (3162 == systemCodeId.intValue()) {
-    // return new SystemCode(systemCodeId.shortValue(), null, null, "02", "Caribbean", null, null,
-    // null, null);
-    // }
-    // return null;
+    final short code = systemCodeId.shortValue();
+    if (ethnicityMap.containsKey(code)) {
+      ret = ethnicityMap.get(code);
+    } else {
+      ret = countyMap.get(code);
+    }
+
+    return ret;
   }
 
   @Override
@@ -299,7 +298,6 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   @Override
   public SystemCodeDescriptor getSystemCodeDescriptor(Number systemCodeId) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -320,4 +318,5 @@ public class TestSystemCodeCache implements SystemCodeCache {
     }
     return null;
   }
+
 }
