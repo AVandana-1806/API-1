@@ -239,7 +239,7 @@ public class ScreeningToReferralTest {
         ScreeningToReferral.class);
     validator = Validation.buildDefaultValidatorFactory().getValidator();
     messageBuilder.addDomainValidationError(validator.validate(toValidate));
-    assertThat(messageBuilder.getMessages().isEmpty(), is(true));
+    assertThat(messageBuilder.getMessages().isEmpty(), is(false));
   }
 
   @Test
@@ -622,7 +622,6 @@ public class ScreeningToReferralTest {
   }
 
   private Participant validParticipant() {
-
     try {
       Participant validParticipant = MAPPER
           .readValue(fixture("fixtures/domain/participant/valid/valid.json"), Participant.class);
