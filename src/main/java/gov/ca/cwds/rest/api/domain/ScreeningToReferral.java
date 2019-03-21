@@ -24,9 +24,9 @@ import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.validation.AtRiskAllegation;
 import gov.ca.cwds.rest.validation.Date;
 import gov.ca.cwds.rest.validation.ValidLogicalId;
+import gov.ca.cwds.rest.validation.ValidParticipantBirth;
 import gov.ca.cwds.rest.validation.ValidParticipantRoles;
 import gov.ca.cwds.rest.validation.ValidSystemCodeId;
-import gov.ca.cwds.rest.validation.ValidParticipantBirth;
 import gov.ca.cwds.rest.validation.VictimAgeRestriction;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.dropwizard.validation.OneOf;
@@ -257,8 +257,6 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
   @JsonProperty("report_type")
   private String reportType;
 
-
-  @SuppressWarnings("javadoc")
   public ScreeningToReferral() {
     super();
   }

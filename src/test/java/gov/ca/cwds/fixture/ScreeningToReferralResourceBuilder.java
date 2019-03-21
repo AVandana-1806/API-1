@@ -17,7 +17,6 @@ import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings("javadoc")
 public class ScreeningToReferralResourceBuilder {
 
   private static final DateFormat dateTimeFormat =
@@ -71,15 +70,12 @@ public class ScreeningToReferralResourceBuilder {
     this.participants = new HashSet<>(Arrays.asList(victim, perp, reporter));
     this.relationships = new HashSet<ScreeningRelationship>();
     gov.ca.cwds.rest.api.domain.CrossReport crossReport =
-        new CrossReportResourceBuilder()
-        .setInformDate(crossReportInformDate)
-        .createCrossReport();
+        new CrossReportResourceBuilder().setInformDate(crossReportInformDate).createCrossReport();
     this.crossReports = new HashSet<>(Arrays.asList(crossReport));
     gov.ca.cwds.rest.api.domain.Allegation allegation =
         new AllegationResourceBuilder().setInjuryHarmType(injuryHarmCategory).createAllegation();
     this.allegations = new HashSet<>(Arrays.asList(allegation));
     safetyAlerts = new SafetyAlerts();
-
   }
 
   public static DateFormat getDatetimeformat() {
