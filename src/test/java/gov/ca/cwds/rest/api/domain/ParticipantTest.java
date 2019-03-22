@@ -101,15 +101,13 @@ public class ParticipantTest {
    */
   @Test
   public void serializesToJSON() throws Exception {
-
     Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
 
     String expected = MAPPER.writeValueAsString(participant);
-
-    String serialized = MAPPER.writeValueAsString(MAPPER
+    String actual = MAPPER.writeValueAsString(MAPPER
         .readValue(fixture("fixtures/domain/participant/valid/valid.json"), Participant.class));
 
-    assertThat(serialized, is(expected));
+    assertThat(actual, is(expected));
   }
 
   @Test

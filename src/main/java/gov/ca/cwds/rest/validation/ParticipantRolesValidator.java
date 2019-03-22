@@ -61,6 +61,7 @@ public class ParticipantRolesValidator
 
     return valid;
   }
+  
 
   private static Boolean hasReporterRole(Participant participant) {
     Set<String> roles = participant.getRoles();

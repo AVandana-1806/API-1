@@ -1,6 +1,5 @@
 package gov.ca.cwds.rest.api.domain;
 
-import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import gov.ca.cwds.data.persistence.cms.CmsKeyIdGenerator;
 import gov.ca.cwds.data.persistence.ns.LegacyDescriptorEntity;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,29 +28,24 @@ public class LegacyDescriptor extends DomainObject {
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("legacy_id")
-  @ApiModelProperty(value = "CWS/CMS Id",
-      example = "1234567ABC")
+  @ApiModelProperty(value = "CWS/CMS Id", example = "1234567ABC")
   private String id;
 
-  @ApiModelProperty(value = "CWS/CMS user interface Id",
-      example = "1111-2222-3333-4444555")
+  @ApiModelProperty(value = "CWS/CMS user interface Id", example = "1111-2222-3333-4444555")
   @JsonProperty("legacy_ui_id")
   private String uiId;
 
   @JsonProperty("legacy_last_updated")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
-  @ApiModelProperty(value = "CWS/CMS Last Updated Time",
-      example = "2010-10-01T15:26:42.000-0700")
+  @ApiModelProperty(value = "CWS/CMS Last Updated Time", example = "2010-10-01T15:26:42.000-0700")
   private DateTime lastUpdated;
 
   @JsonProperty("legacy_table_name")
-  @ApiModelProperty(value = "CWS/CMS Table Name",
-      example = "CLIENT_T")
+  @ApiModelProperty(value = "CWS/CMS Table Name", example = "CLIENT_T")
   private String tableName;
 
   @JsonProperty("legacy_table_description")
-  @ApiModelProperty(value = "CWS/CMS Table Description",
-      example = "Client")
+  @ApiModelProperty(value = "CWS/CMS Table Description", example = "Client")
   private String tableDescription;
 
   /**
@@ -85,15 +80,12 @@ public class LegacyDescriptor extends DomainObject {
    * @param legacyDescriptorEntity persistence level LegacyDescriptorEntity object
    */
   public LegacyDescriptor(LegacyDescriptorEntity legacyDescriptorEntity) {
-    this(legacyDescriptorEntity.getLegacyId(),
-        legacyDescriptorEntity.getLegacyUiId(),
-        convertDateTime(legacyDescriptorEntity),
-        legacyDescriptorEntity.getLegacyTableName(),
-        legacyDescriptorEntity.getLegacyTableDescription()
-    );
+    this(legacyDescriptorEntity.getLegacyId(), legacyDescriptorEntity.getLegacyUiId(),
+        convertDateTime(legacyDescriptorEntity), legacyDescriptorEntity.getLegacyTableName(),
+        legacyDescriptorEntity.getLegacyTableDescription());
   }
 
-  private static DateTime convertDateTime(LegacyDescriptorEntity legacyDescriptorEntity){
+  private static DateTime convertDateTime(LegacyDescriptorEntity legacyDescriptorEntity) {
     DateTime lastUpdated = null;
     if (legacyDescriptorEntity.getLegacyLastUpdated() != null) {
       lastUpdated = DateTimeFormat.forPattern(DATETIME_FORMAT)
@@ -101,6 +93,7 @@ public class LegacyDescriptor extends DomainObject {
     }
     return lastUpdated;
   }
+
   /**
    * @return the Legacy Id
    */

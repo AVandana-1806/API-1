@@ -67,7 +67,7 @@ public class ScreeningToReferralResourceBuilder {
     Participant reporter = new ParticipantResourceBuilder().setFirstName("Reporter").setGender("F")
         .createReporterParticipant();
     this.participants = new HashSet<>(Arrays.asList(victim, perp, reporter));
-    this.relationships = new HashSet<ScreeningRelationship>();
+    this.relationships = new HashSet<>();
     gov.ca.cwds.rest.api.domain.CrossReport crossReport =
         new CrossReportResourceBuilder().setInformDate(crossReportInformDate).createCrossReport();
     this.crossReports = new HashSet<>(Arrays.asList(crossReport));
@@ -425,4 +425,5 @@ public class ScreeningToReferralResourceBuilder {
         safetyAlerts.getAlertInformation(), address, participants, relationships, crossReports,
         allegations, reportType);
   }
+
 }
