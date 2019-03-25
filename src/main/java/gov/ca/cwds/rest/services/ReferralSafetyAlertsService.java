@@ -25,7 +25,6 @@ import gov.ca.cwds.rest.util.ParticipantUtils;
  * later once we start saving it {@link SafetyAlert} table.
  * 
  * @author CWDS API Team
- *
  */
 public class ReferralSafetyAlertsService {
 
@@ -49,20 +48,21 @@ public class ReferralSafetyAlertsService {
    */
   public List<SafetyAlert> create(ScreeningToReferral screeningToReferral, String referralId,
       ClientParticipants clientParticipants) {
-    Referral referrral = referralDao.find(referralId);
+    final Referral referrral = referralDao.find(referralId);
+    final Participant victimParticipant = getValidVictim(clientParticipants);
+    final List<SafetyAlert> safetyAlerts = new ArrayList<>();
 
-    Participant victimParticipant = getValidVictim(clientParticipants);
-    List<SafetyAlert> safetyAlerts = new ArrayList<>();
     if (screeningToReferral.getAlerts() != null && !screeningToReferral.getAlerts().isEmpty()
         && victimParticipant != null) {
       for (Short safetyAlertReasonType : screeningToReferral.getAlerts()) {
-        SafetyAlert alert = new SafetyAlert();
+        final SafetyAlert alert = new SafetyAlert();
         setSafetAlertFields(referrral, victimParticipant, safetyAlertReasonType, alert);
         safetyAlerts.add(alert);
       }
       safetyAlertService.updateSafetyAlertsByClientId(
           victimParticipant.getLegacyDescriptor().getId(), safetyAlerts);
     }
+
     return safetyAlerts;
   }
 
@@ -70,9 +70,12 @@ public class ReferralSafetyAlertsService {
       Short safetyAlertReasonType, SafetyAlert alert) {
     alert.setFkClientId(victimParticipant.getLegacyDescriptor().getId());
     alert.setActivationDate(LocalDate.now());
-    SystemCode systemCode = SystemCodeCache.global().getSystemCode(referrral.getGovtEntityType());
+
+    final SystemCode systemCode =
+        SystemCodeCache.global().getSystemCode(referrral.getGovtEntityType());
     alert.setActivationGovernmentEntityType(countiesDao.findByLogicalId(systemCode.getLogicalId()));
-    LongText longText = new LongText();
+
+    final LongText longText = new LongText();
     longText.setIdentifier(referrral.getScreenerNoteText());
     alert.setActivationExplanationText(longText);
     alert.setActivationReasonType(

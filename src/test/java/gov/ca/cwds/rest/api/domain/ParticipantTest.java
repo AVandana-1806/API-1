@@ -39,10 +39,10 @@ import io.dropwizard.jackson.Jackson;
 
 /**
  * @author CWDS API Team
- *
  */
-@SuppressWarnings({"javadoc"})
 public class ParticipantTest {
+
+  public static final String COMMON_TEST_BIRTH_DATE = "2003-03-15";
 
   private final Short primaryLanguage = 1253;
   private final Short secondaryLanguage = 1271;
@@ -57,7 +57,7 @@ public class ParticipantTest {
   private String lastName = "Smith";
   private String suffix = "";
   private String gender = "M";
-  private String dateOfBirth = "2001-03-15";
+  private String dateOfBirth = COMMON_TEST_BIRTH_DATE;
   private String ssn = "123456789";
   private boolean reporterConfidentialWaiver = false;
   private String reporterEmployerName = "Employer Name";
@@ -94,7 +94,6 @@ public class ParticipantTest {
         new Address("", "", "123 First St", "San Jose", 1828, "94321", 32, legacyDescriptor);
     addresses.add(address);
     MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
-
   }
 
   /*
@@ -102,15 +101,13 @@ public class ParticipantTest {
    */
   @Test
   public void serializesToJSON() throws Exception {
-
     Participant participant = new ParticipantResourceBuilder().createVictimParticipant();
 
     String expected = MAPPER.writeValueAsString(participant);
-
-    String serialized = MAPPER.writeValueAsString(MAPPER
+    String actual = MAPPER.writeValueAsString(MAPPER
         .readValue(fixture("fixtures/domain/participant/valid/valid.json"), Participant.class));
 
-    assertThat(serialized, is(expected));
+    assertThat(actual, is(expected));
   }
 
   @Test
@@ -128,7 +125,6 @@ public class ParticipantTest {
     MAPPER.writeValueAsString(serialized);
     MAPPER.writeValueAsString(participant);
     assertThat(serialized, is(participant));
-
   }
 
   @Test
@@ -382,7 +378,6 @@ public class ParticipantTest {
       e.printStackTrace();
     }
     return validParticipant;
-
   }
 
 }

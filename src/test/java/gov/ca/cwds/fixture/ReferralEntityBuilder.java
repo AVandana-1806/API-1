@@ -11,10 +11,9 @@ import gov.ca.cwds.data.persistence.cms.Reporter;
 
 /**
  * @author CWDS API Team
- *
  */
-@SuppressWarnings("javadoc")
 public class ReferralEntityBuilder {
+
   String id;
   String additionalInfoIncludedCode;
   String anonymousReporterIndicator;

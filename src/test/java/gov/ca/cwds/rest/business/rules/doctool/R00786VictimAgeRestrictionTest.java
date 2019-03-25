@@ -256,4 +256,5 @@ public class R00786VictimAgeRestrictionTest {
 
     assertEquals(expectedViolations, constraintViolations.size());
   }
+
 }

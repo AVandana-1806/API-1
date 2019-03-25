@@ -1,6 +1,5 @@
 package gov.ca.cwds.fixture;
 
-import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,11 +13,12 @@ import gov.ca.cwds.rest.api.domain.Csec;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
+import gov.ca.cwds.rest.api.domain.ParticipantTest;
+import gov.ca.cwds.rest.api.domain.PhoneNumber;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ParticipantIntakeApiResourceBuilder {
 
@@ -29,8 +29,8 @@ public class ParticipantIntakeApiResourceBuilder {
   String nameSuffix = "";
   String gender = "male";
   String ssn = "123456789";
-  Date dateOfBirth = DomainChef.uncookDateString("2001-03-15");
-  Date dateOfDeath = DomainChef.uncookDateString("2001-02-15");
+  Date dateOfBirth = DomainChef.uncookDateString(ParticipantTest.COMMON_TEST_BIRTH_DATE);
+  Date dateOfDeath = DomainChef.uncookDateString("2006-02-15");
   String approximateAge = "12";
   String approximateAgeUnits = "years";
   List<String> languages = new LinkedList<>(Arrays.asList("English", "Russian"));
@@ -234,8 +234,7 @@ public class ParticipantIntakeApiResourceBuilder {
    * @param phoneNumbers - phoneNumbers
    * @return the phoneNumbers
    */
-  public ParticipantIntakeApiResourceBuilder setPhoneNumbers(
-      List<PhoneNumber> phoneNumbers) {
+  public ParticipantIntakeApiResourceBuilder setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
     return this;
   }

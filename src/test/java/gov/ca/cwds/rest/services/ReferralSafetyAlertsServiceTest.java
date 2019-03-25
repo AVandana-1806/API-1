@@ -34,13 +34,13 @@ import gov.ca.cwds.fixture.ReferralEntityBuilder;
 import gov.ca.cwds.fixture.ScreeningToReferralResourceBuilder;
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.Participant;
+import gov.ca.cwds.rest.api.domain.Role;
 import gov.ca.cwds.rest.api.domain.ScreeningToReferral;
 import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 import gov.ca.cwds.rest.api.domain.investigation.SafetyAlerts;
 
 /**
  * @author CWDS API Team
- *
  */
 public class ReferralSafetyAlertsServiceTest {
 
@@ -53,8 +53,7 @@ public class ReferralSafetyAlertsServiceTest {
   private CountiesDao countiesDao;
   private SafetyAlertActivationReasonTypeDao safetyAlertActivationReasonTypeDao;
   private SafetyAlertService safetyAlertService;
-  private ReferralSafetyAlertsService referralSafetyAlertsService =
-      new ReferralSafetyAlertsService();
+  private ReferralSafetyAlertsService target;
 
   /**
    * 
@@ -65,6 +64,12 @@ public class ReferralSafetyAlertsServiceTest {
     countiesDao = mock(CountiesDao.class);
     safetyAlertService = mock(SafetyAlertService.class);
     safetyAlertActivationReasonTypeDao = mock(SafetyAlertActivationReasonTypeDao.class);
+
+    target = new ReferralSafetyAlertsService();
+    target.setCountiesDao(countiesDao);
+    target.setReferralDao(referralDao);
+    target.setSafetyAlertActivationReasonTypeDao(safetyAlertActivationReasonTypeDao);
+    target.setSafetyAlertService(safetyAlertService);
   }
 
   /**
@@ -73,40 +78,55 @@ public class ReferralSafetyAlertsServiceTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testSaveSafetyAlertsSuccessfully() {
-    SafetyAlerts safetyAlerts =
-        new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Danger Fellow");
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor("098UijH1gf", null,
+    final SafetyAlerts safetyAlerts =
+        new SafetyAlerts(new HashSet<>(Arrays.asList((short) 6401)), "Some Dangerous Fellow");
+    final LegacyDescriptor ld = new LegacyDescriptor("098UijH1gf", null,
         new DateTime("2018-06-11T18:47:07.524Z"), LegacyTable.CLIENT.getName(), null);
-    Participant victim =
-        new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor).createParticipant();
-    Participant Perp = new ParticipantResourceBuilder().setGender("M").createParticipant();
-    Participant reporter =
-        new ParticipantResourceBuilder().setGender("M").createReporterParticipant();
-    Set<Participant> ScreeeningParticpants = new HashSet<>(Arrays.asList(victim, Perp, reporter));
-    ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
-        .setParticipants(ScreeeningParticpants).setSafetyAlerts(safetyAlerts.getAlerts())
+
+    final Set<String> rolesVictim = new HashSet<>(Arrays.asList(Role.VICTIM_ROLE.getType()));
+    final Set<String> rolesPerp = new HashSet<>(Arrays.asList(Role.PERPETRATOR_ROLE.getType()));
+    final Set<String> rolesReporter =
+        new HashSet<>(Arrays.asList(Role.MANDATED_REPORTER_ROLE.getType()));
+
+    final Participant victim = new ParticipantResourceBuilder().setLegacyDescriptor(ld)
+        .setRoles(rolesVictim).createParticipant();
+    final Participant perp =
+        new ParticipantResourceBuilder().setGender("M").setRoles(rolesPerp).createParticipant();
+    final Participant reporter = new ParticipantResourceBuilder().setGender("M")
+        .setRoles(rolesReporter).createReporterParticipant();
+
+    final Set<Participant> screeeningParticpants =
+        new HashSet<>(Arrays.asList(victim, perp, reporter));
+    final ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
+        .setParticipants(screeeningParticpants).setSafetyAlerts(safetyAlerts.getAlerts())
         .setSafetyAlertInformationn(safetyAlerts.getAlertInformation()).createScreeningToReferral();
-    ClientParticipants clientParticipants = new ClientParticipants();
-    Set<Participant> participants = screeningToReferral.getParticipants();
-    clientParticipants.addParticipants(participants);
-    Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
+
+    final ClientParticipants clientParticipants = new ClientParticipants();
+    clientParticipants.addParticipants(screeningToReferral.getParticipants());
+
+    final Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
         .setGovtEntityType((short) 1101).setScreenerNoteText("0I61FGt15L").build();
     when(referralDao.find(anyString())).thenReturn(referral);
-    County county = new County();
+
+    final County county = new County();
     county.setSystemId((short) 1101);
     when(countiesDao.findByLogicalId(anyString())).thenReturn(county);
-    SafetyAlertActivationReasonType safetyAlertActivationReasonType =
+
+    final SafetyAlertActivationReasonType safetyAlertActivationReasonType =
         new SafetyAlertActivationReasonType();
     safetyAlertActivationReasonType.setSystemId((short) 6401);
     when(safetyAlertActivationReasonTypeDao.findBySystemId(any(Short.class)))
         .thenReturn(new SafetyAlertActivationReasonType());
-    referralSafetyAlertsService.setReferralDao(referralDao);
-    referralSafetyAlertsService.setCountiesDao(countiesDao);
-    referralSafetyAlertsService
-        .setSafetyAlertActivationReasonTypeDao(safetyAlertActivationReasonTypeDao);
-    referralSafetyAlertsService.setSafetyAlertService(safetyAlertService);
-    List<SafetyAlert> safetyAlert =
-        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+
+    target.setReferralDao(referralDao);
+    target.setCountiesDao(countiesDao);
+    target.setSafetyAlertActivationReasonTypeDao(safetyAlertActivationReasonTypeDao);
+    target.setSafetyAlertService(safetyAlertService);
+
+    final List<SafetyAlert> safetyAlert =
+        target.create(screeningToReferral, "071FJ86abM", clientParticipants);
+    System.out.println(safetyAlert);
+
     assertThat(safetyAlert, is(notNullValue()));
     assertThat(safetyAlert.size(), is(equalTo(1)));
     assertThat(safetyAlert, containsInAnyOrder(hasProperty("fkClientId", is("098UijH1gf"))));
@@ -117,17 +137,19 @@ public class ReferralSafetyAlertsServiceTest {
    */
   @Test
   public void testEmptySafetyAlerts() {
-    ScreeningToReferral screeningToReferral =
+    final ScreeningToReferral screeningToReferral =
         new ScreeningToReferralResourceBuilder().createScreeningToReferral();
-    ClientParticipants clientParticipants = new ClientParticipants();
-    Set<Participant> participants = screeningToReferral.getParticipants();
+    final ClientParticipants clientParticipants = new ClientParticipants();
+    final Set<Participant> participants = screeningToReferral.getParticipants();
     clientParticipants.addParticipants(participants);
-    Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
+
+    final Referral referral = new ReferralEntityBuilder().setId("071FJ86abM")
         .setGovtEntityType((short) 1101).setScreenerNoteText("0I61FGt15L").build();
     when(referralDao.find(anyString())).thenReturn(referral);
-    referralSafetyAlertsService.setReferralDao(referralDao);
-    List<SafetyAlert> safetyAlert =
-        referralSafetyAlertsService.create(screeningToReferral, "071FJ86abM", clientParticipants);
+
+    target.setReferralDao(referralDao);
+    final List<SafetyAlert> safetyAlert =
+        target.create(screeningToReferral, "071FJ86abM", clientParticipants);
     assertThat(safetyAlert.size(), is(equalTo(0)));
   }
 

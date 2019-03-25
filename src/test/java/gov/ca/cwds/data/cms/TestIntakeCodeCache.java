@@ -1,12 +1,12 @@
 package gov.ca.cwds.data.cms;
 
-import gov.ca.cwds.rest.api.domain.enums.AddressType;
 import java.util.ArrayList;
 import java.util.List;
 
 import gov.ca.cwds.data.persistence.ns.IntakeLov;
 import gov.ca.cwds.rest.api.domain.IntakeCodeCache;
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
+import gov.ca.cwds.rest.api.domain.enums.AddressType;
 
 /**
  * @author CWDS API Team
@@ -26,10 +26,13 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
   public List<IntakeLov> getAllLegacySystemCodesForMeta(String metaId) {
     if (SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN.equals(metaId)) {
       List<IntakeLov> lovs = new ArrayList<>();
-      lovs.add(new IntakeLov((long) 6871, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN,
-          "Victim while Absent from Placement", null, false, null, null, null, null, "Victim while Absent from Placement", null));
-      lovs.add(new IntakeLov((long) 6867, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN,
-          "At Risk", null, false, null, null, null, null, "At Risk", null));
+      lovs.add(
+          new IntakeLov((long) 6871, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN,
+              "Victim while Absent from Placement", null, false, null, null, null, null,
+              "Victim while Absent from Placement", null));
+      lovs.add(
+          new IntakeLov((long) 6867, SystemCodeCategoryId.COMMERCIALLY_SEXUALLY_EXPLOITED_CHILDREN,
+              "At Risk", null, false, null, null, null, null, "At Risk", null));
 
       return lovs;
     }
@@ -125,4 +128,5 @@ public class TestIntakeCodeCache implements IntakeCodeCache {
   public List<IntakeLov> getAll() {
     return new ArrayList<>();
   }
+
 }

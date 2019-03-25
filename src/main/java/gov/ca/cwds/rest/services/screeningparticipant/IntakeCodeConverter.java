@@ -7,13 +7,11 @@ import java.util.Map;
 
 /**
  * @author CWDS API Team
- *
  */
 public class IntakeCodeConverter {
 
   /**
-   * Enum to get the intake codes using the legacy description.
-   *
+   * Enum to lookup intake codes from legacy short description.
    */
   public enum IntakeRaceCode {
 
@@ -56,7 +54,8 @@ public class IntakeCodeConverter {
     OTHER_PACIFIC_ISLANDER("Other Pacific Islander*", Constants.NATIVE_HAWAIIAN,
         "Other Pacific Islander"),
 
-    OTHER_RACE_UNKNOWN("Other Race Unknown*", "Unknown", ""),
+    // SNAP-1004: NPE on "Other Race Unknown"
+    OTHER_RACE_UNKNOWN("Other Race Unknown", "Unknown", ""),
 
     OTHER_ASIAN_ISLANDER("Other Asian/Pacific Islander*", Constants.NATIVE_HAWAIIAN,
         "Other Asian/Pacific Islander"),

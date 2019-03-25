@@ -1,6 +1,9 @@
 package gov.ca.cwds.data.cms;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import gov.ca.cwds.rest.api.domain.SystemCodeCategoryId;
@@ -10,7 +13,91 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeDescriptor;
 import gov.ca.cwds.rest.api.domain.cms.SystemMeta;
 
 public class TestSystemCodeCache implements SystemCodeCache {
+
   private static final long serialVersionUID = 1L;
+
+  public static final SystemCode[] ETHNICITY_CODES = {
+      new SystemCode((short) 820, null, "N", "05", "Alaskan Native*", "05", null, "ETHNCTYC",
+          "American Indian or Alaskan Native"),
+      new SystemCode((short) 821, null, "N", "05", "American Indian*", "06", null, "ETHNCTYC",
+          "American Indian or Alaskan Native"),
+      new SystemCode((short) 822, null, "N", "13", "Asian Indian*", "N", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 823, null, "N", "03", "Black*", "03", null, "ETHNCTYC",
+          "Black or African American"),
+      new SystemCode((short) 824, null, "N", "16", "Cambodian*", "H", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 825, null, "N", "06", "Chinese*", "C", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 826, null, "N", "03", "Ethiopian*", "E", null, "ETHNCTYC",
+          "Black or African American"),
+      new SystemCode((short) 827, null, "N", "07", "Filipino*", "07", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 828, null, "N", "12", "Guamanian*", "R", null, "ETHNCTYC",
+          "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 829, null, "N", "11", "Hawaiian*", "P", null, "ETHNCTYC",
+          "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 830, null, "N", "02", "Hispanic", "02", null, "ETHNCTYC", "White"),
+      new SystemCode((short) 831, null, "N", "08", "Japanese*", "J", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 832, null, "N", "09", "Korean*", "K", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 833, null, "N", "15", "Laotian*", "T", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 834, null, "Y", "17", "Other Asian/Pacific Islander*", "4", null,
+          "ETHNCTYC", ""),
+      new SystemCode((short) 835, null, "N", "17", "Hmong*", "04", null, "ETHNCTYC",
+          "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 836, null, "N", "17", "Polynesian*", "04", null, "ETHNCTYC",
+          "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 837, null, "N", "10", "Samoan*", "M", null, "ETHNCTYC",
+          "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 838, null, "N", "14", "Vietnamese*", "V", null, "ETHNCTYC", "Asian"),
+      new SystemCode((short) 839, null, "N", "01", "White*", "01", null, "ETHNCTYC", "White"),
+      new SystemCode((short) 840, null, "N", "01", "White - Armenian*", "01", null, "ETHNCTYC",
+          "White"),
+      new SystemCode((short) 841, null, "N", "01", "White - Central American*", "01", null,
+          "ETHNCTYC", "White"),
+      new SystemCode((short) 842, null, "N", "01", "White - European*", "01", null, "ETHNCTYC",
+          "White"),
+      new SystemCode((short) 843, null, "N", "01", "White - Middle Eastern*", "01", null,
+          "ETHNCTYC", "White"),
+      new SystemCode((short) 844, null, "N", "01", "White - Romanian*", "01", null, "ETHNCTYC",
+          "White"),
+      new SystemCode((short) 3162, null, "N", "02", "Caribbean", "02", null, "ETHNCTYC", "White"),
+      new SystemCode((short) 3163, null, "N", "02", "Central American", "01", null, "ETHNCTYC",
+          "White"),
+      new SystemCode((short) 3164, null, "N", "02", "Mexican", "02", null, "ETHNCTYC", "White"),
+      new SystemCode((short) 3165, null, "N", "02", "South American", "02", null, "ETHNCTYC",
+          "White"),
+      new SystemCode((short) 5922, null, "N", "17", "Other Asian*", "04", null, "ETHNCTYC",
+          "Asian"),
+      new SystemCode((short) 5923, null, "N", "17", "Other Pacific Islander*", "04", null,
+          "ETHNCTYC", "Native Hawaiian or Other Pacific Islander"),
+      new SystemCode((short) 6351, null, "N", "99", "Unable to Determine*", "99", null, "ETHNCTYC",
+          "Unable to Determine"),
+      new SystemCode((short) 6352, null, "N", "99", "Declines to State*", "99", null, "ETHNCTYC",
+          "Declines to State"),
+      new SystemCode((short) 6453, null, "N", "99", "Other Race Unknown", "99", null, "ETHNCTYC",
+          ""),
+      new SystemCode((short) 7093, null, "Y", "ZZ", "Unknown at Conversion", "ZZ", null, "ETHNCTYC",
+          "")};
+
+  public static final Map<Short, SystemCode> ethnicityMap;
+
+  public static final Map<Short, SystemCode> countyMap;
+
+
+  static {
+    // Ethnicity:
+    Map<Short, SystemCode> map = new HashMap<>();
+    for (SystemCode sc : ETHNICITY_CODES) {
+      map.put(sc.getSystemId(), sc);
+    }
+
+    ethnicityMap = Collections.unmodifiableMap(map);
+
+    // County:
+    map = new HashMap<>();
+    final short sysCode = 1101;
+    SystemCode sacramento =
+        new SystemCode(sysCode, null, "N", null, "Sacramento", "34", null, null, null);
+    map.put(sysCode, sacramento);
+    countyMap = Collections.unmodifiableMap(map);
+  }
 
   public TestSystemCodeCache() {
     register();
@@ -28,27 +115,16 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   @Override
   public SystemCode getSystemCode(Number systemCodeId) {
-    if (1828 == systemCodeId.intValue()) {
-      return new SystemCode(systemCodeId.shortValue(), null, null, null, "California", "CA", null,
-          null, null);
+    SystemCode ret = null;
+
+    final short code = systemCodeId.shortValue();
+    if (ethnicityMap.containsKey(code)) {
+      ret = ethnicityMap.get(code);
+    } else {
+      ret = countyMap.get(code);
     }
-    if (1101 == systemCodeId.intValue()) {
-      return new SystemCode(systemCodeId.shortValue(), null, null, null, "Sacramento", "34", null,
-          null, null);
-    }
-    if (821 == systemCodeId.intValue()) {
-      return new SystemCode(systemCodeId.shortValue(), null, null, "05", "American Indian*", null,
-          null, null, null);
-    }
-    if (3164 == systemCodeId.intValue()) {
-      return new SystemCode(systemCodeId.shortValue(), null, null, "02", "Mexican", null, null,
-          null, null);
-    }
-    if (3162 == systemCodeId.intValue()) {
-      return new SystemCode(systemCodeId.shortValue(), null, null, "02", "Caribbean", null, null,
-          null, null);
-    }
-    return null;
+
+    return ret;
   }
 
   @Override
@@ -222,7 +298,6 @@ public class TestSystemCodeCache implements SystemCodeCache {
 
   @Override
   public SystemCodeDescriptor getSystemCodeDescriptor(Number systemCodeId) {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -243,4 +318,5 @@ public class TestSystemCodeCache implements SystemCodeCache {
     }
     return null;
   }
+
 }
