@@ -632,6 +632,10 @@ public class ParticipantService implements
     this.clientDao = clientDao;
   }
 
+  public void setParticipantTransformer(ParticipantTransformer participantTransformer){
+    this.participantTransformer = participantTransformer;
+  }
+
   public void setRelationshipFacade(
       RelationshipFacade relationshipFacade) {
     this.relationshipFacade = relationshipFacade;

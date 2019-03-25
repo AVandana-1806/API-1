@@ -4,22 +4,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import gov.ca.cwds.data.cms.ClientDao;
-import gov.ca.cwds.fixture.ClientResourceBuilder;
-import gov.ca.cwds.rest.api.domain.cms.Client;
+import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
 import gov.ca.cwds.rest.services.relationship.RelationshipFacade;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import java.util.Map;
@@ -93,6 +87,8 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
   @Mock
   private ClientDao clientDao;
   @Mock
+  private ParticipantTransformer participantTransformer;
+  @Mock
   private RelationshipFacade relationshipFacade;
 
   ParticipantEntity participantEntity;
@@ -143,6 +139,10 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     when(participantDao.find(participantId)).thenReturn(null);
     when(participantDao.create(any())).thenReturn(participantEntity);
 
+    when(screeningDao.find("1")).thenReturn(new ScreeningEntity());
+    ParticipantTransformer transformer = new ParticipantTransformer();
+    transformer.setScreeningDao(screeningDao);
+    participantService.setParticipantTransformer(transformer);
     legacyDescriptor = new LegacyDescriptor("JhHq86Iaaf", "1118-8618-0978-2140657", new DateTime(),
         "tableName", "a table to store data");
     legacyDescriptorEntity = new LegacyDescriptorEntity(legacyDescriptor, "", 219L);
@@ -279,7 +279,6 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
 
   @Override
   @Test
-  @Ignore
   public void testCreateReturnsCorrectEntity() throws Exception {
 
     ParticipantIntakeApi expected = new ParticipantIntakeApi(participantEntity);
@@ -297,6 +296,7 @@ public class ParticipantServiceTest implements ServiceTestTemplate {
     PhoneNumber phoneNumber2 = new PhoneNumber(phoneNumbers2);
     PhoneNumber phoneNumber22 = new PhoneNumber(phoneNumbers2);
     expected.addPhoneNumbers((Arrays.asList(phoneNumber1, phoneNumber2)));
+    expected.setScreeningId("1");
     expected00.addPhoneNumbers((Arrays.asList(phoneNumber11, phoneNumber22)));
 
     ParticipantIntakeApi found = participantService.create(expected);
