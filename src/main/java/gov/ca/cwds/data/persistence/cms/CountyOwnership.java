@@ -29,7 +29,7 @@ import gov.ca.cwds.rest.api.domain.DomainChef;
 @Table(name = "CNTYOWNT")
 @JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SuppressWarnings({"squid:S00104"})
+@SuppressWarnings("squid:S00104")
 public class CountyOwnership implements PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -452,6 +452,7 @@ public class CountyOwnership implements PersistentObject, Serializable {
    * @param county63Flag - county63Flag
    * @param deleteDate - deleteDate
    */
+  @SuppressWarnings("squid:S00107")
   public CountyOwnership(String entityId, String entityCode, String multiFlag, String county00Flag,
       String county01Flag, String county02Flag, String county03Flag, String county04Flag,
       String county05Flag, String county06Flag, String county07Flag, String county08Flag,
