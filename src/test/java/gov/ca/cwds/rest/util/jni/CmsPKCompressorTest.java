@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -115,21 +114,6 @@ public class CmsPKCompressorTest {
       fail("Expected exception was not thrown!");
     } catch (IOException e) {
     }
-  }
-
-  @Test
-  @Ignore
-  public void decompressBase64_Args__String() throws Exception {
-    CmsPKCompressor target = new CmsPKCompressor();
-
-    final String base64Doc = PKCompressionTest.class.getResource(ZIP_B64_3).getPath();
-    final String good = PKCompressionTest.class.getResource(ZIP_DOC_3).getPath();
-    byte[] actual = target.decompressBase64(base64Doc);
-
-    final String chkTgt = CWDSCompressionUtils.checksum(actual);
-    final String chkFirst = CWDSCompressionUtils.checksum(new File(good));
-
-    assertTrue("Base64 decompression failed", chkTgt.equals(chkFirst));
   }
 
   @Test
