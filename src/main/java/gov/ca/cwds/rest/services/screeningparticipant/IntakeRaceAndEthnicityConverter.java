@@ -17,8 +17,8 @@ import gov.ca.cwds.rest.services.ServiceException;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeCodeConverter.IntakeRaceCode;
 
 /**
- * Transforms the Legacy race and ethnicity values for an existing people into valid
- * {@link ParticipantIntakeApi} race and hispanic.
+ * Transforms the Legacy race and ethnicity values for clients into valid
+ * {@link ParticipantIntakeApi}, including category races, like "white" and "hispanic."
  *
  * @author CWDS API Team
  */
@@ -74,6 +74,7 @@ public class IntakeRaceAndEthnicityConverter {
       LOGGER.error("Unable to build the race json", e);
       throw new ServiceException(e);
     }
+
     return stringRace;
   }
 
@@ -82,13 +83,15 @@ public class IntakeRaceAndEthnicityConverter {
    * @return the intake hispanic
    */
   public String createHispanic(Client client) {
-    List<IntakeEthnicity> intakeHispanicList = new ArrayList<>();
-    ObjectMapper mapper = new ObjectMapper();
+    final List<IntakeEthnicity> intakeHispanicList = new ArrayList<>();
+    final ObjectMapper mapper = new ObjectMapper();
     String stringHispanic = null;
-    List<Short> systemIds = new ArrayList<>();
+
+    final List<Short> systemIds = new ArrayList<>();
     systemIds.add(client.getPrimaryEthnicityType());
     client.getClientScpEthnicities().forEach(race -> systemIds.add(race.getEthnicity()));
-    List<String> hispanicDetails = new ArrayList<>();
+    final List<String> hispanicDetails = new ArrayList<>();
+
     for (Short id : systemIds) {
       final gov.ca.cwds.rest.api.domain.cms.SystemCode systemCode =
           SystemCodeCache.global().getSystemCode(id);
@@ -97,14 +100,16 @@ public class IntakeRaceAndEthnicityConverter {
         hispanicDetails.add(systemCode.getShortDescription());
       }
     }
-    intakeHispanicList.add(new IntakeEthnicity(
-        translateHispanicOriginCodes(client.getHispanicOriginCode()), hispanicDetails));
+
     try {
+      intakeHispanicList.add(new IntakeEthnicity(
+          translateHispanicOriginCodes(client.getHispanicOriginCode()), hispanicDetails));
       stringHispanic = mapper.writeValueAsString(intakeHispanicList);
     } catch (JsonProcessingException e) {
       LOGGER.error("Unable to build the Ethnicity json", e);
       throw new ServiceException(e);
     }
+
     return stringHispanic;
   }
 
@@ -127,4 +132,5 @@ public class IntakeRaceAndEthnicityConverter {
         return null;
     }
   }
+
 }
