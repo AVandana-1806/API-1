@@ -1,6 +1,7 @@
 package gov.ca.cwds.health;
 
 import gov.ca.cwds.health.resource.Pingable;
+import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.services.ServiceException;
 
 /**
@@ -9,7 +10,7 @@ import gov.ca.cwds.rest.services.ServiceException;
  * 
  * @author CWDS API Team
  */
-public class FerbHealthCheckException extends ServiceException {
+public class FerbHealthCheckException extends ApiException {
 
   private static final long serialVersionUID = 1L;
 

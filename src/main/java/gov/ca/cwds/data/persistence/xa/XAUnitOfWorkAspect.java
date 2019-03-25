@@ -11,6 +11,7 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,24 +30,25 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
 
 /**
  * AOP aspect supports annotation {@link XAUnitOfWork}.
- * 
- * <p>
- * In AOP terms, this wrapper method follows the <strong>"around"</strong> protocol. Start with
- * {@link #beforeStart(Method, XAUnitOfWork)}, call the annotated method, and finish with
- * {@link #afterEnd()}.
- * </p>
- * 
- * <p>
- * {@link XAUnitOfWork} annotations may be nested. This aspect automatically adds nested
- * {@link XAUnitOfWork} to the XA transaction and opens sessions for datasources not already
- * included.
- * </p>
+ *
+ * <p>In AOP terms, this wrapper method follows the <strong>"around"</strong> protocol. Start with
+ * {@link #beforeStart(Method, XAUnitOfWork)}, call the annotated method, and finish with {@link
+ * #afterEnd()}.
+ *
+ * <p>{@link XAUnitOfWork} annotations may be nested. This aspect automatically adds nested {@link
+ * XAUnitOfWork} to the XA transaction and opens sessions for datasources not already included.
  *
  * @author CWDS API Team
  */
-@SuppressWarnings({"deprecation", "rawtypes", "findbugs:SE_BAD_FIELD",
-    "squid:CallToDeprecatedMethod", "squid:RedundantThrowsDeclarationCheck",
-    "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1166"})
+@SuppressWarnings({
+  "deprecation",
+  "rawtypes",
+  "findbugs:SE_BAD_FIELD",
+  "squid:CallToDeprecatedMethod",
+  "squid:RedundantThrowsDeclarationCheck",
+  "squid:S1166"
+})
+@SuppressFBWarnings("findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
