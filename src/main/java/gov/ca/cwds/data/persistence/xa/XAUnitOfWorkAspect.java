@@ -11,7 +11,6 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -46,9 +45,9 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext.Parameter;
   "findbugs:SE_BAD_FIELD",
   "squid:CallToDeprecatedMethod",
   "squid:RedundantThrowsDeclarationCheck",
-  "squid:S1166"
+  "squid:S1166",
+  "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED"
 })
-@SuppressFBWarnings("findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class XAUnitOfWorkAspect implements ApiMarker {
 
   private static final long serialVersionUID = 1L;

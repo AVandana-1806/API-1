@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,9 @@ import gov.ca.cwds.data.std.ApiMarker;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095",
+@SuppressWarnings({"findsecbugs:SQL_INJECTION_JDBC", "squid:S2095", "squid:S134",
     "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED", "squid:S1206", "serial"})
+@SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class LiveElasticClientHandler implements ApiMarker {
 
   private static final long serialVersionUID = 1L;
