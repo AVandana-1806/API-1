@@ -65,6 +65,7 @@ public class WorkFerbUserInfo implements Work {
     this.isDb2 = isDb2;
   }
 
+  @SuppressWarnings("squid:S134")
   @Override
   public void execute(Connection con) throws SQLException {
     LOGGER.info("execute: Connection class: {}", con.getClass().getName());
