@@ -127,17 +127,6 @@ public class LiveElasticTransformerTest extends Doofenshmirtz<TestDenormalizedEn
   }
 
   @Test
-  @Ignore
-  public void determineId_Args__CmsReplicatedEntity__ElasticSearchPerson() throws Exception {
-    final CmsReplicatedEntity l =
-        new TestDenormalizedEntity(DEFAULT_CLIENT_ID, "dave", "jey", "mariam", "jim");
-    final ElasticSearchPerson esp = new ElasticSearchPerson();
-    final String actual = LiveElasticTransformer.determineId(l, esp);
-    final String expected = DEFAULT_CLIENT_ID;
-    assertThat(actual, is(equalTo(expected)));
-  }
-
-  @Test
   public void buildElasticSearchPersons_Args__PersistentObject() throws Exception {
     final TestNormalizedEntity p = new TestNormalizedEntity(DEFAULT_CLIENT_ID);
     p.addEntry(new TestNormalizedEntry("xyz1234567", "crap"));

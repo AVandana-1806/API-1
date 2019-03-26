@@ -1,10 +1,75 @@
 {
+  "legacy_id": "9C7kKgc0CN",
+  "first_name": "William",
+  "last_name": "Pfeiffer",
+  "gender": "male",
+  "ssn": "123456789",
+  "date_of_birth": "1999-11-15",
+  "roles": [
+    "Victim",
+    "Reporter"
+  ],
+  "addresses": [
+    {
+      "messages": [],
+      "legacy_id": "0ByMpj00CN",
+      "legacy_source_table": "ADDRS_T",
+      "type": "Home",
+      "street_address": "2300 Erie Hill",
+      "city": "San Diego",
+      "state": "CA",
+      "zip": "95223",
+      "legacy_descriptor": {
+        "legacy_id": "0ByMpj00CN",
+        "legacy_ui_id": "0010-9694-8336-2000767",
+        "legacy_last_updated": "2005-12-09T16:20:43.320-0800",
+        "legacy_table_name": "ADDRS_T",
+        "legacy_table_description": "Address"
+      },
+      "phone_numbers" : [ ]
+    }
+  ],
+  "races": [
+    {
+      "race": "White"
+    },
+    {
+      "race": "Hispanic"
+    }
+  ],
+  "ethnicity": {
+    "hispanic_latino_origin": "Unknown",
+    "ethnicity_detail": [
+      "detail1",
+      "detail2"
+    ]
+  },
+  "middle_name": "T",
+  "name_suffix": "Jr",
+  "languages": [
+    "English",
+    "Spanish"
+  ],
+  "phone_numbers": [],
+  "sealed": false,
+  "sensitive": false,
+  "probation_youth": true,
   "screening_id": "36",
   "legacy_descriptor": {
-    "legacy_id": "AcqEeTo0Ql",
+    "legacy_id": "",
     "legacy_ui_id": "0522-3101-9120-2000767",
     "legacy_last_updated": "1998-09-16T16:48:05.701-0700",
     "legacy_table_name": "CLIENT_T",
     "legacy_table_description": "Client"
+  },
+  "csec": [],
+  "safely_surrendered_babies": {
+    "surrendered_by": "Unknown",
+    "relation_to_child": "Parents",
+    "bracelet_id": "1234",
+    "parent_guardian_given_bracelet_id": "U",
+    "parent_guardian_provided_med_questionaire": "U",
+    "med_questionaire_return_date": "1992-05-18",
+    "comments": "Mother surrendered the baby"
   }
 }

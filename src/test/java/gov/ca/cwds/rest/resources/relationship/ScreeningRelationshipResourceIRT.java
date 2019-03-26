@@ -79,14 +79,6 @@ public class ScreeningRelationshipResourceIRT extends IntakeBaseTest {
   }
 
   @Test
-  @Ignore // DRS: screening id 22 not found.
-  public void testGetRelationshipsByScreeningId() throws Exception {
-    String expectedResponse = fixture(JSON_REQUEST_FOR_SUCCESS_RELATIONSHIPS_BY_SCREENING_ID);
-    String actualJson = getStringResponse(doGetCall(RESOURCE_SCREENINGS + "/22/relationships"));
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
-  }
-
-  @Test
   public void testCreateRelationships() throws IOException {
     String request = fixture(JSON_REQUEST_FOR_CREATE_BATCH_RELATIONSHIPS);
     Response response =

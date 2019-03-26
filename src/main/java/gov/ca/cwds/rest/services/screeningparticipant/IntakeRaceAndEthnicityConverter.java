@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.services.screeningparticipant;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.ca.cwds.rest.api.domain.cms.SystemCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,16 +56,7 @@ public class IntakeRaceAndEthnicityConverter {
           SystemCodeCache.global().getSystemCode(id);
       if (systemCode != null && !(HISPANIC_CODE_OTHER_ID.equals(systemCode.getOtherCd())
           && !CARIBBEAN_RACE_CODE.equals(id))) {
-        final String shortDescrption = systemCode.getShortDescription();
-
-        if (StringUtils.isNotBlank(shortDescrption)) {
-          // SNAP-1004: NPE on "Other Race Unknown"
-          final IntakeRaceCode raceCd =
-              IntakeCodeConverter.IntakeRaceCode.findByLegacyValue(shortDescrption);
-          if (raceCd != null) {
-            intakeRaceList.add(new IntakeRace(raceCd.getRace(), raceCd.getRaceDetail()));
-          }
-        }
+        processRaceList(intakeRaceList, systemCode);
       }
     }
 
@@ -76,6 +68,19 @@ public class IntakeRaceAndEthnicityConverter {
     }
 
     return stringRace;
+  }
+
+  private void processRaceList(List<IntakeRace> intakeRaceList, SystemCode systemCode) {
+    final String shortDescrption = systemCode.getShortDescription();
+
+    if (StringUtils.isNotBlank(shortDescrption)) {
+      // SNAP-1004: NPE on "Other Race Unknown"
+      final IntakeRaceCode raceCd =
+          IntakeRaceCode.findByLegacyValue(shortDescrption);
+      if (raceCd != null) {
+        intakeRaceList.add(new IntakeRace(raceCd.getRace(), raceCd.getRaceDetail()));
+      }
+    }
   }
 
   /**

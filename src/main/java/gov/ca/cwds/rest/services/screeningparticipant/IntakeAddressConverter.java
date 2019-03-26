@@ -1,7 +1,6 @@
 package gov.ca.cwds.rest.services.screeningparticipant;
 
 import gov.ca.cwds.rest.api.domain.PhoneNumber;
-import gov.ca.cwds.rest.api.domain.enums.AddressType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -35,7 +34,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 public class IntakeAddressConverter extends IntakeConverter {
 
   public static final String PLACEMENT_HOME_INTAKE_CODE = "Placement Home";
-  private static final Short RESIDENCE = AddressType.HOME.getCode();
 
   /**
    * @param client - client
@@ -56,7 +54,7 @@ public class IntakeAddressConverter extends IntakeConverter {
    */
   public List<AddressIntakeApi> getPlacementHomeAddresses(
       List<PlacementEpisode> placementEpisodes) {
-    IntakePhoneConverter intakePhoneConverter = new IntakePhoneConverter();
+
     List<AddressIntakeApi> addresses = new ArrayList<>();
 
     LocalDate now = LocalDate.now();
@@ -67,32 +65,36 @@ public class IntakeAddressConverter extends IntakeConverter {
               outOfHomePlacement -> ObjectUtils.compare(outOfHomePlacement.getStartDt(), now) <= 0
                   && ObjectUtils.compare(outOfHomePlacement.getEndDt(), now, true) >= 0)
           .collect(Collectors.toList());
-
-      for (OutOfHomePlacement outOfHomePlacement : outOfHomePlacements) {
-        PlacementHome placementHome = outOfHomePlacement.getPlacementHome();
-        AddressIntakeApi addressIntakeApi = new AddressIntakeApi();
-        addressIntakeApi
-            .setStreetAddress(placementHome.getStreetNo() + " " + placementHome.getStreetNm());
-        addressIntakeApi.setCity(placementHome.getCityNm());
-        String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
-            placementHome.getStateCode(), IntakeLovType.US_STATE.getValue());
-        addressIntakeApi.setState(state);
-        addressIntakeApi.setZip(placementHome.getZipNo());
-        addressIntakeApi.setType(PLACEMENT_HOME_INTAKE_CODE);
-
-        LocalDateTime lastUpdateTime = placementHome.getLastUpdateTime();
-        ZoneOffset zoneOffset = ZoneOffset.systemDefault().getRules().getOffset(lastUpdateTime);
-
-        LegacyDescriptor legacyDescriptor = new LegacyDescriptor(placementHome.getIdentifier(),
-            null, new DateTime(1000 * lastUpdateTime.toEpochSecond(zoneOffset)),
-            LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
-        addressIntakeApi.setLegacyDescriptor(legacyDescriptor);
-        addressIntakeApi.getPhoneNumbers().addAll(intakePhoneConverter.getPhones(placementHome));
-
-        addresses.add(addressIntakeApi);
-      }
+      processAddresses(addresses, outOfHomePlacements);
     });
     return addresses;
+  }
+
+  private void processAddresses(List<AddressIntakeApi> addresses, List<OutOfHomePlacement> outOfHomePlacements) {
+    IntakePhoneConverter intakePhoneConverter = new IntakePhoneConverter();
+    for (OutOfHomePlacement outOfHomePlacement : outOfHomePlacements) {
+      PlacementHome placementHome = outOfHomePlacement.getPlacementHome();
+      AddressIntakeApi addressIntakeApi = new AddressIntakeApi();
+      addressIntakeApi
+          .setStreetAddress(placementHome.getStreetNo() + " " + placementHome.getStreetNm());
+      addressIntakeApi.setCity(placementHome.getCityNm());
+      String state = IntakeCodeCache.global().getIntakeCodeForLegacySystemCode(
+          placementHome.getStateCode(), IntakeLovType.US_STATE.getValue());
+      addressIntakeApi.setState(state);
+      addressIntakeApi.setZip(placementHome.getZipNo());
+      addressIntakeApi.setType(PLACEMENT_HOME_INTAKE_CODE);
+
+      LocalDateTime lastUpdateTime = placementHome.getLastUpdateTime();
+      ZoneOffset zoneOffset = ZoneOffset.systemDefault().getRules().getOffset(lastUpdateTime);
+
+      LegacyDescriptor legacyDescriptor = new LegacyDescriptor(placementHome.getIdentifier(),
+          null, new DateTime(1000 * lastUpdateTime.toEpochSecond(zoneOffset)),
+          LegacyTable.PLACEMENT_HOME.getName(), LegacyTable.PLACEMENT_HOME.getDescription());
+      addressIntakeApi.setLegacyDescriptor(legacyDescriptor);
+      addressIntakeApi.getPhoneNumbers().addAll(intakePhoneConverter.getPhones(placementHome));
+
+      addresses.add(addressIntakeApi);
+    }
   }
 
   private AddressIntakeApi convertToAddress(ClientAddress clientAddress) {

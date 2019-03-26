@@ -517,44 +517,6 @@ public class ParticipantToLegacyClientTest {
   }
 
   @Test
-  @Ignore
-  public void shouldUpdateClientWhenClientIdIsPresent() throws Exception {
-    String victimClientLegacyId = "098UijH1gf";
-    LegacyDescriptor legacyDescriptor = new LegacyDescriptor(victimClientLegacyId, null,
-        lastUpdateDate, LegacyTable.CLIENT.getName(), null);
-    defaultReporter = new ParticipantResourceBuilder()
-        .setRoles((new HashSet<>(Arrays.asList("Mandated Reporter")))).createReporterParticipant();
-    defaultPerpetrator = new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor)
-        .createPerpParticipant();
-
-    Participant victim =
-        new ParticipantResourceBuilder().setLegacyDescriptor(legacyDescriptor).createParticipant();
-    Set<Participant> participants =
-        new HashSet<>(Arrays.asList(victim, defaultReporter, defaultPerpetrator));
-
-    ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
-        .setParticipants(participants).createScreeningToReferral();
-
-    Client foundClient = mock(Client.class);
-    when(foundClient.getLastUpdatedTime()).thenReturn(modifiedLastUpdateDate);
-
-    PostedClient createdClient = mock(PostedClient.class);
-
-    when(createdClient.getId()).thenReturn("LEGACYIDXX");
-    when(clientService.find(eq(victimClientLegacyId))).thenReturn(foundClient);
-    when(clientService.create(any())).thenReturn(createdClient);
-
-    Client updatedClient = mock(Client.class);
-    when(clientService.update(eq(victimClientLegacyId), any(Client.class)))
-        .thenReturn(updatedClient);
-
-    participantToLegacyClient.saveParticipants(referral, dateStarted, timeStarted, referralId,
-        messageBuilder);
-
-    verify(clientService, times(4)).update(any(), any());
-  }
-
-  @Test
   public void shouldFailWhenVictimHasIncompatiableRoles_AnonymousVictim() throws Exception {
     gov.ca.cwds.data.persistence.cms.Client savedEntityClient =
         new ClientEntityBuilder().setId("1234567ABC").build();

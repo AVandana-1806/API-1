@@ -1,49 +1,78 @@
 {
   "id": "${participant_id}",
-  "legacy_source_table" : "CLIENT_T",
-  "first_name": "Test",
-  "last_name": "Child031204",
+  "screening_id": "36",
+  "legacy_id": "9C7kKgc0CN",
+  "first_name": "William",
+  "last_name": "Pfeiffer",
   "gender": "male",
-  "ssn": "",
-  "date_of_birth": "1999-03-12",
-  "roles": [],
+  "ssn": "123456789",
+  "date_of_birth": "1999-11-15",
+  "roles": [
+    "Reporter",
+    "Victim"
+  ],
   "addresses": [
     {
       "messages": [],
       "id": "${address_id}",
-      "type": "Placement Home",
-      "street_address": "2809 Tyler Avenue",
-      "city": "Riverside",
+      "legacy_id": "0ByMpj00CN",
+      "legacy_source_table": "ADDRS_T",
+      "type": "Home",
+      "street_address": "2300 Erie Hill",
+      "city": "San Diego",
       "state": "CA",
-      "zip": "94508",
+      "zip": "95223",
       "legacy_descriptor": {
-        "legacy_id": "D265A050M2",
-        "legacy_last_updated": "2004-11-09T15:49:11.000-0800",
-        "legacy_table_name": "PLC_HM_T",
-        "legacy_table_description": "Placement Home"
-      }
+        "legacy_id": "0ByMpj00CN",
+        "legacy_ui_id": "0010-9694-8336-2000767",
+        "legacy_last_updated": "2005-12-09T16:20:43.320-0800",
+        "legacy_table_name": "ADDRS_T",
+        "legacy_table_description": "Address"
+      },
+      "phone_numbers" : [ ]
     }
   ],
-  "races": [],
-  "ethnicity": [
+  "races": [
     {
-      "hispanic_latino_origin": "Unknown",
-      "ethnicity_detail": []
+      "race": "White"
+    },
+    {
+      "race": "Hispanic"
     }
   ],
-  "middle_name": "",
-  "name_suffix": "",
-  "languages": [],
-  "screening_id": "36",
+  "ethnicity": {
+    "hispanic_latino_origin": "Unknown",
+    "ethnicity_detail": [
+      "detail1",
+      "detail2"
+    ]
+  },
+  "middle_name": "T",
+  "name_suffix": "Jr",
+  "languages": [
+    "English",
+    "Spanish"
+  ],
   "phone_numbers": [],
   "sealed": false,
   "sensitive": false,
-  "legacy_id": "AcqEeTo0Ql",
+  "probation_youth": true,
   "legacy_descriptor": {
-    "legacy_id": "AcqEeTo0Ql",
-    "legacy_last_updated": "2004-03-12T13:48:04.741-0800",
+    "legacy_id": "",
+    "legacy_ui_id": "0522-3101-9120-2000767",
+    "legacy_last_updated": "1998-09-16T16:48:05.701-0700",
     "legacy_table_name": "CLIENT_T",
     "legacy_table_description": "Client"
   },
-  "csec": []
+  "csec": [],
+  "safely_surrendered_babies": {
+    "surrendered_by": "Unknown",
+    "relation_to_child": "Parents",
+    "bracelet_id": "1234",
+    "parent_guardian_given_bracelet_id": "U",
+    "parent_guardian_provided_med_questionaire": "U",
+    "med_questionaire_return_date": "1992-05-18",
+    "comments": "Mother surrendered the baby",
+    "participant_child": "${participant_id}"
+  }
 }
