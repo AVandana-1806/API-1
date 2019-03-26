@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import gov.ca.cwds.rest.resources.SimpleResourceService;
  */
 // @Singleton
 // @Named("govt_org_svc")
+@SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class GovernmentOrganizationService
     extends SimpleResourceService<String, GovernmentOrganization, GovernmentOrganizationResponse>
     implements ApiMarker {

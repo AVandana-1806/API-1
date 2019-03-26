@@ -400,28 +400,32 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
       if (!relationshipExist(screeningParticipant, participant,
           relationshipFacadeData.allRelationships)) {
-        final CandidateToBuilder builder = new CandidateToBuilder();
-
-        LegacyDescriptorEntity legacyDescriptorEntity =
-            relationshipFacadeData.participantsLegacyDescriptors.get(participant.getId());
-        if (legacyDescriptorEntity != null) {
-          LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
-          builder.withLegacyDescriptor(legacyDescriptor);
-        }
-
-        builder.withCandidateAge(participant.getApproximateAge())
-            .withCandidateAgeUnit(participant.getApproximateAgeUnits())
-            .withCandidateDateOfBirth(participant.getDateOfBirth())
-            .withCandidateFirstName(participant.getFirstName())
-            .withCandidateLastName(participant.getLastName())
-            .withCandidateMiddleName(participant.getMiddleName())
-            .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId())
-            .withEstimatedDobCode(participant.getEstimatedDob())
-            .withEstimatedDob(getEstimatedDob(screeningParticipant, relationshipFacadeData));
-        candidates.add(builder.build());
+        buildCandidate(screeningParticipant, relationshipFacadeData, candidates, participant);
       }
     });
     return candidates;
+  }
+
+  private void buildCandidate(ParticipantEntity screeningParticipant, RelationshipFacadeData relationshipFacadeData, Set<CandidateTo> candidates, ParticipantEntity participant) {
+    final CandidateToBuilder builder = new CandidateToBuilder();
+
+    LegacyDescriptorEntity legacyDescriptorEntity =
+        relationshipFacadeData.participantsLegacyDescriptors.get(participant.getId());
+    if (legacyDescriptorEntity != null) {
+      LegacyDescriptor legacyDescriptor = new LegacyDescriptor(legacyDescriptorEntity);
+      builder.withLegacyDescriptor(legacyDescriptor);
+    }
+
+    builder.withCandidateAge(participant.getApproximateAge())
+        .withCandidateAgeUnit(participant.getApproximateAgeUnits())
+        .withCandidateDateOfBirth(participant.getDateOfBirth())
+        .withCandidateFirstName(participant.getFirstName())
+        .withCandidateLastName(participant.getLastName())
+        .withCandidateMiddleName(participant.getMiddleName())
+        .withCandidateSuffixtName(participant.getNameSuffix()).withId(participant.getId())
+        .withEstimatedDobCode(participant.getEstimatedDob())
+        .withEstimatedDob(getEstimatedDob(screeningParticipant, relationshipFacadeData));
+    candidates.add(builder.build());
   }
 
   private boolean relationshipExist(final ParticipantEntity participant,
@@ -486,6 +490,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return result;
   }
 
+  @SuppressWarnings({"squid:S135", "squid:S3776"})
   private List<ScreeningRelationship> createRelationships(Set<ClientRelationship> shouldBeCreated,
       String screeningId) {
     if (CollectionUtils.isEmpty(shouldBeCreated)) {
@@ -660,22 +665,27 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     if (systemCode != null) {
       String str = systemCode.getShortDescription();
       if (StringUtils.isNoneEmpty(str)) {
-        String[] descriptionArray = str.split("/");
-        if (descriptionArray.length == 2) {
-          String part3 = "";
-          if (descriptionArray[1].contains("(")) {
-            int indexStart = descriptionArray[1].indexOf('(');
-            int indexEnd = descriptionArray[1].indexOf(')');
-            part3 = descriptionArray[1].substring(indexStart, ++indexEnd);
-            descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
-            part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
-          }
-          String oppositeDescription = descriptionArray[1] + "/" + descriptionArray[0] + part3;
-          oppositeCode = codesMappedByDescription.get(oppositeDescription).getSystemId();
-        }
+        oppositeCode = getOppositeCode(oppositeCode, str);
       }
     }
 
+    return oppositeCode;
+  }
+
+  private short getOppositeCode(short oppositeCode, String str) {
+    String[] descriptionArray = str.split("/");
+    if (descriptionArray.length == 2) {
+      String part3 = "";
+      if (descriptionArray[1].contains("(")) {
+        int indexStart = descriptionArray[1].indexOf('(');
+        int indexEnd = descriptionArray[1].indexOf(')');
+        part3 = descriptionArray[1].substring(indexStart, ++indexEnd);
+        descriptionArray[1] = descriptionArray[1].replace(part3, "").trim();
+        part3 = StringUtils.isEmpty(part3) ? "part3" : " " + part3;
+      }
+      String oppositeDescription = descriptionArray[1] + "/" + descriptionArray[0] + part3;
+      oppositeCode = codesMappedByDescription.get(oppositeDescription).getSystemId();
+    }
     return oppositeCode;
   }
 }
