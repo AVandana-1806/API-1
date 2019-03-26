@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api.domain.es;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.rest.api.Request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author CWDS API Team
  */
 @ApiModel
+@SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class IndexQueryRequest implements Serializable, Request {
 
   /**

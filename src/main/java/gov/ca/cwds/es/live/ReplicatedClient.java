@@ -293,65 +293,7 @@ public class ReplicatedClient extends BaseClient implements ApiPersonAware,
       final boolean addressActive = StringUtils.isBlank(effectiveEndDate);
 
       if (addressActive) {
-        // Choose appropriate system code type for index target index.
-        final ElasticSearchSystemCode addressType = makeJsonAddressType();
-        final SystemCode addressTypeSystemCode =
-            SystemCodeCache.global().getSystemCode(repClientAddress.getAddressType());
-
-        if (addressTypeSystemCode != null) {
-          addressType.setDescription(addressTypeSystemCode.getShortDescription());
-          addressType.setId(addressTypeSystemCode.getSystemId().toString());
-        }
-
-        for (ReplicatedAddress repAddress : repClientAddress.getAddresses()) {
-          final ElasticSearchPersonAddress esAddress = new ElasticSearchPersonAddress();
-          esClientAddresses.put(repAddress.getAddressId(), esAddress);
-
-          esAddress.setLegacyDescriptor(repAddress.getLegacyDescriptor());
-          esAddress.setId(repAddress.getAddressId());
-          esAddress.setCity(repAddress.getCity());
-          esAddress.setCounty(repAddress.getCounty());
-          esAddress.setState(repAddress.getState());
-          esAddress.setZip(repAddress.getZip());
-          esAddress.setZip4(repAddress.getApiAdrZip4());
-          esAddress.setStreetName(repAddress.getStreetName());
-          esAddress.setStreetNumber(repAddress.getStreetNumber());
-          esAddress.setUnitNumber(repAddress.getApiAdrUnitNumber());
-          esAddress.setEffectiveStartDate(DomainChef.cookDate(repClientAddress.getEffStartDt()));
-          esAddress.setEffectiveEndDate(effectiveEndDate);
-          esAddress.setType(addressType);
-          esAddress.setActive("true"); // String, not a boolean?
-
-          final ElasticSearchSystemCode stateCode = new ElasticSearchSystemCode();
-          esAddress.setStateSystemCode(stateCode);
-
-          final SystemCode stateSysCode =
-              SystemCodeCache.global().getSystemCode(repAddress.getStateCd());
-          if (stateSysCode != null) {
-            stateCode.setDescription(stateSysCode.getShortDescription());
-            stateCode.setId(stateSysCode.getSystemId().toString());
-            esAddress.setStateName(stateSysCode.getShortDescription());
-            esAddress.setStateCode(stateSysCode.getLogicalId());
-          }
-
-          final ElasticSearchSystemCode countyCode = new ElasticSearchSystemCode();
-          esAddress.setCountySystemCode(countyCode);
-
-          final SystemCode countySysCode =
-              SystemCodeCache.global().getSystemCode(repAddress.getGovernmentEntityCd());
-          if (countySysCode != null) {
-            countyCode.setDescription(countySysCode.getShortDescription());
-            countyCode.setId(countySysCode.getSystemId().toString());
-          }
-
-          final Short unitType = repAddress.getApiAdrUnitType();
-          if (unitType != null && unitType.intValue() != 0) {
-            esAddress.setUnitType(SystemCodeCache.global().getSystemCodeShortDescription(unitType));
-          }
-
-          // SNAP-46: last known phone numbers.
-          esAddress.setPhones(getPhones(repClientAddress, repAddress));
-        }
+        populateAddress(esClientAddresses, repClientAddress, effectiveEndDate);
       }
     }
 
@@ -362,6 +304,71 @@ public class ReplicatedClient extends BaseClient implements ApiPersonAware,
     }
 
     return sortedAddresses;
+  }
+
+  private void populateAddress(
+      Map<String, ElasticSearchPersonAddress> esClientAddresses,
+      ReplicatedClientAddress repClientAddress,
+      String effectiveEndDate) {
+    // Choose appropriate system code type for index target index.
+    final ElasticSearchSystemCode addressType = makeJsonAddressType();
+    final SystemCode addressTypeSystemCode =
+        SystemCodeCache.global().getSystemCode(repClientAddress.getAddressType());
+
+    if (addressTypeSystemCode != null) {
+      addressType.setDescription(addressTypeSystemCode.getShortDescription());
+      addressType.setId(addressTypeSystemCode.getSystemId().toString());
+    }
+
+    for (ReplicatedAddress repAddress : repClientAddress.getAddresses()) {
+      final ElasticSearchPersonAddress esAddress = new ElasticSearchPersonAddress();
+      esClientAddresses.put(repAddress.getAddressId(), esAddress);
+
+      esAddress.setLegacyDescriptor(repAddress.getLegacyDescriptor());
+      esAddress.setId(repAddress.getAddressId());
+      esAddress.setCity(repAddress.getCity());
+      esAddress.setCounty(repAddress.getCounty());
+      esAddress.setState(repAddress.getState());
+      esAddress.setZip(repAddress.getZip());
+      esAddress.setZip4(repAddress.getApiAdrZip4());
+      esAddress.setStreetName(repAddress.getStreetName());
+      esAddress.setStreetNumber(repAddress.getStreetNumber());
+      esAddress.setUnitNumber(repAddress.getApiAdrUnitNumber());
+      esAddress.setEffectiveStartDate(DomainChef.cookDate(repClientAddress.getEffStartDt()));
+      esAddress.setEffectiveEndDate(effectiveEndDate);
+      esAddress.setType(addressType);
+      esAddress.setActive("true"); // String, not a boolean?
+
+      final ElasticSearchSystemCode stateCode = new ElasticSearchSystemCode();
+      esAddress.setStateSystemCode(stateCode);
+
+      final SystemCode stateSysCode =
+          SystemCodeCache.global().getSystemCode(repAddress.getStateCd());
+      if (stateSysCode != null) {
+        stateCode.setDescription(stateSysCode.getShortDescription());
+        stateCode.setId(stateSysCode.getSystemId().toString());
+        esAddress.setStateName(stateSysCode.getShortDescription());
+        esAddress.setStateCode(stateSysCode.getLogicalId());
+      }
+
+      final ElasticSearchSystemCode countyCode = new ElasticSearchSystemCode();
+      esAddress.setCountySystemCode(countyCode);
+
+      final SystemCode countySysCode =
+          SystemCodeCache.global().getSystemCode(repAddress.getGovernmentEntityCd());
+      if (countySysCode != null) {
+        countyCode.setDescription(countySysCode.getShortDescription());
+        countyCode.setId(countySysCode.getSystemId().toString());
+      }
+
+      final Short unitType = repAddress.getApiAdrUnitType();
+      if (unitType != null && unitType.intValue() != 0) {
+        esAddress.setUnitType(SystemCodeCache.global().getSystemCodeShortDescription(unitType));
+      }
+
+      // SNAP-46: last known phone numbers.
+      esAddress.setPhones(getPhones(repClientAddress, repAddress));
+    }
   }
 
   // ============================

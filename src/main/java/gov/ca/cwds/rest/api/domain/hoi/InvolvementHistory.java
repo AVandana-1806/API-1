@@ -3,6 +3,7 @@ package gov.ca.cwds.rest.api.domain.hoi;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -28,6 +29,7 @@ import io.dropwizard.jackson.JsonSnakeCase;
 @JsonInclude(Include.ALWAYS)
 @JsonSnakeCase
 @JsonPropertyOrder({"id", "cases", "referrals", "screenings"})
+@SuppressFBWarnings("SE_BAD_FIELD")
 public class InvolvementHistory extends ApiObjectIdentity
     implements ApiTypedIdentifier<String>, Request, Response {
 

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -23,8 +24,9 @@ import io.dropwizard.hibernate.UnitOfWork;
  * 
  * @author CWDS API Team
  */
-@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS", "findbugs:SE_TRANSIENT_FIELD_NOT_RESTORED",
+@SuppressWarnings({"findbugs:EQ_DOESNT_OVERRIDE_EQUALS",
     "serial", "squid:S2095", "squid:S2160", "squid:S1206", "squid:S1948"})
+@SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class CachingIntakeCodeService implements IntakeCodeCache {
 
   private static final long serialVersionUID = 1L;
