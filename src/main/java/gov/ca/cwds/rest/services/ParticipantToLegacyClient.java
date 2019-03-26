@@ -548,6 +548,7 @@ public class ParticipantToLegacyClient {
     return true;
   }
 
+  @SuppressWarnings({"squid:S3776", "squid:S134"})
   private void saveOrUpdateCsec(String clientId, List<Csec> csecs, MessageBuilder messageBuilder) {
     final List<CsecHistory> csecHistories = new ArrayList<>();
     for (Csec csec : csecs) {

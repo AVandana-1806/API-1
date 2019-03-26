@@ -456,14 +456,6 @@ public class ReplicatedClientTest extends Doofenshmirtz<RawClient> {
   }
 
   @Test
-  @Ignore
-  public void getPhones_placement_home() throws Exception {
-    target.setActivePlacementHomeAddress(new PlacementHomeAddress(rs));
-    doGetPhones((short) 33, "1234567xyz", 4083742790L, null, false, false);
-    target.getElasticSearchPersonAddresses();
-  }
-
-  @Test
   public void getLegacyId_A$() throws Exception {
     final String actual = target.getLegacyId();
     final String expected = DEFAULT_CLIENT_ID;

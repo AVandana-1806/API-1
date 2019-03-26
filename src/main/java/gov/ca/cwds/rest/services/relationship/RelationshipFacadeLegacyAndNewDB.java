@@ -77,6 +77,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
   private final ParticipantService participantService;
   private final ClientTransformer clientTransformer;
 
+  @SuppressWarnings("squid:S00107")
   @Inject
   public RelationshipFacadeLegacyAndNewDB(ParticipantDao participantDao,
       ClientRelationshipDao cmsRelationshipDao, RelationshipDao nsRelationshipDao,
@@ -116,6 +117,7 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
       try {
         responses.add(createRelationship(relationship));
       } catch (Exception e) {
+        LOGGER.debug(DB_ERROR_MESSAGE, e);
         ScreeningRelationship faildRelationship = new ScreeningRelationship(relationship);
         faildRelationship.setError(DB_ERROR_MESSAGE); // in the future, Drools will manage this
       }
