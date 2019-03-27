@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.util.jni;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +112,7 @@ public final class KeyJNI {
    * in shared library. <strong>DO NOT CHANGE!</strong>
    * </p>
    */
-  @SuppressWarnings({"findbugs:UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"})
+  @SuppressFBWarnings("UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD")
   public static final class KeyDetail {
     public String key; // NOSONAR
     public String staffId; // NOSONAR
