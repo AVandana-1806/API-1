@@ -531,11 +531,11 @@ public class ParticipantService implements
     return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
   }
 
-  private List<PhoneNumber> createParticipantPhoneNumbers(List<PhoneNumber> phoneSet,
+  private List<PhoneNumber> createParticipantPhoneNumbers(List<PhoneNumber> phoneList,
       ParticipantEntity participantEntityManaged) {
     List<PhoneNumber> phoneListPosted = new ArrayList<>();
 
-    for (PhoneNumber phoneNumber : phoneSet) {
+    for (PhoneNumber phoneNumber : phoneList) {
 
       PhoneNumbers phoneNumbersEntityManaged = phoneNumber.getId() == null ? null
           : phoneNumbersDao.find(String.valueOf(phoneNumber.getId()));
@@ -559,7 +559,7 @@ public class ParticipantService implements
     return phoneListPosted;
   }
 
-  private List<PhoneNumber> updateParticipantPhoneNumbers(List<PhoneNumber> phoneSet,
+  private List<PhoneNumber> updateParticipantPhoneNumbers(List<PhoneNumber> phoneList,
       ParticipantEntity participantEntityManaged) {
     List<PhoneNumber> phoneListPosted = new ArrayList<>();
 
@@ -568,7 +568,7 @@ public class ParticipantService implements
         .forEach(participantPhoneNumbers -> participantPhoneNumbersOldMap
             .put(participantPhoneNumbers.getPhoneNumber().getId(), participantPhoneNumbers));
 
-    for (PhoneNumber phoneNumber : phoneSet) {
+    for (PhoneNumber phoneNumber : phoneList) {
 
       PhoneNumbers phoneNumbersEntityManaged = phoneNumber.getId() == null ? null
           : phoneNumbersDao.find(String.valueOf(phoneNumber.getId()));

@@ -272,7 +272,7 @@ public class ClientAddressService implements
 
     if (StringUtils.isBlank(addressLegacyId)) {
       LegacyDescriptor addressLegacyDescriptor = address.getLegacyDescriptor();
-      addressLegacyId = addressLegacyDescriptor != null ? addressLegacyDescriptor.getId() : null;
+      addressLegacyId = addressLegacyDescriptor.getId();
     }
     return addressLegacyId;
   }
