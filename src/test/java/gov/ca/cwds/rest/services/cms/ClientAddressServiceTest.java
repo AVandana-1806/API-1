@@ -104,6 +104,7 @@ public class ClientAddressServiceTest {
   public void shouldReturnNullWhenNotClientAddressesAreFound() {
     when(clientAddressDao.findByAddressAndClient(any(), any())).thenReturn(new ArrayList<>());
     Address address = mock(Address.class);
+    when(address.getLegacyDescriptor()).thenReturn(new LegacyDescriptor());
     Participant participant = mock(Participant.class);
 
     List<Response> foundClients = clientAddressService.findByAddressAndClient(address, participant);
@@ -125,6 +126,8 @@ public class ClientAddressServiceTest {
     when(clientAddressDao.findByAddressAndClient(any(), any())).thenReturn(persistedClients);
 
     Address address = mock(Address.class);
+    when(address.getLegacyDescriptor()).thenReturn(new LegacyDescriptor());
+
     Participant participant = mock(Participant.class);
 
     List<Response> foundClients = clientAddressService.findByAddressAndClient(address, participant);
