@@ -115,8 +115,8 @@ node ('tpt4-slave'){
     }
     
     stage('Clean Workspace') {
-		cleanWs()
-	}
+      cleanWs()
+    }
 
     stage('Deploy Application') {
 		build job: 'tpt4-api-deploy-app', parameters: [string(name: 'version', value: 'latest'), string(name: 'inventory', value: 'inventories/development/hosts.yml')], propagate: false
