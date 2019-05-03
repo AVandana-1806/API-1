@@ -2,7 +2,7 @@ import groovy.transform.Field
 @Library('jenkins-pipeline-utils') _
 
 @Field
-def githubCredentialsId = '433ac100-b3c2-4519-b4d6-207c029a103b'
+def GITHUB_CREDENTIALS_ID = '433ac100-b3c2-4519-b4d6-207c029a103b'
 @Field
 def deAnsibleGithubUrl = 'git@github.com:ca-cwds/de-ansible.git'
 
@@ -13,7 +13,7 @@ def releasePipeline() {
     deployWithSmoke('preint')
     deployWithSmoke('integration')
   } catch(Exception exception) {
-    currentBuild.result = "FAILURE"
+    currentBuild.result = 'FAILURE'
     throw exception
   }
 }
@@ -28,33 +28,39 @@ def checkoutStage() {
 def deployWithSmoke(environment) {
   node(environment) {
     checkoutStage()
-    deployToStage(environment, env.version)
-    updateManifestStage(environment, env.version)
-    buildDockerImageForTestStage()
-    miniIntegrationTestStage(environment)
+    rollbackDeployOnFailure('api', environment, GITHUB_CREDENTIALS_ID, ansibleCommand(environment, env.version)) {
+      deployToStage(environment, env.version)
+      updateManifestStage(environment, env.version)
+      buildDockerImageForTestStage()
+      miniIntegrationTestStage(environment)
+    }
     cleanWs()
   }
+}
+
+def ansibleCommand(environment, version) {
+  "ansible-playbook -e NEW_RELIC_AGENT=true -e API_APP_VERSION=$version -i inventories/$environment/hosts.yml deploy-ferb-api.yml --vault-password-file ~/.ssh/vault.txt"
 }
 
 def deployToStage(environment, version) {
   stage("Deploy to $environment") {
     ws {
-      git branch: "master", credentialsId: githubCredentialsId, url: deAnsibleGithubUrl
-      sh "ansible-playbook -e NEW_RELIC_AGENT=true -e API_APP_VERSION=$version -i inventories/$environment/hosts.yml deploy-ferb-api.yml --vault-password-file ~/.ssh/vault.txt "
+      git branch: "master", credentialsId: GITHUB_CREDENTIALS_ID, url: deAnsibleGithubUrl
+      sh ansibleCommand(environment, version)
     }
   }
 }
 
 def updateManifestStage(environment, version) {
   stage("Update Manifest Version $environment") {
-    updateManifest("api", environment, githubCredentialsId, version)
+    updateManifest('api', environment, GITHUB_CREDENTIALS_ID, version)
   }
 }
   
 def buildDockerImageForTestStage() {
   stage('Build Docker Image for Test') {
-        sh "docker build --file docker/DockerfileIntegrationTest -t testferb ."
-        }
+    sh "docker build --file docker/DockerfileIntegrationTest -t testferb ."
+  }
 }
 
 def miniIntegrationTestStage(environment) {
@@ -91,4 +97,3 @@ def miniIntegrationTestStage(environment) {
         }
     }
  }
-
