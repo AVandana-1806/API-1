@@ -448,4 +448,5 @@ task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest,
     doLast {
         println 'Published'
     }
+    
 }
