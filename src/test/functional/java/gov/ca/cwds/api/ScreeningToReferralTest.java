@@ -78,7 +78,6 @@ public class ScreeningToReferralTest extends FunctionalTest {
    *
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void return201SuccessForValidReferrals() {
     ScreeningToReferral referral = new ScreeningToReferralResourceBuilder()
         .setName("return201SuccessForValidReferrals").setAssigneeStaffId(userInfo.getStaffId())

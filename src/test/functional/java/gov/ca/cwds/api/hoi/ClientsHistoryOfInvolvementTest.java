@@ -48,7 +48,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCanAccessToNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -63,7 +62,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -91,7 +89,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
