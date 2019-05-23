@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -118,6 +119,7 @@ public class HoiReferralsForSocialWorkerTest extends FunctionalTest {
     Response response = httpRequestHandler.postRequest(referrals, referralsPath, token);
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JodaModule());
+    mapper.registerModule(new JavaTimeModule());
     ScreeningToReferral screeningToReferral =
         mapper.readValue(response.asString(), ScreeningToReferral.class);
 
