@@ -74,7 +74,6 @@ public class VictimBirthTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSucessValidBirthDateGiven() {
     String dateOfBith = "2010-06-18";
     String approximateAge = null;
@@ -90,7 +89,6 @@ public class VictimBirthTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSucessValidAgeAndAgeUnitGiven() {
     String dateOfBith = null;
     String approximateAge = "12";
