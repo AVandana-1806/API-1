@@ -51,7 +51,7 @@ public class DocUtils {
       document.write(out);
       return out.toByteArray();
     } catch (Exception e) {
-      LOGGER.warn("ERROR PROCESSING TEMPLATE: {}", e);
+      LOGGER.warn("ERROR PROCESSING TEMPLATE: ", e);
       return template;
     }
   }

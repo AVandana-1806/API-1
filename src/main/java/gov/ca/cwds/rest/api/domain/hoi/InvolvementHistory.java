@@ -48,7 +48,7 @@ public class InvolvementHistory extends ApiObjectIdentity
   private List<HOIScreening> screenings = new ArrayList<>();
 
   @JsonIgnore
-  private ArrayList<ErrorMessage> messages = new ArrayList<>();
+  private transient ArrayList<ErrorMessage> messages = new ArrayList<>();
 
   /**
    * Constructor
