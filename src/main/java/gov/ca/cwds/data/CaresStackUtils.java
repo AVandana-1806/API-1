@@ -29,7 +29,7 @@ public class CaresStackUtils {
         final StackTraceElement[] stack = getStackTrace();
         Arrays.stream(stack, 0, stack.length - 1).forEach(x -> logger.trace("\t{}", x));
       } catch (Exception e) {
-        logger.error("FAILED TO LOG STACK! {}", e); // how ironic
+        logger.error("FAILED TO LOG STACK! ", e); // how ironic
         throw e;
       }
     }

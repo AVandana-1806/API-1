@@ -14,7 +14,7 @@ buildscript {
 plugins {
     id "java"
     id 'application'
-    id "org.sonarqube" version "2.2.1"
+    id "org.sonarqube" version "2.5"
     id 'net.ltgt.apt' version '0.15'
 }
 
@@ -180,7 +180,6 @@ dependencies {
 	compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.25.1'
 	compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.6.0'
 
-	compile 'com.fasterxml.jackson.module:jackson-module-guice:2.8.2'
 	compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
 
     compile fileTree(dir: 'lib', include: ['*.jar'])

@@ -135,7 +135,7 @@ public class XAUnitOfWorkAwareProxyFactory {
           LOGGER.error("XA ERROR! InvocationTargetException: {}", e.getCause(), e);
           throw e.getCause();
         } catch (Exception e) {
-          LOGGER.error("XA ERROR! {}", e);
+          LOGGER.error("XA ERROR! ", e);
           aspect.onError();
           throw e;
         } finally {

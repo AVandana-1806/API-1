@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -48,7 +49,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCanAccessToNoConditionClient() throws Exception {
     String clientId = findVictimClientId("N", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -63,7 +63,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySensitiveClient() throws Exception {
     String clientId = findVictimClientId("S", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -91,7 +90,6 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
    * 
    */
   @Test
-  @Ignore("TEMP Causes table lock")
   public void testSocialWorkerCantAccessToSameCountySealedClient() throws Exception {
     String clientId = findVictimClientId("R", userInfo.getIncidentCounty());
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -122,6 +120,7 @@ public class ClientsHistoryOfInvolvementTest extends FunctionalTest {
     Response response = httpRequestHandler.postRequest(referrals, referralsPath, token);
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JodaModule());
+    mapper.registerModule(new JavaTimeModule());
     ScreeningToReferral screeningToReferral =
         mapper.readValue(response.asString(), ScreeningToReferral.class);
 
