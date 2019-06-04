@@ -144,7 +144,7 @@ public class CwdsAuthenticationClient extends HttpClientBuild implements CwdsCli
   }
 
   private void requestToken(ArrayList<NameValuePair> postParams, String accessCode)
-      throws URISyntaxException, IOException, ClientProtocolException {
+      throws URISyntaxException, IOException {
     LOGGER.info(NEW_REQUEST_TO_BEGIN);
     LOGGER.info("GET TOKEN: {}", tokenUrl);
     postParams.clear();

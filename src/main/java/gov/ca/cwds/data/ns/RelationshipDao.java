@@ -1,7 +1,6 @@
 package gov.ca.cwds.data.ns;
 
 import static gov.ca.cwds.data.persistence.ns.Relationship.DELETE_RELATIONSHIPS_BY_RELATED_SCREENING_ID;
-import static gov.ca.cwds.data.persistence.xa.CaresQueryAccelerator.readOnlyQuery;
 
 import gov.ca.cwds.rest.core.Api.PathParam;
 import java.util.List;
@@ -45,7 +44,7 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
               .setParameter("legacyId", legacyId);
       result = query.getSingleResult();
     } catch (NoResultException e) {
-      LOGGER.info(e.getMessage());
+      LOGGER.info("No Relationship found by legacyId {}", legacyId, e);
     }
     return result;
   }

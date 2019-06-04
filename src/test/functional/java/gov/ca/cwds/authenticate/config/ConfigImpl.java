@@ -63,8 +63,7 @@ public class ConfigImpl implements YmlLoader {
             .open(testConfFilePath);) {
       testConf = yaml.loadAs(ymlTestingSourceProvider, CwdsAuthenticationClientConfig.class);
     } catch (Exception e ) {
-      LOGGER.error("Unable to convert test file to YAML. Check YML syntax and data structure against class.");
-      e.printStackTrace();
+      LOGGER.error("Unable to convert test file to YAML. Check YML syntax and data structure against class.", e);
     }
     return testConf;
   }

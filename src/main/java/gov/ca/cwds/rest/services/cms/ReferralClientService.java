@@ -135,7 +135,7 @@ public class ReferralClientService implements
       nonLaTriggers.createAndUpdateReferralClientCoutyOwnership(managed);
     }
   }
-
+                                                                                                         
   @Override
   public gov.ca.cwds.rest.api.domain.cms.ReferralClient update(String primaryKeyObject,
       gov.ca.cwds.rest.api.domain.cms.ReferralClient request) {
@@ -149,8 +149,7 @@ public class ReferralClientService implements
       createDownStreamEntity(managed);
       return new gov.ca.cwds.rest.api.domain.cms.ReferralClient(managed);
     } catch (EntityNotFoundException e) {
-      LOGGER.info("Referral not found : {}", referralClient);
-      LOGGER.error("Unable to find referral in Database", e);
+      LOGGER.error("Unable to find referral in Database {}", referralClient, e);
       throw new ServiceException(e);
     }
   }

@@ -65,13 +65,11 @@ public class LogOff {
       httpGet.setURI(uri);
       httpResponse = httpClient.execute(httpGet, httpContext);
 
-      System.out.println(httpResponse + "************************************");
+      LOGGER.debug("************************************ httpResponse:\n" + httpResponse);
 
     } catch (Exception e) {
       LOGGER.error("Unable to LogOff", e);
     }
-
-
   }
 
 }

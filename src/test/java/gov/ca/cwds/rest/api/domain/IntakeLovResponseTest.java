@@ -10,27 +10,22 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.ca.cwds.ObjectMapperUtils;
-
 public class IntakeLovResponseTest {
 
   @Test
-  public void type() throws Exception {
+  public void type() {
     assertThat(IntakeLovResponse.class, notNullValue());
   }
 
   @Test
-  public void instantiation() throws Exception {
+  public void instantiation() {
     List<IntakeLovEntry> lovs = null;
     IntakeLovResponse target = new IntakeLovResponse(lovs);
     assertThat(target, notNullValue());
   }
 
   @Test
-  public void getLovEntries_Args__() throws Exception {
+  public void getLovEntries_Args__() {
     List<IntakeLovEntry> lovs = null;
     IntakeLovResponse target = new IntakeLovResponse(lovs);
     List<IntakeLovEntry> actual = target.getLovEntries();
@@ -39,14 +34,14 @@ public class IntakeLovResponseTest {
   }
 
   @Test
-  public void setLovEntries_Args__List() throws Exception {
+  public void setLovEntries_Args__List() {
     List<IntakeLovEntry> lovs = new ArrayList<IntakeLovEntry>();
     IntakeLovResponse target = new IntakeLovResponse(lovs);
     target.setLovEntries(lovs);
   }
 
   @Test
-  public void hashCode_Args__() throws Exception {
+  public void hashCode_Args__() {
     List<IntakeLovEntry> lovs = null;
     IntakeLovResponse target = new IntakeLovResponse(lovs);
     int actual = target.hashCode();
@@ -55,7 +50,7 @@ public class IntakeLovResponseTest {
   }
 
   @Test
-  public void equals_Args__Object() throws Exception {
+  public void equals_Args__Object() {
     List<IntakeLovEntry> lovs = null;
     IntakeLovResponse target = new IntakeLovResponse(lovs);
     Object obj = null;
@@ -63,23 +58,4 @@ public class IntakeLovResponseTest {
     boolean expected = false;
     assertThat(actual, is(equalTo(expected)));
   }
-
-  @Test
-  public void main_Args__StringArray() throws Exception {
-    final List<IntakeLovEntry> lovs = new ArrayList<>();
-    lovs.add(new IntakeLovEntry("1128", "", "ADDR_TPC", "ADDRESS_TYPE", "res", "Residence", false));
-    lovs.add(new IntakeLovEntry("1823", "AK", "STATE_C", "STATE_TYPE", "ak", "Alaska", true));
-
-    IntakeLovResponse response = new IntakeLovResponse(lovs);
-    final ObjectMapper mapper = ObjectMapperUtils.createObjectMapper();
-
-    String jsonString = null;
-    try {
-      jsonString = mapper.writeValueAsString(response);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    // LOGGER.info(jsonString);
-  }
-
 }
