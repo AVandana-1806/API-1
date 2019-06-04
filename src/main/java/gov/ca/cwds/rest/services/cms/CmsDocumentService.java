@@ -35,8 +35,6 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CmsDocumentService.class);
 
-  private static final String PRIMARY_KEY = "CmsDocumentService: primaryKey={}";
-
   private CmsDocumentDao dao;
 
   /**
@@ -65,8 +63,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument find(String primaryKey) {
-    LOGGER.info("CmsDocumentService.find");
-    LOGGER.info(PRIMARY_KEY, primaryKey);
+    LOGGER.info("CmsDocumentService.find by primaryKey {}", primaryKey);
     CmsDocument retval = null;
 
     gov.ca.cwds.data.persistence.cms.CmsDocument doc = dao.find(primaryKey);
@@ -127,7 +124,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
       retval = new CmsDocument(doc);
       retval.setBase64Blob(base64Doc);
     } catch (Exception e) {
-      LOGGER.error("FAILED TO CREATE DOCUMENT! {}", request);
+      LOGGER.error("FAILED TO CREATE DOCUMENT! {}", request, e);
       throw new ServiceException("FAILED TO CREATE DOCUMENT! {}" + request, e);
     }
 
@@ -142,8 +139,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument update(String primaryKey, CmsDocument request) {
-    LOGGER.info("CmsDocumentService.update");
-    LOGGER.info(PRIMARY_KEY, primaryKey);
+    LOGGER.info("CmsDocumentService.update by primaryKey {}", primaryKey);
     CmsDocument retval = null;
 
     gov.ca.cwds.data.persistence.cms.CmsDocument doc = dao.find(primaryKey);
@@ -273,8 +269,7 @@ public class CmsDocumentService implements TypedCrudsService<String, CmsDocument
    */
   @Override
   public CmsDocument delete(String primaryKey) {
-    LOGGER.info("CmsDocumentService.delete");
-    LOGGER.info(PRIMARY_KEY, primaryKey);
+    LOGGER.info("CmsDocumentService.delete by primaryKey {}", primaryKey);
     CmsDocument retval = null;
 
     try {

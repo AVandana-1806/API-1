@@ -45,7 +45,7 @@ public class RelationshipDao extends CrudsDaoImpl<Relationship> {
               .setParameter("legacyId", legacyId);
       result = query.getSingleResult();
     } catch (NoResultException e) {
-      LOGGER.info(e.getMessage());
+      LOGGER.info("No Relationship found by legacyId {}", legacyId, e.getMessage());
     }
     return result;
   }

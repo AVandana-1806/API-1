@@ -119,7 +119,6 @@ public class StaffPersonIdRetriever {
     } catch (JsonProcessingException e) {
       LOGGER.error("======= Staff ID missing in PerryUserIdentity", e);
     }
-
     LOGGER.error("======= Staff ID missing in PerryUserIdentity: {}", json);
   }
 }

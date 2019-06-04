@@ -40,7 +40,7 @@ public class ApiRealm extends JwtRealm {
     try {
       userIdentity = objectMapper.readValue(json, PerryUserIdentity.class);
     } catch (IOException e) { // NOSONAR
-      LOGGER.info("Could not map user identity, mapping does not apply: {}", e.getMessage());
+      LOGGER.error("Could not map user identity, mapping does not apply: {}", e.getMessage());
       userIdentity = new PerryUserIdentity();
       userIdentity.setUser(json);
     }

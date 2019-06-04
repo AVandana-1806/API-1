@@ -42,8 +42,7 @@ final class RequestContextCallbackRegistry implements ApiMarker {
     try {
       callback.startRequest(ctx);
     } catch (Exception e) {
-      LOGGER.trace("OOPS!", e);
-      LOGGER.error("START REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName());
+      LOGGER.error("START REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName(), e);
     }
   }
 
@@ -51,8 +50,7 @@ final class RequestContextCallbackRegistry implements ApiMarker {
     try {
       callback.endRequest(ctx);
     } catch (Exception e) {
-      LOGGER.trace("OOPS!", e);
-      LOGGER.error("STOP REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName());
+      LOGGER.error("STOP REQUEST FAILED ON CALLBACK! {}", callback.getClass().getName(), e);
     }
   }
 

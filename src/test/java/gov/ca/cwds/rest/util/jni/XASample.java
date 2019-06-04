@@ -213,7 +213,7 @@ public class XASample {
       // here to wait until the connection 2 work is done.
 
       try {
-        LOGGER.info("try");
+        LOGGER.debug("try");
         // Now prepare both branches of the distributed transaction.
         // Both branches must prepare successfully before changes can be committed.
         // If the distributed transaction fails, an XAException is thrown.

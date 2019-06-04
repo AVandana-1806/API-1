@@ -53,9 +53,9 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
       q.setCacheable(true);
       q.setHibernateFlushMode(FlushMode.MANUAL);
       return q.list();
-    } catch (HibernateException h) {
-      LOGGER.error("ERROR FINDING META! {}", h.getMessage(), h);
-      throw new DaoException(h);
+    } catch (HibernateException e) {
+      LOGGER.error("ERROR FINDING META! {}", e.getMessage(), e);
+      throw new DaoException(e);
     }
   }
 
@@ -74,9 +74,9 @@ public class IntakeLovDao extends BaseDaoImpl<IntakeLov> {
           .setCacheable(false).setHibernateFlushMode(FlushMode.MANUAL)
           .setShort("legacySystemCodeId", legacySystemCodeId.shortValue());
       return query.getSingleResult();
-    } catch (HibernateException h) {
-      LOGGER.error("ERROR FINDING CODE! {}", h.getMessage(), h);
-      throw new DaoException(h);
+    } catch (HibernateException e) {
+      LOGGER.error("ERROR FINDING CODE! {}", e.getMessage(), e);
+      throw new DaoException(e);
     }
   }
 
