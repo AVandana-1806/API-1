@@ -3,14 +3,14 @@ version: ${APP_VERSION:-local}
 
 shiro:
   iniConfigs: ["file:${SHIRO_CONFIG_PATH:-config/shiro.ini}"]
-  
+
 swagger:
   templateName: swagger.mustache
   assetsPath: /static
   resourcePackage: gov.ca.cwds.rest.resources
   title: CWDS API
   description: RESTful API definitions for the CWS New System.
-  logo: images/CWDS-API-Logo-Horizontal.png  
+  logo: images/CWDS-API-Logo-Horizontal.png
   showSwagger: ${SHOW_SWAGGER:-true}
   jsonUrl: ${SWAGGER_JSON_URL:-http://localhost:8080/swagger.json}
   loginUrl: ${LOGIN_URL:-http://localhost:8090/authn/login}
@@ -151,6 +151,13 @@ xaCmsDataSourceFactory:
       portNumber: ${DB_CMS_PORT:-50000}
       databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
       driverType: 4 # Type4 connection for DB2 DataSource
+      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
+      reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
+      maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
+      maxLifetime: ${DB_CMSXA_LIFETIME:-60}
+      maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
+      borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
 
 xaCmsRsDataSourceFactory:
   autoCommitByDefault: false
@@ -196,6 +203,13 @@ xaCmsRsDataSourceFactory:
       portNumber: ${DB_CMS_PORT:-50000}
       databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
       driverType: 4 # Type4 connection for DB2 DataSource
+      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
+      reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
+      maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
+      maxLifetime: ${DB_CMSXA_LIFETIME:-60}
+      maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
+      borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
 
 xaNsDataSourceFactory:
   driverClass: org.postgresql.Driver
@@ -231,6 +245,13 @@ xaNsDataSourceFactory:
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_NS_JDBC_URL}
+      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
+      reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
+      maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
+      maxLifetime: ${DB_CMSXA_LIFETIME:-60}
+      maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
+      borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
 
 testConfig:
   path: ${TEST_FILE_PATH:-config/testConfig.yml}
@@ -238,21 +259,21 @@ testConfig:
 triggertables:
   laCountySpecificCode: 19
 
-systemCodeCache: 
+systemCodeCache:
   preLoad: ${PRE_LOAD_SYSTEM_CODE_CACHE:-true}
   refreshAfter: ${SYSTEM_CODE_CACHE_REFRESH_AFTER:-31536000}
- 
+
 webSecurity:
   httpResponseSecurityHeaders:
     # Prevent MIMI sniffing
     X-Content-Type-Options: nosniff
-    
+
     # Prevent click-jacking
     X-Frame-Options: deny
-    
+
     # Prevent cross site scripting
     X-XSS-Protection: 1; mode=block
-    
+
     # Prevent everything other than same origin
     Content-Security-Policy: default-src 'self' 'unsafe-inline';
 
@@ -264,15 +285,15 @@ sundial:
   start-scheduler-on-load: true
   global-lock-on-load: false
   tasks: [startjob, stopjob, addcronjobtrigger]
- 
+
 server:
   applicationConnectors:
-  - type: http 
+  - type: http
     port: ${APP_STD_PORT:-8080}
   adminConnectors:
   - type: http
     port: ${APP_ADMIN_PORT:-8081}
-    
+
   requestLog:
     appenders:
       - type: console
