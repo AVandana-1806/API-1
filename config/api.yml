@@ -151,7 +151,7 @@ xaCmsDataSourceFactory:
       portNumber: ${DB_CMS_PORT:-50000}
       databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
       driverType: 4 # Type4 connection for DB2 DataSource
-      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
       maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
@@ -203,7 +203,7 @@ xaCmsRsDataSourceFactory:
       portNumber: ${DB_CMS_PORT:-50000}
       databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
       driverType: 4 # Type4 connection for DB2 DataSource
-      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
       maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
@@ -245,7 +245,7 @@ xaNsDataSourceFactory:
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
   xaProperties:
       url: ${DB_NS_JDBC_URL}
-      minPoolSize=: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
+      minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
       maxIdleTime: ${DB_CMSXA_MAX_IDLE:-30}
