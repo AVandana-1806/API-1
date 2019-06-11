@@ -115,8 +115,6 @@ xaCmsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
-  xaProperties:
-      url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -124,6 +122,8 @@ xaCmsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      url: jdbc:h2:mem:cwsint;INIT=create schema if not exists cwsint\;set schema cwsint
 
 xaCmsRsDataSourceFactory:
   autoCommitByDefault: false
@@ -156,8 +156,6 @@ xaCmsRsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
-  xaProperties:
-      url: jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -165,6 +163,8 @@ xaCmsRsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      url: jdbc:h2:mem:cwsrs1;INIT=create schema if not exists cwsrs1\;set schema cwsrs1
 
 xaNsDataSourceFactory:
   driverClass: org.h2.Driver
@@ -196,8 +196,6 @@ xaNsDataSourceFactory:
       hibernate.cache.use_second_level_cache: false
       connection.timerLevelForQueryTimeOut: 2
       connection.blockingReadConnectionTimeout: 120
-  xaProperties:
-      url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -205,6 +203,8 @@ xaNsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      url: jdbc:h2:mem:intakens;INIT=create schema if not exists intakens\;set schema intakens
 
 
 elasticsearch:
