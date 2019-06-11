@@ -145,12 +145,6 @@ xaCmsDataSourceFactory:
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-  xaProperties:
-      # Properties for DB2XADataSource
-      serverName: ${DB_CMS_HOST:-localhost}
-      portNumber: ${DB_CMS_PORT:-50000}
-      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
-      driverType: 4 # Type4 connection for DB2 DataSource
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -158,6 +152,12 @@ xaCmsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      # Properties for DB2XADataSource
+      serverName: ${DB_CMS_HOST:-localhost}
+      portNumber: ${DB_CMS_PORT:-50000}
+      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
+      driverType: 4 # Type4 connection for DB2 DataSource
 
 xaCmsRsDataSourceFactory:
   autoCommitByDefault: false
@@ -197,12 +197,6 @@ xaCmsRsDataSourceFactory:
       hibernate.cache.provider_class: org.hibernate.cache.NoCacheProvider
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-  xaProperties:
-      # Properties for DB2XADataSource
-      serverName: ${DB_CMS_HOST:-localhost}
-      portNumber: ${DB_CMS_PORT:-50000}
-      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
-      driverType: 4 # Type4 connection for DB2 DataSource
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -210,6 +204,12 @@ xaCmsRsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      # Properties for DB2XADataSource
+      serverName: ${DB_CMS_HOST:-localhost}
+      portNumber: ${DB_CMS_PORT:-50000}
+      databaseName: ${DB_CMS_SERVICE:-DB0TDEV}
+      driverType: 4 # Type4 connection for DB2 DataSource
 
 xaNsDataSourceFactory:
   driverClass: org.postgresql.Driver
@@ -243,8 +243,6 @@ xaNsDataSourceFactory:
       connection.blockingReadConnectionTimeout: 90
       # hibernate.connection.provider_disables_autocommit: true
       # hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
-  xaProperties:
-      url: ${DB_NS_JDBC_URL}
       minPoolSize: ${DB_CMSXA_CP_INITIAL_SIZE:-2}
       maxPoolSize: ${DB_CMSXA_CP_MAX_SIZE:-20}
       reapTimeout: ${DB_CMSXA_REAP_TIMEOUT:-300}
@@ -252,6 +250,8 @@ xaNsDataSourceFactory:
       maxLifetime: ${DB_CMSXA_LIFETIME:-60}
       maintenanceInterval: ${DB_CMSXA__MAINT_INTERVAL:-60}
       borrowConnectionTimeout: ${DB_CMSXA_BORROW_TIME:-30}
+  xaProperties:
+      url: ${DB_NS_JDBC_URL}
 
 testConfig:
   path: ${TEST_FILE_PATH:-config/testConfig.yml}
