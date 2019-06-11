@@ -80,6 +80,7 @@ node ('tpt4-slave'){
        }
 	}
 
+
 	
     stage('SonarQube analysis'){
         lint(rtGradle)
