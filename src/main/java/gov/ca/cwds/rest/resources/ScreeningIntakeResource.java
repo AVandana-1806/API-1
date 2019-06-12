@@ -14,8 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -43,8 +41,6 @@ import io.swagger.annotations.ApiResponses;
 @Path(value = RESOURCE_INTAKE_SCREENINGS)
 @Produces(MediaType.APPLICATION_JSON)
 public class ScreeningIntakeResource {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningIntakeResource.class);
 
   private ScreeningService screeningService;
 
@@ -76,7 +72,6 @@ public class ScreeningIntakeResource {
       response = Screening.class)
   public Screening get(@PathParam("id") @ApiParam(required = true,
       value = "The id of the Screening to update") String id) {
-    LOGGER.info("GET screening: id: {}", id);
     return screeningService.getScreening(id);
   }
 
