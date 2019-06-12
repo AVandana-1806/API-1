@@ -271,7 +271,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.probationYouth = participantEntity.getProbationYouth();
   }
 
-  protected String cleanNonPrintableChars(String input) {
+  protected final String cleanNonPrintableChars(String input) {
     return StringUtils.isNotBlank(input) ? input.replaceAll("[^a-zA-Z0-9 '-]", "") : "";
   }
 
