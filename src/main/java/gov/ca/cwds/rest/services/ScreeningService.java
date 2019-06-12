@@ -169,7 +169,6 @@ public class ScreeningService implements CrudsService {
    */
   public Screening getScreening(String id) {
     LOGGER.warn(">>>>>>>>>> getScreening(): id: {}", id);
-    System.out.println(">>>>>>>>>> getScreening(): id: " + id);
 
     final ScreeningEntity screeningEntity = screeningDao.find(id);
     if (screeningEntity == null) {
