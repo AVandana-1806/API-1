@@ -1,20 +1,22 @@
 package gov.ca.cwds.rest.services;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.inject.Inject;
+
 import gov.ca.cwds.rest.api.domain.LegacyDescriptor;
 import gov.ca.cwds.rest.api.domain.ParticipantIntakeApi;
 import gov.ca.cwds.rest.services.screening.participant.ParticipantTransformer;
-import org.apache.commons.lang3.StringUtils;
 
 public class ParticipantService {
   ParticipantTransformer participantTransformer;
 
   @Inject
-  public ParticipantService(ParticipantTransformer participantTransformer){
+  public ParticipantService(ParticipantTransformer participantTransformer) {
     this.participantTransformer = participantTransformer;
   }
 
-  public ParticipantIntakeApi findByLegacyId(String legacyId){
+  public ParticipantIntakeApi findByLegacyId(String legacyId) {
     if (StringUtils.isBlank(legacyId)) {
       throw new ServiceException("NULL argument for CREATE participant");
     }
@@ -26,4 +28,5 @@ public class ParticipantService {
     queryParticipant.setLegacyDescriptor(legacyDescriptor);
     return participantTransformer.loadParticipant(queryParticipant);
   }
+
 }
