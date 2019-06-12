@@ -12,20 +12,17 @@ import static org.hibernate.annotations.CascadeType.REMOVE;
 import static org.hibernate.annotations.CascadeType.REPLICATE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.rest.api.ApiException;
-import gov.ca.cwds.rest.api.domain.DomainChef;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceException;
 import javax.persistence.Table;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.EqualsExclude;
@@ -42,6 +39,13 @@ import org.hibernate.annotations.FlushModeType;
 import org.hibernate.annotations.NamedNativeQuery;
 import org.hibernate.annotations.NamedQuery;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.rest.api.ApiException;
+import gov.ca.cwds.rest.api.domain.DomainChef;
+
 /**
  * {@link PersistentObject} representing a Client.
  *
@@ -51,14 +55,11 @@ import org.hibernate.annotations.NamedQuery;
     query = "FROM Client WHERE sensitivityIndicator = 'N' AND soc158SealedClientIndicator = 'N'")
 @NamedQuery(name = "gov.ca.cwds.data.persistence.cms.Client.findByIds",
     query = "FROM Client WHERE id IN :ids")
-@NamedNativeQuery(
-    name = "gov.ca.cwds.data.persistence.cms.Client.findProbationYouthById",
-    query = "\nSELECT clt.* \n"
-        + " FROM {h-schema}CLIENT_T clt \n"
+@NamedNativeQuery(name = "gov.ca.cwds.data.persistence.cms.Client.findProbationYouthById",
+    query = "\nSELECT clt.* \n" + " FROM {h-schema}CLIENT_T clt \n"
         + " INNER JOIN {h-schema}CASE_T cas \n"
         + "   ON cas.FKCHLD_CLT = clt.IDENTIFIER AND cas.END_DT IS NULL AND RSP_AGY_CD = 'P' \n"
-        + " WHERE clt.IDENTIFIER = :id \n"
-        + " FOR READ ONLY WITH UR",
+        + " WHERE clt.IDENTIFIER = :id \n" + " FOR READ ONLY WITH UR",
     resultClass = Client.class, readOnly = true, cacheable = true, flushMode = FlushModeType.MANUAL)
 
 @Entity
@@ -381,6 +382,29 @@ public class Client extends BaseClient {
     } catch (ApiException e) {
       throw new PersistenceException(e);
     }
+  }
+
+  // ==================================
+  // NON-PRINTABLE CHARS:
+  // ==================================
+
+  protected String cleanNonPrintableChars(String input) {
+    return StringUtils.isNotBlank(input) ? input.replaceAll("[^a-zA-Z0-9 '-]", "") : null;
+  }
+
+  @Override
+  public void setCommonFirstName(String commonFirstName) {
+    super.setCommonFirstName(cleanNonPrintableChars(commonFirstName));
+  }
+
+  @Override
+  public void setCommonLastName(String commonLastName) {
+    super.setCommonLastName(cleanNonPrintableChars(commonLastName));
+  }
+
+  @Override
+  public void setCommonMiddleName(String commonMiddleName) {
+    super.setCommonMiddleName(cleanNonPrintableChars(commonMiddleName));
   }
 
   /**
