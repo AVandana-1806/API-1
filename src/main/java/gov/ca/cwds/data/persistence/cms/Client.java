@@ -389,7 +389,7 @@ public class Client extends BaseClient {
   // ==================================
 
   protected String cleanNonPrintableChars(String input) {
-    return StringUtils.isNotBlank(input) ? input.replaceAll("[^a-zA-Z0-9 '-]", "") : null;
+    return StringUtils.isNotBlank(input) ? input.replaceAll("[^a-zA-Z0-9 '-]", "") : "";
   }
 
   @Override
