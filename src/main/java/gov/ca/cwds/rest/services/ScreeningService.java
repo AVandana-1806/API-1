@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -57,8 +55,6 @@ import gov.ca.cwds.rest.services.screening.participant.ParticipantService;
  * @author CWDS API Team
  */
 public class ScreeningService implements CrudsService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScreeningService.class);
 
   @Inject
   private AllegationIntakeDao allegationDao;
@@ -168,8 +164,6 @@ public class ScreeningService implements CrudsService {
    * @return the Screening
    */
   public Screening getScreening(String id) {
-    LOGGER.warn(">>>>>>>>>> getScreening(): id: {}", id);
-
     final ScreeningEntity screeningEntity = screeningDao.find(id);
     if (screeningEntity == null) {
       throw new ServiceException("Screening with id=" + id + " is not found");
