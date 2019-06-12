@@ -117,8 +117,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   private Boolean estimatedDob;
 
   /*
-   * Workafoung for fields containing raw json races ethnicity
-   *
+   * Workaround for fields containing raw JSON races ethnicity
    */
   @ApiModelProperty(required = true, value = "Races",
       example = "['White', 'Black or African American']")
