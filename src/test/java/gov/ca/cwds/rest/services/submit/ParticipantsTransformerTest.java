@@ -27,7 +27,6 @@ import gov.ca.cwds.rest.api.domain.cms.LegacyTable;
 /***
  * 
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("javadoc")
 public class ParticipantsTransformerTest {

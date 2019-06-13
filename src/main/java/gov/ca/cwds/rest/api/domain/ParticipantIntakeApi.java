@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -116,8 +117,7 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   private Boolean estimatedDob;
 
   /*
-   * Workafoung for fields containing raw json races ethnicity
-   *
+   * Workaround for fields containing raw JSON races ethnicity
    */
   @ApiModelProperty(required = true, value = "Races",
       example = "['White', 'Black or African American']")
@@ -214,13 +214,12 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
       String ssn, Date dateOfBirth, Date dateOfDeath, List<String> languages, String races,
       String ethnicity, String screeningId, Set<String> roles, List<AddressIntakeApi> addresses,
       List<PhoneNumber> phoneNumbers, Boolean sealed, Boolean sensitive) {
-
     super();
     this.id = id;
-    this.firstName = firstName;
-    this.middleName = middleName;
-    this.lastName = lastName;
-    this.nameSuffix = nameSuffix;
+    this.firstName = cleanNonPrintableChars(firstName);
+    this.middleName = cleanNonPrintableChars(middleName);
+    this.lastName = cleanNonPrintableChars(lastName);
+    this.nameSuffix = cleanNonPrintableChars(nameSuffix);
     this.gender = gender;
     this.ssn = ssn;
     this.dateOfBirth = dateOfBirth != null ? new Date(dateOfBirth.getTime()) : null;
@@ -250,10 +249,10 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   public ParticipantIntakeApi(ParticipantEntity participantEntity) {
     super();
     this.id = participantEntity.getId();
-    this.firstName = participantEntity.getFirstName();
-    this.middleName = participantEntity.getMiddleName();
-    this.lastName = participantEntity.getLastName();
-    this.nameSuffix = participantEntity.getNameSuffix();
+    this.firstName = cleanNonPrintableChars(participantEntity.getFirstName());
+    this.middleName = cleanNonPrintableChars(participantEntity.getMiddleName());
+    this.lastName = cleanNonPrintableChars(participantEntity.getLastName());
+    this.nameSuffix = cleanNonPrintableChars(participantEntity.getNameSuffix());
     this.gender = participantEntity.getGender();
     this.ssn = participantEntity.getSsn();
     this.dateOfBirth = participantEntity.getDateOfBirth();
@@ -270,6 +269,10 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     this.sealed = participantEntity.getSealed();
     this.sensitive = participantEntity.getSensitive();
     this.probationYouth = participantEntity.getProbationYouth();
+  }
+
+  protected final String cleanNonPrintableChars(String input) {
+    return StringUtils.isNotBlank(input) ? input.replaceAll("[^a-zA-Z0-9 '-]", "") : "";
   }
 
   /**
@@ -374,19 +377,19 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   }
 
   public void setFirstName(String firstName) {
-    this.firstName = firstName;
+    this.firstName = cleanNonPrintableChars(firstName);
   }
 
   public void setMiddleName(String middleName) {
-    this.middleName = middleName;
+    this.middleName = cleanNonPrintableChars(middleName);
   }
 
   public void setLastName(String lastName) {
-    this.lastName = lastName;
+    this.lastName = cleanNonPrintableChars(lastName);
   }
 
   public void setNameSuffix(String nameSuffix) {
-    this.nameSuffix = nameSuffix;
+    this.nameSuffix = cleanNonPrintableChars(nameSuffix);
   }
 
   public void setGender(String gender) {
@@ -446,7 +449,6 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
    * @return the middleName
    */
   public String getMiddleName() {
-
     return middleName;
   }
 
@@ -484,7 +486,6 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
   public Date getDateOfBirth() {
     return freshDate(dateOfBirth);
   }
-
 
   /**
    * @return the dateOfDeath
@@ -568,11 +569,9 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
     getPhoneNumbers().addAll(phoneNumbers);
   }
 
-
   /**
    * @return the raceAndEthnicity
    */
-
   public String getApproximateAge() {
     return approximateAge;
   }
