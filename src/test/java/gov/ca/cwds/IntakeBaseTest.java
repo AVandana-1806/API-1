@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.HibernateStatisticsConsumer;
-import gov.ca.cwds.rest.core.Api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -27,8 +25,10 @@ import org.junit.ClassRule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.ca.cwds.data.HibernateStatisticsConsumerRegistry.HibernateStatisticsConsumer;
 import gov.ca.cwds.rest.ApiApplicationTestSupport;
 import gov.ca.cwds.rest.ApiConfiguration;
+import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.test.support.BaseApiTest;
 import gov.ca.cwds.test.support.BaseDropwizardApplication;
 import io.dropwizard.jackson.Jackson;
@@ -88,7 +88,6 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
   /*
    * methods for testing DB usage
    */
-
   private static HibernateStatisticsConsumer createTestHibernateStatisticsConsumer(
       final String bundleTag) {
     return new HibernateStatisticsConsumer() {
@@ -126,7 +125,7 @@ public abstract class IntakeBaseTest extends BaseApiTest<ApiConfiguration> {
     assertTrue(hibernateStatisticsMap.get(bundleTag).getQueryExecutionCount() <= maxCount);
   }
 
-  protected void assertDatasourceNotTouched(String ... bundleTags) {
+  protected void assertDatasourceNotTouched(String... bundleTags) {
     for (String bundleTag : bundleTags) {
       assertNull(hibernateStatisticsMap.get(bundleTag));
     }

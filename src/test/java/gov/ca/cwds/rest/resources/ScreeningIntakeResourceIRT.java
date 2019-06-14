@@ -23,10 +23,10 @@ public class ScreeningIntakeResourceIRT extends IntakeBaseTest {
 
   @Test
   public void testGet() throws Exception {
-    String actualJson = getStringResponse(doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52"));
-    String expectedResponse =
+    final String actualJson = getStringResponse(doGetCall(RESOURCE_INTAKE_SCREENINGS + "/52"));
+    final String expectedResponse =
         fixture("fixtures/gov/ca/cwds/rest/resources/screening-get-response.json");
-    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+    JSONAssert.assertEquals(expectedResponse, actualJson, JSONCompareMode.LENIENT);
   }
 
   @Test
