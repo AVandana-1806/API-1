@@ -92,8 +92,10 @@ public class WorkFerbUserInfo implements Work {
         // platform.
         db2con.setDB2ClientUser(userId);
         db2con.setDB2ClientAccountingInformation(staffId);
-        db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
         db2con.setDB2ClientWorkstation(WORKSTATION);
+
+        // DS-3128: set by environment in JDBC URL:
+        // db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
 
         // Verify that DB2 "special registers" for client user info are indeed set.
         // Ronald Reagan: "Trust -- but verify."
