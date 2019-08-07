@@ -115,7 +115,7 @@ node ('tpt4-slave'){
 
     stage('Deploy to PreInt-Integration') {
         withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          sh "curl -u $jenkinsauth 'http://jenkins.mgmt.cwds.io:8080/job/PreInt-Integration/job/deploy-ferb/buildWithParameters?token=trigger-ferb-deploy&version=${newTag}'"
+          sh "curl -u $jenkinsauth 'https://jenkins.mgmt.cwds.io/job/PreInt-Integration/job/deploy-ferb/buildWithParameters?token=trigger-ferb-deploy&version=${newTag}'"
        }
     }
 
