@@ -87,13 +87,15 @@ public class WorkFerbUserInfo implements Work {
           db2con = (DB2Connection) con;
         }
 
-        // Yes, the DB2 methods are deprecated, but underlying properties *differ* by platform.
+        // Yes, the DB2 methods are deprecated, and underlying properties *differ* by platform.
         // These deprecated methods consistently set the right target property, regardless of
         // platform.
         db2con.setDB2ClientUser(userId);
         db2con.setDB2ClientAccountingInformation(staffId);
-        db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
         db2con.setDB2ClientWorkstation(WORKSTATION);
+
+        // DS-3128: set by environment in JDBC URL:
+        // db2con.setDB2ClientApplicationInformation(PROGRAM_NAME);
 
         // Verify that DB2 "special registers" for client user info are indeed set.
         // Ronald Reagan: "Trust -- but verify."
@@ -138,7 +140,7 @@ public class WorkFerbUserInfo implements Work {
 
         // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
       } catch (Exception e) {
-        LOGGER.warn("Unsupported client info: {}", e.getMessage(), e);
+        LOGGER.warn("UNSUPPORTED CLIENT INFO: {}", e.getMessage(), e);
       }
     }
   }
