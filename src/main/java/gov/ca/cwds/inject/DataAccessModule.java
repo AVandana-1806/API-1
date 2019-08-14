@@ -367,18 +367,18 @@ public class DataAccessModule extends AbstractModule {
   /**
    * XA pooled datasource factory for CMS DB2, replicated schema.
    */
-  private final FerbHibernateBundle xaCmsRsHibernateBundle =
-      new FerbHibernateBundle(ImmutableList.of(), new ApiSessionFactoryFactory()) {
-        @Override
-        public PooledDataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
-          return configuration.getXaCmsRsDataSourceFactory();
-        }
+  private final FerbHibernateBundle xaCmsRsHibernateBundle = new FerbHibernateBundle(
+      ImmutableList.of(), new ApiSessionFactoryFactory(getTraceLogService())) {
+    @Override
+    public PooledDataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
+      return configuration.getXaCmsRsDataSourceFactory();
+    }
 
-        @Override
-        public String name() {
-          return DS_XA_CMS_RS;
-        }
-      };
+    @Override
+    public String name() {
+      return DS_XA_CMS_RS;
+    }
+  };
 
   /**
    * XA pooled datasource factory for NS PostgreSQL.
