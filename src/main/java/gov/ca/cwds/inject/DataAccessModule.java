@@ -7,6 +7,9 @@ import static gov.ca.cwds.rest.core.Api.DS_XA_CMS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_CMS_RS;
 import static gov.ca.cwds.rest.core.Api.DS_XA_NS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.SystemException;
 
 import org.hibernate.SessionFactory;
@@ -115,6 +118,12 @@ import gov.ca.cwds.rest.services.referentialintegrity.RIGovernmentOrganizationCr
 import gov.ca.cwds.rest.services.referentialintegrity.RIReferral;
 import gov.ca.cwds.rest.services.referentialintegrity.RIReferralClient;
 import gov.ca.cwds.rest.services.referentialintegrity.RIReporter;
+import gov.ca.cwds.tracelog.HibernateTraceLogFilter;
+import gov.ca.cwds.tracelog.SimpleTraceLogRecordAccessDao;
+import gov.ca.cwds.tracelog.SimpleTraceLogSearchQueryDao;
+import gov.ca.cwds.tracelog.TraceLogFilter;
+import gov.ca.cwds.tracelog.TraceLogService;
+import gov.ca.cwds.tracelog.TraceLogServiceAsync;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -135,6 +144,16 @@ public class DataAccessModule extends AbstractModule {
   }
 
   private final PaperTrailInterceptor paperTrailInterceptor = new PaperTrailInterceptor();
+
+  private final TraceLogService traceLogService;
+
+  {
+    LOGGER.warn("DataAccessModule: create Trace Log service");
+    final List<TraceLogFilter> filters = new ArrayList<>();
+    filters.add(new HibernateTraceLogFilter());
+    traceLogService = new TraceLogServiceAsync(new SimpleTraceLogSearchQueryDao(),
+        new SimpleTraceLogRecordAccessDao(), filters, 2000L);
+  }
 
   // CMS:
   private final ImmutableList<Class<?>> cmsEntities = ImmutableList.<Class<?>>builder()
@@ -276,8 +295,19 @@ public class DataAccessModule extends AbstractModule {
     LOGGER.warn("DataAccessModule: static point 2");
   }
 
+  @Provides
+  @Singleton
+  public TraceLogService getTraceLogService() {
+    return traceLogService;
+  }
+
+  static {
+    LOGGER.warn("DataAccessModule: static point 3");
+  }
+
   private final HibernateBundle<ApiConfiguration> cmsHibernateBundle =
-      new HibernateBundle<ApiConfiguration>(cmsEntities, new ApiSessionFactoryFactory()) {
+      new HibernateBundle<ApiConfiguration>(cmsEntities,
+          new ApiSessionFactoryFactory(getTraceLogService())) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
@@ -305,7 +335,8 @@ public class DataAccessModule extends AbstractModule {
       };
 
   private final HibernateBundle<ApiConfiguration> rsHibernateBundle =
-      new HibernateBundle<ApiConfiguration>(ImmutableList.of(), new ApiSessionFactoryFactory()) {
+      new HibernateBundle<ApiConfiguration>(ImmutableList.of(),
+          new ApiSessionFactoryFactory(getTraceLogService())) {
         @Override
         public DataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
           return configuration.getRsDataSourceFactory();
@@ -321,7 +352,7 @@ public class DataAccessModule extends AbstractModule {
    * XA pooled datasource factory for CMS DB2, transactional schema.
    */
   private final FerbHibernateBundle xaCmsHibernateBundle =
-      new FerbHibernateBundle(cmsEntities, new ApiSessionFactoryFactory()) {
+      new FerbHibernateBundle(cmsEntities, new ApiSessionFactoryFactory(getTraceLogService())) {
         @Override
         public PooledDataSourceFactory getDataSourceFactory(ApiConfiguration configuration) {
           return configuration.getXaCmsDataSourceFactory();
@@ -366,7 +397,7 @@ public class DataAccessModule extends AbstractModule {
       };
 
   static {
-    LOGGER.warn("DataAccessModule: static point 3");
+    LOGGER.warn("DataAccessModule: static point 4");
   }
 
   /**
@@ -502,7 +533,7 @@ public class DataAccessModule extends AbstractModule {
   // ==========================
 
   static {
-    LOGGER.warn("DataAccessModule: static point 4");
+    LOGGER.warn("DataAccessModule: static point 5");
   }
 
   // XA transaction manager:
@@ -546,7 +577,7 @@ public class DataAccessModule extends AbstractModule {
   // ==========================
 
   static {
-    LOGGER.warn("DataAccessModule: static point 5");
+    LOGGER.warn("DataAccessModule: static point 6");
   }
 
   @Provides
@@ -581,7 +612,7 @@ public class DataAccessModule extends AbstractModule {
   // ==========================
 
   static {
-    LOGGER.warn("DataAccessModule: static point 6");
+    LOGGER.warn("DataAccessModule: static point 7");
   }
 
   @Provides
@@ -623,7 +654,7 @@ public class DataAccessModule extends AbstractModule {
   }
 
   static {
-    LOGGER.warn("DataAccessModule: static point 7");
+    LOGGER.warn("DataAccessModule: static point 8");
   }
 
   @Provides
