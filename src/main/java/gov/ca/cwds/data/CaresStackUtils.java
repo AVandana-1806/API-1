@@ -28,7 +28,8 @@ public class CaresStackUtils {
       try {
         final StackTraceElement[] stack = getStackTrace();
         Arrays.stream(stack, 0, stack.length - 1).forEach(x -> logger.trace("\t{}", x));
-      } catch (Exception e) {
+      } catch (Throwable e) {
+        e.printStackTrace();
         logger.error("FAILED TO LOG STACK! ", e); // how ironic
         throw e;
       }
@@ -44,7 +45,9 @@ public class CaresStackUtils {
     try {
       final StackTraceElement[] stack = getStackTrace();
       Arrays.stream(stack, 0, stack.length - 1).forEach(e -> buf.append(delim).append(e));
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      e.printStackTrace();
+      LOGGER.error("ERROR LOGGING EXCEPTION: {}", e.getMessage(), e);
       throw e;
     }
 
@@ -59,7 +62,8 @@ public class CaresStackUtils {
               && !e.getClassName().startsWith("gov.ca.cwds.rest.filters")
               && !e.getClassName().contains("$$"))
           .collect(Collectors.toList()).toArray(new StackTraceElement[0]);
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      e.printStackTrace();
       LOGGER.error("ERROR LOGGING EXCEPTION: {}", e.getMessage(), e);
       throw e;
     }
