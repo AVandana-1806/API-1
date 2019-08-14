@@ -60,6 +60,7 @@ public class CaresStackUtils {
               && !e.getClassName().contains("$$"))
           .collect(Collectors.toList()).toArray(new StackTraceElement[0]);
     } catch (Exception e) {
+      LOGGER.error("ERROR LOGGING EXCEPTION: {}", e.getMessage(), e);
       throw e;
     }
   }
