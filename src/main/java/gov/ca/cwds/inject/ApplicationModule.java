@@ -45,6 +45,7 @@ public class ApplicationModule extends AbstractModule {
       install(dataAccessModule);
 
       // Trace Log.
+      // Why doesn't Guice inject dependencies here??
       requestInjection(dataAccessModule.getDelegateTraceLogRecordAccessDao());
       requestInjection(dataAccessModule.getDelegateTraceLogSearchQueryDao());
 

@@ -149,24 +149,21 @@ public class DataAccessModule extends AbstractModule {
 
   private final PaperTrailInterceptor paperTrailInterceptor = new PaperTrailInterceptor();
 
+  // Trace Log.
   private final TraceLogService traceLogService;
   private final DelegateTraceLogRecordAccessDao delegateTraceLogRecordAccessDao;
   private final DelegateTraceLogSearchQueryDao delegateTraceLogSearchQueryDao;
 
   {
+    // Trace Log.
     LOGGER.warn("DataAccessModule: create Trace Log service");
     final List<TraceLogFilter> filters = new ArrayList<>();
     filters.add(new HibernateTraceLogFilter());
 
-    // Just log with SLF4J.
-    // traceLogService = new TraceLogServiceAsync(new SimpleTraceLogSearchQueryDao(),
-    // new SimpleTraceLogRecordAccessDao(), filters, 2000L);
-
-    // Save to Postgres.
     delegateTraceLogSearchQueryDao = new DelegateTraceLogSearchQueryDao();
     delegateTraceLogRecordAccessDao = new DelegateTraceLogRecordAccessDao();
     traceLogService = new TraceLogServiceAsync(delegateTraceLogSearchQueryDao,
-        delegateTraceLogRecordAccessDao, filters, 2000L);
+        delegateTraceLogRecordAccessDao, filters, 5000L);
   }
 
   // CMS:

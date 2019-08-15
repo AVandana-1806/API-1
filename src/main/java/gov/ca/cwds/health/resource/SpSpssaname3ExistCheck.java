@@ -41,7 +41,6 @@ public class SpSpssaname3ExistCheck implements Pingable {
     return ok;
   }
 
-
   private boolean checkIfProcedureExists(Connection con, String schema) {
     boolean ok = true;
     int count = 0;

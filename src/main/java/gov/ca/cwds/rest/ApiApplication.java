@@ -44,6 +44,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.core.Api;
 import gov.ca.cwds.rest.filters.RequestExecutionContextFilter;
 import gov.ca.cwds.rest.filters.RequestResponseLoggingFilter;
+import gov.ca.cwds.tracelog.core.TraceLogRecordAccessDao;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jetty.NonblockingServletHolder;
 import io.dropwizard.setup.Bootstrap;
@@ -153,6 +154,12 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
         .setPaperTrailDao(paperTrailDao);
     LOGGER.info("PaperTrailInterceptor: {}",
         applicationModule.getDataAccessModule().getPaperTrailInterceptor());
+
+    // Trace Log cyclic dependency:
+    final TraceLogRecordAccessDao traceLogRecordAccessDao =
+        InjectorHolder.INSTANCE.getInstance(TraceLogRecordAccessDao.class);
+    applicationModule.getDataAccessModule().getDelegateTraceLogRecordAccessDao()
+        .setDao(traceLogRecordAccessDao);
 
     final Map<String, String> env = System.getenv();
     LOGGER.info(
