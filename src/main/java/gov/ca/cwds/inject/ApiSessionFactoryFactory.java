@@ -6,8 +6,8 @@ import org.hibernate.service.ServiceRegistry;
 import com.google.inject.Inject;
 
 import gov.ca.cwds.data.ApiHibernateInterceptor;
-import gov.ca.cwds.tracelog.SimpleTraceLogService;
-import gov.ca.cwds.tracelog.TraceLogService;
+import gov.ca.cwds.tracelog.core.TraceLogService;
+import gov.ca.cwds.tracelog.simple.SimpleTraceLogService;
 import io.dropwizard.hibernate.SessionFactoryFactory;
 
 /**

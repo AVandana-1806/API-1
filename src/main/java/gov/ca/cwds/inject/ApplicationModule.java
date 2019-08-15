@@ -42,6 +42,11 @@ public class ApplicationModule extends AbstractModule {
   protected void configure() {
     dataAccessModule = new DataAccessModule(bootstrap);
     install(dataAccessModule);
+
+    // Trace Log.
+    requestInjection(dataAccessModule.getDelegateTraceLogRecordAccessDao());
+    requestInjection(dataAccessModule.getDelegateTraceLogSearchQueryDao());
+
     install(new DataAccessServicesModule());
     install(new ServicesModule());
     install(new MappingModule());

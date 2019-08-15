@@ -119,11 +119,13 @@ import gov.ca.cwds.rest.services.referentialintegrity.RIReferral;
 import gov.ca.cwds.rest.services.referentialintegrity.RIReferralClient;
 import gov.ca.cwds.rest.services.referentialintegrity.RIReporter;
 import gov.ca.cwds.tracelog.HibernateTraceLogFilter;
-import gov.ca.cwds.tracelog.SimpleTraceLogRecordAccessDao;
-import gov.ca.cwds.tracelog.SimpleTraceLogSearchQueryDao;
-import gov.ca.cwds.tracelog.TraceLogFilter;
-import gov.ca.cwds.tracelog.TraceLogService;
-import gov.ca.cwds.tracelog.TraceLogServiceAsync;
+import gov.ca.cwds.tracelog.async.TraceLogServiceAsync;
+import gov.ca.cwds.tracelog.core.TraceLogFilter;
+import gov.ca.cwds.tracelog.core.TraceLogService;
+import gov.ca.cwds.tracelog.dao.TraceLogClientViewLogDao;
+import gov.ca.cwds.tracelog.dao.TraceLogSearchQueryLogDao;
+import gov.ca.cwds.tracelog.delegate.DelegateTraceLogRecordAccessDao;
+import gov.ca.cwds.tracelog.delegate.DelegateTraceLogSearchQueryDao;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -146,13 +148,23 @@ public class DataAccessModule extends AbstractModule {
   private final PaperTrailInterceptor paperTrailInterceptor = new PaperTrailInterceptor();
 
   private final TraceLogService traceLogService;
+  private final DelegateTraceLogRecordAccessDao delegateTraceLogRecordAccessDao;
+  private final DelegateTraceLogSearchQueryDao delegateTraceLogSearchQueryDao;
 
   {
     LOGGER.warn("DataAccessModule: create Trace Log service");
     final List<TraceLogFilter> filters = new ArrayList<>();
     filters.add(new HibernateTraceLogFilter());
-    traceLogService = new TraceLogServiceAsync(new SimpleTraceLogSearchQueryDao(),
-        new SimpleTraceLogRecordAccessDao(), filters, 2000L);
+
+    // Just log with SLF4J.
+    // traceLogService = new TraceLogServiceAsync(new SimpleTraceLogSearchQueryDao(),
+    // new SimpleTraceLogRecordAccessDao(), filters, 2000L);
+
+    // Save to Postgres.
+    delegateTraceLogSearchQueryDao = new DelegateTraceLogSearchQueryDao();
+    delegateTraceLogRecordAccessDao = new DelegateTraceLogRecordAccessDao();
+    traceLogService = new TraceLogServiceAsync(delegateTraceLogSearchQueryDao,
+        delegateTraceLogRecordAccessDao, filters, 2000L);
   }
 
   // CMS:
@@ -289,7 +301,9 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.SafelySurrenderedBabiesEntity.class,
       gov.ca.cwds.data.persistence.ns.ScreeningEntity.class,
       gov.ca.cwds.data.persistence.ns.ScreeningAddressEntity.class,
-      gov.ca.cwds.data.persistence.ns.ScreeningWrapper.class).build();
+      gov.ca.cwds.data.persistence.ns.ScreeningWrapper.class,
+      gov.ca.cwds.tracelog.entity.TraceLogClientViewLog.class,
+      gov.ca.cwds.tracelog.entity.TraceLogSearchQueryLog.class).build();
 
   static {
     LOGGER.warn("DataAccessModule: static point 2");
@@ -424,6 +438,7 @@ public class DataAccessModule extends AbstractModule {
   @Override
   protected void configure() {
     LOGGER.info("configure: start");
+
     // CMS:
     bind(AddressUcDao.class);
     bind(AllegationDao.class);
@@ -525,6 +540,11 @@ public class DataAccessModule extends AbstractModule {
     bind(RIReferral.class);
     bind(RIReferralClient.class);
     bind(RIGovernmentOrganizationCrossReport.class);
+
+    // Trace Log:
+    bind(TraceLogClientViewLogDao.class);
+    bind(TraceLogSearchQueryLogDao.class);
+
     LOGGER.info("configure: done");
   }
 
@@ -664,6 +684,14 @@ public class DataAccessModule extends AbstractModule {
 
   public PaperTrailInterceptor getPaperTrailInterceptor() {
     return paperTrailInterceptor;
+  }
+
+  public DelegateTraceLogRecordAccessDao getDelegateTraceLogRecordAccessDao() {
+    return delegateTraceLogRecordAccessDao;
+  }
+
+  public DelegateTraceLogSearchQueryDao getDelegateTraceLogSearchQueryDao() {
+    return delegateTraceLogSearchQueryDao;
   }
 
 }
