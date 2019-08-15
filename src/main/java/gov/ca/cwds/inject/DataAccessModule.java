@@ -121,9 +121,11 @@ import gov.ca.cwds.rest.services.referentialintegrity.RIReporter;
 import gov.ca.cwds.tracelog.HibernateTraceLogFilter;
 import gov.ca.cwds.tracelog.async.TraceLogServiceAsync;
 import gov.ca.cwds.tracelog.core.TraceLogFilter;
+import gov.ca.cwds.tracelog.core.TraceLogRecordAccessDao;
+import gov.ca.cwds.tracelog.core.TraceLogSearchQueryDao;
 import gov.ca.cwds.tracelog.core.TraceLogService;
-import gov.ca.cwds.tracelog.dao.TraceLogClientViewLogDao;
-import gov.ca.cwds.tracelog.dao.TraceLogSearchQueryLogDao;
+import gov.ca.cwds.tracelog.dao.TraceLogRecordAccessDaoImpl;
+import gov.ca.cwds.tracelog.dao.TraceLogSearchQueryDaoImpl;
 import gov.ca.cwds.tracelog.delegate.DelegateTraceLogRecordAccessDao;
 import gov.ca.cwds.tracelog.delegate.DelegateTraceLogSearchQueryDao;
 import io.dropwizard.db.DataSourceFactory;
@@ -542,8 +544,8 @@ public class DataAccessModule extends AbstractModule {
     bind(RIGovernmentOrganizationCrossReport.class);
 
     // Trace Log:
-    bind(TraceLogClientViewLogDao.class);
-    bind(TraceLogSearchQueryLogDao.class);
+    bind(TraceLogRecordAccessDao.class).to(TraceLogRecordAccessDaoImpl.class);
+    bind(TraceLogSearchQueryDao.class).to(TraceLogSearchQueryDaoImpl.class);
 
     LOGGER.info("configure: done");
   }

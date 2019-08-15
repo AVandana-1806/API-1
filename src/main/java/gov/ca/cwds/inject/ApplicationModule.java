@@ -40,24 +40,29 @@ public class ApplicationModule extends AbstractModule {
    */
   @Override
   protected void configure() {
-    dataAccessModule = new DataAccessModule(bootstrap);
-    install(dataAccessModule);
+    try {
+      dataAccessModule = new DataAccessModule(bootstrap);
+      install(dataAccessModule);
 
-    // Trace Log.
-    requestInjection(dataAccessModule.getDelegateTraceLogRecordAccessDao());
-    requestInjection(dataAccessModule.getDelegateTraceLogSearchQueryDao());
+      // Trace Log.
+      requestInjection(dataAccessModule.getDelegateTraceLogRecordAccessDao());
+      requestInjection(dataAccessModule.getDelegateTraceLogSearchQueryDao());
 
-    install(new DataAccessServicesModule());
-    install(new ServicesModule());
-    install(new MappingModule());
-    install(new ResourcesModule());
-    install(new FiltersModule());
-    install(new AuditingModule());
-    install(new TestModule());
-    install(new HealthCheckModule());
-    install(new SecurityModule(BaseApiApplication::getInjector)
-        .addAuthorizer("client:read", ClientAbstractReadAuthorizer.class)
-        .addAuthorizer("screening.read", ScreeningAuthorizer.class));
+      install(new DataAccessServicesModule());
+      install(new ServicesModule());
+      install(new MappingModule());
+      install(new ResourcesModule());
+      install(new FiltersModule());
+      install(new AuditingModule());
+      install(new TestModule());
+      install(new HealthCheckModule());
+      install(new SecurityModule(BaseApiApplication::getInjector)
+          .addAuthorizer("client:read", ClientAbstractReadAuthorizer.class)
+          .addAuthorizer("screening.read", ScreeningAuthorizer.class));
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
 
   public DataAccessModule getDataAccessModule() {
