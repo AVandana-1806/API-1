@@ -163,7 +163,7 @@ public class DataAccessModule extends AbstractModule {
     delegateTraceLogSearchQueryDao = new DelegateTraceLogSearchQueryDao();
     delegateTraceLogRecordAccessDao = new DelegateTraceLogRecordAccessDao();
     traceLogService = new TraceLogServiceAsync(delegateTraceLogSearchQueryDao,
-        delegateTraceLogRecordAccessDao, filters, 5000L);
+        delegateTraceLogRecordAccessDao, filters, 60000L, 5000L);
   }
 
   // CMS:
