@@ -3,7 +3,6 @@ package gov.ca.cwds.rest.api.domain;
 import java.io.StringWriter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -22,8 +21,7 @@ import gov.ca.cwds.rest.api.Response;
  * @author CWDS API Team
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeName("query")
-// @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
+@JsonTypeName("")
 public class CaresSearchQuery extends ApiObjectIdentity implements Request, Response {
 
   private static final long serialVersionUID = 1L;
@@ -39,7 +37,7 @@ public class CaresSearchQuery extends ApiObjectIdentity implements Request, Resp
     this.query = query;
   }
 
-  @JsonProperty(value = "query")
+  @JsonRawValue
   public void setQuery(JsonNode jsonNode) {
     try {
       final StringWriter stringWriter = new StringWriter();
