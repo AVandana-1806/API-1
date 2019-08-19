@@ -1,9 +1,13 @@
 package gov.ca.cwds.inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
+
 import gov.ca.cwds.es.live.LiveElasticClientRequest;
 import gov.ca.cwds.es.live.LiveElasticClientResource;
 import gov.ca.cwds.es.live.LiveElasticClientService;
@@ -71,6 +75,7 @@ import gov.ca.cwds.rest.resources.cms.CmsNSReferralResource;
 import gov.ca.cwds.rest.resources.cms.GovernmentOrganizationResource;
 import gov.ca.cwds.rest.resources.contact.ContactIntakeResource;
 import gov.ca.cwds.rest.resources.contact.DeliveredServiceResource;
+import gov.ca.cwds.rest.resources.elastic.SearchQueryResource;
 import gov.ca.cwds.rest.resources.hoi.HoiCaseResource;
 import gov.ca.cwds.rest.resources.hoi.HoiReferralResource;
 import gov.ca.cwds.rest.resources.hoi.HoiScreeningResource;
@@ -124,8 +129,6 @@ import gov.ca.cwds.rest.services.investigation.PeopleService;
 import gov.ca.cwds.rest.services.investigation.SafetyAlertsService;
 import gov.ca.cwds.rest.services.investigation.contact.ContactService;
 import gov.ca.cwds.rest.services.submit.ScreeningSubmitService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Identifies all CWDS API domain resource classes (REST endpoints) and supporting service classes
@@ -188,6 +191,7 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ContactIntakeResource.class);
     bind(IntakeLovResource.class);
+    bind(SearchQueryResource.class);
 
     LOGGER.info("configure: done");
   }
@@ -396,7 +400,8 @@ public class ResourcesModule extends AbstractModule {
   @ClientParticipantServiceBackedResource
   public TypedResourceDelegate<ParticipantResourceParameters, ParticipantIntakeApi> clientParticipantServiceBackedResource(
       Injector injector) {
-    return new TypedServiceBackedResourceDelegate<>(injector.getInstance(gov.ca.cwds.rest.services.screening.participant.ParticipantService.class));
+    return new TypedServiceBackedResourceDelegate<>(injector
+        .getInstance(gov.ca.cwds.rest.services.screening.participant.ParticipantService.class));
   }
 
   @Provides

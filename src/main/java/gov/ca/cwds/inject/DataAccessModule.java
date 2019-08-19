@@ -156,7 +156,7 @@ public class DataAccessModule extends AbstractModule {
 
   {
     // Trace Log.
-    LOGGER.warn("DataAccessModule: create Trace Log service");
+    LOGGER.info("DataAccessModule: create Trace Log service");
     final List<TraceLogFilter> filters = new ArrayList<>();
     filters.add(new HibernateTraceLogFilter());
 

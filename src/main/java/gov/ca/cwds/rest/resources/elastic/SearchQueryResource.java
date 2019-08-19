@@ -1,6 +1,6 @@
 package gov.ca.cwds.rest.resources.elastic;
 
-import static gov.ca.cwds.rest.core.Api.RESOURCE_INTAKE_CONTACTS;
+import static gov.ca.cwds.rest.core.Api.RESOURCE_SEARCH_QUERY;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -25,8 +25,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@Api(value = RESOURCE_INTAKE_CONTACTS, tags = {RESOURCE_INTAKE_CONTACTS})
-@Path(value = RESOURCE_INTAKE_CONTACTS)
+@Api(value = RESOURCE_SEARCH_QUERY, tags = {RESOURCE_SEARCH_QUERY})
+@Path(value = RESOURCE_SEARCH_QUERY)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SearchQueryResource {
@@ -56,10 +56,10 @@ public class SearchQueryResource {
       @ApiResponse(code = 409, message = "Conflict - already exists"),
       @ApiResponse(code = 422, message = "Unable to validate Screening")})
   @Consumes(value = MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Creates a new contact", code = HttpStatus.SC_CREATED,
+  @ApiOperation(value = "Parses a CARES search query", code = HttpStatus.SC_CREATED,
       response = SearchQueryTerms.class)
   public Response create(@Valid @ApiParam(hidden = false, required = true,
-      value = "The contact request") CaresSearchQuery request) {
+      value = "Search query request") CaresSearchQuery request) {
     return new ResponseConverter().withCreatedResponse(searchQueryService.create(request));
   }
 }
