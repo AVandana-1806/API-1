@@ -4,13 +4,14 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import gov.ca.cwds.data.std.ApiObjectIdentity;
+import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.api.domain.ReportingDomain;
 import gov.ca.cwds.tracelog.elastic.CaresSearchQueryParser.CaresJsonField;
 import io.dropwizard.jackson.JsonSnakeCase;
 
 @JsonSnakeCase
-public class SearchQueryTerms extends ApiObjectIdentity implements Response {
+public class SearchQueryTerms extends ReportingDomain implements Request, Response {
 
   private static final long serialVersionUID = 1L;
 
