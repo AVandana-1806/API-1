@@ -16,7 +16,6 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.api.domain.CaresSearchQuery;
 import gov.ca.cwds.rest.api.domain.elastic.SearchQueryTerms;
-import gov.ca.cwds.rest.api.domain.investigation.contact.Contact;
 import gov.ca.cwds.rest.resources.converter.ResponseConverter;
 import gov.ca.cwds.rest.services.elastic.SearchQueryService;
 import io.swagger.annotations.Api;
@@ -44,7 +43,7 @@ public class SearchQueryResource {
   }
 
   /**
-   * Create a {@link Contact}.
+   * Parse a CARES Elasticsearch query.
    *
    * @param request - screening
    * @return The {@link Response}
@@ -62,4 +61,5 @@ public class SearchQueryResource {
       value = "Search query request") CaresSearchQuery request) {
     return new ResponseConverter().withCreatedResponse(searchQueryService.create(request));
   }
+
 }
