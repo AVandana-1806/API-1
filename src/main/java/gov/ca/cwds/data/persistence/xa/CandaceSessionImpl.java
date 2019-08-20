@@ -134,9 +134,9 @@ public class CandaceSessionImpl implements Session {
     if (LOGGER.isTraceEnabled()) {
       if (obj instanceof PersistentObject) {
         final PersistentObject po = (PersistentObject) obj;
-        LOGGER.info("{}: class: {}, key: {}", methodMsg, po.getClass(), po.getPrimaryKey());
+        LOGGER.trace("{}: class: {}, key: {}", methodMsg, po.getClass(), po.getPrimaryKey());
       } else {
-        LOGGER.info("{}", methodMsg);
+        LOGGER.trace("{}", methodMsg);
       }
       CaresStackUtils.logStack();
     }
@@ -174,7 +174,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void close() throws HibernateException {
-    LOGGER.info("close");
+    LOGGER.debug("close");
     if (session != null && session.isOpen()) {
       final Transaction tx = session.getTransaction();
       if (tx.isActive() && !tx.getRollbackOnly()) {
@@ -212,7 +212,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public Transaction beginTransaction() {
-    LOGGER.info("beginTransaction: XA: {}", CandaceSessionFactoryImpl.isXaTransaction());
+    LOGGER.debug("beginTransaction: XA: {}", CandaceSessionFactoryImpl.isXaTransaction());
     if (txn == null || txn.getStatus() != TransactionStatus.ACTIVE) {
       this.txn = new CandaceTransactionImpl(session.beginTransaction());
     }
@@ -585,7 +585,7 @@ public class CandaceSessionImpl implements Session {
 
   @Override
   public void delete(Object object) {
-    LOGGER.info("delete");
+    LOGGER.debug("delete");
     session.delete(object);
   }
 
