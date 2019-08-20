@@ -11,6 +11,11 @@ import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.TypedCrudsService;
 import gov.ca.cwds.tracelog.core.TraceLogService;
 
+/**
+ * Ferb search query service wraps the Trace Log search query logging service.
+ * 
+ * @author CWDS API Team
+ */
 public class SearchQueryService implements TypedCrudsService<String, CaresSearchQuery, Response> {
 
   @Inject
