@@ -17,7 +17,7 @@ public class SearchQueryTerms extends ReportingDomain implements Request, Respon
 
   private static final long serialVersionUID = 1L;
 
-  @JsonProperty("terms")
+  @JsonIgnore
   final Map<CaresJsonField, String> terms;
 
   public SearchQueryTerms(Map<CaresJsonField, String> terms) {
@@ -29,6 +29,7 @@ public class SearchQueryTerms extends ReportingDomain implements Request, Respon
     return terms;
   }
 
+  @JsonProperty("terms")
   public Map<String, String> getTermsReadable() {
     final Map<String, String> ret = new TreeMap<>();
 
