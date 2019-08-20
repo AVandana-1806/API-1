@@ -2,13 +2,19 @@ package gov.ca.cwds.rest.services.elastic;
 
 import org.apache.commons.lang3.NotImplementedException;
 
+import com.google.inject.Inject;
+
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.CaresSearchQuery;
 import gov.ca.cwds.rest.api.domain.elastic.SearchQueryTerms;
+import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.services.TypedCrudsService;
-import gov.ca.cwds.tracelog.elastic.CaresSearchQueryParser;
+import gov.ca.cwds.tracelog.core.TraceLogService;
 
 public class SearchQueryService implements TypedCrudsService<String, CaresSearchQuery, Response> {
+
+  @Inject
+  private TraceLogService traceLogService;
 
   public SearchQueryService() {
     super();
@@ -16,7 +22,8 @@ public class SearchQueryService implements TypedCrudsService<String, CaresSearch
 
   @Override
   public Response create(CaresSearchQuery request) {
-    return new SearchQueryTerms(new CaresSearchQueryParser().parse(request.getQuery()));
+    return new SearchQueryTerms(traceLogService
+        .logSearchQuery(RequestExecutionContext.instance().getUserId(), request.getQuery()));
   }
 
   @Override
