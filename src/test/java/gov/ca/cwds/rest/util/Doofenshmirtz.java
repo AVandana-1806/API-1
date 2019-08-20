@@ -57,13 +57,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.db2.jcc.am.DatabaseMetaData;
+import com.ibm.db2.jcc.DB2DatabaseMetaData;
 
 import gov.ca.cwds.ObjectMapperUtils;
 import gov.ca.cwds.data.cms.SystemCodeDao;
 import gov.ca.cwds.data.cms.SystemMetaDao;
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
-import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.rest.api.domain.cms.SystemCodeCache;
 import gov.ca.cwds.rest.filters.RequestExecutionContext;
 import gov.ca.cwds.rest.filters.RequestExecutionContextImplTest;
@@ -84,7 +83,7 @@ import gov.ca.cwds.rest.services.cms.AbstractShiroTest;
  * 
  * @author CWDS API Team
  */
-public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest {
+public class Doofenshmirtz<T> extends AbstractShiroTest {
 
   protected static final ObjectMapper MAPPER = ObjectMapperUtils.createObjectMapper();
 
@@ -102,7 +101,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
   public Transaction transaction;
   public StandardServiceRegistry reg;
   public ConnectionProvider cp;
-  public DatabaseMetaData meta;
+  public DB2DatabaseMetaData meta;
   public Connection con;
   public Statement stmt;
   public ResultSet rs;
@@ -161,7 +160,7 @@ public class Doofenshmirtz<T extends PersistentObject> extends AbstractShiroTest
     stmt = mock(Statement.class);
     em = mock(EntityManager.class);
     proc = mock(ProcedureCall.class);
-    meta = mock(DatabaseMetaData.class);
+    meta = mock(DB2DatabaseMetaData.class);
 
     when(sfo.getBatchFetchStyle()).thenReturn(BatchFetchStyle.DYNAMIC);
     settings = new Settings(sfo, "CWSNS1", "CWSNS1");
