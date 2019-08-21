@@ -301,8 +301,8 @@ public class DataAccessModule extends AbstractModule {
       gov.ca.cwds.data.persistence.ns.ScreeningEntity.class,
       gov.ca.cwds.data.persistence.ns.ScreeningAddressEntity.class,
       gov.ca.cwds.data.persistence.ns.ScreeningWrapper.class,
-      gov.ca.cwds.tracelog.entity.TraceLogClientViewLog.class,
-      gov.ca.cwds.tracelog.entity.TraceLogSearchQueryLog.class).build();
+      gov.ca.cwds.tracelog.entity.TraceLogClientViewEntry.class,
+      gov.ca.cwds.tracelog.entity.TraceLogSearchQueryEntry.class).build();
 
   static {
     LOGGER.warn("DataAccessModule: static point 2");
