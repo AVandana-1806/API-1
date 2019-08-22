@@ -84,6 +84,7 @@ public interface RequestExecutionContext extends ApiMarker, TraceLogRequestConte
    * 
    * @return The user id
    */
+  @Override
   String getUserId();
 
   /**
@@ -134,6 +135,11 @@ public interface RequestExecutionContext extends ApiMarker, TraceLogRequestConte
    */
   long getThreadId();
 
+  /**
+   * Get the user's current request id.
+   * 
+   * @return current request id
+   */
   String getRequestId();
 
   /**
