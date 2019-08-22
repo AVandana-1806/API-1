@@ -18,7 +18,7 @@ public class SearchQueryTerms extends ReportingDomain implements Request, Respon
   private static final long serialVersionUID = 1L;
 
   @JsonIgnore
-  final Map<CaresJsonField, String> terms;
+  private final Map<CaresJsonField, String> terms;
 
   public SearchQueryTerms(Map<CaresJsonField, String> terms) {
     this.terms = terms;
