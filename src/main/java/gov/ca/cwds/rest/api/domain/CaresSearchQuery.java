@@ -1,19 +1,14 @@
 package gov.ca.cwds.rest.api.domain;
 
-import java.io.StringWriter;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import gov.ca.cwds.data.std.ApiObjectIdentity;
-import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
+import gov.ca.cwds.rest.util.CaresRawJsonDeserialzier;
 
 /**
  * {@link Request} representing a JSON Elasticsearch query.
@@ -21,32 +16,21 @@ import gov.ca.cwds.rest.api.Response;
  * @author CWDS API Team
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeName("")
+@JsonDeserialize(using = CaresRawJsonDeserialzier.class)
 public class CaresSearchQuery extends ApiObjectIdentity implements Request, Response {
 
   private static final long serialVersionUID = 1L;
 
-  private String query;
+  private String json;
 
   @JsonRawValue
   public String getQuery() {
-    return query;
+    return json;
   }
 
+  @JsonIgnore
   public void setJson(final String query) {
-    this.query = query;
-  }
-
-  @JsonRawValue
-  public void setQuery(JsonNode jsonNode) {
-    final StringWriter writer = new StringWriter();
-    final ObjectMapper objectMapper = new ObjectMapper();
-    try (JsonGenerator gen = new JsonFactory(objectMapper).createGenerator(writer)) {
-      gen.writeTree(jsonNode);
-      setJson(writer.toString());
-    } catch (Exception e) {
-      throw new ApiException("FAILED TO PARSE SEARCH QUERY JSON", e);
-    }
+    this.json = query;
   }
 
 }
