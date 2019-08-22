@@ -310,7 +310,7 @@ public class DataAccessModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public TraceLogService getTraceLogService() {
+  public final TraceLogService getTraceLogService() {
     return traceLogService;
   }
 
