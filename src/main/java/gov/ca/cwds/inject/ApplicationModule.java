@@ -1,5 +1,8 @@
 package gov.ca.cwds.inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.AbstractModule;
 
 import gov.ca.cwds.auth.ScreeningAuthorizer;
@@ -17,6 +20,8 @@ import io.dropwizard.setup.Bootstrap;
  * @see ApiApplication
  */
 public class ApplicationModule extends AbstractModule {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationModule.class);
 
   private Bootstrap<ApiConfiguration> bootstrap;
 
@@ -61,7 +66,7 @@ public class ApplicationModule extends AbstractModule {
           .addAuthorizer("client:read", ClientAbstractReadAuthorizer.class)
           .addAuthorizer("screening.read", ScreeningAuthorizer.class));
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.error("ERROR CONFIGURING FERB", e);
       throw e;
     }
   }

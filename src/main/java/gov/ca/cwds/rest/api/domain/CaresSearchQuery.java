@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,11 +39,11 @@ public class CaresSearchQuery extends ApiObjectIdentity implements Request, Resp
 
   @JsonRawValue
   public void setQuery(JsonNode jsonNode) {
-    try {
-      final StringWriter stringWriter = new StringWriter();
-      final ObjectMapper objectMapper = new ObjectMapper();
-      new JsonFactory(objectMapper).createGenerator(stringWriter).writeTree(jsonNode);
-      setJson(stringWriter.toString());
+    final StringWriter writer = new StringWriter();
+    final ObjectMapper objectMapper = new ObjectMapper();
+    try (JsonGenerator gen = new JsonFactory(objectMapper).createGenerator(writer)) {
+      gen.writeTree(jsonNode);
+      setJson(writer.toString());
     } catch (Exception e) {
       throw new ApiException("FAILED TO PARSE SEARCH QUERY JSON", e);
     }
