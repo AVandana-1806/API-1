@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.elastic;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.api.Response;
@@ -29,21 +27,6 @@ public class SearchQueryService implements TypedCrudsService<String, CaresSearch
   public Response create(CaresSearchQuery request) {
     return new SearchQueryTerms(traceLogService
         .logSearchQuery(RequestExecutionContext.instance().getUserId(), request.getQuery()));
-  }
-
-  @Override
-  public Response find(String s) {
-    throw new NotImplementedException("Find is not implemented");
-  }
-
-  @Override
-  public Response delete(String s) {
-    throw new NotImplementedException("Delete is not implemented");
-  }
-
-  @Override
-  public Response update(String s, CaresSearchQuery contactIntake) {
-    throw new NotImplementedException("Update is not implemented");
   }
 
 }

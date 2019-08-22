@@ -53,7 +53,7 @@ public class SearchQueryResource {
       @ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 406, message = "Accept Header not supported"),
       @ApiResponse(code = 409, message = "Conflict - already exists"),
-      @ApiResponse(code = 422, message = "Unable to validate Screening")})
+      @ApiResponse(code = 422, message = "Unable to parse JSON")})
   @Consumes(value = MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Parses a CARES search query", code = HttpStatus.SC_CREATED,
       response = SearchQueryTerms.class)
