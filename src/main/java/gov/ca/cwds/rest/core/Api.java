@@ -211,6 +211,11 @@ public final class Api {
   public static final String RESOURCE_STAFF_PERSONS = "staffpersons";
 
   /**
+   * A {@code String} constant representing {@value #RESOURCE_SEARCH_QUERY} API.
+   */
+  public static final String RESOURCE_SEARCH_QUERY = "search_query";
+
+  /**
    * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS} API.
    */
   public static final String SCREENING_RELATIONSHIPS = "screening_relationships";

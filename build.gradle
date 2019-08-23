@@ -32,9 +32,9 @@ sourceCompatibility = 1.8
 applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    coreApiVersion = '1.19.2_938-RC'
+    coreApiVersion = '1.19.2_942-RC'
     apiVersion = '0.9.3'
-    cwdsModelVersion = '0.11.2_717-RC'
+    cwdsModelVersion = '3.17.2'
     configPath = '$rootProject.projectDir/config/'
     dropwizardVersion = '1.1.0'
     dropwizardFlywayVersion = '1.0.0-1'
@@ -68,6 +68,7 @@ compileJava {
   } else {
       version = apiVersion
   }
+  
 def dockerTag = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 mainClassName = mainclass
 
@@ -141,7 +142,7 @@ dependencies {
 	compile group: "io.dropwizard.metrics", name: "metrics-core", version: metricsVersion
     compile group: "io.dropwizard.modules", name: "dropwizard-flyway", version: dropwizardFlywayVersion
 
-    compile group: 'gov.ca.cwds.cals', name: 'intake-ns-data-model', version: cwdsModelVersion
+    compile group: 'gov.ca.cwds', name: 'intake-ns-data-model', version: cwdsModelVersion
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
     compile group: "org.glassfish.jersey.ext", name: "jersey-declarative-linking", version: "2.23.2"
 	compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
@@ -167,6 +168,7 @@ dependencies {
 	    exclude group: 'org.hibernate'
 	}
 	compile group: 'gov.ca.cwds.api', name: 'drools-engine', version: coreApiVersion
+    compile group: 'gov.ca.cwds.api', name: 'legacy-data-access', version: coreApiVersion
     compile group: 'gov.ca.cwds.api', name: 'legacy-data-access-services', version: coreApiVersion
 
 	// LOGGING:
@@ -199,7 +201,7 @@ dependencies {
 
 	// testCompile 'org.glassfish.jersey.core:jersey-client:2.26-b01'
     testCompile group: 'gov.ca.cwds.api', name: 'api-core-test-support', version: coreApiVersion
-    testCompile group: 'gov.ca.cwds.cals', name: 'cws-cms-data-model', version: cwdsModelVersion
+    testCompile group: 'gov.ca.cwds', name: 'cws-cms-data-model', version: cwdsModelVersion
 
     testCompile group: 'junit', name: 'junit', version: junitVersion
     testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion

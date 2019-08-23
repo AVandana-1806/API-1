@@ -108,11 +108,16 @@ public class PaperTrailInterceptor extends EmptyInterceptor
     clearSets();
   }
 
+  protected boolean isReadOnly() {
+    final RequestExecutionContext ctx = RequestExecutionContext.instance();
+    return ctx != null ? ctx.isResourceReadOnly() : false;
+  }
+
   // Create
   @Override
   public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames,
       Type[] types) {
-    final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
+    final boolean readOnly = isReadOnly();
     LOGGER.debug("PaperTrailInterceptor.onSave: readOnly: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {
@@ -125,7 +130,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   @Override
   public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState,
       Object[] previousState, String[] propertyNames, Type[] types) {
-    final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
+    final boolean readOnly = isReadOnly();
     LOGGER.debug("PaperTrailInterceptor.onSave: onFlushDirty: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {
@@ -138,7 +143,7 @@ public class PaperTrailInterceptor extends EmptyInterceptor
   @Override
   public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames,
       Type[] types) {
-    final boolean readOnly = RequestExecutionContext.instance().isResourceReadOnly();
+    final boolean readOnly = isReadOnly();
     LOGGER.debug("PaperTrailInterceptor.onDelete: onFlushDirty: {}", readOnly);
 
     if (entity instanceof HasPaperTrail) {

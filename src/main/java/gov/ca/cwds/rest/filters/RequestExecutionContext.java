@@ -5,6 +5,7 @@ import java.util.Date;
 import gov.ca.cwds.auth.realms.PerryUserIdentity;
 import gov.ca.cwds.data.std.ApiMarker;
 import gov.ca.cwds.rest.messages.MessageBuilder;
+import gov.ca.cwds.tracelog.core.TraceLogRequestContext;
 
 /**
  * Request execution context. Binds the current HTTP/REST request to the current thread and exposes
@@ -12,7 +13,7 @@ import gov.ca.cwds.rest.messages.MessageBuilder;
  * 
  * @author CWDS API Team
  */
-public interface RequestExecutionContext extends ApiMarker {
+public interface RequestExecutionContext extends ApiMarker, TraceLogRequestContext {
 
   /**
    * Registered request execution parameters.
@@ -83,6 +84,7 @@ public interface RequestExecutionContext extends ApiMarker {
    * 
    * @return The user id
    */
+  @Override
   String getUserId();
 
   /**
@@ -133,6 +135,11 @@ public interface RequestExecutionContext extends ApiMarker {
    */
   long getThreadId();
 
+  /**
+   * Get the user's current request id.
+   * 
+   * @return current request id
+   */
   String getRequestId();
 
   /**

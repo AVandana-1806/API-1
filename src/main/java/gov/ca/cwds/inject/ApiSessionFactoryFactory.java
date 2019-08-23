@@ -3,7 +3,11 @@ package gov.ca.cwds.inject;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import com.google.inject.Inject;
+
 import gov.ca.cwds.data.ApiHibernateInterceptor;
+import gov.ca.cwds.tracelog.core.TraceLogService;
+import gov.ca.cwds.tracelog.simple.SimpleTraceLogService;
 import io.dropwizard.hibernate.SessionFactoryFactory;
 
 /**
@@ -14,9 +18,23 @@ import io.dropwizard.hibernate.SessionFactoryFactory;
  */
 public class ApiSessionFactoryFactory extends SessionFactoryFactory {
 
+  private final TraceLogService traceLogService;
+
+  /**
+   * Default ctor, uses default interceptor, {@link SimpleTraceLogService}.
+   */
+  public ApiSessionFactoryFactory() {
+    this.traceLogService = new SimpleTraceLogService();
+  }
+
+  @Inject
+  public ApiSessionFactoryFactory(TraceLogService traceLogService) {
+    this.traceLogService = traceLogService;
+  }
+
   @Override
   protected void configure(Configuration configuration, ServiceRegistry registry) {
-    configuration.setInterceptor(new ApiHibernateInterceptor());
+    configuration.setInterceptor(new ApiHibernateInterceptor(traceLogService));
   }
 
 }

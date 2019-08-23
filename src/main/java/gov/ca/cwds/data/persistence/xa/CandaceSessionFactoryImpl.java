@@ -117,7 +117,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   public void printOutstandingSessions() {
     outstanding.values().stream().forEach(s -> LOGGER
-        .info("Outstanding sessions: data source: {}, session: {}", sessionFactoryName, s));
+        .debug("Outstanding sessions: data source: {}, session: {}", sessionFactoryName, s));
   }
 
   /**
@@ -253,7 +253,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     CandaceSessionImpl session = local.get();
     if (session == null) {
-      LOGGER.info("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
+      LOGGER.debug("openSession(): **NEW** session: datasource: {}, XA: {}", sessionFactoryName,
           isXaTransaction());
       session = new CandaceSessionImpl(this, pick().openSession());
       local.set(session);
@@ -284,7 +284,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
     Session session = local.get();
     if (session == null) {
-      LOGGER.info("getCurrentSession(): call session.openSession(): datasource: {}, XA: {}",
+      LOGGER.debug("getCurrentSession(): call session.openSession(): datasource: {}, XA: {}",
           sessionFactoryName, isXaTransaction());
       session = openSession();
     }
@@ -362,7 +362,7 @@ public class CandaceSessionFactoryImpl implements SessionFactory, RequestExecuti
 
   @Override
   public void close() {
-    LOGGER.info("close");
+    LOGGER.debug("close");
     pick().close();
     CaresStackUtils.logStack();
     resetLocals();
