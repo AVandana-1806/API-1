@@ -10,13 +10,19 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import gov.ca.cwds.rest.api.domain.CaresSearchQuery;
 
+/**
+ * Deserialize JSON into a bean's String field.
+ * 
+ * @author CWDS API Team
+ */
+@SuppressWarnings("fb-contrib:BED_HIERARCHICAL_EXCEPTION_DECLARATION")
 public class CaresRawJsonDeserialzier extends JsonDeserializer<CaresSearchQuery> {
 
   @Override
   public CaresSearchQuery deserialize(JsonParser jp, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
     final TreeNode tree = jp.getCodec().readTree(jp);
-    CaresSearchQuery bean = new CaresSearchQuery();
+    final CaresSearchQuery bean = new CaresSearchQuery();
     bean.setJson(tree.toString());
     return bean;
   }
