@@ -62,10 +62,10 @@ public class TraceLogSearchQueryResource {
   public Response create(
       @PathParam("user") @ApiParam(required = true, name = "user",
           value = "user performing search") String user,
-      @PathParam("index") @ApiParam(required = true, name = "user",
+      @PathParam("index") @ApiParam(required = true, name = "index",
           value = "index being searched") String index,
       @Valid @ApiParam(hidden = false, required = true,
-          value = "Search query request") String jsonPayload) {
+          value = "Search query JSON") String jsonPayload) {
     final CaresSearchQuery request = new CaresSearchQuery();
     request.setJson(jsonPayload);
     request.setUser(user);
