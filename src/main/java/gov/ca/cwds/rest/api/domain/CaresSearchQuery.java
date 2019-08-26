@@ -21,6 +21,8 @@ public class CaresSearchQuery extends ApiObjectIdentity implements Request, Resp
 
   private static final long serialVersionUID = 1L;
 
+  private String user;
+  private String index;
   private String json;
 
   @JsonRawValue
@@ -31,6 +33,24 @@ public class CaresSearchQuery extends ApiObjectIdentity implements Request, Resp
   @JsonIgnore
   public void setJson(final String query) {
     this.json = query;
+  }
+
+  public String getUser() {
+    return user;
+  }
+
+  @JsonIgnore
+  public void setUser(String user) {
+    this.user = user;
+  }
+
+  public String getIndex() {
+    return index;
+  }
+
+  @JsonIgnore
+  public void setIndex(String index) {
+    this.index = index;
   }
 
 }

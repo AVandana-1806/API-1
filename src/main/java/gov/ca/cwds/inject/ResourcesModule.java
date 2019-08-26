@@ -75,7 +75,7 @@ import gov.ca.cwds.rest.resources.cms.CmsNSReferralResource;
 import gov.ca.cwds.rest.resources.cms.GovernmentOrganizationResource;
 import gov.ca.cwds.rest.resources.contact.ContactIntakeResource;
 import gov.ca.cwds.rest.resources.contact.DeliveredServiceResource;
-import gov.ca.cwds.rest.resources.elastic.SearchQueryResource;
+import gov.ca.cwds.rest.resources.elastic.TraceLogSearchQueryResource;
 import gov.ca.cwds.rest.resources.hoi.HoiCaseResource;
 import gov.ca.cwds.rest.resources.hoi.HoiReferralResource;
 import gov.ca.cwds.rest.resources.hoi.HoiScreeningResource;
@@ -191,7 +191,7 @@ public class ResourcesModule extends AbstractModule {
     bind(HoiUsingClientIdResource.class);
     bind(ContactIntakeResource.class);
     bind(IntakeLovResource.class);
-    bind(SearchQueryResource.class);
+    bind(TraceLogSearchQueryResource.class);
 
     LOGGER.info("configure: done");
   }
