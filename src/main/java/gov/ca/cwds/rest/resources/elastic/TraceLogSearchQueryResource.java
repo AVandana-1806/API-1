@@ -46,8 +46,10 @@ public class TraceLogSearchQueryResource {
   /**
    * Parse a CARES Elasticsearch query.
    *
-   * @param request - screening
-   * @return The {@link Response}
+   * @param user user conducting search
+   * @param index index being searched
+   * @param jsonPayload JSON Elasticsearch query
+   * @return parsed query terms
    */
   @POST
   @Path("/{user}/{index}")
