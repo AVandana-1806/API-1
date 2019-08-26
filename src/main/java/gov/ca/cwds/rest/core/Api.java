@@ -213,7 +213,7 @@ public final class Api {
   /**
    * A {@code String} constant representing {@value #RESOURCE_SEARCH_QUERY} API.
    */
-  public static final String RESOURCE_SEARCH_QUERY = "search_query";
+  public static final String RESOURCE_SEARCH_QUERY = "trace_log_search";
 
   /**
    * A {@code String} constant representing {@value #SCREENING_RELATIONSHIPS} API.
