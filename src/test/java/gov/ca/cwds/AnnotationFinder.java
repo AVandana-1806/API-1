@@ -19,31 +19,35 @@ import gov.ca.cwds.data.persistence.cms.Allegation;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
 
-public class AnnotationReflectionTest {
+public class AnnotationFinder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationReflectionTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationFinder.class);
 
   public static void main(String[] args) throws Exception {
-    check(Class2.class.getMethod("num", new Class[0]));
+    final AnnotationFinder scanner = new AnnotationFinder();
 
-    findTableName(Client.class);
-    findTableName(Allegation.class);
-    findTableName(ClientAddress.class);
-    findTableName(LongText.class);
-    findTableName(gov.ca.cwds.data.persistence.cms.LongText.class);
-    findTableName(Address.class);
-    findTableName(gov.ca.cwds.data.legacy.cms.entity.Address.class);
-    findTableName(gov.ca.cwds.data.persistence.ns.Address.class);
+    // Scan method:
+    scanner.check(Class2.class.getMethod("num", new Class[0]));
+
+    // Scan class:
+    final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
+        gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
+        gov.ca.cwds.data.legacy.cms.entity.Address.class,
+        gov.ca.cwds.data.persistence.ns.Address.class, String.class};
+    for (Class<?> klazz : klazzes) {
+      scanner.findTableName(klazz);
+    }
+
   }
 
-  public static String findTableName(Class<?> klazz) {
+  public String findTableName(Class<?> klazz) {
     final Table table = klazz.getDeclaredAnnotation(Table.class);
     final String ret = table != null ? table.name() : null;
     LOGGER.info("table: class: {}, name: \"{}\"", klazz, ret);
     return ret;
   }
 
-  public static void check(Method invokedMethod) {
+  public void check(Method invokedMethod) {
     Class<?> type = invokedMethod.getDeclaringClass();
     while (type != null) {
       for (Annotation annotation : type.getDeclaredAnnotations()) {
