@@ -23,6 +23,7 @@ import gov.ca.cwds.data.persistence.cms.ClientAddress;
 import gov.ca.cwds.data.persistence.cms.ClientCollateral;
 import gov.ca.cwds.rest.api.domain.cms.PostedClientRelationship;
 import gov.ca.cwds.rest.resources.ClientRelationshipResource;
+import io.dropwizard.hibernate.UnitOfWork;
 
 public class AnnotationFinder {
 
@@ -47,12 +48,9 @@ public class AnnotationFinder {
     }
 
     // UnitOfWork (data source):
-    LOGGER.info("declared methods: {}", ClientRelationshipResource.class.getDeclaredMethods());
-    LOGGER.info("methods: {}", ClientRelationshipResource.class.getMethods());
-
-    // final UnitOfWork uow = scanner.findMethodAnnotation(ClientRelationshipResource.class,
-    // UnitOfWork.class, ClientRelationshipResource.class.getDeclaredMethods());
-    // LOGGER.info("data source: {}", uow.value());
+    final UnitOfWork uow =
+        scanner.findMethodAnnotation(ClientRelationshipResource.class, UnitOfWork.class, "get");
+    LOGGER.info("data source: \"{}\"", uow.value());
   }
 
   public String findTableName(Class<?> klazz) {
@@ -77,6 +75,19 @@ public class AnnotationFinder {
   public <A extends Annotation> A findMethodAnnotation(Class<?> klazz, Class<A> ann,
       Method method) {
     return method.getAnnotation(ann);
+  }
+
+  public <A extends Annotation> A findMethodAnnotation(Class<?> klazz, Class<A> ann,
+      String methodName) {
+    Method method = null;
+    for (Method m : klazz.getMethods()) {
+      if (m.getName().equals(methodName)) {
+        method = m;
+        break;
+      }
+    }
+
+    return method != null ? method.getAnnotation(ann) : null;
   }
 
   public void check(Method invokedMethod) {
