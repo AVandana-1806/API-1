@@ -51,7 +51,7 @@ public class AnnotationFinder {
       ret = entityTables.get(klazz);
     } else {
       final Table table = klazz.getDeclaredAnnotation(Table.class);
-      ret = table != null ? table.name() : "";
+      ret = table != null ? table.name() : "NOT AN ENTITY";
       LOGGER.info("table: class: {}, table name: \"{}\"", klazz, ret);
       entityTables.put(klazz, ret);
     }
