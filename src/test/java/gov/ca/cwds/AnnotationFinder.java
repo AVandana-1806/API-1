@@ -7,6 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.persistence.Table;
 
@@ -22,6 +26,9 @@ import gov.ca.cwds.data.persistence.cms.ClientAddress;
 public class AnnotationFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationFinder.class);
+
+  private final Map<Class<?>, String> entityTables = new ConcurrentHashMap();
+  private final Set<Class<?>> nonEntities = new ConcurrentSkipListSet<>();
 
   public static void main(String[] args) throws Exception {
     final AnnotationFinder scanner = new AnnotationFinder();
@@ -41,9 +48,24 @@ public class AnnotationFinder {
   }
 
   public String findTableName(Class<?> klazz) {
-    final Table table = klazz.getDeclaredAnnotation(Table.class);
-    final String ret = table != null ? table.name() : null;
-    LOGGER.info("table: class: {}, name: \"{}\"", klazz, ret);
+    String ret = null;
+
+    if (nonEntities.contains(klazz)) {
+      ret = null;
+    } else if (entityTables.containsKey(klazz)) {
+      ret = entityTables.get(klazz);
+    } else {
+      final Table table = klazz.getDeclaredAnnotation(Table.class);
+      ret = table != null ? table.name() : null;
+      LOGGER.info("table: class: {}, name: \"{}\"", klazz, ret);
+
+      if (ret == null) {
+        nonEntities.add(klazz);
+      } else {
+        entityTables.put(klazz, ret);
+      }
+    }
+
     return ret;
   }
 
