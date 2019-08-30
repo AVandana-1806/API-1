@@ -22,6 +22,7 @@ import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
 import gov.ca.cwds.data.persistence.cms.ClientCollateral;
 import gov.ca.cwds.rest.api.domain.cms.PostedClientRelationship;
+import gov.ca.cwds.rest.resources.ClientRelationshipResource;
 
 public class AnnotationFinder {
 
@@ -45,7 +46,13 @@ public class AnnotationFinder {
       scanner.findTableName(klazz);
     }
 
-    // scanner.findAnnotation(ClientRelationshipResource.class, UnitOfWork.class);
+    // UnitOfWork (data source):
+    LOGGER.info("declared methods: {}", ClientRelationshipResource.class.getDeclaredMethods());
+    LOGGER.info("methods: {}", ClientRelationshipResource.class.getMethods());
+
+    // final UnitOfWork uow = scanner.findMethodAnnotation(ClientRelationshipResource.class,
+    // UnitOfWork.class, ClientRelationshipResource.class.getDeclaredMethods());
+    // LOGGER.info("data source: {}", uow.value());
   }
 
   public String findTableName(Class<?> klazz) {
@@ -63,10 +70,14 @@ public class AnnotationFinder {
     return ret;
   }
 
-  // public Class<? extends Annotation> findAnnotation(Class<?> klazz,
-  // Class<? extends Annotation> ann) {
-  // return klazz.getDeclaredAnnotation(ann);
-  // }
+  public <A extends Annotation> A findClassAnnotation(Class<?> klazz, Class<A> ann) {
+    return klazz.getDeclaredAnnotation(ann);
+  }
+
+  public <A extends Annotation> A findMethodAnnotation(Class<?> klazz, Class<A> ann,
+      Method method) {
+    return method.getAnnotation(ann);
+  }
 
   public void check(Method invokedMethod) {
     Class<?> type = invokedMethod.getDeclaringClass();
