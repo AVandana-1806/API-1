@@ -1,4 +1,4 @@
-package gov.ca.cwds;
+package gov.ca.cwds.rest.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -20,6 +20,8 @@ import gov.ca.cwds.data.persistence.cms.Address;
 import gov.ca.cwds.data.persistence.cms.Allegation;
 import gov.ca.cwds.data.persistence.cms.Client;
 import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.data.persistence.cms.ClientCollateral;
+import gov.ca.cwds.rest.api.domain.cms.PostedClientRelationship;
 
 public class AnnotationFinder {
 
@@ -37,11 +39,13 @@ public class AnnotationFinder {
     final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
         gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
         gov.ca.cwds.data.legacy.cms.entity.Address.class,
-        gov.ca.cwds.data.persistence.ns.Address.class, String.class};
+        gov.ca.cwds.data.persistence.ns.Address.class, String.class, ClientCollateral.class,
+        PostedClientRelationship.class};
     for (Class<?> klazz : klazzes) {
       scanner.findTableName(klazz);
     }
 
+    // scanner.findAnnotation(ClientRelationshipResource.class, UnitOfWork.class);
   }
 
   public String findTableName(Class<?> klazz) {
@@ -58,6 +62,11 @@ public class AnnotationFinder {
 
     return ret;
   }
+
+  // public Class<? extends Annotation> findAnnotation(Class<?> klazz,
+  // Class<? extends Annotation> ann) {
+  // return klazz.getDeclaredAnnotation(ann);
+  // }
 
   public void check(Method invokedMethod) {
     Class<?> type = invokedMethod.getDeclaringClass();
