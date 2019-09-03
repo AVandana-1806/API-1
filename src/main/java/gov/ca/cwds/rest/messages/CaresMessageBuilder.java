@@ -10,7 +10,6 @@ import gov.ca.cwds.rest.api.domain.error.ErrorMessage;
 import gov.ca.cwds.rest.api.domain.error.ErrorMessage.ErrorType;
 import gov.ca.cwds.rest.exception.IssueDetails;
 
-
 public interface CaresMessageBuilder {
 
   void merge(MessageBuilder messageBuilder);
