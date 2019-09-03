@@ -29,7 +29,7 @@ public class AnnotationFinder {
   public static void main(String[] args) throws Exception {
     final AnnotationFinder annoFinder = new AnnotationFinder();
 
-    // Scan class:
+    // Find table name by persistence class:
     final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
         gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
         gov.ca.cwds.data.legacy.cms.entity.Address.class,
@@ -97,4 +97,5 @@ public class AnnotationFinder {
       type = type.getSuperclass();
     }
   }
+
 }
