@@ -79,8 +79,6 @@ public class Race extends NsPersistentObject {
     return getId();
   }
 
-
-
   /**
    * @return the id
    */

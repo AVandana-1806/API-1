@@ -267,6 +267,10 @@ public class Person extends ReportingDomain implements Request, Response {
     return ethnicity;
   }
 
+  public void doSomething() {
+    System.out.println("do something!");
+  }
+
   /**
    * {@inheritDoc}
    *

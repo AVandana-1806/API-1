@@ -1,10 +1,5 @@
 package gov.ca.cwds.rest.api.domain.es;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gov.ca.cwds.rest.api.Request;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 
 import javax.validation.Valid;
@@ -16,12 +11,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import gov.ca.cwds.rest.api.Request;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * A domain API {@link Request} for Intake Index Query feature to Elasticsearch.
  * 
  * <p>
- * The Intake Index Query for an Index takes an index name and a json as string, which is used to
- * query the Elasticsearch Index documents by ALL relevant fields that are specified in the query.
+ * The Intake Index Query for an Index takes an index name and a JSON string, which is used to query
+ * the Elasticsearch Index documents by ALL relevant fields that are specified in the query.
  * </p>
  *
  * @author CWDS API Team
@@ -73,8 +73,6 @@ public class IndexQueryRequest implements Serializable, Request {
   public void setQuery(Object query) {
     this.query = query;
   }
-
-
 
   /**
    * @return the index

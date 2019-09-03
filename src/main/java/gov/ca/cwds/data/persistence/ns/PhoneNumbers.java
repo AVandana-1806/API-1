@@ -20,9 +20,9 @@ import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.persistence.ns.papertrail.HasPaperTrail;
 
 /**
- * {@link PersistentObject} representing an PhoneNumbers
+ * {@link PersistentObject} representing a collection {@link PhoneNumber}'s.
  *
- * @author Intake Team 4
+ * @author CWDS API Team
  */
 @NamedQuery(name = FIND_BY_PARTICIPANT_ID, query = FIND_BY_PARTICIPANT_ID_QUERY)
 @Entity

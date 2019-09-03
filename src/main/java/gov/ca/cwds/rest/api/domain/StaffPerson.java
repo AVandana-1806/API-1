@@ -1,9 +1,6 @@
 package gov.ca.cwds.rest.api.domain;
 
 import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
-import gov.ca.cwds.rest.api.Request;
-import io.dropwizard.jackson.JsonSnakeCase;
-import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 
@@ -18,6 +15,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import gov.ca.cwds.rest.api.Request;
+import io.dropwizard.jackson.JsonSnakeCase;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * {@link DomainObject} representing a staff person
  * 
@@ -25,9 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonSnakeCase
 public class StaffPerson extends ReportingDomain implements Request {
-  /**
-   * Serialization version
-   */
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty("end_date")
@@ -149,7 +148,7 @@ public class StaffPerson extends ReportingDomain implements Request {
    * @param startDate The startDate
    * @param nameSuffix The nameSuffix
    * @param telecommuterIndicator The telecommuterIndicator
-   * @param cwsOffice The cws office
+   * @param cwsOffice county office
    * @param availabilityAndLocationDescription The availabilityAndLocationDescription
    * @param ssrsLicensingWorkerId The ssrsLicensingWorkerId
    * @param countyCode The countyCode
@@ -158,16 +157,13 @@ public class StaffPerson extends ReportingDomain implements Request {
    * @param emailAddress The emailAddress
    */
   @JsonCreator
-  public StaffPerson(
-      @JsonProperty("end_date") String endDate,
-      @JsonProperty("first_name") String firstName,
-      @JsonProperty("job_title") String jobTitle,
+  public StaffPerson(@JsonProperty("end_date") String endDate,
+      @JsonProperty("first_name") String firstName, @JsonProperty("job_title") String jobTitle,
       @JsonProperty("last_name") String lastName,
       @JsonProperty("middle_initial") String middleInitial,
       @JsonProperty("name_prefix") String namePrefix,
       @JsonProperty("phone_number") BigDecimal phoneNumber,
-      @JsonProperty("phone_ext") Integer phoneExt,
-      @JsonProperty("start_date") String startDate,
+      @JsonProperty("phone_ext") Integer phoneExt, @JsonProperty("start_date") String startDate,
       @JsonProperty("name_suffix") String nameSuffix,
       @JsonProperty("telecommuter_indicator") Boolean telecommuterIndicator,
       @JsonProperty("cws_office") String cwsOffice,

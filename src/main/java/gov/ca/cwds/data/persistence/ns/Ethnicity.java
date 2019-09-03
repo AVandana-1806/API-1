@@ -46,7 +46,6 @@ public class Ethnicity extends NsPersistentObject {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "personEthnicityId.ethnicity")
   private Set<PersonEthnicity> personEthnicity = new HashSet<>();
 
-  @SuppressWarnings("javadoc")
   public Ethnicity() {
     super();
   }
@@ -64,7 +63,6 @@ public class Ethnicity extends NsPersistentObject {
     this.ethnicityType = ethnicityType;
     this.subEthnicity = subEthnicity;
   }
-
 
   /**
    * @param ethnicity The domain object to construct this object from
