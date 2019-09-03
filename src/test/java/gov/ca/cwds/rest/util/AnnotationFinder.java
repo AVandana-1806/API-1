@@ -1,11 +1,6 @@
 package gov.ca.cwds.rest.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,10 +27,7 @@ public class AnnotationFinder {
   private final Map<Class<?>, String> entityTables = new ConcurrentHashMap<>();
 
   public static void main(String[] args) throws Exception {
-    final AnnotationFinder scanner = new AnnotationFinder();
-
-    // Scan method:
-    scanner.check(Class2.class.getMethod("num", new Class[0]));
+    final AnnotationFinder annoFinder = new AnnotationFinder();
 
     // Scan class:
     final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
@@ -44,15 +36,21 @@ public class AnnotationFinder {
         gov.ca.cwds.data.persistence.ns.Address.class, String.class, ClientCollateral.class,
         PostedClientRelationship.class};
     for (Class<?> klazz : klazzes) {
-      scanner.findTableName(klazz);
+      annoFinder.findTableName(klazz);
     }
 
-    // UnitOfWork (data source):
+    // Find data source from @UnitOfWork:
     final UnitOfWork uow =
-        scanner.findMethodAnnotation(ClientRelationshipResource.class, UnitOfWork.class, "get");
+        annoFinder.findMethodAnnotation(ClientRelationshipResource.class, UnitOfWork.class, "get");
     LOGGER.info("data source: \"{}\"", uow.value());
   }
 
+  /**
+   * Find table name from annotation {@link Table}.
+   * 
+   * @param klazz class to check
+   * @return table name. Empty value means no table name found.
+   */
   public String findTableName(Class<?> klazz) {
     String ret = null;
 
@@ -60,7 +58,7 @@ public class AnnotationFinder {
       ret = entityTables.get(klazz);
     } else {
       final Table table = klazz.getDeclaredAnnotation(Table.class);
-      ret = table != null ? table.name() : "NOT AN ENTITY";
+      ret = table != null ? table.name() : "";
       LOGGER.info("table: class: {}, table name: \"{}\"", klazz, ret);
       entityTables.put(klazz, ret);
     }
@@ -98,38 +96,5 @@ public class AnnotationFinder {
       }
       type = type.getSuperclass();
     }
-  }
-}
-
-
-@Inherited
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@interface Annot1 {
-  int num();
-}
-
-
-@Annot1(num = 5)
-class Class1 {
-  public int num() {
-    return 1;
-  }
-}
-
-
-@Inherited
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@interface Annot2 {
-  String text();
-}
-
-
-@Annot2(text = "ttt")
-class Class2 extends Class1 {
-  @Override
-  public int num() {
-    return super.num() + 1;
   }
 }
