@@ -167,7 +167,6 @@ public class RelationshipWrapper implements ApiMarker {
   @Column(name = "Relationship_END_DATE")
   private String relationshipEndDate;
 
-
   public RelationshipWrapper() {}
 
   public RelationshipWrapper(String relationId, String primaryLegacyId, String secondaryLegacyId,
@@ -387,7 +386,5 @@ public class RelationshipWrapper implements ApiMarker {
   public void setSecondarySensitiveIndicator(String secondarySensitiveIndicator) {
     this.secondarySensitiveIndicator = secondarySensitiveIndicator;
   }
-
-
 
 }
