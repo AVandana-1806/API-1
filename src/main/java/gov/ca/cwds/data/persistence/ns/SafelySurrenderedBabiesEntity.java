@@ -31,6 +31,7 @@ import gov.ca.cwds.rest.util.FerbDateUtils;
 @Table(name = "safely_surrendered_babies")
 @SuppressWarnings({"common-java:DuplicatedBlocks"})
 public class SafelySurrenderedBabiesEntity implements PersistentObject, Serializable {
+
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -69,108 +70,73 @@ public class SafelySurrenderedBabiesEntity implements PersistentObject, Serializ
     super();
   }
 
-
-
   public String getParticipantId() {
     return participantId;
   }
-
-
 
   public void setParticipantId(String participantId) {
     this.participantId = participantId;
   }
 
-
-
   public String getSurrenderedBy() {
     return surrenderedBy;
   }
-
-
 
   public void setSurrenderedBy(String surrenderedBy) {
     this.surrenderedBy = surrenderedBy;
   }
 
-
-
   public String getRelationToChild() {
     return relationToChild;
   }
-
-
 
   public void setRelationToChild(String relationToChild) {
     this.relationToChild = relationToChild;
   }
 
-
-
   public String getBraceletId() {
     return braceletId;
   }
-
-
 
   public void setBraceletId(String braceletId) {
     this.braceletId = braceletId;
   }
 
-
   public String getParentGuardGivenBraceletId() {
     return parentGuardGivenBraceletId;
   }
-
-
 
   public void setParentGuardGivenBraceletId(String parentGuardGivenBraceletId) {
     this.parentGuardGivenBraceletId = parentGuardGivenBraceletId;
   }
 
-
-
   public String getParentGuardProvMedQuestion() {
     return parentGuardProvMedQuestion;
   }
-
-
 
   public void setParentGuardProvMedQuestion(String parentGuardProvMedQuestion) {
     this.parentGuardProvMedQuestion = parentGuardProvMedQuestion;
   }
 
-
-
   public Date getMedQuestionaireReturnDate() {
     return FerbDateUtils.freshDate(medQuestionaireReturnDate);
   }
-
-
 
   public void setMedQuestionaireReturnDate(Date medQuestionaireReturnDate) {
     this.medQuestionaireReturnDate = FerbDateUtils.freshDate(medQuestionaireReturnDate);
   }
 
-
-
   public String getComments() {
     return comments;
   }
-
-
 
   public void setComments(String comments) {
     this.comments = comments;
   }
 
-
-
   public ParticipantEntity getParticipantEntity() {
     return participantEntity;
   }
-
-
 
   public void setParticipantEntity(ParticipantEntity participantEntity) {
     this.participantEntity = participantEntity;
