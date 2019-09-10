@@ -26,25 +26,6 @@ public class AnnotationFinder {
 
   private final Map<Class<?>, String> entityTables = new ConcurrentHashMap<>();
 
-  public static void main(String[] args) throws Exception {
-    final AnnotationFinder annoFinder = new AnnotationFinder();
-
-    // Find table name by persistence class:
-    final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
-        gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
-        gov.ca.cwds.data.legacy.cms.entity.Address.class,
-        gov.ca.cwds.data.persistence.ns.Address.class, String.class, ClientCollateral.class,
-        PostedClientRelationship.class};
-    for (Class<?> klazz : klazzes) {
-      annoFinder.findTableName(klazz);
-    }
-
-    // Find data source from @UnitOfWork:
-    final UnitOfWork uow =
-        annoFinder.findMethodAnnotation(ClientRelationshipResource.class, UnitOfWork.class, "get");
-    LOGGER.info("data source: \"{}\"", uow.value());
-  }
-
   /**
    * Find table name from annotation {@link Table}.
    * 
@@ -57,7 +38,7 @@ public class AnnotationFinder {
     if (entityTables.containsKey(klazz)) {
       ret = entityTables.get(klazz);
     } else {
-      final Table table = klazz.getDeclaredAnnotation(Table.class);
+      final Table table = klazz.getAnnotation(Table.class);
       ret = table != null ? table.name() : "";
       LOGGER.info("table: class: {}, table name: \"{}\"", klazz, ret);
       entityTables.put(klazz, ret);
@@ -67,7 +48,7 @@ public class AnnotationFinder {
   }
 
   public <A extends Annotation> A findClassAnnotation(Class<?> klazz, Class<A> ann) {
-    return klazz.getDeclaredAnnotation(ann);
+    return klazz.getAnnotation(ann);
   }
 
   public <A extends Annotation> A findMethodAnnotation(Class<?> klazz, Class<A> ann,
@@ -96,6 +77,25 @@ public class AnnotationFinder {
       }
       type = type.getSuperclass();
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    final AnnotationFinder annoFinder = new AnnotationFinder();
+
+    // Find table name by persistence class:
+    final Class<?>[] klazzes = {Client.class, Allegation.class, ClientAddress.class, LongText.class,
+        gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
+        gov.ca.cwds.data.legacy.cms.entity.Address.class,
+        gov.ca.cwds.data.persistence.ns.Address.class, String.class, ClientCollateral.class,
+        PostedClientRelationship.class};
+    for (Class<?> klazz : klazzes) {
+      annoFinder.findTableName(klazz);
+    }
+
+    // Find data source from @UnitOfWork:
+    final UnitOfWork uow =
+        annoFinder.findMethodAnnotation(ClientRelationshipResource.class, UnitOfWork.class, "get");
+    LOGGER.info("data source: \"{}\"", uow.value());
   }
 
 }
