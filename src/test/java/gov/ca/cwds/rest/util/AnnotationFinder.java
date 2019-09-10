@@ -20,6 +20,14 @@ import gov.ca.cwds.rest.api.domain.cms.PostedClientRelationship;
 import gov.ca.cwds.rest.resources.ClientRelationshipResource;
 import io.dropwizard.hibernate.UnitOfWork;
 
+/**
+ * Convenience methods to find annotations by class and method. s *
+ * <p>
+ * Note that class annotations are not normally inherited by subclasses.
+ * </p>
+ * 
+ * @author CWDS API Team
+ */
 public class AnnotationFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationFinder.class);
@@ -38,7 +46,7 @@ public class AnnotationFinder {
     if (entityTables.containsKey(klazz)) {
       ret = entityTables.get(klazz);
     } else {
-      final Table table = klazz.getAnnotation(Table.class);
+      final Table table = findClassAnnotation(klazz, Table.class);
       ret = table != null ? table.name() : "";
       LOGGER.info("table: class: {}, table name: \"{}\"", klazz, ret);
       entityTables.put(klazz, ret);
@@ -48,7 +56,8 @@ public class AnnotationFinder {
   }
 
   public <A extends Annotation> A findClassAnnotation(Class<?> klazz, Class<A> ann) {
-    return klazz.getAnnotation(ann);
+    final A[] annos = klazz.getAnnotationsByType(ann);
+    return annos != null && annos.length > 0 ? annos[0] : null;
   }
 
   public <A extends Annotation> A findMethodAnnotation(Class<?> klazz, Class<A> ann,
