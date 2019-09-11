@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.investigation;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INVESTIGATIONS;
 
 import javax.ws.rs.Consumes;
@@ -62,7 +63,7 @@ public class AllegationListResource {
    * @param id - CMS Id of Case or Referral
    * @return - allegations of investigation
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @Path("/{id}/allegations")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

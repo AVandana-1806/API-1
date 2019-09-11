@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.investigation;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INVESTIGATIONS;
 
 import javax.validation.Valid;
@@ -67,7 +68,7 @@ public class CrossReportResource {
    *
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @POST
   @Path("/{id}/cross_report")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
@@ -93,7 +94,7 @@ public class CrossReportResource {
    * @param crossReport - cross report to update
    * @return - updated cross report
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @PUT
   @Path("/{id}/cross_report/{crossreport_id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

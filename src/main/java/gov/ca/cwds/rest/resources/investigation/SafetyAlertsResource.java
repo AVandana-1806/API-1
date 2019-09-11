@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.investigation;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_INVESTIGATIONS;
 
 import javax.validation.Valid;
@@ -27,7 +28,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 
 /**
  * A resource providing a RESTful interface for {@link Investigation}. It delegates functions to
@@ -64,7 +64,7 @@ public class SafetyAlertsResource {
    * @param id - CMS Id of Case or Referral
    * @return - safety alerts of investigation
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @Path("/{id}/safety_alerts")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
@@ -82,10 +82,10 @@ public class SafetyAlertsResource {
    * Create an {@link AllegationList}.
    *
    * @param id - CMS Id of the Referral or Case the Safety Alerts are for
-   * @param safetyAlerts - The salfety alerts to create
+   * @param safetyAlerts - The safety alerts to create
    * @return - The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @POST
   @Path("/{id}/safety_alerts")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),

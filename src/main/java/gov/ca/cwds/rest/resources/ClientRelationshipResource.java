@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CLIENT;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class ClientRelationshipResource {
    * @param id the id
    * @return client relationships
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @Path("/{id}/relationships")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
@@ -78,7 +79,7 @@ public class ClientRelationshipResource {
    * @param clientIds the list of client ids to return relationships for
    * @return A list of client relationships
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @Path("/relationships")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),

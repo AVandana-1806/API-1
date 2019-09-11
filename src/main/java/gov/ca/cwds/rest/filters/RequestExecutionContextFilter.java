@@ -38,6 +38,8 @@ public class RequestExecutionContextFilter implements Filter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RequestExecutionContextFilter.class);
 
+  private static final String CTX_USER_ID = "userId";
+
   /**
    * Constructor
    */
@@ -71,12 +73,12 @@ public class RequestExecutionContextFilter implements Filter {
       try {
         final String userId = RequestExecutionContext.instance().getUserId();
         LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
-        MDC.put("userId", userId);
+        MDC.put(CTX_USER_ID, userId);
 
         chain.doFilter(httpServletRequest, httpServletResponse);
       } finally {
         RequestExecutionContextImpl.stopRequest(); // mark request as "done", no matter what happens
-        MDC.remove("userId"); // remove the logging context, no matter what happens
+        MDC.remove(CTX_USER_ID); // remove the logging context, no matter what happens
       }
     }
   }

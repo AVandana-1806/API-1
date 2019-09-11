@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_GOVERNMENT_ORG;
 
 import javax.ws.rs.Consumes;
@@ -59,7 +60,7 @@ public class GovernmentOrganizationResource {
    * @param countyId - countyId
    * @return the all the cross report agencies
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),

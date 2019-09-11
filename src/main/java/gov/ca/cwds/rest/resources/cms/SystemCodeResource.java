@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.resources.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hibernate.FlushMode;
 
 import com.google.inject.Inject;
 
@@ -27,7 +30,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.hibernate.FlushMode;
 
 /**
  * A resource providing a RESTful interface for {@link SystemCode}. It delegates functions to
@@ -65,7 +67,7 @@ public class SystemCodeResource {
    *
    * @return the response
    */
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
@@ -84,7 +86,7 @@ public class SystemCodeResource {
    *
    * @return the response
    */
-  @UnitOfWork(value = "cms", readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
+  @UnitOfWork(value = DS_CMS, readOnly = true, transactional = false, flushMode = FlushMode.MANUAL)
   @GET
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
       @ApiResponse(code = 404, message = "Not found"),
@@ -125,8 +127,7 @@ public class SystemCodeResource {
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized")})
   @ApiOperation(hidden = true, value = "Delete SystemCode - not currently implemented",
       code = HttpStatus.SC_OK, response = Object.class)
-  public Response create(
-      @HeaderParam("Accept") @ApiParam(hidden = true) String acceptHeader) {
+  public Response create(@HeaderParam("Accept") @ApiParam(hidden = true) String acceptHeader) {
     return Response.status(Response.Status.NOT_IMPLEMENTED).entity(null).build();
   }
 

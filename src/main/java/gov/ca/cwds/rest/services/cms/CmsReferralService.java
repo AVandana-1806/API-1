@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.services.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -71,7 +73,7 @@ public class CmsReferralService implements CrudsService {
    * 
    * @see gov.ca.cwds.rest.services.CrudsService#create(gov.ca.cwds.rest.api.Request)
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @Override
   public Response create(Request request) {
     assert request instanceof CmsReferral;

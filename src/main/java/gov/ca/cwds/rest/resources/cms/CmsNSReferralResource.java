@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.resources.cms;
 
+import static gov.ca.cwds.rest.core.Api.DS_CMS;
 import static gov.ca.cwds.rest.core.Api.RESOURCE_CMSNSREFERRAL;
 
 import javax.validation.Valid;
@@ -60,7 +61,7 @@ public class CmsNSReferralResource {
    * 
    * @return the response
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @GET
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized"),
@@ -80,7 +81,7 @@ public class CmsNSReferralResource {
    * 
    * @return {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @DELETE
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 401, message = "Not Authorized")})
@@ -98,7 +99,7 @@ public class CmsNSReferralResource {
    * 
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @POST
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
       @ApiResponse(code = 401, message = "Not Authorized"),
@@ -121,7 +122,7 @@ public class CmsNSReferralResource {
    *
    * @return The {@link Response}
    */
-  @UnitOfWork(value = "cms")
+  @UnitOfWork(value = DS_CMS)
   @PUT
   @Path("/{id}")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Unable to process JSON"),
