@@ -2,6 +2,7 @@ package gov.ca.cwds.rest.filters;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -53,6 +54,15 @@ public class RequestExecutionContextFilter implements Filter {
       final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
       final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
       RequestExecutionContextImpl.startRequest();
+
+      final HttpServletRequest httpRequest = (HttpServletRequest) request;
+      final String requestUri = httpRequest.getRequestURI();
+      final String queryString = httpRequest.getQueryString();
+      final String requestMethod = httpRequest.getMethod(); // POST, GET, PUT, etc.
+      final Map<String, String[]> requestParams = httpRequest.getParameterMap();
+
+      LOGGER.info("request context filter: uri: {}, query string: {}, method: {}, params: {}",
+          requestUri, queryString, requestMethod, requestParams);
 
       final Date requestStartTime =
           (Date) RequestExecutionContext.instance().get(Parameter.REQUEST_START_TIME);
