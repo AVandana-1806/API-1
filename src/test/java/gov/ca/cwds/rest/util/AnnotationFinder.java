@@ -78,16 +78,6 @@ public class AnnotationFinder {
     return method != null ? method.getAnnotation(ann) : null;
   }
 
-  public void check(Method invokedMethod) {
-    Class<?> type = invokedMethod.getDeclaringClass();
-    while (type != null) {
-      for (Annotation annotation : type.getDeclaredAnnotations()) {
-        System.out.println(annotation.toString());
-      }
-      type = type.getSuperclass();
-    }
-  }
-
   public static void main(String[] args) throws Exception {
     final AnnotationFinder annoFinder = new AnnotationFinder();
 
