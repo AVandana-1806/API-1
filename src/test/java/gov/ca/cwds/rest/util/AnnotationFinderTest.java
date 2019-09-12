@@ -13,7 +13,13 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
+import gov.ca.cwds.data.persistence.cms.Allegation;
 import gov.ca.cwds.data.persistence.cms.Client;
+import gov.ca.cwds.data.persistence.cms.ClientAddress;
+import gov.ca.cwds.data.persistence.cms.ClientCollateral;
+import gov.ca.cwds.data.persistence.cms.LongText;
+import gov.ca.cwds.data.persistence.ns.Address;
+import gov.ca.cwds.rest.api.domain.cms.PostedClientRelationship;
 import gov.ca.cwds.rest.resources.ClientRelationshipResource;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -41,14 +47,13 @@ public class AnnotationFinderTest extends Doofenshmirtz<String> {
   public void findTableName_A$Class() throws Exception {
     final List<Pair<Class<?>, String>> pairs = new ArrayList<>();
     pairs.add(Pair.<Class<?>, String>of(Client.class, "CLIENT_T"));
-
-    // final Pair<Class<?>, String>[] klazzes = {pair
-    // Allegation.class, ClientAddress.class,
-    // LongText.class, gov.ca.cwds.data.persistence.cms.LongText.class, Address.class,
-    // gov.ca.cwds.data.legacy.cms.entity.Address.class,
-    // gov.ca.cwds.data.persistence.ns.Address.class, String.class, ClientCollateral.class,
-    // PostedClientRelationship.class
-    // };
+    pairs.add(Pair.<Class<?>, String>of(Allegation.class, "ALLGTN_T"));
+    pairs.add(Pair.<Class<?>, String>of(ClientAddress.class, "CL_ADDRT"));
+    pairs.add(Pair.<Class<?>, String>of(LongText.class, "LONG_TXT"));
+    pairs.add(Pair.<Class<?>, String>of(Address.class, "addresses"));
+    pairs.add(Pair.<Class<?>, String>of(ClientCollateral.class, "CLN_COLT"));
+    pairs.add(Pair.<Class<?>, String>of(PostedClientRelationship.class, ""));
+    pairs.add(Pair.<Class<?>, String>of(String.class, ""));
 
     for (Pair<Class<?>, String> p : pairs) {
       final String actual = target.findTableName(p.getKey());
