@@ -143,8 +143,7 @@ public class Relationship extends ReportingDomain implements Request, Response {
    * @param relatedTo - people related to this person
    */
   public Relationship(String id, @Date(format = "yyyy-MM-dd", required = false) String dateOfBirth,
-      String firstName, String middleName, String lastName,
-      String suffixName, String gender,
+      String firstName, String middleName, String lastName, String suffixName, String gender,
       @Date(format = "yyyy-MM-dd", required = false) String dateOfDeath, Boolean sensitive,
       Boolean sealed, CmsRecordDescriptor cmsRecordDescriptor, Set<RelationshipTo> relatedTo) {
     super();
@@ -215,7 +214,6 @@ public class Relationship extends ReportingDomain implements Request, Response {
     } else {
       return 0;
     }
-
   }
 
   /**
@@ -240,7 +238,6 @@ public class Relationship extends ReportingDomain implements Request, Response {
     } else {
       return "";
     }
-
   }
 
   /**
@@ -277,7 +274,7 @@ public class Relationship extends ReportingDomain implements Request, Response {
   public String getAgeUnit() {
     return ageUnit;
   }
-  
+
   /**
    * @return first name
    */

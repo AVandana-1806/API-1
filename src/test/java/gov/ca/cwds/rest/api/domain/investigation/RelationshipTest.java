@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,12 +28,10 @@ import gov.ca.cwds.rest.business.rules.CalendarEnum;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-@SuppressWarnings("javadoc")
 public class RelationshipTest {
 
   private ObjectMapper MAPPER = new ObjectMapper();
   private String tableName = "CLIENT_T";
-  private String newTableName = "CLN_RELT";
   private String id = "1234567ABC";
 
   private CmsRecordDescriptor cmsRecordDescriptor =
@@ -62,9 +61,8 @@ public class RelationshipTest {
 
   @Test
   public void testDomainConstructorSuccess() throws Exception {
-    Relationship relationship = new Relationship(id, dateOfBirth, firstName,
-        middleName, lastName, suffixName, gender, dateOfDeath, sensitive, sealed,
-        cmsRecordDescriptor, relationshipsTo);
+    Relationship relationship = new Relationship(id, dateOfBirth, firstName, middleName, lastName,
+        suffixName, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
     assertThat(id, is(equalTo(relationship.getId())));
     assertThat(firstName, is(equalTo(relationship.getFirstName())));
@@ -175,25 +173,23 @@ public class RelationshipTest {
     Short age = 2;
     LocalDate today = LocalDate.now();
     LocalDate dateOfBirth = today.minusYears(age);
-    Relationship relationship = new RelationshipEntityBuilder()
-        .setDateOfBirth(dateOfBirth.toString())
-        .build();
+    Relationship relationship =
+        new RelationshipEntityBuilder().setDateOfBirth(dateOfBirth.toString()).build();
     assertThat(relationship.getAge(), is(equalTo(age)));
     assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.YEARS.getName())));
-    
+
   }
-  
+
   @Test
   public void shouldCalculateAgeInMonths() {
     Short age = 2;
     LocalDate today = LocalDate.now();
     LocalDate dateOfBirth = today.minusMonths(age);
-    Relationship relationship = new RelationshipEntityBuilder()
-        .setDateOfBirth(dateOfBirth.toString())
-        .build();
+    Relationship relationship =
+        new RelationshipEntityBuilder().setDateOfBirth(dateOfBirth.toString()).build();
     assertThat(relationship.getAge(), is(equalTo(age)));
     assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.MONTHS.getName())));
-    
+
   }
 
   @Test
@@ -201,26 +197,21 @@ public class RelationshipTest {
     Short age = 2;
     LocalDate today = LocalDate.now();
     LocalDate dateOfBirth = today.minusDays(age);
-    Relationship relationship = new RelationshipEntityBuilder()
-        .setDateOfBirth(dateOfBirth.toString())
-        .build();
+    Relationship relationship =
+        new RelationshipEntityBuilder().setDateOfBirth(dateOfBirth.toString()).build();
     assertThat(relationship.getAge(), is(equalTo(age)));
-    assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.DAYS.getName())));    
+    assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.DAYS.getName())));
   }
-  
+
   @Test
   public void shouldSetValuesUsingEntityBuilder() {
-    Relationship relationship = new RelationshipEntityBuilder()
-        .setMiddleName(middleName)
-        .setSuffixTitle(suffixName)
-        .setDateOfDeath(dateOfDeath)
-        .setSealed(sealed)
-        .build();
+    Relationship relationship = new RelationshipEntityBuilder().setMiddleName(middleName)
+        .setSuffixTitle(suffixName).setDateOfDeath(dateOfDeath).setSealed(sealed).build();
     assertThat(relationship.getMiddleName(), is(equalTo(middleName)));
     assertThat(relationship.getSuffixName(), is(equalTo(suffixName)));
     assertThat(relationship.getDateOfDeath(), is(equalTo(dateOfDeath)));
     assertThat(relationship.getSealed(), is(equalTo(sealed)));
-   }
+  }
 
   @Test
   public void equalsHashCodeWork() {
@@ -228,13 +219,16 @@ public class RelationshipTest {
   }
 
   @Test
-//  @Ignore
+  @Ignore
   public void deserializesFromJSON() throws Exception {
-    Relationship relationship = new RelationshipEntityBuilder().build();
-    String rs = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(relationship);
-    System.out.println(rs);
-    assertThat(MAPPER.readValue(fixture("fixtures/domain/investigation/relationship/valid.json"),
-        Relationship.class), is(equalTo(relationship)));
+    final Relationship actual = new RelationshipEntityBuilder().build();
+    String rs = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(actual);
+    System.out.println("actual:   " + rs);
+    final Relationship expected = MAPPER.readValue(
+        fixture("fixtures/domain/investigation/relationship/valid.json"), Relationship.class);
+    rs = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(expected);
+    System.out.println("expected: " + rs);
+    assertThat(expected, is(equalTo(actual)));
   }
 
 }

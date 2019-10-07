@@ -7,7 +7,6 @@ import gov.ca.cwds.rest.api.domain.investigation.CmsRecordDescriptor;
 import gov.ca.cwds.rest.api.domain.investigation.Relationship;
 import gov.ca.cwds.rest.api.domain.investigation.RelationshipTo;
 
-@SuppressWarnings("javadoc")
 public class RelationshipEntityBuilder {
 
   protected String tableName = "CLIENT_T";
@@ -18,7 +17,7 @@ public class RelationshipEntityBuilder {
   protected String firstName = "Jackson";
   protected String middleName = "R";
   protected String lastName = "Greene";
-  protected String dateOfBirth = "2000-10-01";
+  protected String dateOfBirth = "2001-10-01";
   protected String gender = "M";
   protected String dateOfDeath = "2001-10-01";
   protected String suffixTitle = "";
@@ -29,8 +28,8 @@ public class RelationshipEntityBuilder {
 
   public Relationship build() {
     relationshipsTo.add(relationshipTo);
-    return new Relationship(id, dateOfBirth, firstName, middleName, lastName,
-        suffixTitle, gender, dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
+    return new Relationship(id, dateOfBirth, firstName, middleName, lastName, suffixTitle, gender,
+        dateOfDeath, sensitive, sealed, cmsRecordDescriptor, relationshipsTo);
 
   }
 
