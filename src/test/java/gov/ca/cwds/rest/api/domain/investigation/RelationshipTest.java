@@ -91,7 +91,6 @@ public class RelationshipTest {
     assertThat(relationship.getDateOfDeath(),
         is(equalTo(DomainChef.cookDate(client.getDeathDate()))));
     assertThat(relationship.getRelatedTo(), is(equalTo(relationshipsTo)));
-
   }
 
   @Test
@@ -151,7 +150,6 @@ public class RelationshipTest {
     assertTrue(items.contains(relationship));
     assertTrue(items.contains(otherRelationship));
     assertEquals(2, items.size());
-
   }
 
   @Test
@@ -165,7 +163,6 @@ public class RelationshipTest {
     assertTrue(items.contains(relationship));
     assertTrue(items.contains(otherRelationship));
     assertEquals(1, items.size());
-
   }
 
   @Test
@@ -177,7 +174,6 @@ public class RelationshipTest {
         new RelationshipEntityBuilder().setDateOfBirth(dateOfBirth.toString()).build();
     assertThat(relationship.getAge(), is(equalTo(age)));
     assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.YEARS.getName())));
-
   }
 
   @Test
@@ -189,7 +185,6 @@ public class RelationshipTest {
         new RelationshipEntityBuilder().setDateOfBirth(dateOfBirth.toString()).build();
     assertThat(relationship.getAge(), is(equalTo(age)));
     assertThat(relationship.getAgeUnit(), is(equalTo(CalendarEnum.MONTHS.getName())));
-
   }
 
   @Test
