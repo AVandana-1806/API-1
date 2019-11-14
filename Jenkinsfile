@@ -114,9 +114,9 @@ node ('tpt4-slave'){
 	}
 
     stage('Deploy to PreInt-Integration') {
-        withCredentials([usernameColonPassword(credentialsId: 'fa186416-faac-44c0-a2fa-089aed50ca17', variable: 'jenkinsauth')]) {
-          sh "curl -u $jenkinsauth 'https://jenkins.mgmt.cwds.io/job/PreInt-Integration/job/deploy-ferb/buildWithParameters?token=trigger-ferb-deploy&version=${newTag}'"
-       }
+        def mgmtJobParams = "version=\"$newTag\""
+        def handle = triggerRemoteJob abortTriggeredJob: true, enhancedLogging: false, job: 'PreInt-Integration/deploy-ferb', maxConn: 5, pollInterval: 20, parameters: "${mgmtJobParams}", remoteJenkinsName: "deploy-jenkins", useCrumbCache: true, useJobInfoCache: true
+        echo 'Remote Status: ' + handle.getBuildStatus().toString()
     }
 
  } catch (Exception e)    {
