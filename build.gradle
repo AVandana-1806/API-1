@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        maven {
+            url "http://pr.dev.cwds.io/artifactory/repo"
+        }
         mavenCentral()
     }
     dependencies {
