@@ -114,7 +114,7 @@ node ('tpt4-slave'){
 	}
 
     stage('Deploy to PreInt-Integration') {
-        def mgmtJobParams = "version=\"$newTag\""
+        def mgmtJobParams = "version=$newTag"
         def handle = triggerRemoteJob abortTriggeredJob: true, enhancedLogging: false, job: 'PreInt-Integration/deploy-ferb', maxConn: 5, pollInterval: 20, parameters: "${mgmtJobParams}", remoteJenkinsName: "deploy-jenkins", useCrumbCache: true, useJobInfoCache: true
         echo 'Remote Status: ' + handle.getBuildStatus().toString()
     }
