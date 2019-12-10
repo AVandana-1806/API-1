@@ -26,7 +26,6 @@ import gov.ca.cwds.health.SpGenclncntyHealthCheck;
 import gov.ca.cwds.health.SwaggerHealthCheck;
 import gov.ca.cwds.health.SystemCodeCacheHealthCheck;
 import gov.ca.cwds.health.SystemCodeHealthCheck;
-import gov.ca.cwds.health.TriggerHealthCheck;
 import gov.ca.cwds.health.ViewsHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
@@ -34,7 +33,6 @@ import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
-import gov.ca.cwds.health.resource.TriggerExistCheck;
 import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
@@ -164,6 +162,8 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     final Map<String, String> env = System.getenv();
     LOGGER.info(
         "\n\n******************* ENVIRONMENT VARIABLES ***********************************\n");
+
+
     for (Map.Entry<String, String> entry : env.entrySet()) {
       LOGGER.info("{}={}", entry.getKey(), entry.getValue());
     }
@@ -212,10 +212,6 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
     final ViewsHealthCheck viewsHealthCheck =
         new ViewsHealthCheck(injector.getInstance(ViewExistCheck.class));
     environment.healthChecks().register(Api.HealthCheck.VIEW_STATUS, viewsHealthCheck);
-
-    final TriggerHealthCheck triggerHealthCheck =
-        new TriggerHealthCheck(injector.getInstance(TriggerExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.TRIGGER_STATUS, triggerHealthCheck);
 
     final SpGenclncntyHealthCheck spGenclncntyHealthCheck =
         new SpGenclncntyHealthCheck(injector.getInstance(SpGenclncntyExistCheck.class));
