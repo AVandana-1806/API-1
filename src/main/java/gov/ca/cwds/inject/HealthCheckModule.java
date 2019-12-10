@@ -13,7 +13,6 @@ import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
 import gov.ca.cwds.health.resource.SpSpssaname3ExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
-import gov.ca.cwds.health.resource.TriggerExistCheck;
 import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
@@ -39,7 +38,6 @@ public class HealthCheckModule extends AbstractModule {
     bind(SystemCodeCheck.class);
     bind(MQTExistCheck.class);
     bind(ViewExistCheck.class);
-    bind(TriggerExistCheck.class);
     bind(SpGenclncntyExistCheck.class);
     bind(SpSpssaname3ExistCheck.class);
   }
