@@ -139,13 +139,4 @@ public class HealthCheckTest extends FunctionalTest {
     given().queryParam("token", token).when().get(healthCheckPath).then().body("views.healthy",
         equalTo(true));
   }
-
-  /**
-   * 
-   */
-  @Test
-  public void testTriggersIsOk() {
-    given().queryParam("token", token).when().get(healthCheckPath).then().body("triggers.healthy",
-        equalTo(true));
-  }
 }
