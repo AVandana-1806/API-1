@@ -136,7 +136,7 @@ public class R04464CrossReportLawEnforcementDue {
           needsReminderCreated(reminderCreated, persistedReporter, allegation);
 
       if (needReminderCreated) {
-        createReminder(reminderCreated, crossReports, referral, dueDate);
+        reminderCreated = createReminder(reminderCreated, crossReports, referral, dueDate);
       }
     }
     return reminderCreated;
@@ -159,10 +159,11 @@ public class R04464CrossReportLawEnforcementDue {
     return !reminderCreated && allegationCheck && reporterCheck;
   }
 
-  private boolean createReminder(boolean reminderCreated,
+  private boolean createReminder(boolean createAReminder,
       Set<gov.ca.cwds.rest.api.domain.CrossReport> crossReports, Referral referral,
       Calendar dueDate) {
 
+    boolean reminderCreated = createAReminder;
     for (gov.ca.cwds.rest.api.domain.CrossReport crossReport : crossReports) {
       gov.ca.cwds.data.persistence.cms.CrossReport savedCrossReport =
           crossReportDao.find(crossReport.getLegacyId());

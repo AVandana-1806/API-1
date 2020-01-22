@@ -24,10 +24,8 @@ public class CWSDateTime {
 
   public CWSDateTime(String utcDateTime) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIMESTAMP_ISO8601_FORMAT);
-    if (utcDateTime.length() == DATE_FORMAT.length()) {
-      utcDateTime += "T08:00:00.000Z";
-    }
-    LocalDateTime localDateTime = LocalDateTime.parse(utcDateTime, formatter);
+    String dateTime = addTime(utcDateTime);
+    LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
     this.utcDateTime = localDateTime.atZone(ZoneId.of("UTC"));
   }
 
@@ -57,5 +55,13 @@ public class CWSDateTime {
 
   private DateTimeFormatter toStringTimeFormatter() {
     return DateTimeFormatter.ofPattern(TIME_FORMAT);
+  }
+
+  private String addTime(String utcDateTime) {
+    String dateTime = utcDateTime;
+    if (utcDateTime.length() == DATE_FORMAT.length()) {
+      dateTime += "T08:00:00.000Z";
+    }
+    return dateTime;
   }
 }

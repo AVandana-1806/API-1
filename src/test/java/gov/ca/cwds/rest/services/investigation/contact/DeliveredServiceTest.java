@@ -316,5 +316,4 @@ public class DeliveredServiceTest {
     target.find("1234567");
     verify(deliveredServiceDao, atLeastOnce()).find("1234567");
   }
-
 }

@@ -3,6 +3,7 @@ package gov.ca.cwds.data.cms;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +58,7 @@ public abstract class ClientAddressDaoTest extends Doofenshmirtz<ClientAddress> 
     String clientId = DEFAULT_CLIENT_ID;
     List<ClientAddress> actual = target.findByAddressAndClient(addressId, clientId);
     List<ClientAddress> expected = new ArrayList<>();
+    assertFalse(true);
     assertThat(actual, is(equalTo(expected)));
   }
 

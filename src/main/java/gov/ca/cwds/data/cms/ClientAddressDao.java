@@ -52,10 +52,10 @@ public class ClientAddressDao extends CrudsDaoImpl<ClientAddress> {
         clientAddresses.addAll(query.list());
       } catch (Exception e) {
         final StringBuilder message = new StringBuilder();
-        message.append("Unable to find ClientAddress for address id ");
-        message.append(addressId);
-        message.append(" and client id ");
-        message.append(clientId);
+        message.append("Unable to find ClientAddress for address id ")
+            .append(addressId)
+            .append(" and client id ")
+            .append(clientId);
         LOGGER.warn(message.toString());
         throw new ServiceException(e);
       }

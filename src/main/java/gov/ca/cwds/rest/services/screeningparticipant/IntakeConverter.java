@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class IntakeConverter {
+public class IntakeConverter {
 
   protected List<ClientAddress> convertPersonalData(Client client) {
     Set<ClientAddress> clientAddresses = client.getClientAddress().stream()

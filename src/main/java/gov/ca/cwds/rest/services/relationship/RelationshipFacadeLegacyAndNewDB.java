@@ -98,7 +98,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
 
   @Override
   public gov.ca.cwds.rest.api.Response updateRelationship(String relationshipId,
-      ScreeningRelationship relationship) {
+      ScreeningRelationship updatableRelationship) {
+    ScreeningRelationship relationship = updatableRelationship;
     if (relationship.isReversed()) {
       relationship = enrichReversedRelationship(relationship);
     }
@@ -672,7 +673,8 @@ public class RelationshipFacadeLegacyAndNewDB implements RelationshipFacade {
     return oppositeCode;
   }
 
-  private short getOppositeCode(short oppositeCode, String str) {
+  private short getOppositeCode(final short defaultOppositeCode, String str) {
+    short oppositeCode = defaultOppositeCode;
     String[] descriptionArray = str.split("/");
     if (descriptionArray.length == 2) {
       String part3 = "";

@@ -118,8 +118,6 @@ public class LiveElasticClientHandler implements ApiMarker {
       // statement and session without closing the result set.
       try (final ResultSet rs = stmt.executeQuery()) {
         consumer.accept(rs);
-      } finally {
-        // Auto-close result set.
       }
     } catch (Exception e) {
       throw CaresLog.runtime(LOGGER, e, "SELECT FAILED! {}", e.getMessage(), e);
@@ -134,8 +132,6 @@ public class LiveElasticClientHandler implements ApiMarker {
       optimizeStatement(stmt);
       try (final ResultSet rs = stmt.executeQuery(sql)) {
         consumer.accept(rs);
-      } finally {
-        // Auto-close result set.
       }
     } catch (Exception e) {
       throw CaresLog.runtime(LOGGER, e, "SELECT FAILED! {}", e.getMessage(), e);
@@ -521,8 +517,6 @@ public class LiveElasticClientHandler implements ApiMarker {
         pha = new PlacementHomeAddress(rs);
         placementHomeAddresses.put(pha.getClientId(), pha);
       }
-    } finally {
-      // Close result set.
     }
 
     LOGGER.info("Placement home count: {}", placementHomeAddresses.size());
