@@ -25,7 +25,7 @@ public class ClientRelationshipDtoBuilder {
   public ClientRelationshipDtoBuilder(ScreeningRelationship relationship,
       ClientParticipants participants) {
     if (participants == null) {
-      throw new NullPointerException("Client Participants can not be null");
+      throw new IllegalArgumentException("Client Participants can not be null");
     }
     id = relationship.getId();
     type = (short) relationship.getRelationshipType();

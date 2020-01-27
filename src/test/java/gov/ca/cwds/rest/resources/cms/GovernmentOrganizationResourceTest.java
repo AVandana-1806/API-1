@@ -66,5 +66,4 @@ public class GovernmentOrganizationResourceTest {
         new GovernmentOrganizationResource(simpleResourceDelegate);
     assertThat(target, notNullValue());
   }
-
 }

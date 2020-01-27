@@ -134,10 +134,7 @@ public class WorkFerbUserInfo implements Work {
                 "client user: \"{}\", application: \"{}\", accounting: \"{}\", workstation: \"{}\"",
                 resultClientUserId, resultAppName, resultAccounting, resultWorkstation);
           }
-        } finally {
-          // Prepared statement goes out of scope.
         }
-
         // ALTERNATIVE: call proc SYSPROC.WLM_SET_CLIENT_INFO.
       } catch (Exception e) {
         LOGGER.warn("UNSUPPORTED CLIENT INFO: {}", e.getMessage(), e);

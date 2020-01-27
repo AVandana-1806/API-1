@@ -539,10 +539,11 @@ public class ScreeningToReferralService implements CrudsService {
   }
 
   private String getClientLegacyId(Map<Long, String> client, String clientId, long personId) {
+    String clientIdToUpdate = clientId;
     if (client.containsKey(personId)) {
-      clientId = client.get(personId);
+      clientIdToUpdate = client.get(personId);
     }
-    return clientId;
+    return clientIdToUpdate;
   }
 
   private boolean validateAllegationHasVictim(ScreeningToReferral scr, Allegation allegation) {

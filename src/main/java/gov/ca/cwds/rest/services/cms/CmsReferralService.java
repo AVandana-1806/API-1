@@ -128,18 +128,21 @@ public class CmsReferralService implements CrudsService {
     return savedreporter;
   }
 
-  private void saveReferralClients(CmsReferral cmsReferral, String referralId, Object o,
-      int clientInst, Set<ReferralClient> resultReferralClient) {
+  private int saveReferralClients(CmsReferral cmsReferral, String referralId, Object o,
+      final int clientInst, Set<ReferralClient> resultReferralClient) {
+    int count = clientInst;
     if (cmsReferral.getReferralClient() != null && !cmsReferral.getReferralClient().isEmpty()) {
       for (ReferralClient incomingReferralClient : cmsReferral.getReferralClient()) {
-        clientInst = saveReferralClient(referralId, (String) o, clientInst, resultReferralClient,
+        count = saveReferralClient(referralId, (String) o, clientInst, resultReferralClient,
             incomingReferralClient);
       }
     }
+    return count;
   }
 
-  private int saveReferralClient(String referralId, String o, int clientInst,
+  private int saveReferralClient(String referralId, String o, final int  clientInst,
       Set<ReferralClient> resultReferralClient, ReferralClient incomingReferralClient) {
+    int count = clientInst;
     ReferralClient referralClient = new ReferralClient(incomingReferralClient.getApprovalNumber(),
         incomingReferralClient.getApprovalStatusType(),
         incomingReferralClient.getDispositionClosureReasonType(),
@@ -153,8 +156,8 @@ public class CmsReferralService implements CrudsService {
         incomingReferralClient.getAlcoholIndicator(), incomingReferralClient.getDrugIndicator());
     referralClient = this.referralClientService.create(referralClient);
     resultReferralClient.add(referralClient);
-    clientInst++;
-    return clientInst;
+    count++;
+    return count;
   }
 
   private void saveCrossReports(CmsReferral cmsReferral, String referralId,

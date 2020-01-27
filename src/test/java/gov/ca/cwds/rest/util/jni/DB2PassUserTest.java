@@ -66,10 +66,7 @@ public class DB2PassUserTest {
           }
         }
 
-      } finally {
-        // auto-close
       }
-
     } catch (Exception e) {
       e.printStackTrace();
     }

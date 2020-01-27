@@ -30,18 +30,13 @@ public class CaresNonWebRequestContextManager {
     final Date requestStartTime = (Date) ctx.get(Parameter.REQUEST_START_TIME);
     final String requestStartTimeStr = DomainChef.cookTimestamp(requestStartTime);
 
-    try {
-      final String userId = ctx.getUserId();
-      LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
-      MDC.put("userId", userId);
-    } finally {
-      // Appease SonarQube ...
-    }
+    final String userId = ctx.getUserId();
+    LOGGER.info("user id {} started request at {}", userId, requestStartTimeStr);
+    MDC.put("userId", userId);
   }
 
   public void stopRequest() {
     RequestExecutionContextImpl.stopRequest(); // mark request as "done", no matter what happens
     MDC.remove("userId"); // remove the logging context, no matter what happens
   }
-
 }

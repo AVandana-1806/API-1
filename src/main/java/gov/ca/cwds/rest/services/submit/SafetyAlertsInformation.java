@@ -17,22 +17,20 @@ public class SafetyAlertsInformation {
   public String buildSafetyAlertsInfo(Screening screening) {
     String safetyInformation = null;
     StringBuilder stringBuilder = new StringBuilder();
-    if (screening.getSafetyAlerts() != null && !screening.getSafetyAlerts().isEmpty()
-        && StringUtils.isNotBlank(screening.getSafetyInformation())) {
+    boolean hasSafetyAlerts = screening.getSafetyAlerts() != null && !screening.getSafetyAlerts().isEmpty();
+    boolean hasSafetyInformation = StringUtils.isNotBlank(screening.getSafetyInformation());
+    if ( hasSafetyAlerts && hasSafetyInformation) {
       screening.getSafetyAlerts().forEach(alert -> stringBuilder.append(alert).append(','));
       stringBuilder.append(screening.getSafetyInformation());
       return stringBuilder.toString();
-    } else if (screening.getSafetyAlerts() == null && screening.getSafetyAlerts().isEmpty()
-        && StringUtils.isNotBlank(screening.getSafetyInformation())) {
+    } else if ( !hasSafetyAlerts && hasSafetyInformation ) {
       return screening.getSafetyInformation();
-    } else if (screening.getSafetyAlerts() != null && !screening.getSafetyAlerts().isEmpty()
-        && StringUtils.isBlank(screening.getSafetyInformation())) {
+    } else if (hasSafetyAlerts && ! hasSafetyInformation ) {
       screening.getSafetyAlerts().forEach(alert -> stringBuilder.append(alert).append(','));
       return stringBuilder.substring(0, stringBuilder.length() - 1);
     }
     return safetyInformation;
   }
-
 }
 
 

@@ -68,11 +68,12 @@ public class GovernmentOrganizationResource {
       response = GovernmentOrganization[].class, code = 200)
   public Response get(@QueryParam("countyId") @ApiParam(required = false,
       value = "The county id") String countyId) {
-    if (StringUtils.isEmpty(countyId)) {
-      countyId = "";
+    String sanitizedCountyId = countyId;
+    if (StringUtils.isEmpty(sanitizedCountyId)) {
+      sanitizedCountyId = "";
     }
 
-    return simpleResourceDelegate.find(countyId);
+    return simpleResourceDelegate.find(sanitizedCountyId);
   }
 
 }

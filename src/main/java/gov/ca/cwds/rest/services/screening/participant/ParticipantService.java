@@ -359,7 +359,7 @@ public class ParticipantService implements
       LegacyDescriptor legacyDescriptor) {
     String legacyId = "";
     if (legacyDescriptor != null && StringUtils.isNoneEmpty(legacyDescriptor.getId())) {
-      legacyId += legacyDescriptor.getId();
+      legacyId = legacyDescriptor.getId();
     }
     return participantDao
         .findByRelatedScreeningIdAndLegacyId(screeningId,
@@ -516,19 +516,20 @@ public class ParticipantService implements
   }
 
   private AddressesWrapper createAddresses(AddressIntakeApi addressIntakeApi) {
+    AddressIntakeApi workingAddressIntakeApi = addressIntakeApi;
     Addresses addressesEntityManaged =
-        addressIntakeApi.getId() == null ? null : addressesDao.find(addressIntakeApi.getId());
+        workingAddressIntakeApi.getId() == null ? null : addressesDao.find(workingAddressIntakeApi.getId());
     if (addressesEntityManaged == null
-        || !addressIntakeApi.equals(new AddressIntakeApi(addressesEntityManaged))) {
+        || !workingAddressIntakeApi.equals(new AddressIntakeApi(addressesEntityManaged))) {
       // Create only those that don't exist or differs (were changed) from existing ones
-      addressIntakeApi.setId(null);
-      addressesEntityManaged = addressesDao.create(new Addresses(addressIntakeApi));
-      LegacyDescriptor legacyDescriptor = addressIntakeApi.getLegacyDescriptor();
-      addressIntakeApi = new AddressIntakeApi(addressesEntityManaged);
-      addressIntakeApi.setLegacyDescriptor(addressService
+      workingAddressIntakeApi.setId(null);
+      addressesEntityManaged = addressesDao.create(new Addresses(workingAddressIntakeApi));
+      LegacyDescriptor legacyDescriptor = workingAddressIntakeApi.getLegacyDescriptor();
+      workingAddressIntakeApi = new AddressIntakeApi(addressesEntityManaged);
+      workingAddressIntakeApi.setLegacyDescriptor(addressService
           .saveLegacyDescriptor(legacyDescriptor, addressesEntityManaged.getId()));
     }
-    return new AddressesWrapper(addressIntakeApi, addressesEntityManaged);
+    return new AddressesWrapper(workingAddressIntakeApi, addressesEntityManaged);
   }
 
   private List<PhoneNumber> createParticipantPhoneNumbers(List<PhoneNumber> phoneList,

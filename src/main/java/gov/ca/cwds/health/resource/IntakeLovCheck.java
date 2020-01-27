@@ -51,8 +51,6 @@ public class IntakeLovCheck implements Pingable {
       LOGGER.info("Postgres LOV health check: tableCountOk: {}, table: {}", tableCountOk,
           tableName);
       ok = ok && tableCountOk;
-    } finally {
-      // Session and connection go out of scope.
     }
 
     LOGGER.info("Postgres LOV health check: ping done");

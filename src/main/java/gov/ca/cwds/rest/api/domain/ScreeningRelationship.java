@@ -53,23 +53,18 @@ public class ScreeningRelationship extends ScreeningRelationshipBase {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("\nScreeningRelationship{");
-    builder.append("\n\tid:");
-    builder.append(id);
-    builder.append(",\n");
-    builder.append("\tclientId:");
-    builder.append(getClientId());
-    builder.append(",\n");
-    builder.append("\trelativeId:");
-    builder.append(getRelativeId());
-    builder.append(",\n");
-    builder.append("\trelationshipType:");
-    builder.append(getRelationshipType());
-    builder.append("\terror:");
-    builder.append(getError());
-    builder.append(",\n");
-    builder.append('}');
+    StringBuilder builder = new StringBuilder()
+    .append("\nScreeningRelationship{\n\tid:")
+    .append(id)
+    .append(",\n\tclientId:")
+    .append(getClientId())
+    .append(",\n\trelativeId:")
+    .append(getRelativeId())
+    .append(",\n\trelationshipType:")
+    .append(getRelationshipType())
+    .append("\terror:")
+    .append(getError())
+    .append(",\n}");
     return builder.toString();
   }
 

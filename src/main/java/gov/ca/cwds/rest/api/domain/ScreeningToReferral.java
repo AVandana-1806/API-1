@@ -522,7 +522,7 @@ public class ScreeningToReferral extends ReportingDomain implements Request {
 
   @JsonIgnore
   public boolean isAccessLimited() {
-    return limitedAccessCode == "S" || limitedAccessCode == "R";
+    return "S".equals(limitedAccessCode) || "R".equals(limitedAccessCode) ;
   }
 
   /**

@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -117,5 +118,11 @@ public class StartDateTimeValidatorTest {
     List<ErrorMessage> errorMessages = messageBuilder.getMessages();
     assertThat(errorMessages.size(), is(equalTo(1)));
 
+  }
+
+  @Test
+  public void nullcheck() throws Exception {
+    String result = StartDateTimeValidator.extractStartTime(null, messageBuilder);
+    assertNull(result);
   }
 }

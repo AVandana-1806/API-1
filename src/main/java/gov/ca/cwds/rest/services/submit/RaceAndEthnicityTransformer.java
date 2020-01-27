@@ -57,8 +57,8 @@ public class RaceAndEthnicityTransformer {
     ObjectMapper mapper = new ObjectMapper();
     if (participantsIntake != null) {
       try {
-        intakeRace = raceJsonBuilder(participantsIntake, intakeRace, mapper);
-        intakeEthnicity = ethnicityJsonBuilder(participantsIntake, intakeEthnicity, mapper);
+        intakeRace = raceJsonBuilder(participantsIntake, mapper);
+        intakeEthnicity = ethnicityJsonBuilder(participantsIntake, mapper);
       } catch (IOException e) {
         LOGGER.error("Unable to parse the race and Ethnicity", e);
         throw new ServiceException(e);
@@ -74,7 +74,8 @@ public class RaceAndEthnicityTransformer {
   }
 
   private List<IntakeRace> raceJsonBuilder(ParticipantIntakeApi participantsIntake,
-      List<IntakeRace> intakeRace, ObjectMapper mapper) throws IOException {
+      ObjectMapper mapper) throws IOException {
+    List<IntakeRace> intakeRace = null;
     if (StringUtils.isNotBlank(participantsIntake.getRaces())) {
       intakeRace =
           mapper.readValue(participantsIntake.getRaces(), new TypeReference<List<IntakeRace>>() {});
@@ -83,7 +84,8 @@ public class RaceAndEthnicityTransformer {
   }
 
   private IntakeEthnicity ethnicityJsonBuilder(ParticipantIntakeApi participantsIntake,
-      IntakeEthnicity intakeEthnicity, ObjectMapper mapper) throws IOException {
+       ObjectMapper mapper) throws IOException {
+    IntakeEthnicity intakeEthnicity = null;
     if (StringUtils.isNotBlank(participantsIntake.getEthnicity())) {
       intakeEthnicity = mapper.readValue(participantsIntake.getEthnicity(), IntakeEthnicity.class);
     }

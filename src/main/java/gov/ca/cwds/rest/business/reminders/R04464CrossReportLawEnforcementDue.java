@@ -86,7 +86,6 @@ public class R04464CrossReportLawEnforcementDue {
    */
   public void crossReportForLawEnforcmentDue(PostedScreeningToReferral postedScreeningToReferral) {
     Set<Participant> reporter = postedScreeningToReferral.getParticipants();
-    boolean reminderCreated = false;
     Reporter persistedReporter = null;
     for (Participant participant : reporter) {
       if (ParticipantValidator.isReporterType(participant)
@@ -106,7 +105,7 @@ public class R04464CrossReportLawEnforcementDue {
     Calendar dueDate = setDueDate(referral);
 
     if (referral.getClosureDate() == null) {
-      processRemindersByAllegation(reminderCreated, persistedReporter, allegations, crossReports,
+      processRemindersByAllegation(persistedReporter, allegations, crossReports,
           referral, dueDate);
     }
   }
@@ -127,16 +126,17 @@ public class R04464CrossReportLawEnforcementDue {
     return dueDate;
   }
 
-  private boolean processRemindersByAllegation(boolean reminderCreated, Reporter persistedReporter,
+  private boolean processRemindersByAllegation(Reporter persistedReporter,
       Set<Allegation> allegations, Set<gov.ca.cwds.rest.api.domain.CrossReport> crossReports,
       Referral referral, Calendar dueDate) {
+    boolean reminderCreated = false;
     for (Allegation allegation : allegations) {
 
       boolean needReminderCreated =
           needsReminderCreated(reminderCreated, persistedReporter, allegation);
 
       if (needReminderCreated) {
-        createReminder(reminderCreated, crossReports, referral, dueDate);
+        reminderCreated = createReminder(reminderCreated, crossReports, referral, dueDate);
       }
     }
     return reminderCreated;
@@ -159,10 +159,11 @@ public class R04464CrossReportLawEnforcementDue {
     return !reminderCreated && allegationCheck && reporterCheck;
   }
 
-  private boolean createReminder(boolean reminderCreated,
+  private boolean createReminder(boolean createAReminder,
       Set<gov.ca.cwds.rest.api.domain.CrossReport> crossReports, Referral referral,
       Calendar dueDate) {
 
+    boolean reminderCreated = createAReminder;
     for (gov.ca.cwds.rest.api.domain.CrossReport crossReport : crossReports) {
       gov.ca.cwds.data.persistence.cms.CrossReport savedCrossReport =
           crossReportDao.find(crossReport.getLegacyId());

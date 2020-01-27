@@ -329,8 +329,9 @@ public class DeliveredService {
    */
   private String getTextCertainRange(String note, int beginIndex, int endIndex) {
     // changing endIndex if full long text is smaller than estimated count.
-    endIndex = (note.length() < endIndex) ? note.length() : endIndex;
-    return note.substring(beginIndex, endIndex);
+    int inRangeEndIndex = endIndex;
+    inRangeEndIndex = (note.length() < endIndex) ? note.length() : endIndex;
+    return note.substring(beginIndex, inRangeEndIndex);
   }
 
   /**
