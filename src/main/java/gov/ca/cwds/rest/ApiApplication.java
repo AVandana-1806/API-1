@@ -29,11 +29,9 @@ import gov.ca.cwds.health.SystemCodeHealthCheck;
 import gov.ca.cwds.health.ViewsHealthCheck;
 import gov.ca.cwds.health.resource.AuthServer;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
-import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
-import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.inject.ApplicationModule;
 import gov.ca.cwds.inject.InjectorHolder;
 import gov.ca.cwds.rest.api.ApiException;
@@ -204,14 +202,6 @@ public class ApiApplication extends BaseApiApplication<ApiConfiguration> {
 
     environment.healthChecks().register(Api.HealthCheck.SYSTEM_CODE_CACHE_STATUS,
         new SystemCodeCacheHealthCheck());
-
-    final MQTHealthCheck mQTHealthCheck =
-        new MQTHealthCheck(injector.getInstance(MQTExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.MQT_STATUS, mQTHealthCheck);
-
-    final ViewsHealthCheck viewsHealthCheck =
-        new ViewsHealthCheck(injector.getInstance(ViewExistCheck.class));
-    environment.healthChecks().register(Api.HealthCheck.VIEW_STATUS, viewsHealthCheck);
 
     final SpGenclncntyHealthCheck spGenclncntyHealthCheck =
         new SpGenclncntyHealthCheck(injector.getInstance(SpGenclncntyExistCheck.class));
