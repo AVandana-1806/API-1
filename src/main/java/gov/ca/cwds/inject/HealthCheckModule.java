@@ -8,12 +8,10 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import gov.ca.cwds.health.resource.AuthServer;
 import gov.ca.cwds.health.resource.IntakeLovCheck;
-import gov.ca.cwds.health.resource.MQTExistCheck;
 import gov.ca.cwds.health.resource.SpGenclncntyExistCheck;
 import gov.ca.cwds.health.resource.SpSpssaname3ExistCheck;
 import gov.ca.cwds.health.resource.SwaggerEndpoint;
 import gov.ca.cwds.health.resource.SystemCodeCheck;
-import gov.ca.cwds.health.resource.ViewExistCheck;
 import gov.ca.cwds.rest.SwaggerConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
@@ -36,8 +34,6 @@ public class HealthCheckModule extends AbstractModule {
     bind(SwaggerEndpoint.class);
     bind(IntakeLovCheck.class);
     bind(SystemCodeCheck.class);
-    bind(MQTExistCheck.class);
-    bind(ViewExistCheck.class);
     bind(SpGenclncntyExistCheck.class);
     bind(SpSpssaname3ExistCheck.class);
   }
