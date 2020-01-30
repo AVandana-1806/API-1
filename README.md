@@ -1,6 +1,6 @@
 # CWDS API
 
-The CWDS API provides RESTful services for the CWDS Modules.
+The CWDS API provides RESTful services for the CWDS  Modules.
 
 ## Wiki 
 
