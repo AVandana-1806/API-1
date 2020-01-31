@@ -130,13 +130,4 @@ public class HealthCheckTest extends FunctionalTest {
     given().queryParam("token", token).when().get(healthCheckPath).then()
         .body("system_code_cache.healthy", equalTo(true));
   }
-
-  /**
-   * 
-   */
-  @Test
-  public void testViewsIsOk() {
-    given().queryParam("token", token).when().get(healthCheckPath).then().body("views.healthy",
-        equalTo(true));
-  }
 }
