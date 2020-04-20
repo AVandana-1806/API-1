@@ -41,7 +41,8 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonPropertyOrder({"id", "legacySourceTable", "legacyId", "firstName", "lastName", "gender", "ssn",
     "dateOfBirth", "date_of_death", "roles", "addresses", "races", "ethnicity"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantIntakeApi extends ReportingDomain implements Request, Response {
+public class ParticipantIntakeApi extends ReportingDomain
+    implements Request, Response, SelfCleaning {
 
   private static final long serialVersionUID = 1L;
 
@@ -627,6 +628,15 @@ public class ParticipantIntakeApi extends ReportingDomain implements Request, Re
 
   public void setEstimatedDob(Boolean estimatedDob) {
     this.estimatedDob = estimatedDob;
+  }
+
+  @Override
+  public void clean() {
+    if (addresses != null && !addresses.isEmpty()) {
+      for (AddressIntakeApi addr : addresses) {
+        addr.clean();
+      }
+    }
   }
 
   /**

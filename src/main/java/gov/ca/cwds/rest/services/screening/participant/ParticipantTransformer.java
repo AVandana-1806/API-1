@@ -79,7 +79,9 @@ public class ParticipantTransformer {
       participant.setScreeningId(incomingParticipantIntakeApi.getScreeningId());
       participant.setProbationYouth(isProbationYouth(legacyDescriptor.getId()));
       participant.setRelatedScreeningId(incomingParticipantIntakeApi.getScreeningId());
+      participant.clean();
     }
+
     return participant;
   }
 
