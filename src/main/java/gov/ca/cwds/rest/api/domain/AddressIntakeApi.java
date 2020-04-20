@@ -4,9 +4,11 @@ import static gov.ca.cwds.data.persistence.cms.CmsPersistentObject.CMS_ID_LEN;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -25,7 +27,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @JsonSnakeCase
 @ApiModel("nsAddresses")
-public class AddressIntakeApi extends DomainObject implements Request, Response {
+public class AddressIntakeApi extends DomainObject implements Request, Response, SelfCleaning {
 
   private static final long serialVersionUID = 1L;
 
@@ -121,7 +123,8 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
    */
   @SuppressWarnings("squid:S00107")
   public AddressIntakeApi(String legacySourceTable, String addressId, String streetAddress,
-      String city, String state, String zip, String type, LegacyDescriptor legacyDescriptor, List<PhoneNumber> phoneNumbers) {
+      String city, String state, String zip, String type, LegacyDescriptor legacyDescriptor,
+      List<PhoneNumber> phoneNumbers) {
     super();
     this.legacySourceTable = legacySourceTable;
     this.legacyId = addressId;
@@ -272,6 +275,25 @@ public class AddressIntakeApi extends DomainObject implements Request, Response 
    */
   public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
+  }
+
+  @Override
+  public void clean() {
+    if (StringUtils.isNotBlank(zip)) {
+      String trimZip = zip.trim();
+      if ("0".equals(trimZip)) {
+        trimZip = "";
+      }
+      setZip(trimZip);
+    }
+
+    if (StringUtils.isNotBlank(streetAddress)) {
+      setStreetAddress(streetAddress.trim());
+    }
+
+    if (StringUtils.isNotBlank(city)) {
+      setStreetAddress(city.trim());
+    }
   }
 
   /**

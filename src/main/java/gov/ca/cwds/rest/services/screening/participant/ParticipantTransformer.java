@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.services.screening.participant;
 
-import java.util.List;
-
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +11,6 @@ import com.google.inject.Inject;
 import gov.ca.cwds.cms.data.access.service.impl.CsecHistoryService;
 import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.cms.ClientDao;
-import gov.ca.cwds.data.legacy.cms.entity.CsecHistory;
 import gov.ca.cwds.data.ns.ScreeningDao;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import gov.ca.cwds.data.persistence.ns.ScreeningEntity;
@@ -87,10 +84,9 @@ public class ParticipantTransformer {
   }
 
   private void addCsecTo(ParticipantIntakeApi participant) {
-    List<CsecHistory> csecHistory;
     if (participant != null && participant.getLegacyDescriptor() != null) {
-      csecHistory = csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId());
-      participant.setCsecs(csecMapper.toDomain(csecHistory));
+      participant.setCsecs(csecMapper
+          .toDomain(csecHistoryService.findByClientId(participant.getLegacyDescriptor().getId())));
     }
   }
 
