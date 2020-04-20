@@ -247,7 +247,8 @@ public class ScreeningToReferralServiceTest {
 
     referralClientService = mock(ReferralClientService.class);
     screeningService = mock(ScreeningService.class);
-    validScreening = new ScreeningResourceBuilder().buildValidScreeningWithAllegationAndParticipants();
+    validScreening =
+        new ScreeningResourceBuilder().buildValidScreeningWithAllegationAndParticipants();
     when(screeningService.getScreening("1")).thenReturn(validScreening);
     when(screeningService.updateScreening(eq("1"), any())).thenReturn(validScreening);
 
@@ -329,9 +330,10 @@ public class ScreeningToReferralServiceTest {
         clientRelationshipDao, screeningService);
 
     screeningToReferralService.setDroolsService(mock(DroolsService.class));
-    ScreeningToReferral referralFromValidScreening = screeningToReferralService.buildReferralFromScreening(validScreening);
-    when(referralService.createCmsReferralFromScreening(eq(referralFromValidScreening), any(), any(), any()))
-        .thenReturn(validReferralId);
+    ScreeningToReferral referralFromValidScreening =
+        screeningToReferralService.buildReferralFromScreening(validScreening);
+    when(referralService.createCmsReferralFromScreening(eq(referralFromValidScreening), any(),
+        any(), any())).thenReturn(validReferralId);
   }
 
   @SuppressWarnings("javadoc")
@@ -446,7 +448,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -555,7 +557,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -671,7 +673,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(referral);
 
     Response response = screeningToReferralService.create(referral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -692,7 +694,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -714,7 +716,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -958,7 +960,7 @@ public class ScreeningToReferralServiceTest {
 
     try {
       Response response = screeningToReferralService.create(screeningToReferral);
-      assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+      assertEquals(response.getClass(), PostedScreeningToReferral.class);
       assertThat(response.hasMessages(), is(equalTo(false)));
     } catch (Exception e) {
       Assert.fail("Unexpected ServiceException was thrown" + e.getMessage());
@@ -1373,7 +1375,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 
@@ -1396,7 +1398,7 @@ public class ScreeningToReferralServiceTest {
     mockParticipantToLegacyClient(screeningToReferral);
 
     Response response = screeningToReferralService.create(screeningToReferral);
-    assertThat(response.getClass(), is(PostedScreeningToReferral.class));
+    assertEquals(response.getClass(), PostedScreeningToReferral.class);
     assertThat(response.hasMessages(), is(equalTo(false)));
   }
 

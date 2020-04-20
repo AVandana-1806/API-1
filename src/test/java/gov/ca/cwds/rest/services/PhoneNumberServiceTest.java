@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +21,6 @@ import gov.ca.cwds.rest.services.junit.template.ServiceTestTemplate;
 
 /**
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("unused")
 public class PhoneNumberServiceTest implements ServiceTestTemplate {
@@ -49,8 +48,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     } catch (AssertionError e) {
       assertEquals("Expected AssertionError", e.getMessage());
     }
-
-
   }
 
   @Test
@@ -59,12 +56,9 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     when(phoneNumberDao.find(new Long(1)))
         .thenReturn(new gov.ca.cwds.data.persistence.ns.PhoneNumber(1L, "408 987-6543", "Home"));
 
-    PhoneNumber expected = new PhoneNumber(1L,"408 987-6543", "Home");
-
+    PhoneNumber expected = new PhoneNumber(1L, "408 987-6543", "Home");
     PhoneNumber found = phoneNumberService.find(new Long(1));
-
     assertThat(found, is(expected));
-
   }
 
   @Test
@@ -74,7 +68,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     PhoneNumber found = phoneNumberService.find(new Long(-1));
 
     assertThat(found, is(nullValue()));
-
   }
 
   @Override
@@ -91,7 +84,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     } catch (AssertionError e) {
       assertEquals("Expected AssertionError", e.getMessage());
     }
-
   }
 
   @Override
@@ -104,7 +96,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
   public void testDeleteReturnsNullWhenNotFound() throws Exception {
     thrown.expect(NotImplementedException.class);
     phoneNumberService.delete(new Long(1));
-
   }
 
   @Override
@@ -126,7 +117,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     } catch (AssertionError e) {
       assertEquals("Expected AssertionError", e.getMessage());
     }
-
   }
 
   @Test
@@ -161,7 +151,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     } catch (AssertionError e) {
       assertEquals("Expected AssertionError", e.getMessage());
     }
-
   }
 
   @Test
@@ -175,8 +164,7 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
         .thenReturn(toCreate);
 
     PostedPhoneNumber postedPhoneNumber = phoneNumberService.create(request);
-    assertThat(postedPhoneNumber.getClass(), is(PostedPhoneNumber.class));
-
+    assertEquals(postedPhoneNumber.getClass(), PostedPhoneNumber.class);
   }
 
   @Test
@@ -193,7 +181,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     PostedPhoneNumber returned = phoneNumberService.create(request);
 
     assertThat(returned, is(expected));
-
   }
 
   @Test
@@ -205,7 +192,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     } catch (AssertionError e) {
       assertEquals("Expected AssertionError", e.getMessage());
     }
-
   }
 
   @Override
@@ -238,7 +224,6 @@ public class PhoneNumberServiceTest implements ServiceTestTemplate {
     PostedPhoneNumber returned = phoneNumberService.create(request);
 
     assertThat(returned, is(expected));
-
   }
 
 }

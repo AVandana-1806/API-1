@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -128,7 +128,7 @@ public class ReferralClientServiceTest {
 
     when(referralClientDao.delete(any())).thenReturn(referralClient);
     Object retval = referralClientService.delete(referralClient.getPrimaryKey().toString());
-    assertThat(retval.getClass(), is(ReferralClient.class));
+    assertEquals(retval.getClass(), ReferralClient.class);
   }
 
   // update test
@@ -145,7 +145,7 @@ public class ReferralClientServiceTest {
     when(referralClientDao.update(any())).thenReturn(referralClient);
     Object retval =
         referralClientService.update(referralClient.getPrimaryKey().toString(), expected);
-    assertThat(retval.getClass(), is(ReferralClient.class));
+    assertEquals(retval.getClass(), ReferralClient.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -234,7 +234,7 @@ public class ReferralClientServiceTest {
         .thenReturn(toCreate);
 
     Response response = referralClientService.create(request);
-    assertThat(response.getClass(), is(ReferralClient.class));
+    assertEquals(response.getClass(), ReferralClient.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -266,7 +266,7 @@ public class ReferralClientServiceTest {
         .thenReturn(toCreate);
 
     Response response = referralClientService.create(request);
-    assertThat(response.getClass(), is(ReferralClient.class));
+    assertEquals(response.getClass(), ReferralClient.class);
   }
 
   @SuppressWarnings("javadoc")

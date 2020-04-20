@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -124,7 +124,7 @@ public class GovernmentOrganizationCrossReportServiceTest {
         .thenReturn(governmentOrganizationCrossReport);
 
     Object retval = governmentOrganizationCrossReportService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(GovernmentOrganizationCrossReport.class));
+    assertEquals(retval.getClass(), GovernmentOrganizationCrossReport.class);
   }
 
   @Test
@@ -161,7 +161,7 @@ public class GovernmentOrganizationCrossReportServiceTest {
             .thenReturn(toCreate);
 
     Response response = governmentOrganizationCrossReportService.create(request);
-    assertThat(response.getClass(), is(GovernmentOrganizationCrossReport.class));
+    assertEquals(response.getClass(), GovernmentOrganizationCrossReport.class);
   }
 
   @Test

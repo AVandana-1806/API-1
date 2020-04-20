@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -114,7 +114,7 @@ public class LongTextServiceTest {
     when(longTextDao.update(any())).thenReturn(longText);
 
     Object retval = longTextService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(LongText.class));
+    assertEquals(retval.getClass(), LongText.class);
   }
 
   @Test
@@ -145,7 +145,7 @@ public class LongTextServiceTest {
         .thenReturn(toCreate);
 
     Response response = longTextService.create(request);
-    assertThat(response.getClass(), is(PostedLongText.class));
+    assertEquals(response.getClass(), PostedLongText.class);
   }
 
   @Test

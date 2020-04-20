@@ -155,7 +155,7 @@ public class ClientServiceTest {
     when(clientDao.update(any())).thenReturn(client);
 
     Object retval = clientService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(Client.class));
+    assertEquals(retval.getClass(), Client.class);
   }
 
   @Test
@@ -192,7 +192,7 @@ public class ClientServiceTest {
     Client request = new Client(toCreate, false);
     when(clientDao.create(any(gov.ca.cwds.data.persistence.cms.Client.class))).thenReturn(toCreate);
     Response response = clientService.create(request);
-    assertThat(response.getClass(), is(PostedClient.class));
+    assertEquals(response.getClass(), PostedClient.class);
   }
 
   @Test

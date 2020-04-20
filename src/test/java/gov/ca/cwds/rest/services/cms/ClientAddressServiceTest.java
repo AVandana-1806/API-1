@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -180,7 +180,7 @@ public class ClientAddressServiceTest {
     when(clientAddressDao.update(any())).thenReturn(clientAddress);
 
     Object retval = clientAddressService.update("ABC1234567", clientAddressDomain);
-    assertThat(retval.getClass(), is(gov.ca.cwds.rest.api.domain.cms.ClientAddress.class));
+    assertEquals(retval.getClass(), gov.ca.cwds.rest.api.domain.cms.ClientAddress.class);
   }
 
   @Test
@@ -214,7 +214,7 @@ public class ClientAddressServiceTest {
         .thenReturn(toCreate);
 
     Response response = clientAddressService.create(request);
-    assertThat(response.getClass(), is(gov.ca.cwds.rest.api.domain.cms.ClientAddress.class));
+    assertEquals(response.getClass(), gov.ca.cwds.rest.api.domain.cms.ClientAddress.class);
   }
 
   @Test
