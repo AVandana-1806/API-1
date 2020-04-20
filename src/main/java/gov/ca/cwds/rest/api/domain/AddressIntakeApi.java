@@ -292,7 +292,7 @@ public class AddressIntakeApi extends DomainObject implements Request, Response,
     }
 
     if (StringUtils.isNotBlank(city)) {
-      setStreetAddress(city.trim());
+      setCity(city.trim());
     }
   }
 
