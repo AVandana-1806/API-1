@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,8 +85,8 @@ public class ReporterServiceTest {
   @Test
   public void reporterServiceDeleteReturnsNotNull() throws Exception {
     String referralId = "AbiQCgu0Hj";
-    Reporter expected = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter expected =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
     gov.ca.cwds.data.persistence.cms.Reporter reporter =
         new gov.ca.cwds.data.persistence.cms.Reporter(expected, "0Hj", new Date());
 
@@ -99,8 +99,8 @@ public class ReporterServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void updateReturnsReporterResponseOnSuccess() throws Exception {
-    Reporter expected = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter expected =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
 
     gov.ca.cwds.data.persistence.cms.Reporter reporter =
         new gov.ca.cwds.data.persistence.cms.Reporter(expected, "ABC", new Date());
@@ -109,7 +109,7 @@ public class ReporterServiceTest {
     when(reporterDao.update(any())).thenReturn(reporter);
 
     Object retval = reporterService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(Reporter.class));
+    assertThat(Reporter.class, is(retval.getClass()));
   }
 
   @SuppressWarnings("javadoc")
@@ -117,8 +117,8 @@ public class ReporterServiceTest {
   public void updateThrowsExceptionWhenReporterNotFound() throws Exception {
 
     try {
-      Reporter reporterRequest = MAPPER
-          .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+      Reporter reporterRequest =
+          MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
 
       when(reporterDao.update(any())).thenThrow(EntityNotFoundException.class);
 
@@ -134,8 +134,8 @@ public class ReporterServiceTest {
   @Test
   public void reporterServiceCreateThrowsEntityExistsException() throws Exception {
     try {
-      Reporter reporterRequest = MAPPER
-          .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+      Reporter reporterRequest =
+          MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
 
       when(reporterDao.create(any())).thenThrow(EntityExistsException.class);
 
@@ -148,8 +148,8 @@ public class ReporterServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void createReturnsPostedReporterClass() throws Exception {
-    Reporter reporterDomain = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter reporterDomain =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
     gov.ca.cwds.data.persistence.cms.Reporter toCreate =
         new gov.ca.cwds.data.persistence.cms.Reporter(reporterDomain, "ABC", new Date());
 
@@ -166,8 +166,8 @@ public class ReporterServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void createReturnsNonNull() throws Exception {
-    Reporter reporterDomain = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter reporterDomain =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
     gov.ca.cwds.data.persistence.cms.Reporter toCreate =
         new gov.ca.cwds.data.persistence.cms.Reporter(reporterDomain, "ABC", new Date());
 
@@ -184,8 +184,8 @@ public class ReporterServiceTest {
   @SuppressWarnings("javadoc")
   @Test
   public void createReturnsCorrectPostedPerson() throws Exception {
-    Reporter reporterDomain = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
+    Reporter reporterDomain =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Reporter/valid.json"), Reporter.class);
     gov.ca.cwds.data.persistence.cms.Reporter toCreate =
         new gov.ca.cwds.data.persistence.cms.Reporter(reporterDomain, "ABC", new Date());
 
