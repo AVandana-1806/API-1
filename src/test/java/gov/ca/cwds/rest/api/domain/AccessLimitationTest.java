@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
@@ -13,9 +14,7 @@ import gov.ca.cwds.rest.api.domain.cms.SystemCodeDescriptor;
 
 /**
  * @author CWDS API Team
- *
  */
-@SuppressWarnings("javadoc")
 public class AccessLimitationTest {
 
   private LimitedAccessType limitedAccessCode = LimitedAccessType.NONE;
@@ -38,12 +37,11 @@ public class AccessLimitationTest {
   @Test
   public void testEmptyConstructor() throws Exception {
     AccessLimitation empty = new AccessLimitation();
-    assertThat(empty.getClass(), is(AccessLimitation.class));
+    assertEquals(empty.getClass(), AccessLimitation.class);
   }
 
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
-
     AccessLimitation domain = new AccessLimitation(limitedAccessCode, limitedAccessDate,
         limitedAccessDescription, limitedAccessGovernmentEntity);
 

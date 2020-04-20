@@ -109,7 +109,7 @@ public class ReporterServiceTest {
     when(reporterDao.update(any())).thenReturn(reporter);
 
     Object retval = reporterService.update("ABC1234567", expected);
-    assertThat(Reporter.class, is(retval.getClass()));
+    assertEquals(retval.getClass(), Reporter.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -159,8 +159,7 @@ public class ReporterServiceTest {
         .thenReturn(toCreate);
 
     Response response = reporterService.create(request);
-
-    assertThat(response.getClass(), is(PostedReporter.class));
+    assertEquals(response.getClass(), PostedReporter.class);
   }
 
   @SuppressWarnings("javadoc")
