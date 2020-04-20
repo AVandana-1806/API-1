@@ -159,7 +159,7 @@ public class AssignmentServiceTest {
     when(assignmentDao.update(any())).thenReturn(assignment);
 
     Object retval = assignmentService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(Assignment.class));
+    assertEquals(retval.getClass(), Assignment.class);
   }
 
   @Test
@@ -191,7 +191,7 @@ public class AssignmentServiceTest {
         .thenReturn(toCreate);
 
     Response response = assignmentService.create(request);
-    assertThat(response.getClass(), is(PostedAssignment.class));
+    assertEquals(response.getClass(), PostedAssignment.class);
   }
 
   @Test
