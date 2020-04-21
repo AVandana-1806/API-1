@@ -166,7 +166,7 @@ public class PersonServiceTest {
     when(personDao.create(any(gov.ca.cwds.data.persistence.ns.Person.class))).thenReturn(toCreate);
     when(personDao.find(any(Long.class))).thenReturn(toCreate);
     Response response = personService.create(request);
-    assertThat(response.getClass(), is(PostedPerson.class));
+    assertEquals(response.getClass(), PostedPerson.class);
   }
 
   @Test
@@ -220,7 +220,7 @@ public class PersonServiceTest {
     when(personDao.create(any(gov.ca.cwds.data.persistence.ns.Person.class))).thenReturn(toCreate);
     when(personDao.find(any(Long.class))).thenReturn(toCreate);
     Response response = personService.create(request);
-    assertThat(response.getClass(), is(PostedPerson.class));
+    assertEquals(response.getClass(), PostedPerson.class);
   }
 
   @Test

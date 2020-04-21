@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -121,7 +121,7 @@ public class ClientRelationshipServiceTest {
 
     Response response = clientRelationshipService.create(request);
 
-    assertThat(response.getClass(), is(PostedClientRelationship.class));
+    assertEquals(response.getClass(), PostedClientRelationship.class);
   }
 
   @SuppressWarnings("javadoc")

@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import gov.ca.cwds.data.cms.TestSystemCodeCache;
 import gov.ca.cwds.fixture.investigation.RaceAndEthnicityEntityBuilder;
 import gov.ca.cwds.rest.resources.cms.JerseyGuiceRule;
@@ -423,7 +424,7 @@ public class RaceAndEthnicityTest {
   @Test
   public void testEmptyConstructor() throws Exception {
     RaceAndEthnicity empty = new RaceAndEthnicity();
-    assertThat(empty.getClass(), is(RaceAndEthnicity.class));
+    assertEquals(empty.getClass(), RaceAndEthnicity.class);
   }
 
   /**
@@ -452,19 +453,19 @@ public class RaceAndEthnicityTest {
     assertThat(domain.getHispanicUnableToDetermineCode(),
         is(equalTo(hispanicUnableToDetermineCode)));
   }
-  
+
   @Test
   public void testEntityBuilderGetters() throws Exception {
-	  // required for test coverage while RaceAndEthnicityEntityBuilder class is under src/main/java
-	  RaceAndEthnicityEntityBuilder builder = new RaceAndEthnicityEntityBuilder();
-	  
-	  RaceAndEthnicity toValidate =
-	            new RaceAndEthnicityEntityBuilder().build();
-	    assertThat(toValidate.getRaceCode(), is(equalTo(builder.getRaceCode())));
-	    assertThat(toValidate.getHispanicCode(), is(equalTo(builder.getHispanicCode())));
-	    assertThat(toValidate.getHispanicOriginCode(), is(equalTo(builder.getHispanicOriginCode())));
-	    assertThat(toValidate.getHispanicUnableToDetermineCode(), is(equalTo(builder.getHispanicUnableToDetermineCode())));
-	  
+    // required for test coverage while RaceAndEthnicityEntityBuilder class is under src/main/java
+    RaceAndEthnicityEntityBuilder builder = new RaceAndEthnicityEntityBuilder();
+
+    RaceAndEthnicity toValidate = new RaceAndEthnicityEntityBuilder().build();
+    assertThat(toValidate.getRaceCode(), is(equalTo(builder.getRaceCode())));
+    assertThat(toValidate.getHispanicCode(), is(equalTo(builder.getHispanicCode())));
+    assertThat(toValidate.getHispanicOriginCode(), is(equalTo(builder.getHispanicOriginCode())));
+    assertThat(toValidate.getHispanicUnableToDetermineCode(),
+        is(equalTo(builder.getHispanicUnableToDetermineCode())));
+
   }
 
 }

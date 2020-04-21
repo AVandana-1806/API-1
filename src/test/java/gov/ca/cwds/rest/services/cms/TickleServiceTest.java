@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,7 +112,7 @@ public class TickleServiceTest {
     when(tickleDao.update(any())).thenReturn(tickle);
 
     Object retval = tickleService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(Tickle.class));
+    assertEquals(retval.getClass(), Tickle.class);
   }
 
   @Test
@@ -142,7 +142,7 @@ public class TickleServiceTest {
     when(tickleDao.create(any(gov.ca.cwds.data.persistence.cms.Tickle.class))).thenReturn(toCreate);
 
     Response response = tickleService.create(request);
-    assertThat(response.getClass(), is(Tickle.class));
+    assertEquals(response.getClass(), Tickle.class);
   }
 
   @Test

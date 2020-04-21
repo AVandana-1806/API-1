@@ -4,7 +4,8 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -268,9 +269,8 @@ public class CmsReferralServiceTest {
   // Create Tests
   @Test
   public void createReturnsPostedCmsReferral() throws Exception {
-
     Response response = cmsReferralServiceResponse();
-    assertThat(response.getClass(), is(PostedCmsReferral.class));
+    assertEquals(response.getClass(), PostedCmsReferral.class);
   }
 
   @Test
@@ -477,7 +477,5 @@ public class CmsReferralServiceTest {
 
     assertThat(returned, is(expected));
   }
-
-
 
 }

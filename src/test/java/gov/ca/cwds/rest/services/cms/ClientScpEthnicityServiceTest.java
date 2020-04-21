@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,7 +112,7 @@ public class ClientScpEthnicityServiceTest {
     when(clientScpEthnicityDao.update(any())).thenReturn(clientScpEthnicity);
 
     Object retval = clientScpEthnicityService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(ClientScpEthnicity.class));
+    assertEquals(retval.getClass(), ClientScpEthnicity.class);
   }
 
   @Test
@@ -145,7 +145,7 @@ public class ClientScpEthnicityServiceTest {
             .thenReturn(toCreate);
 
     Response response = clientScpEthnicityService.create(request);
-    assertThat(response.getClass(), is(ClientScpEthnicity.class));
+    assertEquals(response.getClass(), ClientScpEthnicity.class);
   }
 
   @Test

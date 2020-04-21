@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,9 +33,10 @@ import gov.ca.cwds.rest.services.referentialintegrity.RIChildClient;
  *
  */
 public class ChildClientServiceTest {
+
   private ChildClientService childClientService;
   private ChildClientDao childClientDao;
-  private RIChildClient ri;    
+  private RIChildClient ri;
   String invalidPrimaryKey = "9999999ZZZ";
   String staffId = "0X5";
 
@@ -53,7 +54,6 @@ public class ChildClientServiceTest {
 
   }
 
-
   // find test
   @SuppressWarnings("javadoc")
   @Test
@@ -62,7 +62,7 @@ public class ChildClientServiceTest {
 
     gov.ca.cwds.data.persistence.cms.ChildClient childCleint =
         new gov.ca.cwds.data.persistence.cms.ChildClient(expected.getVictimClientId(), expected,
-        		staffId);
+            staffId);
     when(childClientDao.find(eq(expected.getVictimClientId()))).thenReturn(childCleint);
     ChildClient found = childClientService.find(expected.getVictimClientId());
     assertThat(found, is(expected));
@@ -111,12 +111,12 @@ public class ChildClientServiceTest {
 
     gov.ca.cwds.data.persistence.cms.ChildClient childClient =
         new gov.ca.cwds.data.persistence.cms.ChildClient(expected.getVictimClientId(), expected,
-        		staffId);
+            staffId);
 
     when(childClientDao.find(expected.getVictimClientId())).thenReturn(childClient);
     when(childClientDao.update(any())).thenReturn(childClient);
     Object retval = childClientService.update(expected.getVictimClientId(), expected);
-    assertThat(retval.getClass(), is(ChildClient.class));
+    assertEquals(retval.getClass(), ChildClient.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -132,7 +132,8 @@ public class ChildClientServiceTest {
     when(childClientDao.update(any())).thenReturn(childClient);
 
     ChildClient expected = new ChildClient(childClient);
-    ChildClient updated = childClientService.update(childClientRequest.getVictimClientId(), expected);
+    ChildClient updated =
+        childClientService.update(childClientRequest.getVictimClientId(), expected);
     assertThat(updated, is(expected));
   }
 
@@ -166,7 +167,7 @@ public class ChildClientServiceTest {
         .thenReturn(toCreate);
 
     Response response = childClientService.create(request);
-    assertThat(response.getClass(), is(ChildClient.class));
+    assertEquals(response.getClass(), ChildClient.class);
   }
 
   @SuppressWarnings("javadoc")

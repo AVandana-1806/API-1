@@ -159,7 +159,7 @@ public class AddressServiceTest extends Doofenshmirtz<gov.ca.cwds.data.persisten
     when(addressDao.create(any(gov.ca.cwds.data.persistence.ns.Address.class)))
         .thenReturn(toCreate);
     PostedAddress postedAddress = target.create(request);
-    assertThat(postedAddress.getClass(), is(PostedAddress.class));
+    assertEquals(postedAddress.getClass(), PostedAddress.class);
   }
 
   @Override

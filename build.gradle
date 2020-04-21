@@ -48,7 +48,7 @@ project.ext {
     elasticsearchVersion = '5.5.0'
     log4jVersion = '2.8.2'
 
-    junitVersion = '4.12'
+    junitVersion = '4.13'
     mockitoVersion = "2.8.9"
     hamcrestVersion = "2.0.0.0"
     powerMockVersion = "1.7.3"

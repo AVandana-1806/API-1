@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -120,7 +120,7 @@ public class ClientCollateralServiceTest {
         .thenReturn(toCreate);
 
     Response response = clientCollateralService.create(request);
-    assertThat(response.getClass(), is(PostedClientCollateral.class));
+    assertEquals(response.getClass(), PostedClientCollateral.class);
   }
 
   @SuppressWarnings("javadoc")

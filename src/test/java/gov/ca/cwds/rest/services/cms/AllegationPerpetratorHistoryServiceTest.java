@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -163,7 +163,7 @@ public class AllegationPerpetratorHistoryServiceTest implements ServiceTestTempl
     when(allegationPerpetratorHistoryDao.update(any())).thenReturn(allegationPerpetratorHistory);
 
     Object retval = allegationPerpetratorHistoryService.update("ABC1234567", expected);
-    assertThat(retval.getClass(), is(AllegationPerpetratorHistory.class));
+    assertEquals(retval.getClass(), AllegationPerpetratorHistory.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -214,7 +214,7 @@ public class AllegationPerpetratorHistoryServiceTest implements ServiceTestTempl
             .thenReturn(toCreate);
 
     Response response = allegationPerpetratorHistoryService.create(request);
-    assertThat(response.getClass(), is(PostedAllegationPerpetratorHistory.class));
+    assertEquals(response.getClass(), PostedAllegationPerpetratorHistory.class);
   }
 
   @SuppressWarnings("javadoc")
@@ -315,7 +315,6 @@ public class AllegationPerpetratorHistoryServiceTest implements ServiceTestTempl
     } catch (ServiceException e) {
       assertEquals("AllegationPerpetratorHistory ID cannot be blank", e.getMessage());
     }
-
   }
 
   @Override
@@ -338,7 +337,6 @@ public class AllegationPerpetratorHistoryServiceTest implements ServiceTestTempl
     } catch (ServiceException e) {
       assertEquals("AllegationPerpetratorHistory ID cannot be blank", e.getMessage());
     }
-
   }
 
   /*

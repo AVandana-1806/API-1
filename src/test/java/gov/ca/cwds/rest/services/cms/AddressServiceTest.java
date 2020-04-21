@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,7 +37,6 @@ import gov.ca.cwds.rest.services.ServiceException;
 
 /**
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("javadoc")
 public class AddressServiceTest {
@@ -129,7 +128,7 @@ public class AddressServiceTest {
     when(addressDao.update(any())).thenReturn(address);
 
     Object retval = addressService.update("ABC1234567", addressDomain);
-    assertThat(retval.getClass(), is(gov.ca.cwds.rest.api.domain.cms.Address.class));
+    assertEquals(retval.getClass(), gov.ca.cwds.rest.api.domain.cms.Address.class);
   }
 
   @Test
@@ -161,7 +160,7 @@ public class AddressServiceTest {
         .thenReturn(toCreate);
 
     Response response = addressService.create(request);
-    assertThat(response.getClass(), is(PostedAddress.class));
+    assertEquals(response.getClass(), PostedAddress.class);
   }
 
   @Test

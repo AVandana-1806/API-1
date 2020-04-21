@@ -2,8 +2,8 @@ package gov.ca.cwds.api.authorize;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class ClientAccessForStaffInLakeWithSocialWorkerAccess extends Functional
     queryParams.put(httpRequestHandler.TOKEN, token);
 
     httpRequestHandler.getRequest(clientRelationshipPath, queryParams).then().assertThat()
-        .body("relationship_to", emptyOrNullString()).and().statusCode(200);
+        .body("relationship_to", isEmptyOrNullString()).and().statusCode(200);
   }
 
   /**

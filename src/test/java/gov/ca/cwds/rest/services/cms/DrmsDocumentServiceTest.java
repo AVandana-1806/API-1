@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -84,7 +84,7 @@ public class DrmsDocumentServiceTest {
         .thenReturn(toCreate);
 
     Response response = drmsDocumentService.create(request);
-    assertThat(response.getClass(), is(PostedDrmsDocument.class));
+    assertEquals(response.getClass(), PostedDrmsDocument.class);
   }
 
   @SuppressWarnings("javadoc")

@@ -159,8 +159,8 @@ public class ReferralServiceTest {
   // find test
   @Test
   public void testFindReturnsCorrectEntity() throws Exception {
-    Referral expected = MAPPER
-        .readValue(fixture("fixtures/domain/legacy/Referral/valid.json"), Referral.class);
+    Referral expected =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Referral/valid.json"), Referral.class);
 
     // #145948067: the Referral domain bean doesn't store the primary key???
     final String key = "1234567ABC";
@@ -206,7 +206,7 @@ public class ReferralServiceTest {
 
     Referral returned = referralService.delete("ABC1234567");
 
-    assertThat(returned.getClass(), is(Referral.class));
+    assertEquals(returned.getClass(), Referral.class);
   }
 
   // update test
@@ -224,7 +224,7 @@ public class ReferralServiceTest {
         .thenReturn(buildMockAssignment("2017-01-02", "15:11:45", "2017-01-04", "16:00:00"));
 
     Object retval = referralService.update("1234567ABC", expected);
-    assertThat(retval.getClass(), is(Referral.class));
+    assertEquals(retval.getClass(), Referral.class);
 
     // R04611 - first assignment start date/time is updated with referral received date/time
     verify(assignmentService, times(1)).update(any(String.class),
@@ -263,14 +263,14 @@ public class ReferralServiceTest {
     gov.ca.cwds.data.persistence.cms.Referral toCreate =
         new gov.ca.cwds.data.persistence.cms.Referral("1234567ABC", referralDomain, "0XA");
 
-    Referral request = MAPPER.readValue(fixture("fixtures/domain/legacy/Referral/valid.json"),
-        Referral.class);
+    Referral request =
+        MAPPER.readValue(fixture("fixtures/domain/legacy/Referral/valid.json"), Referral.class);
 
     when(referralDao.create(any(gov.ca.cwds.data.persistence.cms.Referral.class)))
         .thenReturn(toCreate);
 
     Response response = referralService.create(request);
-    assertThat(response.getClass(), is(PostedReferral.class));
+    assertEquals(response.getClass(), PostedReferral.class);
   }
 
   @Test
@@ -723,8 +723,7 @@ public class ReferralServiceTest {
     when(staffpersonDao.find(any(String.class))).thenReturn(staffPerson);
     ScreeningToReferral screeningToReferral =
         new ScreeningToReferralResourceBuilder().setReferralId(referralId).setIncidentCounty("99")
-            .setAssigneeStaffId("0X5")
-            .createScreeningToReferral();
+            .setAssigneeStaffId("0X5").createScreeningToReferral();
 
     gov.ca.cwds.data.persistence.cms.Referral referral =
         new ReferralEntityBuilder().setId("ABC0987654").build();
@@ -758,37 +757,37 @@ public class ReferralServiceTest {
         messageBuilder);
     verify(drmsDocumentService, times(1)).create(any());
   }
-  
+
   @Test
   public void shouldSetScreenerNoteTextWhenSafeAlertInformationProvided() throws Exception {
     String referralId = "";
 
-//    mock the create of the Referral row
+    // mock the create of the Referral row
     gov.ca.cwds.data.persistence.cms.Referral referral =
         new ReferralEntityBuilder().setId("1234567ABC").build();
     when(referralDao.create(any(gov.ca.cwds.data.persistence.cms.Referral.class)))
         .thenReturn(referral);
-    
-//    mock the three dummy DRMS document generation
+
+    // mock the three dummy DRMS document generation
     DrmsDocument document = new DrmsDocumentResourceBuilder().build();
     gov.ca.cwds.data.persistence.cms.DrmsDocument persistedDocument =
         new gov.ca.cwds.data.persistence.cms.DrmsDocument("2345678ABC", document, "0X5",
             new Date());
     PostedDrmsDocument postedId = new PostedDrmsDocument(persistedDocument);
     when(drmsDocumentService.create(any(DrmsDocument.class))).thenReturn(postedId);
- 
-//    mock the longText service
+
+    // mock the longText service
     LongText longTextEntity = new LongTextEntityBuilder().setId("3456789ABC").build();
     PostedLongText postedLongText = new PostedLongText(longTextEntity);
     when(longTextService.create(any())).thenReturn(postedLongText);
 
-//  create a screening to referral with safety alert information
-    ScreeningToReferral screeningToReferral =
-        new ScreeningToReferralResourceBuilder().setReferralId(referralId).setIncidentCounty("99")
-            .setAssigneeStaffId("0X5")
-            .setSafetyAlertInformationn("test safety alert information to screener alerts").createScreeningToReferral();
-    
-//    mock the Address service
+    // create a screening to referral with safety alert information
+    ScreeningToReferral screeningToReferral = new ScreeningToReferralResourceBuilder()
+        .setReferralId(referralId).setIncidentCounty("99").setAssigneeStaffId("0X5")
+        .setSafetyAlertInformationn("test safety alert information to screener alerts")
+        .createScreeningToReferral();
+
+    // mock the Address service
     Address address = new AddressResourceBuilder().createAddress();
     when(addressService.createAddressFromScreening(eq(screeningToReferral), any()))
         .thenReturn(address);
@@ -811,40 +810,39 @@ public class ReferralServiceTest {
 
     Referral createdReferral = referralService.createReferralWithDefaults(screeningToReferral,
         dateStarted, timeStarted, mockMessageBuilder);
-    
+
     assertEquals("Expected screener alert", "3456789ABC", createdReferral.getScreenerNoteText());
   }
-  
+
   @Test
-  public void shouldNotSetScreenerNoteTextWhenNoSafeAlertInformationProvided() throws Exception {    
+  public void shouldNotSetScreenerNoteTextWhenNoSafeAlertInformationProvided() throws Exception {
     String referralId = "";
 
-//    mock the create of the Referral row
+    // mock the create of the Referral row
     gov.ca.cwds.data.persistence.cms.Referral referral =
         new ReferralEntityBuilder().setId("1234567ABC").build();
     when(referralDao.create(any(gov.ca.cwds.data.persistence.cms.Referral.class)))
         .thenReturn(referral);
-    
-//    mock the three dummy DRMS document generation
+
+    // mock the three dummy DRMS document generation
     DrmsDocument document = new DrmsDocumentResourceBuilder().build();
     gov.ca.cwds.data.persistence.cms.DrmsDocument persistedDocument =
         new gov.ca.cwds.data.persistence.cms.DrmsDocument("2345678ABC", document, "0X5",
             new Date());
     PostedDrmsDocument postedId = new PostedDrmsDocument(persistedDocument);
     when(drmsDocumentService.create(any(DrmsDocument.class))).thenReturn(postedId);
- 
-//    mock the longText service
+
+    // mock the longText service
     LongText longTextEntity = new LongTextEntityBuilder().setId("3456789ABC").build();
     PostedLongText postedLongText = new PostedLongText(longTextEntity);
     when(longTextService.create(any())).thenReturn(postedLongText);
 
-//  create a screening to referral with safety alert information
+    // create a screening to referral with safety alert information
     ScreeningToReferral screeningToReferral =
         new ScreeningToReferralResourceBuilder().setReferralId(referralId).setIncidentCounty("99")
-            .setAssigneeStaffId("0X5")
-            .setSafetyAlertInformationn("").createScreeningToReferral();
-    
-//    mock the Address service
+            .setAssigneeStaffId("0X5").setSafetyAlertInformationn("").createScreeningToReferral();
+
+    // mock the Address service
     Address address = new AddressResourceBuilder().createAddress();
     when(addressService.createAddressFromScreening(eq(screeningToReferral), any()))
         .thenReturn(address);
@@ -867,42 +865,40 @@ public class ReferralServiceTest {
 
     Referral createdReferral = referralService.createReferralWithDefaults(screeningToReferral,
         dateStarted, timeStarted, mockMessageBuilder);
-    
+
     assertEquals("Expected no screener alert", null, createdReferral.getScreenerNoteText());
   }
-  
+
   @Test
-  public void shouldNotSetScreenerNoteTextWhenReportNarrativeProvided() throws Exception {    
+  public void shouldNotSetScreenerNoteTextWhenReportNarrativeProvided() throws Exception {
     String referralId = "";
- 
-//    mock the create of the Referral row
+
+    // mock the create of the Referral row
     gov.ca.cwds.data.persistence.cms.Referral referral =
         new ReferralEntityBuilder().setId("1234567ABC").build();
     when(referralDao.create(any(gov.ca.cwds.data.persistence.cms.Referral.class)))
         .thenReturn(referral);
-    
-//    mock the three dummy DRMS document generation
+
+    // mock the three dummy DRMS document generation
     DrmsDocument document = new DrmsDocumentResourceBuilder().build();
     gov.ca.cwds.data.persistence.cms.DrmsDocument persistedDocument =
         new gov.ca.cwds.data.persistence.cms.DrmsDocument("2345678ABC", document, "0X5",
             new Date());
     PostedDrmsDocument postedId = new PostedDrmsDocument(persistedDocument);
     when(drmsDocumentService.create(any(DrmsDocument.class))).thenReturn(postedId);
- 
-//    mock the longText service
+
+    // mock the longText service
     LongText longTextEntity = new LongTextEntityBuilder().setId("3456789ABC").build();
     PostedLongText postedLongText = new PostedLongText(longTextEntity);
     when(longTextService.create(any())).thenReturn(postedLongText);
 
-//  create a screening to referral with safety alert information
+    // create a screening to referral with safety alert information
     ScreeningToReferral screeningToReferral =
         new ScreeningToReferralResourceBuilder().setReferralId(referralId).setIncidentCounty("99")
-            .setAssigneeStaffId("0X5")
-            .setSafetyAlertInformationn("")
-            .setReportNarrative("test the report narrative")
-            .createScreeningToReferral();
-    
-//    mock the Address service
+            .setAssigneeStaffId("0X5").setSafetyAlertInformationn("")
+            .setReportNarrative("test the report narrative").createScreeningToReferral();
+
+    // mock the Address service
     Address address = new AddressResourceBuilder().createAddress();
     when(addressService.createAddressFromScreening(eq(screeningToReferral), any()))
         .thenReturn(address);
@@ -925,7 +921,7 @@ public class ReferralServiceTest {
 
     Referral createdReferral = referralService.createReferralWithDefaults(screeningToReferral,
         dateStarted, timeStarted, mockMessageBuilder);
-    
+
     assertEquals("Expected no screener alert", null, createdReferral.getScreenerNoteText());
   }
 }

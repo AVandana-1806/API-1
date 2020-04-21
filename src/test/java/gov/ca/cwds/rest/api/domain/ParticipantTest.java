@@ -130,7 +130,7 @@ public class ParticipantTest {
   @Test
   public void testEmptyConstructor() throws Exception {
     Participant empty = new Participant();
-    assertThat(empty.getClass(), is(Participant.class));
+    assertEquals(empty.getClass(), Participant.class);
   }
 
   public void testPersistentConstructor() throws Exception {
@@ -321,12 +321,12 @@ public class ParticipantTest {
   @Test
   public void shouldAddListOfAddressesToExistingAddresses() {
     Address existingAddress = new AddressResourceBuilder().setLegacyId("1").createAddress();
-    Set<Address> existingAddresses = new HashSet(Arrays.asList(existingAddress));
+    Set<Address> existingAddresses = new HashSet<>(Arrays.asList(existingAddress));
     Participant participant =
         new ParticipantResourceBuilder().setAddresses(existingAddresses).createParticipant();
 
     Address newAddress = new AddressResourceBuilder().setLegacyId("2").createAddress();
-    Set<Address> newAddresses = new HashSet(Arrays.asList(newAddress));
+    Set<Address> newAddresses = new HashSet<>(Arrays.asList(newAddress));
     participant.addAddresses(newAddresses);
     assertEquals("Expected 2 addresses", 2, participant.getAddresses().size());
     assertEquals("Expected 2 addresses", 2, participant.getAddresses().size());

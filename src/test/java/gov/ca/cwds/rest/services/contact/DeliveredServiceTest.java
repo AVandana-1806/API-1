@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,9 +28,7 @@ import gov.ca.cwds.rest.filters.TestingRequestExecutionContext;
 import gov.ca.cwds.rest.services.ServiceException;
 
 /***
- * 
  * @author CWDS API Team
- *
  */
 @SuppressWarnings("javadoc")
 public class DeliveredServiceTest {
@@ -88,7 +86,7 @@ public class DeliveredServiceTest {
             .thenReturn(toCreate);
 
     DeliveredServiceDomain response = deliveredService.create(request);
-    assertThat(response.getClass(), is(DeliveredServiceDomain.class));
+    assertEquals(response.getClass(), DeliveredServiceDomain.class);
   }
 
   @Test
