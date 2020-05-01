@@ -25,9 +25,9 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
  * {@link RaceAndEthnicity} for an valid participants.
  * 
  * @author CWDS API Team
- *
  */
 public class RaceAndEthnicityTransformer {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(RaceAndEthnicityTransformer.class);
 
   private static final String DECLINED_TO_ANSWER = "D";
@@ -38,7 +38,7 @@ public class RaceAndEthnicityTransformer {
   private static final short UNABLE_TO_DETERMINE = (short) 6351; // Intake calls as 'Abandoned'
 
   /**
-   * 
+   * Default constructor.
    */
   public RaceAndEthnicityTransformer() {
     // no-opt
@@ -55,6 +55,7 @@ public class RaceAndEthnicityTransformer {
     List<Short> raceCodes = new ArrayList<>();
     List<Short> hispanicCodes = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
+
     if (participantsIntake != null) {
       try {
         intakeRace = raceJsonBuilder(participantsIntake, mapper);
@@ -84,7 +85,7 @@ public class RaceAndEthnicityTransformer {
   }
 
   private IntakeEthnicity ethnicityJsonBuilder(ParticipantIntakeApi participantsIntake,
-       ObjectMapper mapper) throws IOException {
+      ObjectMapper mapper) throws IOException {
     IntakeEthnicity intakeEthnicity = null;
     if (StringUtils.isNotBlank(participantsIntake.getEthnicity())) {
       intakeEthnicity = mapper.readValue(participantsIntake.getEthnicity(), IntakeEthnicity.class);
@@ -98,8 +99,10 @@ public class RaceAndEthnicityTransformer {
       raceCodes.add(getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace));
     }
     raceAndEthnicity.setRaceCode(raceCodes);
+
     if (raceCodes.contains(UNABLE_TO_DETERMINE)) {
-      raceAndEthnicity.setUnableToDetermineCode("A");
+      // CMO-503: "unable to determine" != "abandoned"
+      raceAndEthnicity.setUnableToDetermineCode(UNKNOWN);
     }
   }
 
@@ -114,6 +117,7 @@ public class RaceAndEthnicityTransformer {
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Unknown")) {
       raceAndEthnicity.setHispanicOriginCode(UNKNOWN);
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Abandoned")) {
+      // CMO-503: "unable to determine" != "abandoned"
       setHispanicOriginForAbandoned(raceAndEthnicity, hispanicCodes);
       raceAndEthnicity.setHispanicUnableToDetermineCode("A");
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Declined to answer")) {
