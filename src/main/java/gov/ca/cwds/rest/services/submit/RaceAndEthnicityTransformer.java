@@ -35,6 +35,7 @@ public class RaceAndEthnicityTransformer {
   private static final String NO = "N";
   private static final String YES = "Y";
   private static final String DEFAULT_VALUE = "X";
+
   private static final short UNABLE_TO_DETERMINE = (short) 6351; // Intake calls as 'Abandoned'
 
   /**
