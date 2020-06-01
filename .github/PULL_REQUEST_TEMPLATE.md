@@ -7,7 +7,7 @@
 <!--- Provide the link to Jira -->
 
 ## Tests
-- [ ] I have included unit tests 
+- [ ] I have included unit tests
 - [ ] I have included functional tests 
 - [ ] I have included other tests 
 - [ ] I have NOT included tests 
