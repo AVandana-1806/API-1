@@ -11,6 +11,7 @@
 - [ ] I have included functional tests 
 - [ ] I have included other tests 
 - [ ] I have NOT included tests 
+
 <!--- Please indicate why tests were not added. -->
 
 ## Types of changes
@@ -27,3 +28,30 @@
 - [ ] I have ran all tests for the project.
 - [ ] My code is in a stable state ready to be deployable, but not necessarily complete.
 - [ ] I promise on my honor as a CWDS developer to ensure I don't break the build, to check SonarQube after the build completes, use best practices, to leave the code in better shape than I found it, and to have a good day.
+- [ ] Method lengths should be less than 20 lines of code.
+- [ ] Methods do one thing
+- [ ] Methods has no side effects 
+- [ ] Method names are appropriate, descriptive and follow naming standards  
+- [ ] Variable names are appropriate, descriptive and follow naming standards
+- [ ] Class is OOO and non-procedural
+- [ ] Methods have a single return statement
+- [ ] Null is appropriately used
+- [ ] No Global variables
+- [ ] No Obvious logic errors in the code
+- [ ] No logon ids or passwords shown in clear text
+- [ ] Code contains no personally identifiable information (PII) in unprotected form
+- [ ] Code is in compliance with CWDS/OSI Security Rules and Guidelines
+- [ ] Sufficient Unit Test for all new code were created or existing test modified
+
+### Java Checklist
+- [ ] Java file name – Class Name should be noun, Camel Case
+- [ ] File Structure follows standard
+- [ ] Code Formatting meets coding standards
+- [ ] Package, classes, methods, constants, fields, parameters, local variables and types follow 
+      naming standards
+- [ ] Caught Exceptions are not ignored or commented when truly OK
+- [ ] Javadoc exists for all public for every public class and every public or protected method of 
+      said class.
+- [ ] Javadoc follows Javadoc formatting standards.
+- [ ] Passed SonorQube Test
+
