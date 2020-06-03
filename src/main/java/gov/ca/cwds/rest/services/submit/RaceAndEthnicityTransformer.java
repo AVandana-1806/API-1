@@ -21,8 +21,8 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeEthnicity;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
- * Transforms the Intake race and ethnicity from the screening into a legacy supported values
- * {@link RaceAndEthnicity} for an valid participants.
+ * Transforms the Intake race and ethnicity from the screening into legacy supported values
+ * {@link RaceAndEthnicity} for applicable participants.
  * 
  * @author CWDS API Team
  */
@@ -36,7 +36,7 @@ public class RaceAndEthnicityTransformer {
   private static final String YES = "Y";
   private static final String DEFAULT_VALUE = "X";
 
-  private static final short UNABLE_TO_DETERMINE = (short) 6351; // Intake calls as 'Abandoned'
+  private static final short UNABLE_TO_DETERMINE = (short) 6351; // Intake calls 'Abandoned'
 
   /**
    * Default constructor.

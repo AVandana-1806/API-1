@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author CWDS API Team
- *
  */
 public class IntakeRace {
 
