@@ -16,7 +16,6 @@ import gov.ca.cwds.rest.services.ServiceException;
 
 /**
  * @author CWDS API Team
- *
  */
 public class RaceAndEthnicityTransformerTest {
 
@@ -41,18 +40,18 @@ public class RaceAndEthnicityTransformerTest {
 
   /**
    * Test when the race code is "Abandoned" then the race code is 6351 and UnableToDetermineCode is
-   * set to "A"
+   * set to "U"
    */
   @Test
   public void testWhenRaceCodeIsAbandoned() {
     ParticipantIntakeApi participantsIntake = new ParticipantIntakeApiResourceBuilder()
-        .setRaces("[\n" + "{\"race\":\"Abandoned\",\"race_detail\":null}]").setEthnicity(null)
+        .setRaces("[\n" + "{\"race\":\"Unknown\",\"race_detail\":null}]").setEthnicity(null)
         .build();
 
     RaceAndEthnicity raceAndEthnicity =
         new RaceAndEthnicityTransformer().transform(participantsIntake);
     assertThat(raceAndEthnicity.getRaceCode().get(0), is(equalTo((short) 6351)));
-    assertThat(raceAndEthnicity.getUnableToDetermineCode(), is(equalTo("A")));
+    assertThat(raceAndEthnicity.getUnableToDetermineCode(), is(equalTo("U")));
   }
 
   /**
