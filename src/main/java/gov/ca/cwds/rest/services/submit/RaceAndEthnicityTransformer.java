@@ -65,6 +65,7 @@ public class RaceAndEthnicityTransformer {
         LOGGER.error("Unable to parse the race and Ethnicity", e);
         throw new ServiceException(e);
       }
+
       if (intakeRace != null) {
         buildRace(intakeRace, raceAndEthnicity, raceCodes);
       }
@@ -72,6 +73,7 @@ public class RaceAndEthnicityTransformer {
         buildEthnicity(intakeEthnicity, raceAndEthnicity, hispanicCodes);
       }
     }
+
     return raceAndEthnicity;
   }
 
@@ -118,7 +120,6 @@ public class RaceAndEthnicityTransformer {
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Unknown")) {
       raceAndEthnicity.setHispanicOriginCode(UNKNOWN);
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Abandoned")) {
-      // CMO-503: "unable to determine" != "abandoned"
       setHispanicOriginForAbandoned(raceAndEthnicity, hispanicCodes);
       raceAndEthnicity.setHispanicUnableToDetermineCode("A");
     } else if (intakeEthnicity.getHispanicLatinoOrigin().contains("Declined to answer")) {
@@ -152,7 +153,8 @@ public class RaceAndEthnicityTransformer {
         && StringUtils.isNotBlank(metaId)) {
       sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeCode.getLegacyValue(), metaId);
     }
-    return sysId;
+
+    return sysId != null ? sysId : UNABLE_TO_DETERMINE;
   }
 
 }
