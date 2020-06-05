@@ -21,13 +21,13 @@ import gov.ca.cwds.rest.services.screeningparticipant.IntakeEthnicity;
 import gov.ca.cwds.rest.services.screeningparticipant.IntakeRace;
 
 /**
- * Transforms the Intake race and ethnicity from the screening into a legacy supported values
- * {@link RaceAndEthnicity} for an valid participants.
+ * Transforms the Intake race and ethnicity from the screening into legacy supported values
+ * {@link RaceAndEthnicity} for applicable participants.
  * 
  * @author CWDS API Team
- *
  */
 public class RaceAndEthnicityTransformer {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(RaceAndEthnicityTransformer.class);
 
   private static final String DECLINED_TO_ANSWER = "D";
@@ -35,10 +35,11 @@ public class RaceAndEthnicityTransformer {
   private static final String NO = "N";
   private static final String YES = "Y";
   private static final String DEFAULT_VALUE = "X";
-  private static final short UNABLE_TO_DETERMINE = (short) 6351; // Intake calls as 'Abandoned'
+
+  private static final short UNABLE_TO_DETERMINE = (short) 6351; // CMO-503
 
   /**
-   * 
+   * Default constructor.
    */
   public RaceAndEthnicityTransformer() {
     // no-opt
@@ -55,6 +56,7 @@ public class RaceAndEthnicityTransformer {
     List<Short> raceCodes = new ArrayList<>();
     List<Short> hispanicCodes = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
+
     if (participantsIntake != null) {
       try {
         intakeRace = raceJsonBuilder(participantsIntake, mapper);
@@ -63,6 +65,7 @@ public class RaceAndEthnicityTransformer {
         LOGGER.error("Unable to parse the race and Ethnicity", e);
         throw new ServiceException(e);
       }
+
       if (intakeRace != null) {
         buildRace(intakeRace, raceAndEthnicity, raceCodes);
       }
@@ -70,6 +73,7 @@ public class RaceAndEthnicityTransformer {
         buildEthnicity(intakeEthnicity, raceAndEthnicity, hispanicCodes);
       }
     }
+
     return raceAndEthnicity;
   }
 
@@ -84,7 +88,7 @@ public class RaceAndEthnicityTransformer {
   }
 
   private IntakeEthnicity ethnicityJsonBuilder(ParticipantIntakeApi participantsIntake,
-       ObjectMapper mapper) throws IOException {
+      ObjectMapper mapper) throws IOException {
     IntakeEthnicity intakeEthnicity = null;
     if (StringUtils.isNotBlank(participantsIntake.getEthnicity())) {
       intakeEthnicity = mapper.readValue(participantsIntake.getEthnicity(), IntakeEthnicity.class);
@@ -98,8 +102,10 @@ public class RaceAndEthnicityTransformer {
       raceCodes.add(getLegacySystemCodeForRace(SystemCodeCategoryId.ETHNICITY, intakeRace));
     }
     raceAndEthnicity.setRaceCode(raceCodes);
+
     if (raceCodes.contains(UNABLE_TO_DETERMINE)) {
-      raceAndEthnicity.setUnableToDetermineCode("A");
+      // CMO-503: "unable to determine" != "abandoned"
+      raceAndEthnicity.setUnableToDetermineCode(UNKNOWN);
     }
   }
 
@@ -147,7 +153,8 @@ public class RaceAndEthnicityTransformer {
         && StringUtils.isNotBlank(metaId)) {
       sysId = SystemCodeCache.global().getSystemCodeId(intakeCodeCode.getLegacyValue(), metaId);
     }
-    return sysId;
+
+    return sysId != null ? sysId : UNABLE_TO_DETERMINE;
   }
 
 }

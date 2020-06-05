@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author CWDS API Team
- *
  */
 public class IntakeEthnicity {
 
@@ -46,6 +45,5 @@ public class IntakeEthnicity {
   public List<String> getEthnicityDetail() {
     return ethnicityDetail;
   }
+
 }
-
-
