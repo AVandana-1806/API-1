@@ -42,6 +42,6 @@ plugins:
     config:
       sonar.java.source: 8
   checkstyle:
-    enabled: true
+    enabled: false
     config:
       file: "google_checks.xml"
