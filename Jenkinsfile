@@ -31,7 +31,7 @@ def notifyBuild(String buildStatus, Exception e) {
       body: details,
       attachLog: true,
       recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-      to: "tom.parker@osi.ca.gov, adarsh.vandana@osi.ca.gov"
+      to: "david.smith@osi.ca.gov, jeyaraman.govindaraj@osi.ca.gov"
     )
 }
 
@@ -52,6 +52,7 @@ node ('tpt4-slave'){
        ])
      ]
    )
+   
    try {
    stage('Preparation') {
 		  git branch: '$branch', credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/API.git'
@@ -68,19 +69,17 @@ node ('tpt4-slave'){
        def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: "jar -DnewVersion=${newTag}".toString()
    }
 
-    stage('Tests') {
+   stage('Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport javadoc', switches: "--stacktrace -DnewVersion=${newTag}".toString()
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
    }
    
-    stage('Integration Tests'){
+   stage('Integration Tests'){
          withEnv(['APP_STD_PORT=8088']) {
             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'integrationTest  jacocoTestReport', switches: "--stacktrace -DnewVersion=${newTag}".toString()
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        }
 	}
-
-
 	
     stage('SonarQube analysis'){
         lint(rtGradle)
@@ -124,7 +123,7 @@ node ('tpt4-slave'){
   	   currentBuild.result = "FAIL"
   	   notifyBuild(currentBuild.result,errorcode)
   	   throw e;
- }finally {
+ } finally {
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnit Report', reportTitles: 'JUnit tests summary'])
        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'IT Report', reportTitles: 'Integration Tests summary'])
        cleanWs()
