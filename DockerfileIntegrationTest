@@ -13,7 +13,7 @@ RUN yum -y install wget
 RUN yum -y install unzip
 RUN mkdir -p ${JMETER_HOME} \
     && cd ${JMETER_HOME} \
-    && wget ${JMETER_DOWNLOAD_URL} \
+    && wget --no-check-certificate ${JMETER_DOWNLOAD_URL} \
     && tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz \
     && rm apache-jmeter-${JMETER_VERSION}.tgz
 
