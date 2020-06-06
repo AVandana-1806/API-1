@@ -19,7 +19,7 @@ RUN mkdir -p ${JMETER_HOME} \
 
 WORKDIR ${JMETER_HOME}
 
-RUN wget ${JPGC_JSON_PLUGIN_DOWNLOAD_URL} \
+RUN wget --no-check-certificate ${JPGC_JSON_PLUGIN_DOWNLOAD_URL} \
     && unzip -o -d ${JMETER_HOME}/ ${JMETER_HOME}/${JPGC_JSON_PLUGIN_FILE} \
     && rm ${JMETER_HOME}/${JPGC_JSON_PLUGIN_FILE}
 
