@@ -1,4 +1,7 @@
 version: "2"
+prepare:
+  fetch: 
+    - "https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml"
 checks:
   argument-count:
     enabled: true
@@ -39,6 +42,6 @@ plugins:
     config:
       sonar.java.source: 8
   checkstyle:
-    enabled: true
+    enabled: false
     config:
       file: "google_checks.xml"
