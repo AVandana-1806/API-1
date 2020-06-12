@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
         classpath 'se.transmode.gradle:gradle-docker:1.2'
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.1"
     }
