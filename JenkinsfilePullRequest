@@ -33,7 +33,7 @@ def notifyBuild(String buildStatus, Exception e){
     body: details,
     attachLog: true,
     recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-    to: "tom.parker@osi.ca.gov"
+    to: "rich.bach@osi.ca.gov"
   )
 }
 
@@ -52,7 +52,7 @@ node ('tpt4-slave'){
     stage('Preparation'){
 	  rtGradle.tool = "Gradle_35"
 	  rtGradle.resolver repo:'repo', server: serverArti
-	  rtGradle.useWrapper = false
+	  rtGradle.useWrapper = true
 	  checkout scm
     }
     stage('Build'){
