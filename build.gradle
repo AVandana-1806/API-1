@@ -309,7 +309,6 @@ jacocoTestReport {
     xml.enabled false
     csv.enabled false
     html.destination file("${buildDir}/jacocoHtml")
-    // RDB add back in
     // afterEvaluate {
     //   classDirectories = files(classDirectories.files.collect {
     //     fileTree(dir: it,
@@ -368,7 +367,6 @@ task copyDist(type: Copy, dependsOn: shadowJar) {
     into 'build/docker/libs'
 }
 
-// RDB add back
 // task apidocker(type: Docker,  dependsOn: [copyConfig, copyDist] ) {
 //     dockerfile = "Dockerfile"
 //     project.group = "cwds"
