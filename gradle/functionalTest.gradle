@@ -21,8 +21,7 @@ task functionalQATest(type: Test) {
     maxHeapSize = '1024m'
 
     group = LifecycleBasePlugin.VERIFICATION_GROUP
-
-    testClassesDir = sourceSets.functionalTest.output.classesDir
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 
     println "The following Functonal Test Conf File will override the default if not null:" + System.getenv("TEST_FILE_PATH")
@@ -37,8 +36,8 @@ task functionalQATest(type: Test) {
     exclude "**/SmokeTestSuite.class"
     binResultsDir = file("$buildDir/functional-test-results/binary/functionalTest")
     reports {
-        html.destination = "$buildDir/reports/functional-test"
-        junitXml.destination = "$buildDir/functional-test-results"
+        html.destination = file("$buildDir/reports/functional-test")
+        junitXml.destination = file("$buildDir/functional-test-results")
     }
 
 }
@@ -48,8 +47,7 @@ task smokeTest(type: Test) {
 
     maxHeapSize = '1024m'
     group = LifecycleBasePlugin.VERIFICATION_GROUP
-
-    testClassesDir = sourceSets.functionalTest.output.classesDir
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
     classpath = sourceSets.functionalTest.runtimeClasspath
 
     println "The following Functonal Test Conf File will override the default if not null: " + System.getenv("TEST_FILE_PATH")
@@ -64,8 +62,8 @@ task smokeTest(type: Test) {
     include "**/SmokeTestSuite.class"
     binResultsDir = file("$buildDir/smoke-test-results/binary/smokeTest")
     reports {
-        html.destination = "$buildDir/reports/smoke-test"
-        junitXml.destination = "$buildDir/smoke-test-results"
+        html.destination = file("$buildDir/reports/smoke-test")
+        junitXml.destination = file("$buildDir/smoke-test-results")
     }
 }
 
