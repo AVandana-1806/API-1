@@ -9,11 +9,14 @@ dependencies {
     functionalTestCompile sourceSets.main.output
     functionalTestCompile sourceSets.test.output
 
-    functionalTestCompile configurations.compile
-    functionalTestCompile configurations.testCompile
+    functionalTestCompile configurations.implementation
+    functionalTestCompile configurations.testImplementation
 
-    functionalTestRuntime configurations.runtime
-    functionalTestRuntime configurations.testRuntime
+    functionalTestRuntime configurations.implementation
+    functionalTestRuntime configurations.testImplementation
+
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.3'
+    testImplementation 'org.apache.httpcomponents:httpcore:4.4.9'
 }
 
 task functionalQATest(type: Test) {
