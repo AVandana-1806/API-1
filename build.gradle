@@ -25,7 +25,7 @@ plugins {
     //id 'docker'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'jacoco'
-    //apply from: "$rootDir/gradle/functionalTest.gradle"
+    apply from: "$rootDir/gradle/functionalTest.gradle"
     id 'net.ltgt.apt-idea' version "0.21"
     id 'net.ltgt.apt-eclipse' version "0.21"
 }
