@@ -2,6 +2,8 @@
 
 The CWDS API provides RESTful services for the CWDS Modules.
 
+As part of CMO-538 this repository is now private.
+
 ## Wiki 
 
 The development team is actively using the [Github Wiki](https://github.com/ca-cwds/API/wiki).
