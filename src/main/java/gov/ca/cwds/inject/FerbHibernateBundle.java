@@ -1,5 +1,6 @@
 package gov.ca.cwds.inject;
 
+import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,8 @@ public abstract class FerbHibernateBundle extends HibernateBundle<ApiConfigurati
   }
 
   @Override
-  public abstract String name();
+  public String name() {
+    throw new NotImplementedException("{name} not implementetd in base class, please provide implementation");
+  }
 
 }
